@@ -25,3 +25,20 @@ hs_err_pid*
 # Personal
 Notebook/*
 
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# Don't ignore maven jar
+!/.mvn/wrapper/maven-wrapper.jar
+
+# Custom
+.idea/
+ing-sw-2019-9.iml
