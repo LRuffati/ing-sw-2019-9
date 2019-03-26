@@ -45,7 +45,8 @@ public class Deck<T extends Iterable<T>> implements Iterator<T>{
         }
 
         ArrayList<T> temp = new ArrayList<>(stash);
-        Collections.shuffle(temp);
+        // TODO: Check what happens when stash has less than maxN elements
+	Collections.shuffle(temp);
         deckIterator = temp.iterator();
         stash.clear();
         return deckIterator.next();
@@ -61,7 +62,7 @@ public class Deck<T extends Iterable<T>> implements Iterator<T>{
     public Collection<T> take(int maxN){
         ArrayList<T> ret = new ArrayList<>(maxN);
         for (int i=0; (i<maxN) && hasNext(); i++){
-            ret[i] = next();
+            ret.add(next());
         }
         return ret;
     }
@@ -70,6 +71,7 @@ public class Deck<T extends Iterable<T>> implements Iterator<T>{
      * @return True if there is at least an element in either the stash or the deckIterator
      */
     public boolean hasNext(){
+	// TODO: test with an empty stash if 
         if (!stash.isEmpty()){
             return true;
         }
