@@ -1,8 +1,8 @@
-# PowerUps
+## PowerUps
 
-# //You're the player owning the PowerUpCard(PUCard)
+You're the player owning the PowerUpCard(PUCard)
 
-Functions:
+#Functions:
 
   - Discard: In order to get ammo of the same colour of the PUCard.
 
