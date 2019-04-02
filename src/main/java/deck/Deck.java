@@ -12,7 +12,6 @@ import java.util.NoSuchElementException;
  * @param <T> is an iterable
  */
 // TODO: find a way to avoid a caller modifying the content of the T elements when they are supposed to be in the deck
-// TODO: write tests to check that
 public class Deck<T> implements Iterator<T>{
     /*
      *
@@ -50,7 +49,6 @@ public class Deck<T> implements Iterator<T>{
         }
 
         ArrayList<T> temp = new ArrayList<>(stash);
-        // TODO: Check what happens when stash has less than maxN elements
 	    Collections.shuffle(temp);
         deckIterator = temp.iterator();
         stash.clear();
@@ -82,7 +80,6 @@ public class Deck<T> implements Iterator<T>{
      * @return True if there is at least an element in either the stash or the deckIterator
      */
     public boolean hasNext(){
-	// TODO: test with an empty stash if 
         if (!stash.isEmpty()){
             return true;
         }

@@ -1,7 +1,5 @@
 package deck;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -57,7 +55,7 @@ class DeckTest {
     }
 
     @RepeatedTest(20)
-    void takesAll() {
+    void checkTakeAll() {
         ArrayList<Integer> integerArrayList = generateList();
         Deck<Integer> integerDeck = new Deck<>(integerArrayList);
         int n = integerArrayList.size();
@@ -65,11 +63,27 @@ class DeckTest {
         assertEquals(n, taken.size());
     }
 
+    @RepeatedTest(20)
+    void checkTakeSubset() {
+        ArrayList<Integer> integerArrayList = generateList();
+        Deck<Integer> integerDeck = new Deck<>(integerArrayList);
+        int n = (new Random()).nextInt(integerArrayList.size());
+        Collection<Integer> taken = integerDeck.take(n);
+        assertEquals(n, taken.size());
+    }
+
+
     @Test
     void discard() {
         Deck<Integer> integerDeck = new Deck<>(new ArrayList<>());
         int n = (new Random()).nextInt(100);
         integerDeck.discard(n);
         assertEquals(n, integerDeck.next());
+    }
+
+    @Test
+    void testException(){
+        Deck<Integer> integerDeck = new Deck<>(new ArrayList<>());
+        assertThrows(NoSuchElementException.class, ()-> {integerDeck.next();});
     }
 }
