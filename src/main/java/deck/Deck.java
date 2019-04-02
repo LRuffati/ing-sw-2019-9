@@ -1,5 +1,10 @@
-import java.lang.reflect.Array;
-import java.util.*;
+package deck;
+import org.jetbrains.annotations.NotNull;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * This class implements a deck of shuffled elements where already used elements can be added to the deck
@@ -8,7 +13,7 @@ import java.util.*;
  */
 // TODO: find a way to avoid a caller modifying the content of the T elements when they are supposed to be in the deck
 // TODO: write tests to check that
-public class Deck<T extends Iterable<T>> implements Iterator<T>{
+public class Deck<T> implements Iterator<T>{
     /*
      *
      */
@@ -24,7 +29,7 @@ public class Deck<T extends Iterable<T>> implements Iterator<T>{
      *                     to the constructor should not be used further before they have been returned by
      *                     the iterator
      */
-    public Deck(Collection<T> originalDeck){
+    public Deck(@NotNull Collection<T> originalDeck){
         stash = new ArrayList<>(originalDeck.size());
         ArrayList<T> temp = new ArrayList<>(originalDeck);
         Collections.shuffle(temp);
@@ -46,11 +51,17 @@ public class Deck<T extends Iterable<T>> implements Iterator<T>{
 
         ArrayList<T> temp = new ArrayList<>(stash);
         // TODO: Check what happens when stash has less than maxN elements
-	Collections.shuffle(temp);
+	    Collections.shuffle(temp);
         deckIterator = temp.iterator();
         stash.clear();
         return deckIterator.next();
     }
+
+    /**
+     * Safely take  one or more elements at once, this does not guarantee exactly maxN elements will be returned
+     * @return an ArrayList containing a number of elements equal to the lowest between maxN and the number
+     * of cards in the deckIterator and stash combined
+     */
 
     /**
      * Safely take  one or more elements at once, this does not guarantee exactly maxN elements will be returned
