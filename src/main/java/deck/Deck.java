@@ -1,10 +1,8 @@
 package deck;
-import org.jetbrains.annotations.NotNull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import genericItems.Tuple;
+import org.jetbrains.*;
+
+import java.util.*;
 
 /**
  * This class implements a deck of shuffled elements where already used elements can be added to the deck
@@ -99,5 +97,10 @@ public class Deck<T> implements Iterator<T>{
      */
     public void discard(T card){
         stash.add(card);
+    }
+
+    public Tuple<Collection<T>, Set<T>> getDeck(){
+        Tuple<Collection<T>, Set<T>> ret = new Tuple<>(ArrayList<>(deckIterator), HashSet<>(stash));
+        return ret;
     }
 }
