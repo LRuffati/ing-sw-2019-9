@@ -11,7 +11,7 @@ import uid.TileUID;
 public class Pawn {
     private TileUID tileUID;
     private DamageableUID damageableUID;
-    private Player p;
+    private Actor a;
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
@@ -26,13 +26,11 @@ public class Pawn {
      * The method set a bound between an unbounded player and the pawn.
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
-    //TODO Write the AlreadyBoundedPlayer exception.
+    //TODO Write the AlreadyBoundedActor exception.
     //TODO Check what happens if player is already bound to another pawn.
-    protected void setBinding(Player player){
-        if(p == null) this.p = player;
+    protected void setBinding(Actor player){
+        if(a == null) this.a = player;
     }
 
-    /**
-     *
-     */
+
 }
