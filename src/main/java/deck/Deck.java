@@ -1,6 +1,6 @@
 package deck;
 import genericItems.Tuple;
-import org.jetbrains.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
