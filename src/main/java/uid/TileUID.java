@@ -1,5 +1,6 @@
 package uid;
 
+
 import java.rmi.server.UID;
 
 public class TileUID {
@@ -7,5 +8,10 @@ public class TileUID {
 
     public TileUID(){
         this.tileUID = new UID();
+    }
+
+    public boolean equals(TileUID t){
+        if(this.equals(t)) return true;
+        return false;
     }
 }

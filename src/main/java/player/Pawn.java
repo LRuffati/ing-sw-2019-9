@@ -27,10 +27,22 @@ public class Pawn {
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
     //TODO Write the AlreadyBoundedActor exception.
-    //TODO Check what happens if player is already bound to another pawn.
     protected void setBinding(Actor player){
-        if(a == null) this.a = player;
+        if(a == null && player.pawn.a == null) this.a = player;
     }
 
+    /**
+     * To move the pawn in a selected tile.
+     * @param t is the position where the pawn will be moved.
+     */
+    public void move(TileUID t){
+       this.tileUID = t;
+    }
 
+    /**
+     * To remove the pawn from the map when the player is dead.
+     */
+    public void removeFromMap(){
+        this.tileUID = null;
+    }
 }

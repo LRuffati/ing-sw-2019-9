@@ -8,4 +8,9 @@ public class DamageableUID {
     public DamageableUID(){
         this.damageableUID = new UID();
     }
+
+    public boolean equals(DamageableUID t){
+        if(this.equals(t)) return true;
+        return false;
+    }
 }
