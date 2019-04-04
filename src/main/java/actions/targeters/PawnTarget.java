@@ -1,9 +1,8 @@
 package actions.targeters;
 
-import UIDS.PawnUID;
-import UIDS.TileUID;
+import uid.DamageableUID;
 import actions.targeters.interfaces.PointLike;
-import actions.targeters.interfaces.Visible;
+import uid.TileUID;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -29,7 +28,7 @@ public class PawnTarget extends Targetable implements PointLike {
     }
 
     @Override
-    Collection<PawnUID> getSelectedPawns() {
+    Collection<DamageableUID> getSelectedPawns() {
         return null;
     }
 

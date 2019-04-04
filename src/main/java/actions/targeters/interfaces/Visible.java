@@ -1,5 +1,7 @@
 package actions.targeters.interfaces;
 import java.util.Optional;
+import uid.TileUID;
+import java.util.Collection;
 
 /**
  * This interface will be used when I have to filter some pre-existing targets based on their visibility from a given point
