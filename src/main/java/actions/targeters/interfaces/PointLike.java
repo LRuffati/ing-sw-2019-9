@@ -18,6 +18,15 @@ public interface PointLike {
     HashSet<TileUID> tilesSeen();
 
     /**
+     * Checks the visibility of a target
+     * @param target the target for which I'm checking visibility
+     * @return true if the target is visible, false otherwise
+     */
+    default boolean sees(PointLike target){
+        return tilesSeen().contains(location());
+    }
+
+    /**
      * The method used for the "reached [by] this" selector
      * @param radius is the maximum distance, anything less than 0 should return an empty set, returning just the UIDS.TileUID of the current cell
      * @return a list of reachable points in the given amount of steps or less
