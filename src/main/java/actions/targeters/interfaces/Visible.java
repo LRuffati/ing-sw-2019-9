@@ -1,6 +1,6 @@
 package actions.targeters.interfaces;
 
-import UIDS.TileUID;
+import uid.TileUID;
 
 import java.util.Collection;
 
