@@ -1,5 +1,7 @@
 package player;
 
+import actions.AmmoAmount;
+import actions.PowerUp;
 import actions.Weapon;
 import uid.TileUID;
 
@@ -14,11 +16,11 @@ public class Actor {
     private int numOfDeaths;
     //private Dictionary<> marks;
     private Collection<Weapon> weapons;
-    //private Collection<PowerUps> powerups;
-    //private AmmoCounter ammoAviable;
+    private Collection<PowerUp> powerups;
+    //private AmmoAmount ammoAviable;                   //cannot use AmmoAmount, need something else
     private boolean startingPlayerMarker;
-    protected Pawn pawn;
-    private PlayerBoardSide playerboardside;
+    private Pawn pawn;
+    private Boolean frenzy;
     //private ActionBoard actionBoard;
 
     /**
@@ -32,8 +34,7 @@ public class Actor {
         pawn.setBinding(this);
         this.startingPlayerMarker = false; //TODO I need to check in some way if any other player is already the first.
         this.weapons = null; //TODO Weapon constructor.
-        this.playerboardside = null; //TODO board constructor;
-
+        this.frenzy = false;
     }
 
     public void movePlayer(TileUID t){
@@ -41,13 +42,25 @@ public class Actor {
         pawn.move(t);
     }
 
+    /**
+     * Check if the player is in the same tile as the weapon.
+     * Check if the weapons' inventory is full. If it is then makes the player choose what weapon discard.
+     * @param w is the weapon picked up by the player.
+     */
     public void pickUp(Weapon w){
         //TODO check validity.
         if(weapons.size() >= 3){
             //TODO remove the last weapon
         }
         weapons.add(w);
+    }
 
+    /**
+     *
+     * @return the pawn bound to the player.
+     */
+    public Pawn getPawn() {
+        return pawn;
     }
 
 

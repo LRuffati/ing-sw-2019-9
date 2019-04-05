@@ -28,7 +28,7 @@ public class Pawn {
      */
     //TODO Write the AlreadyBoundedActor exception.
     protected void setBinding(Actor player){
-        if(a == null && player.pawn.a == null) this.a = player;
+        if(a == null && player.getPawn().a == null) this.a = player;
     }
 
     /**

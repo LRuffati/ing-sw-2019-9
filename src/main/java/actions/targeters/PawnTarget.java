@@ -8,7 +8,8 @@ import java.util.Collection;
 import java.util.HashSet;
 
 /**
- * This target primarily identifies an individual Pawn, be it a player controlled pawn, a terminator, a turret or a domination point
+ * This target primarily identifies an individual Pawn, be it a player controlled pawn, a terminator, a turret or a
+ * domination point.
  *
  */
 public class PawnTarget extends Targetable implements PointLike {
