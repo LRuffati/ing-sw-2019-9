@@ -50,9 +50,13 @@ public class Actor {
     public void pickUp(Weapon w){
         //TODO check validity.
         if(weapons.size() >= 3){
-            //TODO remove the last weapon
+            removeWeapon();
         }
         weapons.add(w);
+    }
+
+    public void removeWeapon(){
+        //TODO
     }
 
     /**
