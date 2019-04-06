@@ -1,4 +1,5 @@
 package player;
+import board.Tile;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -9,7 +10,7 @@ import uid.TileUID;
  */
 
 public class Pawn {
-    private TileUID tileUID;
+    private Tile tile;
     private DamageableUID damageableUID;
     private Actor a;
 
@@ -18,7 +19,7 @@ public class Pawn {
      * as UID.
      */
     public Pawn(){
-        this.tileUID = new TileUID();
+        this.tile = new Tile();
         this.damageableUID = new DamageableUID();
     }
 
@@ -35,14 +36,18 @@ public class Pawn {
      * To move the pawn in a selected tile.
      * @param t is the position where the pawn will be moved.
      */
-    public void move(TileUID t){
-       this.tileUID = t;
+    public void move(Tile t){
+       this.tile = t;
+    }
+
+    public Tile getTile() {
+        return tile;
     }
 
     /**
      * To remove the pawn from the map when the player is dead.
      */
     public void removeFromMap(){
-        this.tileUID = null;
+        this.tile = null;
     }
 }

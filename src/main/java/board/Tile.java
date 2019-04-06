@@ -16,7 +16,7 @@ public class Tile{
     /**
      * Default constructor
      */
-    public Tile(GameMap map, RoomUID room) {
+    public Tile() {
         // TODO
     }
 
@@ -35,7 +35,7 @@ public class Tile{
     /**
      * List of Grabbable elements (Weapon, TileCard)
      */
-    private List<Grabbable> grabbable;
+    //private List<Grabbable> grabbable;
 
     /**
      * The UID of the cell
@@ -97,7 +97,7 @@ public class Tile{
      * @param direction Direction of the asked tile
      * @return Optional is required in case the query is for a logical neighbor and there are none or for any query and the Tile is on the edge of the map
      */
-    protected Optional<TileUID> getNeighbor(Boolean physical, Direction direction) {
+    public Optional<TileUID> getNeighbor(Boolean physical, Direction direction) {
         return neighbors.containsKey(direction) ? (physical ? Optional.of(neighbors.get(direction).physical()) : neighbors.get(direction).logical()) : Optional.empty();
     }
 
@@ -118,6 +118,7 @@ public class Tile{
         return ret;
     }
 
+    /*
 
     protected List<Grabbable> getGrabbable(){
         return grabbable;
@@ -144,6 +145,7 @@ public class Tile{
 
     }
 
+
     protected Room getRoom(){
         return map.getRoom(roomID).isPresent().get();
     }
@@ -157,5 +159,5 @@ public class Tile{
         }
         return ret;
     }
-
+    */
 }

@@ -12,17 +12,26 @@ import java.util.Map;
  */
 public class Scoreboard {
     private int numOfDeaths;
+    private int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
 
     public Scoreboard(){
+        this.maxDeaths = 8;
+        this.numOfDeaths = 0;
+        this.skullBox = new ArrayList<>();
+    }
+
+    public Scoreboard(int skulls){
+        this.maxDeaths = skulls;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();
     }
 
     public boolean finalFrenzy(){
-        return numOfDeaths == 8;
+        return numOfDeaths == maxDeaths;
     }
 
+    //TODO Understand how to manage all the kill cases.
     public void addKill(Actor killer, Boolean overkill){
         Map<Actor, Integer> m = new HashMap<>();
         if(overkill){

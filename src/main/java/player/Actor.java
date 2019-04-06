@@ -3,9 +3,11 @@ package player;
 import actions.AmmoAmount;
 import actions.PowerUp;
 import actions.Weapon;
-import uid.TileUID;
+import board.Tile;
 
+import javax.swing.text.html.Option;
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * The class Actor implements the status of the player in the game.
@@ -22,6 +24,7 @@ public class Actor {
     private Pawn pawn;
     private Boolean frenzy;
     //private ActionBoard actionBoard;
+    private Boolean turn;
 
     /**
      * The constructor assigns null points and deaths counter and bind a new pawn to the player. It checks if it's the
@@ -37,7 +40,7 @@ public class Actor {
         this.frenzy = false;
     }
 
-    public void movePlayer(TileUID t){
+    public void movePlayer(Tile t){
         //TODO check validity.
         pawn.move(t);
     }
@@ -65,6 +68,10 @@ public class Actor {
      */
     public Pawn getPawn() {
         return pawn;
+    }
+
+    public boolean isTurn(){
+        return turn;
     }
 
 
