@@ -3,5 +3,5 @@ package board;
  * 
  */
 public enum Direction {
-    UP, DOWN, LEFT, RIHGT
+    UP, DOWN, LEFT, RIGHT
 }
