@@ -8,7 +8,7 @@
 
 # Homework
 
-## Per 26/03
+## Per 09/04
 + Suggerimento: disegnare un Finite State Diagram per modellare tutti i possibili stati all’interno di un turno e gli eventi (o azioni) che portano da uno stato all’altro.
 
 + Completare l’UML ad alto livello (se non fatto in precedenza).
