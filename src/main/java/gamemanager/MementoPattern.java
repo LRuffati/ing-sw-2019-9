@@ -1,7 +1,7 @@
 package gamemanager;
 
 
-import deck.Deck;
+import grabbables.Deck;
 import genericItems.Tuple;
 
 import java.util.Collection;

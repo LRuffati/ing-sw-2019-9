@@ -1,13 +1,10 @@
 package player;
 
-import actions.AmmoAmount;
 import actions.PowerUp;
-import actions.Weapon;
+import grabbables.Weapon;
 import board.Tile;
 
-import javax.swing.text.html.Option;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * The class Actor implements the status of the player in the game.

@@ -1,4 +1,4 @@
-package actions;
+package grabbables;
 
 public class Weapon {
 }

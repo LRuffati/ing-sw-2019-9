@@ -47,6 +47,7 @@ public class Room {
     /**
      * @return A Set containing all the TileUID in the room
      */
+    //Todo: check if the caller can modify tiles using the reference
     protected HashSet<TileUID> getTiles(){
         return tiles;
     }
