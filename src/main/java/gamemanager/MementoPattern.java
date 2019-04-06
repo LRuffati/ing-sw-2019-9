@@ -22,7 +22,7 @@ public class MementoPattern<T> {
 
     public MementoPattern(){
         Deck d = new Deck(deckComp);
-        this.deckTuple = d.getDeck();
+        this.deckTuple = d.getDeckState();
     }
 
     public static class Memento<T>{
