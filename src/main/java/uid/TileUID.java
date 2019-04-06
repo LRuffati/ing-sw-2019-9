@@ -11,7 +11,6 @@ public class TileUID {
     }
 
     public boolean equals(TileUID t){
-        if(this.equals(t)) return true;
-        return false;
+        return super.equals(t);
     }
 }
