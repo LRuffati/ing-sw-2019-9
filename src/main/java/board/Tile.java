@@ -167,6 +167,10 @@ public class Tile{
         return map.getRoom(roomID).getColor();
     }
 
+    /**
+     * Returns the Room where the Tile is
+     * @return The Room that contains the Tile
+     */
     protected Room getRoom(){
         return map.getRoom(roomID);
     }
@@ -179,7 +183,10 @@ public class Tile{
         Set<TileUID> ret = new HashSet<>();
         Set<TileUID> surr = getSurroundings(true, 1);
         for(TileUID t : surr){
-            //map.getTile(t).getRoom().getTiles().addAll(ret);
+            Iterator<TileUID> iterator = map.getTile(t).getRoom().getTiles();
+            while(iterator.hasNext()){
+                ret.add(iterator.next());
+            }
         }
         return ret;
     }

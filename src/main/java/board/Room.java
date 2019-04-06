@@ -6,8 +6,6 @@ import java.awt.*;
 import java.util.Iterator;
 import java.util.Set;
 
-//TODO Restituire un iteratore invece dell'hashset. Non deve essere modificabile dall'utente
-
 /**
  * The logical representation of a room in the map.
  * When visualized all cells in the room should have the same color, unique for each room.
