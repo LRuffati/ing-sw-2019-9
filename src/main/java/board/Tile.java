@@ -1,12 +1,11 @@
 package board;
 import uid.TileUID;
 import uid.RoomUID;
+import uid.GrabbableUID;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * The  building block of the map, keeps a reference of grabbable items inside of itself
@@ -15,38 +14,51 @@ public class Tile{
 
     /**
      * Default constructor
+     * @param map The reference to the board
+     * @param tileID The identifier of the tile
+     * @param roomID The identifier of the room
+     * @param neighbors The neighbors of the tile
      */
-    public Tile() {
-        // TODO
+    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction,NeightTile> neighbors) {
+        this.map = map;
+        this.roomID = roomID;
+        this.tileID = tileID;
+        this.neighbors = neighbors;
+    }
+
+    public Tile(){
+        roomID = null;
+        neighbors = null;
+        tileID = null;
+        map = null;
     }
 
     /**
      * The UID of the room that contains the cell
      */
-    private RoomUID roomID;
+    private final RoomUID roomID;
 
     /**
      * If a cell is on the edge of the map it will not have an element mapped to the corresponding direction(s)
      *
      * Handle this via an appropriate getter
      */
-    private Map<Direction , NeightTile> neighbors;
-
-    /**
-     * List of Grabbable elements (Weapon, TileCard)
-     */
-    //private List<Grabbable> grabbable;
+    private final Map<Direction , NeightTile> neighbors;
 
     /**
      * The UID of the cell
      */
-    private TileUID tileID;
+    private final TileUID tileID;
 
     /**
      * Reference of the global map
      */
-    private transient GameMap map;
+    private transient final GameMap map;
 
+    /**
+     * List of Grabbable elements (Weapon, TileCard)
+     */
+    private List<GrabbableUID> grabbable;
 
 
 
@@ -72,7 +84,7 @@ public class Tile{
         for(int i=0; i<range; i++) {
             //for(Integer i : range){
             for (TileUID t : border) {
-                for (NeightTile t1 : map.getTile(t).get().neighbors.values()) {
+                for (NeightTile t1 : map.getTile(t).neighbors.values()) {
                     TileUID t2;
                     t2 = physical ? t1.physical() : t1.logical().orElse(null);
                     /*if physical {
@@ -97,7 +109,7 @@ public class Tile{
      * @param direction Direction of the asked tile
      * @return Optional is required in case the query is for a logical neighbor and there are none or for any query and the Tile is on the edge of the map
      */
-    public Optional<TileUID> getNeighbor(Boolean physical, Direction direction) {
+    protected Optional<TileUID> getNeighbor(Boolean physical, Direction direction) {
         return neighbors.containsKey(direction) ? (physical ? Optional.of(neighbors.get(direction).physical()) : neighbors.get(direction).logical()) : Optional.empty();
     }
 
@@ -113,51 +125,63 @@ public class Tile{
         Optional<TileUID> t = getNeighbor(physical, direction);
         while(t.isPresent()) {
             ret.add(tileID);
-            t = map.getTile(t.get()).get().getNeighbor(physical, direction);
+            t = map.getTile(t.get()).getNeighbor(physical, direction);
         }
         return ret;
     }
 
-    /*
-
-    protected List<Grabbable> getGrabbable(){
+    /** Returns a List containing all the Grabbable elements in this Tile
+     *
+     * @return A List containing all the Grabbable elements
+     */
+    protected List<GrabbableUID> getGrabbable(){
         return grabbable;
         //TODO
     }
 
-    protected void addGrabbable(Grabbable grabbable){
-        this.grabbable.add(grabbable);
-        //TODO
+    /**
+     * Adds a Grabbable elements in this Tile
+     * @param grabbableID The identifier of the grabbable item
+     */
+    protected void addGrabbable(GrabbableUID grabbableID){
+        this.grabbable.add(grabbableID);
     }
 
-    protected Grabbable pickUpGrabbable(Grabbable grabbable){
-        //TODO
+    /**
+     * Removes the element from the Grabbable List. If there is not this element, throws a NoSuchElementException
+     * @param grabbableID The identifier of the grabbable item
+     * @throws NoSuchElementException If this GrabbableUID is not found, an exception is returned
+     */
+    protected void pickUpGrabbable(GrabbableUID grabbableID) throws NoSuchElementException{
+        if(grabbable.contains(grabbableID))
+            grabbable.remove(grabbableID);
+        else
+            throw new NoSuchElementException("This GrabbableID is not in this Tile");
     }
 
+    /**
+     * Returns the color of the Room
+     * @return Returns the color of the Room
+     */
     protected Color getColor(){
-        return map.getRoom(this.roomID).get().getColor();
+        return map.getRoom(roomID).getColor();
     }
-
-    protected Color getColor(){
-        Optional<Room> r = map.getRoom(roomID);
-        return r.isPresent() ? r.get().getColor() : null;
-        map.getRoom(roomID).ifPresent(Optional.);
-
-    }
-
 
     protected Room getRoom(){
-        return map.getRoom(roomID).isPresent().get();
+        return map.getRoom(roomID);
     }
 
+    /**
+     * Finds all the Tiles that are visible from itself
+     * @return A Set containing all the visible Tiles
+     */
     protected Set<TileUID> getVisible(){
         Set<TileUID> ret = new HashSet<>();
         Set<TileUID> surr = getSurroundings(true, 1);
         for(TileUID t : surr){
-            map.getTile(t).ifPresent(x -> x.getRoom().getTiles().addAll(ret));
-            //map.getTile(t).stream().filter(x->x.ofNullable()).forEach(getRoom().getTiles().addAll(ret));
+            //map.getTile(t).getRoom().getTiles().addAll(ret);
         }
         return ret;
     }
-    */
+
 }
