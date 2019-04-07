@@ -143,7 +143,7 @@ public class Tile{
      *
      * @return A List containing all the Grabbable elements
      */
-    protected List<GrabbableUID> getGrabbable(){
+    public List<GrabbableUID> getGrabbable(){
         return grabbable;
     }
 

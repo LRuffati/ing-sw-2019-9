@@ -37,24 +37,36 @@ public class Actor {
         this.frenzy = false;
     }
 
+    /**
+     * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
+     * @param t is the Tile where the player is trying to move to.
+     */
     public void movePlayer(Tile t){
         //TODO check validity.
         pawn.move(t);
     }
 
     /**
-     * Check if the player is in the same tile as the weapon.
-     * Check if the weapons' inventory is full. If it is then makes the player choose what weapon discard.
-     * @param w is the weapon picked up by the player.
+     * Check if the player is in the same tile as the grabbable item.
+     * Check if the item is weapon, then if weapons' inventory is full.
+     * If it is then makes the player choose what weapon discard.
+     * @param item is the grabbable picked up by the player.
      */
-    public void pickUp(Weapon w){
+    public void pickUp(GrabbableUID item){
         //TODO check validity.
-        if(weapons.size() >= 3){
-            removeWeapon();
+        if(pawn.getTile().getGrabbable().contains(item)) {
+            if (true) {                                                     //if item is weapon
+                if (weapons.size() >= 3) {
+                    removeWeapon();
+                }
+                weapons.add(w);
+            }
         }
-        weapons.add(w);
     }
 
+    /**
+     * Select from the weapon owned which to discard and remove from the actual game.
+     */
     public void removeWeapon(){
         //TODO
     }
@@ -67,6 +79,10 @@ public class Actor {
         return pawn;
     }
 
+    /**
+     *
+     * @return true is the actor turn has started and it's not finished yet.
+     */
     public boolean isTurn(){
         return turn;
     }

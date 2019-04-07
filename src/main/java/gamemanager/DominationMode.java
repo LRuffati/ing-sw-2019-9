@@ -14,9 +14,9 @@ import java.util.Map;
 public class DominationMode extends Scoreboard{
     private Collection<Collection<Map<AmmoColor, Actor>>> spawnTracker;
 
-   public DominationMode(){
+    public DominationMode(){
 
-   }
+    }
 
     public void scoreControlPoint(Actor a){
 

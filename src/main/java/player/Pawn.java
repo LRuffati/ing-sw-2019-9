@@ -40,6 +40,10 @@ public class Pawn {
        this.tile = t;
     }
 
+    /**
+     *
+     * @return the Tile where the pawn is located.
+     */
     public Tile getTile() {
         return tile;
     }
