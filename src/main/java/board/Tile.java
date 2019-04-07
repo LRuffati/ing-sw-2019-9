@@ -1,4 +1,5 @@
 package board;
+import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 import uid.RoomUID;
 import uid.GrabbableUID;
@@ -51,16 +52,19 @@ public class Tile{
     private final TileUID tileID;
 
     /**
-     * Reference of the global map
-     */
-    private transient final GameMap map;
-
-    /**
      * List of Grabbable elements (Weapon, TileCard)
      */
     private List<GrabbableUID> grabbable;
 
+    /**
+     * Reference of the global map
+     */
+    private transient GameMap map;
 
+
+    protected void setMap(GameMap map){
+        this.map = map;
+    }
 
     /**
      * This function gets all the cells within a certain distance of the cell, including the cell itself
@@ -109,8 +113,13 @@ public class Tile{
      * @param direction Direction of the asked tile
      * @return Optional is required in case the query is for a logical neighbor and there are none or for any query and the Tile is on the edge of the map
      */
-    protected Optional<TileUID> getNeighbor(Boolean physical, Direction direction) {
-        return neighbors.containsKey(direction) ? (physical ? Optional.of(neighbors.get(direction).physical()) : neighbors.get(direction).logical()) : Optional.empty();
+    protected Optional<TileUID> getNeighbor(Boolean physical, @NotNull Direction direction) {
+        if(neighbors.containsKey(direction)) {
+            return physical ? Optional.of(neighbors.get(direction).physical()) : neighbors.get(direction).logical();
+        }
+        else{
+            return Optional.empty();
+        }
     }
 
     /**
@@ -136,7 +145,6 @@ public class Tile{
      */
     protected List<GrabbableUID> getGrabbable(){
         return grabbable;
-        //TODO
     }
 
     /**
@@ -152,7 +160,7 @@ public class Tile{
      * @param grabbableID The identifier of the grabbable item
      * @throws NoSuchElementException If this GrabbableUID is not found, an exception is returned
      */
-    protected void pickUpGrabbable(GrabbableUID grabbableID) throws NoSuchElementException{
+    protected void pickUpGrabbable(GrabbableUID grabbableID) {
         if(grabbable.contains(grabbableID))
             grabbable.remove(grabbableID);
         else

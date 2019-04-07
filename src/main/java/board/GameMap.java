@@ -19,20 +19,24 @@ public class GameMap {
         //TODO fare un vero costruttore
     }
 
+    public GameMap(){
+
+    }
+
     /**
      *  Map between RoomUID and the Room Class
      */
-    private final Map<RoomUID,Room> roomUIDMap;
+    private Map<RoomUID,Room> roomUIDMap;
 
     /**
      *  Map between TileUID and the Tile Class
      */
-    private final Map<TileUID, Tile> tileUIDMap;
+    private Map<TileUID, Tile> tileUIDMap;
 
     /**
      * Stores the absolute position of each Tile. Should not be used to access to TileUID
      */
-    private final Map<Coord, TileUID> position;
+    private Map<Coord, TileUID> position;
 
     /** Return the Tile Object given a TileUID
      * @param tileID TileUID of the wanted Tile
