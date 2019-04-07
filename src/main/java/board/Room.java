@@ -48,30 +48,26 @@ public class Room{
     }
 
     /**
-     * @return An iterator that allow to access to the Tiles in the room
+     * @return An iterator that allow to access to the Tiles in the room. Remove() launch an UnsupportedOperationException si called
      */
- /*   protected Set<TileUID> getTiles(){
-        return tiles;
-    }
-
-    public Iterator<TileUID> iterator(){
-        return new Iterator<TileUID>() {
-            int index = 0;
-
+    protected Iterator<TileUID> getTiles(){
+        Iterator<TileUID> iterator = tiles.iterator();
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                //return index == tiles.size();
-                return tiles.iterator().hasNext();
+                return iterator.hasNext();
             }
 
             @Override
             public TileUID next() {
-                return tiles.iterator().next();
+                return iterator.next();
+            }
+
+            @Override
+            public void remove(){
+                throw new UnsupportedOperationException("Remove method can't be used here");
             }
         };
-    }*/
-    protected Iterator<TileUID> getTiles(){
-        return tiles.iterator();
     }
 
 }
