@@ -3,6 +3,7 @@ package player;
 import actions.PowerUp;
 import grabbables.Weapon;
 import board.Tile;
+import uid.TileUID;
 
 import java.util.Collection;
 
@@ -41,7 +42,7 @@ public class Actor {
      * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
      * @param t is the Tile where the player is trying to move to.
      */
-    public void movePlayer(Tile t){
+    public void movePlayer(TileUID t){
         //TODO check validity.
         pawn.move(t);
     }

@@ -1,5 +1,6 @@
 package board;
 import org.jetbrains.annotations.NotNull;
+import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
 import uid.GrabbableUID;
@@ -55,6 +56,11 @@ public class Tile{
      * List of Grabbable elements (Weapon, TileCard)
      */
     private List<GrabbableUID> grabbable;
+
+    /**
+     * List of Damageable units in the Tile
+     */
+    private List<DamageableUID> damageable;
 
     /**
      * Reference of the global map
@@ -176,10 +182,15 @@ public class Tile{
     }
 
     /**
-     * Returns the Room where the Tile is
-     * @return The Room that contains the Tile
+     * Returns the RoomUID where the Tile is
+     * @return The RoomUID that contains the Tile
      */
-    protected Room getRoom(){
+    protected RoomUID getRoom(){
+        return roomID;
+    }
+
+
+    private Room getRoomObj(){
         return map.getRoom(roomID);
     }
 
@@ -191,10 +202,43 @@ public class Tile{
         Set<TileUID> ret = new HashSet<>();
         Set<TileUID> surr = getSurroundings(true, 1);
         for(TileUID t : surr){
-            Iterator<TileUID> iterator = map.getTile(t).getRoom().getTiles();
+            Iterator<TileUID> iterator = map.getTile(t).getRoomObj().getTilesIterator();
             while(iterator.hasNext()){
                 ret.add(iterator.next());
             }
+        }
+        return ret;
+    }
+
+
+    /**
+     * Returns a collection with all the DamageableUID contained in the tile
+     * @return A collections containing the DamageableUID in the tile
+     */
+    public Collection<DamageableUID> getDamageable(){
+        return damageable;
+    }
+
+    /**
+     * Adds a Damageable element in the tile
+     * @param damageableUID The Damageable element that has to be added
+     */
+    public void addDamageable(DamageableUID damageableUID){
+        damageable.add(damageableUID);
+    }
+
+    /**
+     * Returns a Map containing surrounding Tiles. If there is no Tile, the corresponding direction is not present in the Map
+     * @param physical true to check through walls, false otherwise
+     * @return A Map containing surrounding Tiles
+     */
+    protected Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
+        Map<Direction, TileUID> ret = new EnumMap<>(Direction.class);
+        Optional<TileUID> t;
+        for( Direction d : neighbors.keySet()){
+            t = getNeighbor(physical, d);
+            if(t.isPresent())
+                ret.put(d, t.get());
         }
         return ret;
     }

@@ -10,7 +10,7 @@ import uid.TileUID;
  */
 
 public class Pawn {
-    private Tile tile;
+    private TileUID tile;
     private DamageableUID damageableUID;
     private Actor a;
 
@@ -19,7 +19,7 @@ public class Pawn {
      * as UID.
      */
     public Pawn(){
-        this.tile = new Tile();
+        this.tile = new TileUID();
         this.damageableUID = new DamageableUID();
     }
 
@@ -36,7 +36,7 @@ public class Pawn {
      * To move the pawn in a selected tile.
      * @param t is the position where the pawn will be moved.
      */
-    public void move(Tile t){
+    public void move(TileUID t){
        this.tile = t;
     }
 
@@ -44,7 +44,7 @@ public class Pawn {
      *
      * @return the Tile where the pawn is located.
      */
-    public Tile getTile() {
+    public TileUID getTile() {
         return tile;
     }
 
