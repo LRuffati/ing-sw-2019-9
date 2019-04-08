@@ -1,6 +1,6 @@
 package actions.targeters.interfaces;
 
-import java.util.Optional;
+import java.util.Collection;
 
 /**
  * This interface models the condition:
@@ -10,10 +10,14 @@ import java.util.Optional;
  */
 public interface HavingPointLike {
     /**
-     *
      * @param target
      * @return an empty optional if the
      */
-    Optional<HavingPointLike> filteringHas(PointLike target);
-    HavingPointLike selectingHas(PointLike target);
+    boolean filteringHas(PointLike target);
+
+    /**
+     * @param target
+     * @return
+     */
+    Collection<HavingPointLike> selectingHas(PointLike target);
 }
