@@ -1,4 +1,4 @@
-package actions;
+package actions.utils;
 
 public enum PowerUpType {
     TargettingScope,

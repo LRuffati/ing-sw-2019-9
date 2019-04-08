@@ -1,12 +1,13 @@
 package actions;
 
+import actions.utils.AmmoColor;
+import actions.utils.PowerUpType;
 import board.Direction;
 import player.Actor;
 import uid.PowerUpUID;
 import board.Tile;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class PowerUp {
     private PowerUpType type;

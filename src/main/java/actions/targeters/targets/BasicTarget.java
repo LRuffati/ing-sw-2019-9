@@ -1,14 +1,18 @@
-package actions.targeters;
+package actions.targeters.targets;
 
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.interfaces.TargetedSelector;
 import actions.targeters.interfaces.Visible;
+import board.Sandbox;
 import uid.DamageableUID;
 import actions.targeters.interfaces.PointLike;
+import uid.RoomUID;
 import uid.TileUID;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This target primarily identifies an individual Pawn, be it a player controlled pawn, a terminator, a turret or a
@@ -17,20 +21,34 @@ import java.util.HashSet;
  */
 public class BasicTarget extends Targetable implements PointLike, Visible, TargetedSelector {
 
+    private final Sandbox sandbox;
+    private final DamageableUID selfUID;
+    private TileUID location;
+
+    BasicTarget(Sandbox sandbox, DamageableUID target){
+        location = sandbox.tile(target);
+        this.sandbox = sandbox;
+        selfUID = target;
+    }
+
     /**
      * @return a list of all Pawns (the actual pawns and the domination points) in the current selection, if the selector primarily identifies tiles return all pawns in those tiles
      */
     @Override
-    Collection<DamageableUID> getSelectedPawns() {
-        return null;
+    Set<DamageableUID> getSelectedPawns() {
+        Collection<DamageableUID> retVal = new ArrayList<>();
+        retVal.add(selfUID);
+        return new HashSet<>(retVal);
     }
 
     /**
      * @return a list of all Tiles in or occupied by elements of the Target
      */
     @Override
-    Collection<TileUID> getSelectedTiles() {
-        return null;
+    Set<TileUID> getSelectedTiles() {
+        Collection<TileUID> tiles = new ArrayList<>();
+        tiles.add(location());
+        return new HashSet<>(tiles);
     }
 
     /**
@@ -38,7 +56,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public TileUID location() {
-        return null;
+        return location;
     }
 
     /**
@@ -47,43 +65,38 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      * @return a Collection of TileUIDs without duplicates
      */
     @Override
-    public HashSet<TileUID> tilesSeen() {
-        return null;
+    public Set<TileUID> tilesSeen() {
+        return sandbox.tilesSeen(location());
     }
 
     /**
      * The method used for the "distant [from] this" selector
      *
-     * @param radius is the maximum distance, anything less than 0 should return an empty set, with 0 returning just the UIDS.TileUID of the current cell
+     * @param radius is the maximum distance, anything less than 0 should return an empty set, with 0 returning just the UIDs.TileUID of the current cell
+     * @param logical if true only consider logical links
      * @return a list of reachable points in the given amount of steps or less
      */
     @Override
-    public HashSet<TileUID> distanceSelector(int radius) {
-        return null;
+    public HashSet<TileUID> distanceSelector(int radius, boolean logical) {
+        return sandbox.circle(location(), radius, logical);
     }
 
     /**
-     * @param min      the minimum included distance (0 includes the current tile, negative values return an empty set
-     * @param max      the maximum included distance
-     * @param source   the PointLike Target for which reachableSelector is calculated
-     * @param negation whether the condition should be negated or not
-     * @return For targets partially or totally satisfying the condition it returns the sub-target which satisfies it, otherwise empty optional
+     * this can be reached by source?
      */
     @Override
     public boolean reachedCondition(int min, int max, PointLike source, boolean negation) {
-        return false;
+        HashSet<TileUID> circle = source.reachableSelector(min, max);
+        return negation ^ circle.contains(location());
     }
 
     /**
-     * @param min      the minimum included distance (0 includes the current tile, negative values return an empty set
-     * @param max      the maximum included distance
-     * @param source   the PointLike Target from which the distance is calculated
-     * @param negation whether the condition should be negated or not
-     * @return For targets partially or totally satisfying the condition it returns the sub-target which satisfies it, otherwise empty optional
+     * this is distant from source?
      */
     @Override
-    public boolean distanceCondition(int min, int max, PointLike source, boolean negation) {
-        return false;
+    public boolean distanceCondition(int min, int max, PointLike source, boolean negation, boolean logical) {
+        HashSet<TileUID> circle = source.distanceSelector(min, max, logical);
+        return negation ^ circle.contains(location());
     }
 
     /**
@@ -93,7 +106,8 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public boolean containedSelector(SuperTile container, boolean negation) {
-        return false;
+        Collection<TileUID> containedTiles = container.containedTiles();
+        return negation ^ containedTiles.contains(location());
     }
 
     /**
@@ -105,6 +119,6 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public boolean seen(PointLike source, boolean negation) {
-        return false;
+        return negation ^ source.tilesSeen().contains(location());
     }
 }

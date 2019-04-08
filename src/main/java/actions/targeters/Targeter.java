@@ -1,5 +1,4 @@
 package actions.targeters;
 
-public class GroupTarget {
-
+public class Targeter {
 }

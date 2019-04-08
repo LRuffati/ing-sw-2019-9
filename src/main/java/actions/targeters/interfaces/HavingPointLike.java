@@ -1,7 +1,5 @@
 package actions.targeters.interfaces;
 
-import java.util.Collection;
-
 /**
  * This interface models the condition:
  *  + targetName HavingPointLike (... & has PointLike)
@@ -11,13 +9,8 @@ import java.util.Collection;
 public interface HavingPointLike {
     /**
      * @param target
+     * @param negation
      * @return an empty optional if the
      */
-    boolean filteringHas(PointLike target);
-
-    /**
-     * @param target
-     * @return
-     */
-    Collection<HavingPointLike> selectingHas(PointLike target);
+    boolean filteringHas(PointLike target, boolean negation);
 }

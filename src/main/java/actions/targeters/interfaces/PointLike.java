@@ -3,6 +3,7 @@ package actions.targeters.interfaces;
 import uid.TileUID;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public interface PointLike {
     /**
@@ -15,16 +16,7 @@ public interface PointLike {
      * This is a selector, it generates a list of tiles the current PointLike target can see
      * @return a Collection of TileUIDs without duplicates
      */
-    HashSet<TileUID> tilesSeen();
-
-    /**
-     * Checks the visibility of a target
-     * @param target the target for which I'm checking visibility
-     * @return true if the target is visible, false otherwise
-     */
-    default boolean sees(PointLike target){
-        return tilesSeen().contains(target.location());
-    }
+    Set<TileUID> tilesSeen();
 
     /**
      * The method used for the "reached [by] this" selector
@@ -33,7 +25,7 @@ public interface PointLike {
      */
     //Todo: test con radius <=0 and verify that it returns location() and only location()
     default HashSet<TileUID> reachableSelector(int radius){
-        return distanceSelector(radius);
+        return distanceSelector(radius, true);
     }
 
     /**
@@ -54,7 +46,7 @@ public interface PointLike {
      * @return a list of reachable points in the given amount of steps or less
      */
     //Todo: test con radius <=0 and verify that it returns location() and only location()
-    HashSet<TileUID> distanceSelector(int radius);
+    HashSet<TileUID> distanceSelector(int radius, boolean logical);
 
     /**
      * Similar to distanceSelector(radius) but works in a range
@@ -62,9 +54,9 @@ public interface PointLike {
      * @param min the minimum distance included
      * @return the set of cells satisfying the condition
      */
-    default HashSet<TileUID> distanceSelector(int min, int max){
-        HashSet<TileUID> a = distanceSelector(max);
-        a.removeAll(distanceSelector(min-1));
+    default HashSet<TileUID> distanceSelector(int min, int max, boolean logical){
+        HashSet<TileUID> a = distanceSelector(max,logical);
+        a.removeAll(distanceSelector(min-1, logical));
         return a;
     }
 }

@@ -1,6 +1,6 @@
 package gamemanager;
 
-import actions.AmmoColor;
+import actions.utils.AmmoColor;
 import player.Actor;
 
 import java.util.Collection;

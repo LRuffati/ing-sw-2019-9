@@ -1,8 +1,8 @@
 package actions.targeters.interfaces;
 
-import actions.targeters.TileTarget;
+import uid.TileUID;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * This class implements the selector:
@@ -10,8 +10,7 @@ import java.util.Collection;
  */
 public interface  SuperTile {
     /**
-     *
      * @return
      */
-    Collection<TileTarget> containedTiles();
+    Set<TileUID> containedTiles();
 }
