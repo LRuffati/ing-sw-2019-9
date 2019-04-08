@@ -3,6 +3,7 @@ import uid.RoomUID;
 import uid.TileUID;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -48,9 +49,9 @@ public class Room{
     }
 
     /**
-     * @return An iterator that allow to access to the Tiles in the room. Remove() launch an UnsupportedOperationException si called
+     * @return An iterator that allow to access to the Tiles in the room. Remove() launch an UnsupportedOperationException is called
      */
-    protected Iterator<TileUID> getTiles(){
+    protected Iterator<TileUID> getTilesIterator(){
         Iterator<TileUID> iterator = tiles.iterator();
         return new Iterator<>() {
             @Override
@@ -70,4 +71,10 @@ public class Room{
         };
     }
 
+    /**
+     * @return A collection containing all the Tiles in the room
+     */
+    protected Collection<TileUID> getTiles(){
+        return tiles;
+    }
 }
