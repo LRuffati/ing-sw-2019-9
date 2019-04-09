@@ -9,6 +9,6 @@ public class RoomUID {
     }
 
     public boolean equals(RoomUID t){
-        return super.equals(t);
+        return roomUID.equals(t.roomUID);
     }
 }

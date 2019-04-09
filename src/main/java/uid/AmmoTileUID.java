@@ -1,4 +1,6 @@
 package uid;
+import org.jetbrains.annotations.NotNull;
+
 import java.rmi.server.UID;
 
 public class AmmoTileUID {
@@ -8,7 +10,7 @@ public class AmmoTileUID {
         this.ammoTileUID = new UID();
     }
 
-    public boolean equals(AmmoTileUID t){
-        return super.equals(t);
+    public boolean equals(@NotNull AmmoTileUID t){
+        return ammoTileUID.equals(t.ammoTileUID);
     }
 }

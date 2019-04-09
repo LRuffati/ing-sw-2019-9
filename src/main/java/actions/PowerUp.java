@@ -6,6 +6,7 @@ import board.Direction;
 import player.Actor;
 import uid.PowerUpUID;
 import board.Tile;
+import uid.TileUID;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,8 @@ public class PowerUp {
     public void useTeleporter(Actor a, Tile t){
         //Todo: make compatible with just using UIDs
         // if (a.isTurn()) a.movePlayer(t);
+    public void useTeleporter(Actor a, TileUID t){
+        if (a.isTurn()) a.movePlayer(t);
     }
 
     public void useTagbackGranade(Actor a, Actor target){

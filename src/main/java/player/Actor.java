@@ -3,9 +3,11 @@ package player;
 import actions.PowerUp;
 import grabbables.Weapon;
 import board.Tile;
+import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.Collection;
+import java.util.Dictionary;
 
 /**
  * The class Actor implements the status of the player in the game.
@@ -14,7 +16,7 @@ import java.util.Collection;
 public class Actor {
     private int points;
     private int numOfDeaths;
-    //private Dictionary<> marks;
+    private Dictionary<DamageableUID, Integer> marks;
     private Collection<Weapon> weapons;
     private Collection<PowerUp> powerups;
     //private AmmoAmount ammoAviable;                   //cannot use AmmoAmount, need something else
@@ -36,6 +38,7 @@ public class Actor {
         this.startingPlayerMarker = false; //TODO I need to check in some way if any other player is already the first.
         this.weapons = null; //TODO Weapon constructor.
         this.frenzy = false;
+        this.marks = null;
     }
 
     /**
@@ -60,7 +63,7 @@ public class Actor {
                 if (weapons.size() >= 3) {
                     removeWeapon();
                 }
-                weapons.add(w);
+                //weapons.add(item);
             }
         }
     }
