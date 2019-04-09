@@ -1,6 +1,5 @@
 package grabbables;
 import genericItems.Tuple;
-import org.jetbrains.annotations.*;
 import java.util.*;
 
 /**
@@ -31,7 +30,7 @@ public class Deck<T> implements Iterator<T>{
      *                     to the constructor should not be used further before they have been returned by
      *                     the iterator
      */
-    public Deck(@NotNull Collection<T> originalDeck){
+    public Deck(Collection<T> originalDeck){
         stash = new ArrayList<>(originalDeck.size());
         ArrayList<T> temp = new ArrayList<>(originalDeck);
         Collections.shuffle(temp);

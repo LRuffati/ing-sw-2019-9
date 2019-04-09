@@ -4,6 +4,7 @@ import actions.PowerUp;
 import grabbables.Weapon;
 import board.Tile;
 import uid.DamageableUID;
+import uid.GrabbableUID;
 import uid.TileUID;
 
 import java.util.Collection;
@@ -58,14 +59,6 @@ public class Actor {
      */
     public void pickUp(GrabbableUID item){
         //TODO check validity.
-        if(pawn.getTile().getGrabbable().contains(item)) {
-            if (true) {                                                     //if item is weapon
-                if (weapons.size() >= 3) {
-                    removeWeapon();
-                }
-                //weapons.add(item);
-            }
-        }
     }
 
     /**

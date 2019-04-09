@@ -1,9 +1,5 @@
 package uid;
 
-
-import board.Tile;
-import org.jetbrains.annotations.NotNull;
-
 import java.rmi.server.UID;
 
 public class TileUID {
@@ -13,7 +9,7 @@ public class TileUID {
         this.tileUID = new UID();
     }
 
-    public Boolean equals(@NotNull TileUID t){
+    public Boolean equals(TileUID t){
         return tileUID.equals(t.tileUID);
     }
 }
