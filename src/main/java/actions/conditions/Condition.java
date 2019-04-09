@@ -5,6 +5,8 @@ import actions.targeters.targets.Targetable;
 public abstract class Condition {
     private boolean negate;
 
-    abstract boolean checkTarget(Targetable target);
+    boolean checkTarget(Targetable target){
+        throw new IllegalArgumentException("Invalid Target");
+    }
 
 }

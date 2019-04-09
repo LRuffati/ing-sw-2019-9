@@ -22,7 +22,8 @@ public class PowerUp {
     }
 
     public void useTeleporter(Actor a, Tile t){
-        if (a.isTurn()) a.movePlayer(t);
+        //Todo: make compatible with just using UIDs
+        // if (a.isTurn()) a.movePlayer(t);
     }
 
     public void useTagbackGranade(Actor a, Actor target){

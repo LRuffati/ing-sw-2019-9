@@ -47,6 +47,26 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
         return sandbox.tilesSeen(location());
     }
 
+    /**
+     * for the basictarget (reaches () this ) selector
+     * <p>
+     * It should first generate a list of basictargets () distant from this
+     * with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
+     * and then filter the targets by applying the reachedCondition
+     *
+     * @param radius
+     * @return
+     */
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int radius) {
+        return null;
+    }
+
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int min, int max) {
+        return null;
+    }
+
     @Override
     public HashSet<TileUID> distanceSelector(int radius, boolean logical) {
         return sandbox.circle(location(),radius,logical);

@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.Map;
 
 public class VisibleSelector implements Selector {
-    final int min;
-    final int max;
     Collection<Targetable> select(PointLike sourceTarget) {
         return null;
     }

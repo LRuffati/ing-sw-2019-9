@@ -69,6 +69,31 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
         return sandbox.tilesSeen(location());
     }
 
+    @Override
+    public HashSet<TileUID> reachableSelector(int min, int max) {
+        return distanceSelector(min, max, true);
+    }
+
+    /**
+     * for the basictarget (reaches () this ) selector
+     * <p>
+     * It should first generate a list of basictargets () distant from this
+     * with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
+     * and then filter the targets by applying the reachedCondition
+     *
+     * @param radius
+     * @return
+     */
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int radius) {
+        return null;
+    }
+
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int min, int max) {
+        return null;
+    }
+
     /**
      * The method used for the "distant [from] this" selector
      *
