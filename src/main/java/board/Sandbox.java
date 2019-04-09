@@ -134,4 +134,8 @@ public class Sandbox {
         return visible;
 
     }
+
+    public Set<TileUID> allTiles(){
+        return new HashSet<TileUID>(tiles.keySet());
+    }
 }

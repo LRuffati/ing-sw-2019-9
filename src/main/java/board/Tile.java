@@ -1,5 +1,4 @@
 package board;
-import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
@@ -119,7 +118,7 @@ public class Tile{
      * @param direction Direction of the asked tile
      * @return Optional is required in case the query is for a logical neighbor and there are none or for any query and the Tile is on the edge of the map
      */
-    protected Optional<TileUID> getNeighbor(Boolean physical, @NotNull Direction direction) {
+    protected Optional<TileUID> getNeighbor(Boolean physical, Direction direction) {
         if(neighbors.containsKey(direction)) {
             return physical ? Optional.of(neighbors.get(direction).physical()) : neighbors.get(direction).logical();
         }

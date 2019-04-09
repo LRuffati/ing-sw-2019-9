@@ -54,7 +54,7 @@ public class Room{
      */
     public Iterator<TileUID> getTilesIterator(){
         Iterator<TileUID> iterator = tiles.iterator();
-        return new Iterator<>() {
+        return new Iterator<TileUID>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
