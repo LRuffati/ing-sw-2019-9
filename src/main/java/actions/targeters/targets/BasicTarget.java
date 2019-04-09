@@ -4,6 +4,8 @@ import actions.targeters.interfaces.SuperTile;
 import actions.targeters.interfaces.TargetedSelector;
 import actions.targeters.interfaces.Visible;
 import board.Sandbox;
+import player.DominationPoint;
+import player.Pawn;
 import uid.DamageableUID;
 import actions.targeters.interfaces.PointLike;
 import uid.RoomUID;
@@ -25,11 +27,36 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
     private final DamageableUID selfUID;
     private TileUID location;
 
-    BasicTarget(Sandbox sandbox, DamageableUID target){
-        location = sandbox.tile(target);
-        this.sandbox = sandbox;
+    BasicTarget(DamageableUID target){
         selfUID = target;
+        sandbox = null;
     }
+
+    BasicTarget(Sandbox sandbox, BasicTarget template){
+        if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
+        else {
+            selfUID = template.selfUID;
+            this.sandbox = sandbox;
+        }
+
+    }
+
+    public static BasicTarget basicFactory(Pawn target){
+        return new BasicTarget(target.damageableUID);
+    }
+
+    public static BasicTarget basicFactory(DominationPoint target){
+        return new DominationPointTarget(target.damageableUID);
+    }
+
+    public static BasicTarget basicFactory(Sandbox sandbox, BasicTarget template){
+        return new BasicTarget(sandbox, template);
+    }
+
+    public static BasicTarget basicFactory(Sandbox sandbox, DominationPointTarget template){
+        return new DominationPointTarget(sandbox, template);
+    }
+
 
     /**
      * @return a list of all Pawns (the actual pawns and the domination points) in the current selection, if the selector primarily identifies tiles return all pawns in those tiles
@@ -67,6 +94,31 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
     @Override
     public Set<TileUID> tilesSeen() {
         return sandbox.tilesSeen(location());
+    }
+
+    @Override
+    public HashSet<TileUID> reachableSelector(int min, int max) {
+        return distanceSelector(min, max, true);
+    }
+
+    /**
+     * for the basictarget (reaches () this ) selector
+     * <p>
+     * It should first generate a list of basictargets () distant from this
+     * with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
+     * and then filter the targets by applying the reachedCondition
+     *
+     * @param radius
+     * @return
+     */
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int radius) {
+        return null;
+    }
+
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int min, int max) {
+        return null;
     }
 
     /**

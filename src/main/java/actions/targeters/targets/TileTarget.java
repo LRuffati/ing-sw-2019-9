@@ -15,10 +15,20 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
     Sandbox sandbox;
     TileUID tileUID;
 
-    TileTarget(Sandbox sandbox, TileUID tileUID){
-        this.sandbox = sandbox;
-        this.tileUID = tileUID;
+    public TileTarget(TileUID id){
+        tileUID = id;
+        sandbox = null;
     }
+
+    public TileTarget(Sandbox sandbox, TileTarget template){
+        if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
+        else {
+            tileUID = template.tileUID;
+            this.sandbox = sandbox;
+        }
+
+    }
+
 
     @Override
     Set<DamageableUID> getSelectedPawns() {
@@ -45,6 +55,26 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
     @Override
     public Set<TileUID> tilesSeen() {
         return sandbox.tilesSeen(location());
+    }
+
+    /**
+     * for the basictarget (reaches () this ) selector
+     * <p>
+     * It should first generate a list of basictargets () distant from this
+     * with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
+     * and then filter the targets by applying the reachedCondition
+     *
+     * @param radius
+     * @return
+     */
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int radius) {
+        return null;
+    }
+
+    @Override
+    public HashSet<DamageableUID> reachedSelector(int min, int max) {
+        return null;
     }
 
     @Override

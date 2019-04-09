@@ -22,6 +22,9 @@ public class PowerUp {
 
     }
 
+    public void useTeleporter(Actor a, Tile t){
+        //Todo: make compatible with just using UIDs
+        // if (a.isTurn()) a.movePlayer(t);
     public void useTeleporter(Actor a, TileUID t){
         if (a.isTurn()) a.movePlayer(t);
     }

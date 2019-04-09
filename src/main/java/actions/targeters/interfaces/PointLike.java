@@ -1,5 +1,6 @@
 package actions.targeters.interfaces;
 
+import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.HashSet;
@@ -39,6 +40,20 @@ public interface PointLike {
         a.removeAll(reachableSelector(min - 1));
         return a;
     }
+
+    /**
+     * for the basictarget (reaches () this ) selector
+     *
+     * It should first generate a list of basictargets () distant from this
+     *      with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
+     *      and then filter the targets by applying the reachedCondition
+     *
+     * @param radius
+     * @return
+     */
+    HashSet<DamageableUID> reachedSelector(int radius);
+
+    HashSet<DamageableUID> reachedSelector(int min, int max);
 
     /**
      * The method used for the "distant [from] this" selector

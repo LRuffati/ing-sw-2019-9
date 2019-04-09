@@ -1,6 +1,12 @@
 package board;
+import java.lang.annotation.Target;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import actions.targeters.targets.BasicTarget;
+import actions.targeters.targets.RoomTarget;
+import actions.targeters.targets.TileTarget;
+import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
@@ -14,15 +20,26 @@ public class GameMap {
      */
     public GameMap(Map<RoomUID,Room> roomUIDMap,
                    Map<TileUID, Tile> tileUIDMap,
-                   Map<Coord, TileUID> position) {
+                   Map<Coord, TileUID> position,
+                   Map<DamageableUID, Pawn> damageableUIDMap) {
+        //TODO fare un vero costruttore
         this.roomUIDMap = roomUIDMap;
         this.tileUIDMap = tileUIDMap;
         this.position = position;
-        //TODO fare un vero costruttore
+        this.damageableUIDMap = damageableUIDMap;
     }
 
-    public GameMap(){
+    public Sandbox createSandbox(){
+        Map<RoomUID, RoomTarget> targetRooms=  roomUIDMap.entrySet().stream()                .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
 
+        Map<TileUID, TileTarget> targetTiles = tileUIDMap.entrySet().stream()                .collect(Collectors.toMap(Map.Entry::getKey, e -> new TileTarget(e.getKey())));
+
+        Map<DamageableUID, BasicTarget> targetPawns = damageableUIDMap.entrySet()
+                .stream().collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> BasicTarget.basicFactory(e.getValue())));
+
+        return new Sandbox(targetRooms,targetTiles,targetPawns, this);
     }
 
     /**
@@ -43,7 +60,7 @@ public class GameMap {
     /**
      * Map between DamageableUID and Damageable Class
      */
-    private Map<DamageableUID, Damageable> damageableUIDMap;
+    private Map<DamageableUID, Pawn> damageableUIDMap;
 
 
     /** Returns the Tile Object given a TileUID
@@ -82,18 +99,6 @@ public class GameMap {
             throw new NoSuchElementException("This Coord does not exists");
     }
 
-    /**
-     * Returns the Room Object given a RoomUI
-     * @param damageableUID damageableUID of the wanted Damageable
-     * @return the Damageable corresponding to the damageableUID
-     * @exception NoSuchElementException If no Damageable is found, an exception is returned
-     */
-    public Damageable getDamageable(DamageableUID damageableUID){
-        if(damageableUIDMap.containsKey(damageableUID))
-            return damageableUIDMap.get(damageableUID);
-        else
-            throw new NoSuchElementException("This damageableUID does not exists");
-    }
 
     /**
      * Returns the neighbors of the cell
@@ -145,6 +150,3 @@ public class GameMap {
     }
 
 }
-
-//TODO Add a Damageable Class and remove this one
-class Damageable{}
