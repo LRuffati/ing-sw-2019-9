@@ -4,6 +4,7 @@ import uid.TileUID;
 
 import java.awt.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -44,14 +45,14 @@ public class Room{
     /**
      * @return The color used to identify the room
      */
-    protected Color getColor(){
+    public Color getColor(){
         return color;
     }
 
     /**
      * @return An iterator that allow to access to the Tiles in the room. Remove() launch an UnsupportedOperationException is called
      */
-    protected Iterator<TileUID> getTilesIterator(){
+    public Iterator<TileUID> getTilesIterator(){
         Iterator<TileUID> iterator = tiles.iterator();
         return new Iterator<>() {
             @Override
@@ -74,7 +75,7 @@ public class Room{
     /**
      * @return A collection containing all the Tiles in the room
      */
-    protected Collection<TileUID> getTiles(){
-        return tiles;
+    public Collection<TileUID> getTiles(){
+        return new HashSet<>(tiles);
     }
 }
