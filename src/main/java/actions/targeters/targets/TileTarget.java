@@ -3,10 +3,8 @@ package actions.targeters.targets;
 import actions.targeters.interfaces.*;
 import board.Sandbox;
 import uid.DamageableUID;
-import uid.RoomUID;
 import uid.TileUID;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,12 +29,12 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
 
 
     @Override
-    Set<DamageableUID> getSelectedPawns() {
+    public Set<DamageableUID> getSelectedPawns() {
         return new HashSet<>(sandbox.containedPawns(tileUID));
     }
 
     @Override
-    Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles() {
         Set<TileUID> ret = new HashSet<>();
         ret.add(tileUID);
         return ret;

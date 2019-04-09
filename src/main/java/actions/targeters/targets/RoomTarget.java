@@ -30,7 +30,7 @@ public class RoomTarget extends Targetable implements Visible, HavingPointLike, 
     }
 
     @Override
-    Set<DamageableUID> getSelectedPawns() {
+    public Set<DamageableUID> getSelectedPawns() {
         Set<DamageableUID> retVal = new HashSet<>();
         for (TileUID i: sandbox.tilesInRoom(roomid)){
             retVal.addAll(sandbox.containedPawns(i));
@@ -39,7 +39,7 @@ public class RoomTarget extends Targetable implements Visible, HavingPointLike, 
     }
 
     @Override
-    Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles() {
         return new HashSet<>(sandbox.tilesInRoom(roomid));
     }
 

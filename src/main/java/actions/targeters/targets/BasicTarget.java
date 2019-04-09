@@ -8,7 +8,6 @@ import player.DominationPoint;
 import player.Pawn;
 import uid.DamageableUID;
 import actions.targeters.interfaces.PointLike;
-import uid.RoomUID;
 import uid.TileUID;
 
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      * @return a list of all Pawns (the actual pawns and the domination points) in the current selection, if the selector primarily identifies tiles return all pawns in those tiles
      */
     @Override
-    Set<DamageableUID> getSelectedPawns() {
+    public Set<DamageableUID> getSelectedPawns() {
         Collection<DamageableUID> retVal = new ArrayList<>();
         retVal.add(selfUID);
         return new HashSet<>(retVal);
@@ -72,7 +71,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      * @return a list of all Tiles in or occupied by elements of the Target
      */
     @Override
-    Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles() {
         Collection<TileUID> tiles = new ArrayList<>();
         tiles.add(location());
         return new HashSet<>(tiles);

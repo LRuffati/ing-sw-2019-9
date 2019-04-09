@@ -13,11 +13,11 @@ public abstract class Targetable {
      *
      * @return a list of all Pawns (the actual pawns and the domination points) in the current selection, if the selector primarily identifies tiles return all pawns in those tiles
      */
-    abstract Set<DamageableUID> getSelectedPawns();
+    public abstract Set<DamageableUID> getSelectedPawns();
 
     /**
      *
      * @return a list of all Tiles in or occupied by elements of the Target
      */
-    abstract Set<TileUID> getSelectedTiles();
+    public abstract Set<TileUID> getSelectedTiles();
 }

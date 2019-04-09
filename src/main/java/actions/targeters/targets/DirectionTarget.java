@@ -33,7 +33,7 @@ public class DirectionTarget extends Targetable implements SuperTile, HavingPoin
     }
 
     @Override
-    Set<DamageableUID> getSelectedPawns() {
+    public Set<DamageableUID> getSelectedPawns() {
         Set<DamageableUID> allPawns = new HashSet<>();
         for (TileUID i: tiles){
             allPawns.addAll(sandbox.containedPawns(i));
@@ -42,7 +42,7 @@ public class DirectionTarget extends Targetable implements SuperTile, HavingPoin
     }
 
     @Override
-    Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles() {
         return new HashSet<>(tiles);
     }
 
