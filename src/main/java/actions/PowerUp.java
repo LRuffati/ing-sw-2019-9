@@ -27,7 +27,7 @@ public class PowerUp {
         // if (a.isTurn()) a.movePlayer(t);
     }
     public void useTeleporter(Actor a, TileUID t){
-        if (a.isTurn()) a.movePlayer(t);
+        if (a.isTurn()) a.getPawn().move(t);
     }
 
     public void useTagbackGranade(Actor a, Actor target){

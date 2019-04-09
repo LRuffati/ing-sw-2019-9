@@ -63,14 +63,14 @@ public class Actor {
      * If it is then makes the player choose what weapon discard.
      * @param item is the grabbable picked up by the player.
      */
-    public void pickUp(GrabbableUID item, Optional<TileUID> tileToMove){
+    public void pickUp(GrabbableUID item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
         //TODO check validity.
         //if(tileToMove.isPresent() && steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t))
         Tile pos = gm.getTile(this.pawn.getTile());
         Collection<GrabbableUID> gr = pos.getGrabbable();
         if(gr.contains(item)){
-            if(weapons.size() >= 3){
-                removeWeapon();
+            if(weapons.size() >= 3 && wToRemove.isPresent()){
+                removeWeapon(wToRemove.get());
             }
             pos.pickUpGrabbable(item);
             //weapon.add(item);
