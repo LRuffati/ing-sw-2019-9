@@ -1,6 +1,7 @@
 package player;
 
 import actions.PowerUp;
+import board.GameMap;
 import grabbables.Weapon;
 import board.Tile;
 import uid.DamageableUID;
@@ -9,6 +10,7 @@ import uid.TileUID;
 
 import java.util.Collection;
 import java.util.Dictionary;
+import java.util.Optional;
 
 /**
  * The class Actor implements the status of the player in the game.
@@ -26,12 +28,13 @@ public class Actor {
     private Boolean frenzy;
     //private ActionBoard actionBoard;
     private Boolean turn;
+    private GameMap gm;
 
     /**
      * The constructor assigns null points and deaths counter and bind a new pawn to the player. It checks if it's the
      * starting player.
      */
-    public Actor(){
+    public Actor(GameMap map){
         this.points = 0;
         this.numOfDeaths = 0;
         this.pawn = new Pawn();
@@ -40,15 +43,18 @@ public class Actor {
         this.weapons = null; //TODO Weapon constructor.
         this.frenzy = false;
         this.marks = null;
+        this.gm = map;
     }
 
     /**
+     * This method implements the first phase of a player turn.
      * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
-     * @param t is the Tile where the player is trying to move to.
+     * @param t is the Tile id where the player is trying to move to.
      */
-    public void movePlayer(TileUID t){
-        //TODO check validity.
-        pawn.move(t);
+    public void movePlayer(TileUID t, int steps){
+        if(steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t)){
+            pawn.move(t);
+        }
     }
 
     /**
@@ -57,14 +63,43 @@ public class Actor {
      * If it is then makes the player choose what weapon discard.
      * @param item is the grabbable picked up by the player.
      */
-    public void pickUp(GrabbableUID item){
+    public void pickUp(GrabbableUID item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
         //TODO check validity.
+        //if(tileToMove.isPresent() && steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t))
+        Tile pos = gm.getTile(this.pawn.getTile());
+        Collection<GrabbableUID> gr = pos.getGrabbable();
+        if(gr.contains(item)){
+            if(weapons.size() >= 3 && wToRemove.isPresent()){
+                removeWeapon(wToRemove.get());
+            }
+            pos.pickUpGrabbable(item);
+            //weapon.add(item);
+        }
     }
 
     /**
-     * Select from the weapon owned which to discard and remove from the actual game.
+     * Check if the weapon is owned by the player, then remove it permanently from the actual game.
+     * @param w is the weapon to be discarded.
      */
-    public void removeWeapon(){
+    public void removeWeapon(Weapon w){
+        if(weapons.contains(w)) weapons.remove(w);
+    }
+
+    /**
+     * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
+     * @param w is the weapon to be reloaded.
+     */
+    /*public void reloadWeapon(Weapon w){
+        if(weapons.contains(w)){
+            w.reloaded = true;
+            //TODO Ammo management.
+        }
+    }
+    */
+    /**
+     * Add to the @points attribute the points gain from a kill.
+     */
+    public void score(){
         //TODO
     }
 
