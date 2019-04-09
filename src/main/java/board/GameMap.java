@@ -12,7 +12,9 @@ public class GameMap {
     /**
      * Default constructor
      */
-    public GameMap(Map<RoomUID,Room> roomUIDMap, Map<TileUID, Tile> tileUIDMap, Map<Coord, TileUID> position) {
+    public GameMap(Map<RoomUID,Room> roomUIDMap,
+                   Map<TileUID, Tile> tileUIDMap,
+                   Map<Coord, TileUID> position) {
         this.roomUIDMap = roomUIDMap;
         this.tileUIDMap = tileUIDMap;
         this.position = position;

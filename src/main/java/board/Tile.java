@@ -55,12 +55,12 @@ public class Tile{
     /**
      * List of Grabbable elements (Weapon, TileCard)
      */
-    private List<GrabbableUID> grabbable;
+    private Set<GrabbableUID> grabbable;
 
     /**
      * List of Damageable units in the Tile
      */
-    private List<DamageableUID> damageable;
+    private Set<DamageableUID> damageable;
 
     /**
      * Reference of the global map
@@ -85,7 +85,7 @@ public class Tile{
      * If range is 0 the correct behaviour is to return this.tileID
      * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
      */
-    protected Set<TileUID> getSurroundings(Boolean physical, Integer range) {
+    public Set<TileUID> getSurroundings(Boolean physical, Integer range) {
         Set<TileUID> ret = new HashSet<>(4*range+1);
         Set<TileUID> border = new HashSet<>();
         Set<TileUID> newBorder = new HashSet<>();
@@ -134,7 +134,7 @@ public class Tile{
      * @param physical True to pass through walls, False to only follow traversable links
      * @return The Collection is ordered from closest (always the current cell) to farthest
      */
-    protected List<TileUID> getDirection(Boolean physical, Direction direction) {
+    public List<TileUID> getDirection(Boolean physical, Direction direction) {
         List<TileUID> ret = new ArrayList<>();
         ret.add(tileID);
         Optional<TileUID> t = getNeighbor(physical, direction);
@@ -145,28 +145,28 @@ public class Tile{
         return ret;
     }
 
-    /** Returns a List containing all the Grabbable elements in this Tile
+    /** Returns a Set containing all the Grabbable elements in this Tile
      *
-     * @return A List containing all the Grabbable elements
+     * @return A Set containing all the Grabbable elements
      */
-    public List<GrabbableUID> getGrabbable(){
-        return grabbable;
+    public Set<GrabbableUID> getGrabbable(){
+        return new HashSet<>(grabbable);
     }
 
     /**
      * Adds a Grabbable elements in this Tile
      * @param grabbableID The identifier of the grabbable item
      */
-    protected void addGrabbable(GrabbableUID grabbableID){
+    public void addGrabbable(GrabbableUID grabbableID){
         this.grabbable.add(grabbableID);
     }
 
     /**
-     * Removes the element from the Grabbable List. If there is not this element, throws a NoSuchElementException
+     * Removes the element from the Grabbable set. If there is not this element, throws a NoSuchElementException
      * @param grabbableID The identifier of the grabbable item
      * @throws NoSuchElementException If this GrabbableUID is not found, an exception is returned
      */
-    protected void pickUpGrabbable(GrabbableUID grabbableID) {
+    public void pickUpGrabbable(GrabbableUID grabbableID) {
         if(grabbable.contains(grabbableID))
             grabbable.remove(grabbableID);
         else
@@ -177,7 +177,7 @@ public class Tile{
      * Returns the color of the Room
      * @return Returns the color of the Room
      */
-    protected Color getColor(){
+    public Color getColor(){
         return map.getRoom(roomID).getColor();
     }
 
@@ -198,7 +198,7 @@ public class Tile{
      * Finds all the Tiles that are visible from itself
      * @return A Set containing all the visible Tiles
      */
-    protected Set<TileUID> getVisible(){
+    public Set<TileUID> getVisible(){
         Set<TileUID> ret = new HashSet<>();
         Set<TileUID> surr = getSurroundings(true, 1);
         for(TileUID t : surr){
@@ -216,7 +216,7 @@ public class Tile{
      * @return A collections containing the DamageableUID in the tile
      */
     public Collection<DamageableUID> getDamageable(){
-        return damageable;
+        return new HashSet<>(damageable);
     }
 
     /**
@@ -228,11 +228,23 @@ public class Tile{
     }
 
     /**
+     * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
+     * @param damageableID The identifier of the damageable item
+     * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
+     */
+    public void removeDamageable(DamageableUID damageableID) {
+        if(damageable.contains(damageableID))
+            damageable.remove(damageableID);
+        else
+            throw new NoSuchElementException("This GrabbableID is not in this Tile");
+    }
+
+    /**
      * Returns a Map containing surrounding Tiles. If there is no Tile, the corresponding direction is not present in the Map
      * @param physical true to check through walls, false otherwise
      * @return A Map containing surrounding Tiles
      */
-    protected Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
+    public Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
         Map<Direction, TileUID> ret = new EnumMap<>(Direction.class);
         Optional<TileUID> t;
         for( Direction d : neighbors.keySet()){

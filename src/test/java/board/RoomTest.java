@@ -6,6 +6,7 @@ import uid.RoomUID;
 import uid.TileUID;
 
 import java.awt.*;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -14,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RoomTest {
 
-    HashSet<TileUID> tiles = new HashSet<>();
-    Color color;
+    private HashSet<TileUID> tiles = new HashSet<>();
+    private Color color;
     @BeforeEach
     void setUp() {
         tiles.add(new TileUID());
@@ -27,10 +28,6 @@ class RoomTest {
         color = new Color(10,10,10);
     }
 
-    void initColor(){
-
-    }
-
     @Test
     void testColor(){
         Room room = new Room(new RoomUID(), tiles, color);
@@ -40,17 +37,20 @@ class RoomTest {
     @Test
     void testGetTilesNotEmpty(){
         Room room = new Room(new RoomUID(), tiles, color);
-        Iterator<TileUID> i = room.getTiles();
+        Iterator<TileUID> i = room.getTilesIterator();
         while(i.hasNext()) {
             TileUID tile = i.next();
             assertTrue(tiles.contains(tile));
         }
+
+        Collection<TileUID> c = room.getTiles();
+        assertEquals(c.size(), tiles.size());
     }
 
     @Test
     void testGetTilesEmpty(){
         Room room = new Room(new RoomUID(), new HashSet<>(), color);
-        Iterator<TileUID> i = room.getTiles();
+        Iterator<TileUID> i = room.getTilesIterator();
         while(i.hasNext()) {
             assertTrue(tiles.contains(i.next()));
         }
@@ -59,7 +59,7 @@ class RoomTest {
     @Test
     void removeItemFromIterator(){
         Room room = new Room(new RoomUID(), tiles, color);
-        Iterator<TileUID> i = room.getTiles();
+        Iterator<TileUID> i = room.getTilesIterator();
         assertThrows(UnsupportedOperationException.class , i::remove);
         int c = 0;
         while(i.hasNext()) {
