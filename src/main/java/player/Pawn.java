@@ -54,4 +54,8 @@ public class Pawn {
     public void removeFromMap(){
         this.tile = null;
     }
+
+    public Actor getActor() {
+        return a;
+    }
 }

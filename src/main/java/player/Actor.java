@@ -89,13 +89,13 @@ public class Actor {
      * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
      * @param w is the weapon to be reloaded.
      */
-    public void reloadWeapon(Weapon w){
+    /*public void reloadWeapon(Weapon w){
         if(weapons.contains(w)){
             w.reloaded = true;
             //TODO Ammo management.
         }
     }
-
+    */
     /**
      * Add to the @points attribute the points gain from a kill.
      */

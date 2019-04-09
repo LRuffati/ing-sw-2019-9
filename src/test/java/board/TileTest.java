@@ -75,7 +75,7 @@ class TileTest {
         Map<RoomUID, Room> roomUIDMap = Map.of(room, new Room(room, Set.of(thisTile, tUp, tDown, tLeft, tRight),
                                                                                 new Color(255,255,255)));
 
-        map = new GameMap(roomUIDMap, tileUIDMap, null);
+        map = new GameMap(roomUIDMap, tileUIDMap, null, null);
 
         tileUp.setMap(map);        tileDown.setMap(map);        tileLeft.setMap(map);        tileRight.setMap(map);
         tile.setMap(map);
@@ -165,7 +165,7 @@ class TileTest {
     @Test
     void testVarious(){
         //testSetMap
-        GameMap m = new GameMap(null, null, null);
+        GameMap m = new GameMap(null, null, null, null);
         assertThrows(NoSuchElementException.class , () -> m.getTile(thisTile));
         //testColor
         assertEquals(new Color(255,255,255) , tile.getColor());
