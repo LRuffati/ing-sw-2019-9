@@ -9,6 +9,6 @@ public class WeaponUID {
     }
 
     public boolean equals(WeaponUID t){
-        return super.equals(t);
+        return weaponUID.equals(t.weaponUID);
     }
 }

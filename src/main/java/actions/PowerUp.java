@@ -6,6 +6,7 @@ import board.Direction;
 import player.Actor;
 import uid.PowerUpUID;
 import board.Tile;
+import uid.TileUID;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,7 @@ public class PowerUp {
 
     }
 
-    public void useTeleporter(Actor a, Tile t){
+    public void useTeleporter(Actor a, TileUID t){
         if (a.isTurn()) a.movePlayer(t);
     }
 

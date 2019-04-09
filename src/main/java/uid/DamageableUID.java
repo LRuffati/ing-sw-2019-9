@@ -10,6 +10,6 @@ public class DamageableUID {
     }
 
     public boolean equals(DamageableUID t){
-        return super.equals(t);
+        return damageableUID.equals(t.damageableUID);
     }
 }

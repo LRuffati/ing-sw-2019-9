@@ -9,6 +9,6 @@ public class PowerUpUID {
     }
 
     public boolean equals(PowerUpUID t){
-        return super.equals(t);
+        return powerUpUID.equals(t.powerUpUID);
     }
 }

@@ -2,6 +2,7 @@ package uid;
 
 
 import board.Tile;
+import org.jetbrains.annotations.NotNull;
 
 import java.rmi.server.UID;
 
@@ -12,7 +13,7 @@ public class TileUID {
         this.tileUID = new UID();
     }
 
-    public boolean equals(TileUID t){
-        return super.equals(t);
+    public Boolean equals(@NotNull TileUID t){
+        return tileUID.equals(t.tileUID);
     }
 }
