@@ -1,17 +1,31 @@
 package board;
 
+import actions.targeters.targets.BasicTarget;
+import actions.targeters.targets.RoomTarget;
+import actions.targeters.targets.TileTarget;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Sandbox {
 
-    Sandbox(GameMap original){
+    private final Map<RoomUID, RoomTarget> rooms;
+    private final Map<TileUID, TileTarget> tiles;
+    private final Map<DamageableUID, BasicTarget> pawns;
+    private final GameMap map;
+
+    Sandbox(Map<RoomUID, RoomTarget> rooms, Map<TileUID, TileTarget> tiles, Map<DamageableUID, BasicTarget> pawns, GameMap map){
+
+        this.rooms = rooms;
+        this.tiles = tiles;
+        this.pawns = pawns.entrySet()
+                .stream().collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> BasicTarget.basicFactory(this, e.getValue())));
+        this.map = map;
     }
 
     /**
@@ -21,7 +35,7 @@ public class Sandbox {
      * @return A map of neighboring TileUIDs paired with the direction
      */
     public Map<Direction, TileUID> neighbors(TileUID tile, boolean logical){
-        return null;
+        return map.neighbors(tile, logical);
     }
 
     /**
@@ -64,7 +78,8 @@ public class Sandbox {
      * @return
      */
     public Collection<DamageableUID> containedPawns(TileUID tile){
-        return null;
+        return pawns.entrySet()
+                .stream().filter((i)-> i.getValue().location() == tile).map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -73,7 +88,7 @@ public class Sandbox {
      * @return
      */
     public RoomUID room(TileUID tile){
-        return null;
+        return map.room(tile);
     }
 
     /**
@@ -82,7 +97,7 @@ public class Sandbox {
      * @return
      */
     public RoomUID room(DamageableUID pawn){
-        return null;
+        return map.room(pawns.get(pawn).location());
     }
 
     /**
@@ -90,7 +105,7 @@ public class Sandbox {
      * @return the room containing the pawn
      */
     public TileUID tile(DamageableUID pawn){
-        return null;
+        return pawns.get(pawn).location();
     }
 
     /**
@@ -99,7 +114,7 @@ public class Sandbox {
      * @return All the tiles in the room
      */
     public Collection<TileUID> tilesInRoom(RoomUID room){
-        return null;
+        return map.tilesInRoom(room);
     }
 
     public Set<TileUID> tilesSeen(TileUID source){

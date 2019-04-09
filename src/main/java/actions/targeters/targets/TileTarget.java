@@ -15,10 +15,20 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
     Sandbox sandbox;
     TileUID tileUID;
 
-    TileTarget(Sandbox sandbox, TileUID tileUID){
-        this.sandbox = sandbox;
-        this.tileUID = tileUID;
+    public TileTarget(TileUID id){
+        tileUID = id;
+        sandbox = null;
     }
+
+    public TileTarget(Sandbox sandbox, TileTarget template){
+        if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
+        else {
+            tileUID = template.tileUID;
+            this.sandbox = sandbox;
+        }
+
+    }
+
 
     @Override
     Set<DamageableUID> getSelectedPawns() {

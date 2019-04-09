@@ -15,9 +15,18 @@ import java.util.Set;
 public class RoomTarget extends Targetable implements Visible, HavingPointLike, SuperTile {
     private final Sandbox sandbox;
     private final RoomUID roomid;
-    RoomTarget(Sandbox sandbox, RoomUID id){
-        this.sandbox = sandbox;
+    public RoomTarget(RoomUID id){
         roomid = id;
+        sandbox = null;
+    }
+
+    public RoomTarget(Sandbox sandbox, RoomTarget template){
+        if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
+        else {
+            roomid = template.roomid;
+            this.sandbox = sandbox;
+        }
+
     }
 
     @Override

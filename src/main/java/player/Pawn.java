@@ -11,7 +11,7 @@ import uid.TileUID;
 
 public class Pawn {
     private TileUID tile;
-    private DamageableUID damageableUID;
+    public final DamageableUID damageableUID;
     private Actor a;
 
     /**
