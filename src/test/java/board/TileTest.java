@@ -108,7 +108,7 @@ class TileTest {
     }
 
     @Test
-    void testgetMapOfNeighbor(){
+    void testGetMapOfNeighbor(){
         Map<Direction, TileUID> m;
         m = tile.getMapOfNeighbor(true);
         for(Direction d : m.keySet()){
@@ -120,8 +120,8 @@ class TileTest {
         }
 
         final Map<Direction, TileUID> m1 = m;
-        assertThrows(NoSuchElementException.class , () -> m1.get(Direction.DOWN));
-        assertThrows(NoSuchElementException.class , () -> m1.get(Direction.LEFT));
+        assertEquals(null , m1.get(Direction.DOWN));
+        assertEquals(null , m1.get(Direction.LEFT));
     }
 
     @Test
@@ -139,7 +139,7 @@ class TileTest {
         assertFalse(g.isEmpty());
         assertEquals(g, tile.getGrabbable());
         tile.pickUpGrabbable(g1);
-        assertTrue(g.isEmpty());
+        assertTrue(tile.getGrabbable().isEmpty());
         assertEquals(new HashSet<>() , tile.getGrabbable());
     }
 
@@ -158,15 +158,12 @@ class TileTest {
         assertFalse(g.isEmpty());
         assertEquals(g, tile.getDamageable());
         tile.removeDamageable(g1);
-        assertTrue(g.isEmpty());
+        assertTrue(tile.getDamageable().isEmpty());
         assertEquals(new HashSet<>() , tile.getDamageable());
     }
 
     @Test
     void testVarious(){
-        //testSetMap
-        GameMap m = new GameMap(null, null, null, null);
-        assertThrows(NoSuchElementException.class , () -> m.getTile(thisTile));
         //testColor
         assertEquals(new Color(255,255,255) , tile.getColor());
         //testRoom
@@ -175,20 +172,23 @@ class TileTest {
 
     @Test
     void testGetSurroundings(){
-        assertTrue(true);
-        //TODO
+        assertEquals(tile.getSurroundings(true, 5) , tile.getSurroundings(true, 1));
+        assertEquals(1 , tile.getSurroundings(true, 0).size());
+        assertTrue(tile.getSurroundings(true, -3).isEmpty());
     }
 
     @Test
     void testgetDirection(){
-        assertTrue(true);
-        //TODO
+        assertTrue(tile.getDirection(true, Direction.UP).containsAll(Set.of(thisTile, tUp)));
+        assertTrue(tile.getDirection(false, Direction.RIGHT).containsAll(Set.of(thisTile, tRight)));
+        assertEquals(1 , tile.getDirection(true, Direction.DOWN).size());
+        assertEquals(2 , tile.getDirection(true, Direction.LEFT).size());
+        assertEquals(1 , tile.getDirection(false, Direction.LEFT).size());
     }
 
     @Test
     void testgetVisible(){
-        assertTrue(true);
-        //TODO
+        assertEquals(5 , tile.getVisible().size());
     }
 
 
