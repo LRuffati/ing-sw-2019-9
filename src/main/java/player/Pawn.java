@@ -12,14 +12,19 @@ import uid.TileUID;
 public class Pawn {
     private TileUID tile;
     public final DamageableUID damageableUID;
-    private Actor a;
+    private Actor actor;
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
      * as UID.
      */
+    public Pawn(Actor actor, DamageableUID damageableUID, TileUID position){
+        this.tile = position;
+        this.damageableUID = damageableUID;
+        this.actor = actor;
+    }
+
     public Pawn(){
-        this.tile = new TileUID();
         this.damageableUID = new DamageableUID();
     }
 
@@ -29,7 +34,7 @@ public class Pawn {
      */
     //TODO Write the AlreadyBoundedActor exception.
     protected void setBinding(Actor player){
-        if(a == null && player.getPawn().a == null) this.a = player;
+        if(actor == null && player.getPawn().actor == null) this.actor = player;
     }
 
     /**
@@ -56,6 +61,6 @@ public class Pawn {
     }
 
     public Actor getActor() {
-        return a;
+        return actor;
     }
 }

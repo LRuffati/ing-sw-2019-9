@@ -1,7 +1,6 @@
 package actions.targeters.targets;
 
 import board.Sandbox;
-import player.DominationPoint;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -9,8 +8,8 @@ import java.util.HashSet;
 
 public class DominationPointTarget extends BasicTarget {
 
-    DominationPointTarget(DamageableUID target) {
-        super(target);
+    DominationPointTarget(DamageableUID target, TileUID initialPosition) {
+        super(target, initialPosition);
     }
 
     DominationPointTarget(Sandbox sandbox, BasicTarget template) {

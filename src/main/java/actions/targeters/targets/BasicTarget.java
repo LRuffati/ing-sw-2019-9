@@ -26,9 +26,10 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
     private final DamageableUID selfUID;
     private TileUID location;
 
-    BasicTarget(DamageableUID target){
+    BasicTarget(DamageableUID target, TileUID initialPosition){
         selfUID = target;
         sandbox = null;
+        location = initialPosition;
     }
 
     BasicTarget(Sandbox sandbox, BasicTarget template){
@@ -41,11 +42,11 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
     }
 
     public static BasicTarget basicFactory(Pawn target){
-        return new BasicTarget(target.damageableUID);
+        return new BasicTarget(target.damageableUID, target.getTile());
     }
 
     public static BasicTarget basicFactory(DominationPoint target){
-        return new DominationPointTarget(target.damageableUID);
+        return new DominationPointTarget(target.damageableUID, target.getTile());
     }
 
     public static BasicTarget basicFactory(Sandbox sandbox, BasicTarget template){
