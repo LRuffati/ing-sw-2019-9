@@ -25,13 +25,9 @@ public class Tile{
         this.roomID = roomID;
         this.tileID = tileID;
         this.neighbors = neighbors;
-    }
 
-    public Tile(){
-        roomID = null;
-        neighbors = null;
-        tileID = null;
-        map = null;
+        damageable = new HashSet<>();
+        grabbable = new HashSet<>();
     }
 
     /**
@@ -82,12 +78,14 @@ public class Tile{
      * The function will return **all** cells at a distance less or equal this parameter
      *
      * If range is 0 the correct behaviour is to return this.tileID
+     * If less than 0 return an empty set
      * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
      */
     public Set<TileUID> getSurroundings(Boolean physical, Integer range) {
-        Set<TileUID> ret = new HashSet<>(4*range+1);
+        Set<TileUID> ret = new HashSet<>();
         Set<TileUID> border = new HashSet<>();
         Set<TileUID> newBorder = new HashSet<>();
+        if(range < 0) return ret;
         ret.add(this.tileID);
         border.add(this.tileID);
         for(int i=0; i<range; i++) {
@@ -138,7 +136,7 @@ public class Tile{
         ret.add(tileID);
         Optional<TileUID> t = getNeighbor(physical, direction);
         while(t.isPresent()) {
-            ret.add(tileID);
+            ret.add(t.get());
             t = map.getTile(t.get()).getNeighbor(physical, direction);
         }
         return ret;

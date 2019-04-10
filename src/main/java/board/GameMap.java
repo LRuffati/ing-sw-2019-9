@@ -30,9 +30,11 @@ public class GameMap {
     }
 
     public Sandbox createSandbox(){
-        Map<RoomUID, RoomTarget> targetRooms=  roomUIDMap.entrySet().stream()                .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
+        Map<RoomUID, RoomTarget> targetRooms=  roomUIDMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
 
-        Map<TileUID, TileTarget> targetTiles = tileUIDMap.entrySet().stream()                .collect(Collectors.toMap(Map.Entry::getKey, e -> new TileTarget(e.getKey())));
+        Map<TileUID, TileTarget> targetTiles = tileUIDMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> new TileTarget(e.getKey())));
 
         Map<DamageableUID, BasicTarget> targetPawns = damageableUIDMap.entrySet()
                 .stream().collect(Collectors.toMap(
@@ -87,11 +89,24 @@ public class GameMap {
             throw new NoSuchElementException("This RoomUID does not exists");
     }
 
+    /** Returns the Damageable Object given a DamageableUID
+     * @param damageableUID DamageableUID of the wanted Damageable
+     * @return the Damageable corresponding to the DamageableUID
+     * @exception NoSuchElementException If no Damageable is found, an exception is returned
+     */
+    public Pawn getDamageable(DamageableUID damageableUID) {
+        if(damageableUIDMap.containsKey(damageableUID))
+            return damageableUIDMap.get(damageableUID);
+        else
+            throw new NoSuchElementException("This RoomUID does not exists");
+    }
+
     /** Returns the TileUID Object given a Coordinate
      * @param coord Coordinate of the wanted Tile. Upper left Tile has Coord = (0,0)
      * @return the TileUID corresponding to the Coordinate. If no Tile is found, an empty Optional is returned
      * @exception NoSuchElementException If no Coord is found, an exception is returned
      */
+    //TODO check if this method is correct or necessary. Probably incorrect, maybe unnecessary
     public TileUID getPosition(Coord coord) {
         if(position.containsKey(coord))
             return position.get(coord);
