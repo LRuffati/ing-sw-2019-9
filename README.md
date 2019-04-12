@@ -8,7 +8,7 @@
 
 # Homework
 
-## Per 09/04
+## Per 30/04
 + Finire il codice per il Model e parte del Controller
 + Iniziare la parte di Server e la parte di Client (eg. CLI e/o GUI) che gestiscono la comunicazione (e.g. ricezione e invio di messaggi; chiamate a funzioni in remoto; serializzazione di oggetti; etc.) con Socket e/o RMI
 + Esempio effetti armi con lambdas: un approccio per evitare di avere una miriade di classi con comportamenti hard coded è creare la descrizione degli elementi elementari (eg. gli effetti delle armi) usando JSON/XML e applicare lambdas. Un semplice esempio condiviso anche su piazza si trova al link: https://github.com/ingconti/EffectsUsingLambdas 
