@@ -9,8 +9,10 @@
 # Homework
 
 ## Per 09/04
-+ Suggerimento: disegnare un Finite State Diagram per modellare tutti i possibili stati all’interno di un turno e gli eventi (o azioni) che portano da uno stato all’altro.
-
-+ Completare l’UML ad alto livello (se non fatto in precedenza).
-
-+ Scrivere codice per (almeno) il Model (e.g. almeno tutti i dati che indicano lo stato di gioco di una qualsiasi partita in un singolo istante) con relativi test JUnit e documentazione Javadoc (vedere come scrivere la documentazione qui: https://www.oracle.com/technetwork/java/javase/tech/index-137868.html)
++ Finire il codice per il Model e parte del Controller
++ Iniziare la parte di Server e la parte di Client (eg. CLI e/o GUI) che gestiscono la comunicazione (e.g. ricezione e invio di messaggi; chiamate a funzioni in remoto; serializzazione di oggetti; etc.) con Socket e/o RMI
++ Esempio effetti armi con lambdas: un approccio per evitare di avere una miriade di classi con comportamenti hard coded è creare la descrizione degli elementi elementari (eg. gli effetti delle armi) usando JSON/XML e applicare lambdas. Un semplice esempio condiviso anche su piazza si trova al link: https://github.com/ingconti/EffectsUsingLambdas 
++ Test di metodi che lanciano eccezioni: per testare metodi che lanciano eccezioni vi consiglio di seguire questi due link (usate il modo “nativo”, senza Hamcrest o AssertJ):
+https://blog.goyello.com/2015/10/01/different-ways-of-testing-exceptions-in-java-and-junit/
+https://blog.codeleak.pl/2014/07/junit-testing-exception-with-java-8-and-lambda-expressions.html
+Talvolta Sonar e IntelliJ non riescono a calcolare correttamente la coverage nei metodi che lanciano eccezioni, ma non preoccupatevi. 
