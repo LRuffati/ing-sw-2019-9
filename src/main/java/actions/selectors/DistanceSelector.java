@@ -13,20 +13,17 @@ import java.util.stream.Stream;
  * (distant () pointlike
  */
 public class DistanceSelector implements  Selector{
-    private final Function<TileUID, Stream<Targetable>> function;
     private final int min;
     private final int max;
     private final boolean logical;
 
-    DistanceSelector(Function<TileUID, Stream<Targetable>> function, int min, int max, boolean logical){
-
-        this.function = function;
+    DistanceSelector(int min, int max, boolean logical){
         this.min = min;
         this.max = max;
         this.logical = logical;
     }
 
-    Collection<Targetable> select(PointLike sourceTarget) {
+    Collection<Targetable> select(PointLike sourceTarget, Function<TileUID, Stream<Targetable>> function) {
         return sourceTarget.distanceSelector(min,max,logical).stream().flatMap(function).collect(Collectors.toSet());
     }
 }

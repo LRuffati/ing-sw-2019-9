@@ -1,12 +1,14 @@
 package actions.targeters.interfaces;
 
+import actions.targeters.targets.Targetable;
+
 /**
  * This interface models the conditions:
  *  + Reachable     targetName TargetedSelector (& [not] reached (min,max) PointLike)
  *  + Distant       targetName TargetedSelector (& [not] distant (min,max) PointLike)
  *  + Contained     targetName TargetedSelector (& [not] in SuperTile)
  */
-public interface TargetedSelector {
+public interface TargetedSelector extends Targetable {
     /**
      * @param min the minimum included distance (0 includes the current tile, negative values return an empty set
      * @param max the maximum included distance

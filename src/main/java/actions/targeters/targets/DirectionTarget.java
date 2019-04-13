@@ -9,19 +9,16 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class DirectionTarget extends Targetable implements SuperTile, HavingPointLike {
-    List<TileUID> tiles;
-    final TileUID source;
-    final Direction dir;
-    final Sandbox sandbox;
+public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
+    private List<TileUID> tiles;
+    private final Sandbox sandbox;
 
-    DirectionTarget(Sandbox sandbox, TileUID origin, Direction direction, boolean logical){
+    public DirectionTarget(Sandbox sandbox, TileUID origin, Direction direction, boolean logical){
         tiles = new ArrayList<>();
         tiles.add(origin);
-
-        source = origin;
-        dir = direction;
 
         Map<Direction, TileUID> next = sandbox.neighbors(origin, logical);
         while (next.containsKey(direction)){
@@ -44,6 +41,14 @@ public class DirectionTarget extends Targetable implements SuperTile, HavingPoin
     @Override
     public Set<TileUID> getSelectedTiles() {
         return new HashSet<>(tiles);
+    }
+
+    /**
+     * @return the sandbox containing the target
+     */
+    @Override
+    public Sandbox getSandbox() {
+        return sandbox;
     }
 
     @Override

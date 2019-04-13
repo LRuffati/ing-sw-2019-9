@@ -15,13 +15,10 @@ import java.util.stream.Stream;
  */
 public class HasSelector implements Selector {
 
-    private final Function<TileUID, Stream<Targetable>> function;
 
-    HasSelector(Function<TileUID, Stream<Targetable>> function){
-        this.function = function;
-    }
+    HasSelector(){}
 
-    Collection<Targetable> select(PointLike target) {
+    Collection<Targetable> select(PointLike target, Function<TileUID, Stream<Targetable>> function) {
         return function.apply(target.location()).collect(Collectors.toSet());
     }
 

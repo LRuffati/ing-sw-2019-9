@@ -1,11 +1,12 @@
 package actions.targeters.interfaces;
 
+import actions.targeters.targets.Targetable;
 import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.Set;
 
-public interface PointLike {
+public interface PointLike extends Targetable {
     /**
      *
      * @return the current location of the PointLike target
@@ -46,9 +47,6 @@ public interface PointLike {
      * It should first generate a list of basictargets () distant from this
      *      with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
      *      and then filter the targets by applying the reachedCondition
-     *
-     * @param radius
-     * @return
      */
     Set<DamageableUID> reachedSelector(int radius);
 

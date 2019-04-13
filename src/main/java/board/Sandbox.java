@@ -138,4 +138,12 @@ public class Sandbox {
     public Set<TileUID> allTiles(){
         return new HashSet<>(tiles.keySet());
     }
+
+    public RoomTarget getRoom(RoomUID roomUID) {
+        return rooms.get(roomUID);
+    }
+
+    public TileTarget getTile(TileUID tileUID) { return  tiles.get(tileUID);}
+
+    public BasicTarget getBasic(DamageableUID targetUID){ return pawns.get(targetUID);}
 }

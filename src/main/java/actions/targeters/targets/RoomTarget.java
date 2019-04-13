@@ -11,8 +11,10 @@ import uid.TileUID;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class RoomTarget extends Targetable implements Visible, HavingPointLike, SuperTile {
+public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTile {
     private final Sandbox sandbox;
     private final RoomUID roomid;
     public RoomTarget(RoomUID id){
@@ -31,6 +33,7 @@ public class RoomTarget extends Targetable implements Visible, HavingPointLike, 
 
     @Override
     public Set<DamageableUID> getSelectedPawns() {
+        assert sandbox != null;
         Set<DamageableUID> retVal = new HashSet<>();
         for (TileUID i: sandbox.tilesInRoom(roomid)){
             retVal.addAll(sandbox.containedPawns(i));
@@ -40,7 +43,16 @@ public class RoomTarget extends Targetable implements Visible, HavingPointLike, 
 
     @Override
     public Set<TileUID> getSelectedTiles() {
+        assert sandbox != null;
         return new HashSet<>(sandbox.tilesInRoom(roomid));
+    }
+
+    /**
+     * @return the sandbox containing the target
+     */
+    @Override
+    public Sandbox getSandbox() {
+        return sandbox;
     }
 
     @Override
@@ -58,4 +70,5 @@ public class RoomTarget extends Targetable implements Visible, HavingPointLike, 
         Set<TileUID> seenTiles = source.tilesSeen();
         return negation ^ getSelectedTiles().parallelStream().anyMatch(seenTiles::contains);
     }
+
 }

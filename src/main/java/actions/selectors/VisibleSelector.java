@@ -10,13 +10,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class VisibleSelector implements Selector {
-    private final Function<TileUID, Stream<Targetable>> function;
 
-    VisibleSelector(Function<TileUID, Stream<Targetable>> function){
-        this.function = function;
-    }
+    VisibleSelector(){}
 
-    Collection<Targetable> select(PointLike source){
+    Collection<Targetable> select(PointLike source, Function<TileUID, Stream<Targetable>> function){
         return source.tilesSeen().stream()
                 .flatMap(function).collect(Collectors.toSet());
     }

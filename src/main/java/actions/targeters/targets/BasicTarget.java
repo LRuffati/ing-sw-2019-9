@@ -14,17 +14,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This target primarily identifies an individual Pawn, be it a player controlled pawn, a terminator, a turret or a
  * domination point.
  *
  */
-public class BasicTarget extends Targetable implements PointLike, Visible, TargetedSelector {
+public class BasicTarget implements Targetable, PointLike, Visible, TargetedSelector {
+
+    // Variables
 
     private final Sandbox sandbox;
     private final DamageableUID selfUID;
     private TileUID location;
+
+    // Constructors
 
     BasicTarget(DamageableUID target, TileUID initialPosition){
         selfUID = target;
@@ -56,9 +63,14 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
         return new DominationPointTarget(sandbox, template);
     }
 
+    /*
+     Implementing Targetable
+    */
 
     /**
-     * @return a list of all Pawns (the actual pawns and the domination points) in the current selection, if the selector primarily identifies tiles return all pawns in those tiles
+     * a list of all Pawns (the actual pawns and the domination points) in the current selection,
+     * if the selector primarily identifies tiles return all pawns in those tiles
+     * @return
      */
     @Override
     public Set<DamageableUID> getSelectedPawns() {
@@ -78,6 +90,18 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
     }
 
     /**
+     * @return the sandbox containing the target
+     */
+    @Override
+    public Sandbox getSandbox() {
+        return sandbox;
+    }
+
+    /*
+     Implementing PointLike
+    */
+
+    /**
      * @return the current location of the PointLike target
      */
     @Override
@@ -92,12 +116,21 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public Set<TileUID> tilesSeen() {
+        assert sandbox != null;
         return sandbox.tilesSeen(location());
     }
 
+    /**
+     * The method used for the "distant [from] this" selector
+     *
+     * @param radius is the maximum distance, anything less than 0 should return an empty set, with 0 returning just the UIDs.TileUID of the current cell
+     * @param logical if true only consider logical links
+     * @return a list of reachable points in the given amount of steps or less
+     */
     @Override
-    public Set<TileUID> reachableSelector(int min, int max) {
-        return distanceSelector(min, max, true);
+    public Set<TileUID> distanceSelector(int radius, boolean logical) {
+        assert sandbox != null;
+        return sandbox.circle(location(), radius, logical);
     }
 
     /**
@@ -112,25 +145,22 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public Set<DamageableUID> reachedSelector(int radius) {
-        return null;
+        return distanceSelector(radius, true).stream() // All the TileUID within range
+                .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
+                .filter(i->sandbox.getBasic(i).reachableSelector(radius).contains(this.location)) // Only the BasicTargets which can reach "this"
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<DamageableUID> reachedSelector(int min, int max) {
-        return null;
+        HashSet<DamageableUID> ret = new HashSet<>(reachedSelector(max)); //All the BasicTargets which can reach this point in <= max
+        ret.removeAll(reachedSelector(min-1)); // remove all BasicTargets which can reach this point in < min
+        return ret;
     }
 
-    /**
-     * The method used for the "distant [from] this" selector
-     *
-     * @param radius is the maximum distance, anything less than 0 should return an empty set, with 0 returning just the UIDs.TileUID of the current cell
-     * @param logical if true only consider logical links
-     * @return a list of reachable points in the given amount of steps or less
-     */
-    @Override
-    public Set<TileUID> distanceSelector(int radius, boolean logical) {
-        return sandbox.circle(location(), radius, logical);
-    }
+    /*
+    Implements TargetedSelector
+    */
 
     /**
      * this can be reached by source?
@@ -160,6 +190,10 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
         Collection<TileUID> containedTiles = container.containedTiles();
         return negation ^ containedTiles.contains(location());
     }
+
+    /*
+    Implements Visible
+    */
 
     /**
      * This function filters the targets based on visibility

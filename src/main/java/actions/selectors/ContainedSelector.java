@@ -14,13 +14,11 @@ import java.util.stream.Stream;
  */
 public class ContainedSelector implements Selector {
 
-    private final Function<TileUID, Stream<Targetable>> function;
 
-    ContainedSelector(Function<TileUID, Stream<Targetable>> function){
-        this.function = function;
+    ContainedSelector(){
     }
 
-    Collection<Targetable> select(SuperTile container) {
+    Collection<Targetable> select(SuperTile container, Function<TileUID, Stream<Targetable>> function) {
         return container.containedTiles().stream().flatMap(function)
                 .collect(Collectors.toSet());
     }

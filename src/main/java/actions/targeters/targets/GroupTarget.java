@@ -7,12 +7,14 @@ import uid.TileUID;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class GroupTarget extends Targetable {
-    HashSet<DamageableUID> targets;
-    Sandbox sandbox;
+public class GroupTarget implements Targetable {
+    private HashSet<DamageableUID> targets;
+    private final Sandbox sandbox;
 
-    GroupTarget(Sandbox sandbox, Collection<DamageableUID> players){
+    public GroupTarget(Sandbox sandbox, Collection<DamageableUID> players){
         targets = new HashSet<>(players);
         this.sandbox = sandbox;
     }
@@ -30,4 +32,13 @@ public class GroupTarget extends Targetable {
         }
         return ret;
     }
+
+    /**
+     * @return the sandbox containing the target
+     */
+    @Override
+    public Sandbox getSandbox() {
+        return sandbox;
+    }
+
 }

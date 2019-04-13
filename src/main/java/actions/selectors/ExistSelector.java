@@ -11,15 +11,13 @@ import java.util.stream.Stream;
 
 public class ExistSelector implements Selector{
     private final Sandbox sandbox;
-    private final Function<TileUID, Stream<Targetable>> function;
 
-    ExistSelector(Sandbox sandbox, Function<TileUID, Stream<Targetable>> function){
+    ExistSelector(Sandbox sandbox){
         this.sandbox = sandbox;
-        this.function = function;
     }
 
     @Override
-    public Collection<Targetable> select(Targetable sourceTarget) {
+    public Collection<Targetable> select(Targetable sourceTarget, Function<TileUID, Stream<Targetable>> function) {
         return sandbox.allTiles().stream()
                 .flatMap(function).collect(Collectors.toSet());
     }

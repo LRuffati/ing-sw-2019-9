@@ -7,11 +7,14 @@ import uid.TileUID;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class TileTarget extends Targetable implements PointLike, SuperTile, TargetedSelector, Visible, HavingPointLike {
+public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSelector, Visible, HavingPointLike {
 
-    Sandbox sandbox;
-    TileUID tileUID;
+    private final Sandbox sandbox;
+    private final TileUID tileUID;
 
     public TileTarget(TileUID id){
         tileUID = id;
@@ -27,9 +30,9 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
 
     }
 
-
     @Override
     public Set<DamageableUID> getSelectedPawns() {
+        assert sandbox != null;
         return new HashSet<>(sandbox.containedPawns(tileUID));
     }
 
@@ -38,6 +41,14 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
         Set<TileUID> ret = new HashSet<>();
         ret.add(tileUID);
         return ret;
+    }
+
+    /**
+     * @return the sandbox containing the target
+     */
+    @Override
+    public Sandbox getSandbox() {
+        return sandbox;
     }
 
     @Override
@@ -52,6 +63,7 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
 
     @Override
     public Set<TileUID> tilesSeen() {
+        assert sandbox != null;
         return sandbox.tilesSeen(location());
     }
 
@@ -62,21 +74,28 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
      * with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
      * and then filter the targets by applying the reachedCondition
      *
-     * @param radius
-     * @return
+     * @return the set of PawnTargets which have this.location() in their reachableSelector(radius)
      */
+
     @Override
     public Set<DamageableUID> reachedSelector(int radius) {
-        return null;
+        assert sandbox != null;
+        return distanceSelector(radius, true).stream() // All the TileUID within range
+                .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
+                .filter(i->sandbox.getBasic(i).reachableSelector(radius).contains(this.location())) // Only the BasicTargets which can reach "this"
+                .collect(Collectors.toSet());
     }
 
     @Override
     public Set<DamageableUID> reachedSelector(int min, int max) {
-        return null;
+        HashSet<DamageableUID> ret = new HashSet<>(reachedSelector(max)); //All the BasicTargets which can reach this point in <= max
+        ret.removeAll(reachedSelector(min-1)); // remove all BasicTargets which can reach this point in < min
+        return ret;
     }
 
     @Override
     public Set<TileUID> distanceSelector(int radius, boolean logical) {
+        assert sandbox != null;
         return sandbox.circle(location(),radius,logical);
     }
 
