@@ -1,6 +1,6 @@
 package board;
 
-import genericItems.Tuple;
+import genericitems.Tuple;
 
 /**
  * The absolute coordinate of a Tile.

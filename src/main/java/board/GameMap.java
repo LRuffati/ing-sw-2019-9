@@ -1,5 +1,4 @@
 package board;
-import java.lang.annotation.Target;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,6 +13,8 @@ import uid.RoomUID;
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
  */
 public class GameMap {
+    //TODO Damageable statico, non modificabili
+    //TODO Spostare funzioni di Tile in GameMap
 
     /**
      * Default constructor

@@ -22,7 +22,7 @@ public class ReachesCondition extends Condition {
 
     boolean checkTarget(Targetable target,  PointLike checker) {
         return negate ^ checker.reachableSelector(min,max)
-                .parallelStream().map((i)-> target.getSelectedTiles().contains(i))
+                .parallelStream().map(i -> target.getSelectedTiles().contains(i))
                 .collect(Collectors.toSet()).contains(Boolean.TRUE);
     }
 }

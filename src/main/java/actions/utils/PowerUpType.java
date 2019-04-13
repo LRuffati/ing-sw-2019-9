@@ -1,10 +1,8 @@
 package actions.utils;
 
 public enum PowerUpType {
-    TargettingScope,
-    Newton,
-    TagbackGranade,
-    Teleporter
+    TARGETINGSCOPE,
+    NEWTON,
+    TAGBACKGRANADE,
+    TELEPORTER
 }
-
-//ASDASDASD

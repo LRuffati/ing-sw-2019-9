@@ -1,6 +1,7 @@
 package board;
 
 import org.junit.jupiter.api.*;
+import player.Actor;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.RoomUID;
@@ -9,7 +10,6 @@ import uid.TileUID;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,8 +37,8 @@ public class SandBoxTest {
 
     private DamageableUID pawn1 = new DamageableUID();
     private DamageableUID pawn2 = new DamageableUID();
-    private Pawn p1 = new Pawn();
-    private Pawn p2 = new Pawn();
+    private Pawn p1;
+    private Pawn p2;
 
     private Sandbox sandbox;
 
@@ -86,6 +86,8 @@ public class SandBoxTest {
 
         Map<Coord, TileUID> position = Map.of(new Coord(0,0),thisTile, new Coord(1,1),tDown);
 
+        p1 = new Pawn(new Actor(null), pawn1, thisTile);
+        p2 = new Pawn(new Actor(null), pawn2, thisTile);
         Map<DamageableUID, Pawn> damageableUIDMap = Map.of(pawn1,p1 , pawn2,p2);
 
         map = new GameMap(roomUIDMap, tileUIDMap, position, damageableUIDMap);
@@ -94,7 +96,7 @@ public class SandBoxTest {
         tile.setMap(map);
 
 
-        map.getTile(thisTile).addDamageable(pawn1);
+        //map.getTile(thisTile).addDamageable(pawn1);
         sandbox = map.createSandbox();
     }
 
@@ -132,13 +134,14 @@ public class SandBoxTest {
     @Test
     void testPawn(){
         //TODO complete the changes on Pawn and Player classes
-        /*
-        assertEquals(thisTile ,  sandbox.tile(pawn1));
+
+        System.out.println(sandbox.containedPawns(thisTile));
+        assertEquals(thisTile , sandbox.tile(pawn1));
         assertEquals(Set.of(pawn1) , sandbox.containedPawns(thisTile));
         tile.removeDamageable(pawn1);
         assertFalse(sandbox.containedPawns(thisTile).isEmpty());
         assertTrue(map.containedPawns(thisTile).isEmpty());
         assertTrue(map.containedPawns(tLeft).isEmpty());
-        */
+
     }
 }

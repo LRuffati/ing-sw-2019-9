@@ -30,7 +30,7 @@ public class DistantCondition extends Condition {
 
     boolean checkTarget(Targetable target, PointLike checker) {
         return negated ^ checker.distanceSelector(min,max,logical)
-                .parallelStream().map((i)-> target.getSelectedTiles().contains(i))
+                .parallelStream().map(i -> target.getSelectedTiles().contains(i))
                 .collect(Collectors.toSet()).contains(Boolean.TRUE);
     }
 }

@@ -89,17 +89,10 @@ public class Tile{
         ret.add(this.tileID);
         border.add(this.tileID);
         for(int i=0; i<range; i++) {
-            //for(Integer i : range){
             for (TileUID t : border) {
                 for (NeightTile t1 : map.getTile(t).neighbors.values()) {
                     TileUID t2;
                     t2 = physical ? t1.physical() : t1.logical().orElse(null);
-                    /*if physical {
-                        t2 = t1.physical().orElse(null);
-                    }
-                    else
-                        t2 = t1.logical();*/
-
                     if (t2 != null) newBorder.add(t2);
                 }
                 ret.addAll(newBorder);

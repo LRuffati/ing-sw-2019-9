@@ -1,12 +1,10 @@
 package actions.selectors;
 
-import actions.conditions.DistantCondition;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
 import uid.TileUID;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

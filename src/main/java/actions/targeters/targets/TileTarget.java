@@ -66,17 +66,17 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
      * @return
      */
     @Override
-    public HashSet<DamageableUID> reachedSelector(int radius) {
+    public Set<DamageableUID> reachedSelector(int radius) {
         return null;
     }
 
     @Override
-    public HashSet<DamageableUID> reachedSelector(int min, int max) {
+    public Set<DamageableUID> reachedSelector(int min, int max) {
         return null;
     }
 
     @Override
-    public HashSet<TileUID> distanceSelector(int radius, boolean logical) {
+    public Set<TileUID> distanceSelector(int radius, boolean logical) {
         return sandbox.circle(location(),radius,logical);
     }
 
@@ -92,7 +92,7 @@ public class TileTarget extends Targetable implements PointLike, SuperTile, Targ
 
     @Override
     public boolean distanceCondition(int min, int max, PointLike source, boolean negation, boolean logical) {
-        HashSet<TileUID> circle = source.distanceSelector(min, max, logical);
+        Set<TileUID> circle = source.distanceSelector(min, max, logical);
         return negation ^ circle.contains(location());
     }
 

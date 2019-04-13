@@ -5,6 +5,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.HashSet;
+import java.util.Set;
 
 public class DominationPointTarget extends BasicTarget {
 
@@ -30,7 +31,7 @@ public class DominationPointTarget extends BasicTarget {
     }
 
     @Override
-    public HashSet<TileUID> reachableSelector(int min, int max) {
+    public Set<TileUID> reachableSelector(int min, int max) {
         HashSet<TileUID> ret = new HashSet<>();
         if (min>=1 || max <0) return ret;
         ret.add(location());

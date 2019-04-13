@@ -5,7 +5,7 @@ import java.rmi.server.UID;
 public abstract class ObjectUID {
     private UID uid;
 
-    public ObjectUID(){
+    ObjectUID(){
         this.uid = new UID();
     }
 

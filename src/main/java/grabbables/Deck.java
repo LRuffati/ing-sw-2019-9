@@ -1,5 +1,5 @@
 package grabbables;
-import genericItems.Tuple;
+import genericitems.Tuple;
 import java.util.*;
 
 /**

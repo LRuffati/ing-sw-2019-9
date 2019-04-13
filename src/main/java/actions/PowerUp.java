@@ -8,17 +8,17 @@ import uid.PowerUpUID;
 import board.Tile;
 import uid.TileUID;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class PowerUp {
     private PowerUpType type;
-    private PowerUpUID ID;
+    private PowerUpUID powerUpUID;
     private AmmoColor ammo;
 
     public PowerUp(PowerUpType t, AmmoColor c){
         this.type = t;
         this.ammo = c;
-        this.ID = new PowerUpUID();
+        this.powerUpUID = new PowerUpUID();
 
     }
 
@@ -38,7 +38,7 @@ public class PowerUp {
         //if (a.isTurn()) target.movePlayer(target.getPawn().getTile().getNeighbor(true, dir)); //Correction to getNeighbor needed.
      }
 
-     public void useTargettingScope(Actor a, ArrayList<Actor> targets){
+     public void useTargettingScope(Actor a, List<Actor> targets){
         //TODO attack action needed.
      }
 

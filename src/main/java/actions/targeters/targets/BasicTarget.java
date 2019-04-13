@@ -38,7 +38,6 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
             selfUID = template.selfUID;
             this.sandbox = sandbox;
         }
-
     }
 
     public static BasicTarget basicFactory(Pawn target){
@@ -97,7 +96,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
     }
 
     @Override
-    public HashSet<TileUID> reachableSelector(int min, int max) {
+    public Set<TileUID> reachableSelector(int min, int max) {
         return distanceSelector(min, max, true);
     }
 
@@ -112,12 +111,12 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      * @return
      */
     @Override
-    public HashSet<DamageableUID> reachedSelector(int radius) {
+    public Set<DamageableUID> reachedSelector(int radius) {
         return null;
     }
 
     @Override
-    public HashSet<DamageableUID> reachedSelector(int min, int max) {
+    public Set<DamageableUID> reachedSelector(int min, int max) {
         return null;
     }
 
@@ -129,7 +128,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      * @return a list of reachable points in the given amount of steps or less
      */
     @Override
-    public HashSet<TileUID> distanceSelector(int radius, boolean logical) {
+    public Set<TileUID> distanceSelector(int radius, boolean logical) {
         return sandbox.circle(location(), radius, logical);
     }
 
@@ -138,7 +137,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public boolean reachedCondition(int min, int max, PointLike source, boolean negation) {
-        HashSet<TileUID> circle = source.reachableSelector(min, max);
+        Set<TileUID> circle = source.reachableSelector(min, max);
         return negation ^ circle.contains(location());
     }
 
@@ -147,7 +146,7 @@ public class BasicTarget extends Targetable implements PointLike, Visible, Targe
      */
     @Override
     public boolean distanceCondition(int min, int max, PointLike source, boolean negation, boolean logical) {
-        HashSet<TileUID> circle = source.distanceSelector(min, max, logical);
+        Set<TileUID> circle = source.distanceSelector(min, max, logical);
         return negation ^ circle.contains(location());
     }
 

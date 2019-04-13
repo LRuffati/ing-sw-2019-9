@@ -3,7 +3,6 @@ package actions.targeters.interfaces;
 import uid.DamageableUID;
 import uid.TileUID;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface PointLike {
@@ -25,18 +24,18 @@ public interface PointLike {
      * @return a list of reachableSelector points in the given amount of steps or less
      */
     //Todo: test con radius <=0 and verify that it returns location() and only location()
-    default HashSet<TileUID> reachableSelector(int radius){
+    default Set<TileUID> reachableSelector(int radius){
         return distanceSelector(radius, true);
     }
 
     /**
      * Similar to reachableSelector(radius) but works in a range
-     * @param max the maximum distance included
      * @param min the minimum distance included
+     * @param max the maximum distance included
      * @return the set of cells satisfying the condition
      */
-    default HashSet<TileUID> reachableSelector(int min, int max){
-        HashSet<TileUID> a = reachableSelector(max);
+    default Set<TileUID> reachableSelector(int min, int max){
+        Set<TileUID> a = reachableSelector(max);
         a.removeAll(reachableSelector(min - 1));
         return a;
     }
@@ -51,9 +50,9 @@ public interface PointLike {
      * @param radius
      * @return
      */
-    HashSet<DamageableUID> reachedSelector(int radius);
+    Set<DamageableUID> reachedSelector(int radius);
 
-    HashSet<DamageableUID> reachedSelector(int min, int max);
+    Set<DamageableUID> reachedSelector(int min, int max);
 
     /**
      * The method used for the "distant [from] this" selector
@@ -61,16 +60,16 @@ public interface PointLike {
      * @return a list of reachable points in the given amount of steps or less
      */
     //Todo: test con radius <=0 and verify that it returns location() and only location()
-    HashSet<TileUID> distanceSelector(int radius, boolean logical);
+    Set<TileUID> distanceSelector(int radius, boolean logical);
 
     /**
      * Similar to distanceSelector(radius) but works in a range
-     * @param max the maximum distance included
      * @param min the minimum distance included
+     * @param max the maximum distance included
      * @return the set of cells satisfying the condition
      */
-    default HashSet<TileUID> distanceSelector(int min, int max, boolean logical){
-        HashSet<TileUID> a = distanceSelector(max,logical);
+    default Set<TileUID> distanceSelector(int min, int max, boolean logical){
+        Set<TileUID> a = distanceSelector(max,logical);
         a.removeAll(distanceSelector(min-1, logical));
         return a;
     }

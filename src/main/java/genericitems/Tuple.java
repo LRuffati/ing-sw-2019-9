@@ -1,4 +1,4 @@
-package genericItems;
+package genericitems;
 
 public class Tuple<X, Y> {
 

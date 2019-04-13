@@ -47,7 +47,7 @@ public class Sandbox {
      * @param logical go through walls or not
      * @return
      */
-    public HashSet<TileUID> circle(TileUID centre, int radius, boolean logical){
+    public Set<TileUID> circle(TileUID centre, int radius, boolean logical){
         HashSet<TileUID> retVal = new HashSet<>();
         HashSet<TileUID> interior = new HashSet<>();
         HashSet<TileUID> border;
@@ -79,7 +79,7 @@ public class Sandbox {
      */
     public Collection<DamageableUID> containedPawns(TileUID tile){
         return pawns.entrySet()
-                .stream().filter((i)-> i.getValue().location() == tile).map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
+                .stream().filter(i -> i.getValue().location() == tile).map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -136,6 +136,6 @@ public class Sandbox {
     }
 
     public Set<TileUID> allTiles(){
-        return new HashSet<TileUID>(tiles.keySet());
+        return new HashSet<>(tiles.keySet());
     }
 }

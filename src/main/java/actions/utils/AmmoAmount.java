@@ -1,8 +1,8 @@
 package actions.utils;
 
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.*;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 /**
@@ -17,7 +17,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      * @param amountGiven is an existing map which may or may not have a value for each color
      */
     AmmoAmount(Map<AmmoColor, Integer> amountGiven){
-        Map<AmmoColor, Integer> temp = new HashMap<>(amountGiven);
+        Map<AmmoColor, Integer> temp = new EnumMap<>(amountGiven);
         for (AmmoColor i: AmmoColor.values()){
             Integer amount = temp.putIfAbsent(i,0);
             if (amount!=null && (amount<0 || amount>maximumAmmo)){
