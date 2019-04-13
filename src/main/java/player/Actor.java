@@ -51,8 +51,8 @@ public class Actor {
      * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
      * @param t is the Tile id where the player is trying to move to.
      */
-    public void movePlayer(TileUID t, int steps){
-        if(steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t)){
+    public void movePlayer(TileUID t){
+        if((frenzy && gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t)||gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t))){
             pawn.move(t);
         }
     }
@@ -82,7 +82,7 @@ public class Actor {
      * @param w is the weapon to be discarded.
      */
     public void removeWeapon(Weapon w){
-        if(weapons.contains(w)) weapons.remove(w);
+        weapons.remove(w);
     }
 
     /**
