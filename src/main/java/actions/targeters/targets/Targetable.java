@@ -13,20 +13,13 @@ import java.util.stream.Stream;
  */
 public interface Targetable {
     /**
-     *
-     * @return a list of all Pawns (the actual pawns and the domination points) in the current selection, if the selector primarily identifies tiles return all pawns in those tiles
+     * @return a set of all Pawns (the actual pawns and the domination points) in the current
+     * selection, if the selector primarily identifies tiles return all pawns in those tiles
      */
     Set<DamageableUID> getSelectedPawns();
 
     /**
-     *
-     * @return a list of all Tiles in or occupied by elements of the Target
+     * @return a set of all Tiles in or occupied by elements of the Target
      */
     Set<TileUID> getSelectedTiles();
-
-    /**
-     *
-     * @return the sandbox containing the target
-     */
-    Sandbox getSandbox();
 }

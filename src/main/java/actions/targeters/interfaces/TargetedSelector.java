@@ -4,9 +4,9 @@ import actions.targeters.targets.Targetable;
 
 /**
  * This interface models the conditions:
- *  + Reachable     targetName TargetedSelector (& [not] reached (min,max) PointLike)
- *  + Distant       targetName TargetedSelector (& [not] distant (min,max) PointLike)
- *  + Contained     targetName TargetedSelector (& [not] in SuperTile)
+ *  + Reachable     targetName TargetedSelector (&amp; [not] reached (min,max) PointLike)
+ *  + Distant       targetName TargetedSelector (&amp; [not] distant (min,max) PointLike)
+ *  + Contained     targetName TargetedSelector (&amp; [not] in SuperTile)
  */
 public interface TargetedSelector extends Targetable {
     /**
@@ -14,7 +14,7 @@ public interface TargetedSelector extends Targetable {
      * @param max the maximum included distance
      * @param source the PointLike Target for which reachableSelector is calculated
      * @param negation whether the condition should be negated or not
-     * @return For targets partially or totally satisfying the condition it returns the sub-target which satisfies it, otherwise empty optional
+     * @return the result of the check
      */
     boolean reachedCondition(int min, int max, PointLike source, boolean negation);
 
@@ -23,14 +23,15 @@ public interface TargetedSelector extends Targetable {
      * @param max the maximum included distance
      * @param source the PointLike Target from which the distance is calculated
      * @param negation whether the condition should be negated or not
-     * @return For targets partially or totally satisfying the condition it returns the sub-target which satisfies it, otherwise empty optional
+     * @param logical if true don't go through walls
+     * @return the result of the check
      */
     boolean distanceCondition(int min, int max, PointLike source, boolean negation, boolean logical);
 
     /**
      * @param container the SuperTile establishing the condition
      * @param negation whether the condition should be negated or not
-     * @return For targets partially or totally satisfying the condition it returns the sub-target which satisfies it, otherwise empty optional
+     * @return the result of the check
      */
     boolean containedSelector(SuperTile container, boolean negation);
 }

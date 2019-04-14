@@ -32,11 +32,4 @@ public class StubTarget implements Targetable {
         return new HashSet<>();
     }
 
-    /**
-     * @return the sandbox containing the target
-     */
-    @Override
-    public Sandbox getSandbox() {
-        return sandbox;
-    }
 }

@@ -1,8 +1,8 @@
 package actions.selectors;
 
 import actions.targeters.interfaces.PointLike;
-import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
+import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
 import java.util.Collection;
@@ -15,10 +15,15 @@ import java.util.stream.Stream;
  */
 public class HasSelector implements Selector {
 
-
     HasSelector(){}
 
-    Collection<Targetable> select(PointLike target, Function<TileUID, Stream<Targetable>> function) {
+    /**
+     *
+     * @param target the pointlike target
+     * @param function the transformation function
+     * @return a list with a single element
+     */
+    Collection<Targetable> select(@NotNull PointLike target, @NotNull Function<TileUID, Stream<Targetable>> function) {
         return function.apply(target.location()).collect(Collectors.toSet());
     }
 

@@ -4,6 +4,8 @@ import actions.targeters.interfaces.SuperTile;
 import actions.targeters.interfaces.TargetedSelector;
 import actions.targeters.interfaces.Visible;
 import board.Sandbox;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import player.DominationPoint;
 import player.Pawn;
 import uid.DamageableUID;
@@ -14,9 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This target primarily identifies an individual Pawn, be it a player controlled pawn, a terminator, a turret or a
@@ -25,21 +25,41 @@ import java.util.stream.Stream;
  */
 public class BasicTarget implements Targetable, PointLike, Visible, TargetedSelector {
 
-    // Variables
-
+    /**
+     * The sandbox I'm simulating in
+     */
     private final Sandbox sandbox;
+
+    /**
+     * The UID, same as the UID of the mirrored pawn (or domination point)
+     */
     private final DamageableUID selfUID;
+
+    /**
+     * The cell I'm standing on
+     */
     private TileUID location;
 
     // Constructors
 
-    BasicTarget(DamageableUID target, TileUID initialPosition){
+    /**
+     * This creates a template for the BasicTarget, it's needed because of the bootstrap phase
+     * during the map creation
+     * @param target the UID of the Pawn I'm cloning
+     * @param initialPosition the initial position
+     */
+    BasicTarget(@NotNull DamageableUID target, @NotNull TileUID initialPosition){
         selfUID = target;
         sandbox = null;
         location = initialPosition;
     }
 
-    BasicTarget(Sandbox sandbox, BasicTarget template){
+    /**
+     * Binds a BasicTarget template to a Sandbox
+     * @param sandbox the sandbox
+     * @param template the template obtained using the other constructor
+     */
+    BasicTarget(@NotNull Sandbox sandbox, @NotNull BasicTarget template){
         if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
         else {
             selfUID = template.selfUID;
@@ -47,18 +67,50 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
         }
     }
 
-    public static BasicTarget basicFactory(Pawn target){
+    /**
+     * Creates a new target template from a Pawn
+     * @param target the pawn
+     * @return the BasicTarget
+     */
+    @NotNull
+    @Contract("_ -> new")
+    public static BasicTarget basicFactory(@NotNull Pawn target){
         return new BasicTarget(target.damageableUID, target.getTile());
     }
 
-    public static BasicTarget basicFactory(DominationPoint target){
+    /**
+     * Creates a new target template from a DominationPoint
+     * @param target the pawn
+     * @return the DominationPointTarget
+     */
+    @NotNull
+    @Contract("_ -> new")
+    public static BasicTarget basicFactory(@NotNull DominationPoint target){
         return new DominationPointTarget(target.damageableUID, target.getTile());
     }
 
-    public static BasicTarget basicFactory(Sandbox sandbox, BasicTarget template){
+    /**
+     * Binds the template to a sandbox
+     *
+     * @param sandbox the sandbox
+     * @param template the BasicTarget without sandbox
+     * @return the bound BasicTarget
+     */
+    @NotNull
+    @Contract(value = "_, _ -> new", pure = true)
+    public static BasicTarget basicFactory(@NotNull Sandbox sandbox, @NotNull BasicTarget template){
         return new BasicTarget(sandbox, template);
     }
 
+    /**
+     * Binds the template to a sandbox
+     *
+     * @param sandbox the sandbox
+     * @param template the DominationPointTarget without sandbox
+     * @return the bound DominationPointTarget
+     */
+    @NotNull
+    @Contract("_, _ -> new")
     public static BasicTarget basicFactory(Sandbox sandbox, DominationPointTarget template){
         return new DominationPointTarget(sandbox, template);
     }
@@ -70,7 +122,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     /**
      * a list of all Pawns (the actual pawns and the domination points) in the current selection,
      * if the selector primarily identifies tiles return all pawns in those tiles
-     * @return
+     * @return a set containing only this DamageableUID
      */
     @Override
     public Set<DamageableUID> getSelectedPawns() {
@@ -80,7 +132,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     }
 
     /**
-     * @return a list of all Tiles in or occupied by elements of the Target
+     * @return a set with only this Target's location
      */
     @Override
     public Set<TileUID> getSelectedTiles() {
@@ -89,20 +141,12 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
         return new HashSet<>(tiles);
     }
 
-    /**
-     * @return the sandbox containing the target
-     */
-    @Override
-    public Sandbox getSandbox() {
-        return sandbox;
-    }
-
     /*
      Implementing PointLike
     */
 
     /**
-     * @return the current location of the PointLike target
+     * @return the current location of the BasicTarget
      */
     @Override
     public TileUID location() {
@@ -110,9 +154,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     }
 
     /**
-     * This is a selector, it generates a list of tiles the current PointLike target can see
-     *
-     * @return a Collection of TileUIDs without duplicates
+     * @return all the cells seen by the BasicTarget
      */
     @Override
     public Set<TileUID> tilesSeen() {
@@ -134,14 +176,8 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     }
 
     /**
-     * for the basictarget (reaches () this ) selector
-     * <p>
-     * It should first generate a list of basictargets () distant from this
-     * with: this.distantSelector( ... , logical=true ).stream.flatMap(sandbox::pawnsInTile).collect(Collectors::toList)
-     * and then filter the targets by applying the reachedCondition
-     *
-     * @param radius
-     * @return
+     * @param radius the amount of maximum allowed steps
+     * @return the set of Pawns which can reach this target in at most radius steps
      */
     @Override
     public Set<DamageableUID> reachedSelector(int radius) {
@@ -151,31 +187,37 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
                 .collect(Collectors.toSet());
     }
 
-    @Override
-    public Set<DamageableUID> reachedSelector(int min, int max) {
-        HashSet<DamageableUID> ret = new HashSet<>(reachedSelector(max)); //All the BasicTargets which can reach this point in <= max
-        ret.removeAll(reachedSelector(min-1)); // remove all BasicTargets which can reach this point in < min
-        return ret;
-    }
-
     /*
     Implements TargetedSelector
     */
 
     /**
      * this can be reached by source?
+     *
+     * @param min the minimum included distance (0 includes the current tile, negative values return an empty set
+     * @param max the maximum included distance
+     * @param source the PointLike Target for which reachableSelector is calculated
+     * @param negation whether the condition should be negated or not
+     * @return negation XOR whether this can be reached by the source in the given number of steps
      */
     @Override
-    public boolean reachedCondition(int min, int max, PointLike source, boolean negation) {
+    public boolean reachedCondition(int min, int max, @NotNull PointLike source, boolean negation) {
         Set<TileUID> circle = source.reachableSelector(min, max);
         return negation ^ circle.contains(location());
     }
 
     /**
      * this is distant from source?
+     *
+     * @param min the minimum included distance (0 includes the current tile, negative values return an empty set
+     * @param max the maximum included distance
+     * @param source the PointLike Target from which the distance is calculated
+     * @param negation whether the condition should be negated or not
+     * @param logical whether to go through walls
+     * @return negation XOR whether this is in the distance range from source
      */
     @Override
-    public boolean distanceCondition(int min, int max, PointLike source, boolean negation, boolean logical) {
+    public boolean distanceCondition(int min, int max, @NotNull PointLike source, boolean negation, boolean logical) {
         Set<TileUID> circle = source.distanceSelector(min, max, logical);
         return negation ^ circle.contains(location());
     }
@@ -183,10 +225,10 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     /**
      * @param container the SuperTile establishing the condition
      * @param negation  whether the condition should be negated or not
-     * @return For targets partially or totally satisfying the condition it returns the sub-target which satisfies it, otherwise empty optional
+     * @return negation XOR whether this Pawn is contained in container
      */
     @Override
-    public boolean containedSelector(SuperTile container, boolean negation) {
+    public boolean containedSelector(@NotNull SuperTile container, boolean negation) {
         Collection<TileUID> containedTiles = container.containedTiles();
         return negation ^ containedTiles.contains(location());
     }
@@ -200,10 +242,19 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      *
      * @param source   the observer, which has method sees
      * @param negation whether this is a positive or negative condition
-     * @return if the object can be seen or partially seen (or not seen) returns the visible (or not visible) sub-selection, otherwise returns empty optional
+     * @return negation XOR whether this Pawn can be seen by the source
      */
     @Override
     public boolean seen(PointLike source, boolean negation) {
         return negation ^ source.tilesSeen().contains(location());
+    }
+
+    /**
+     * Used for the universal selector
+     * @return all the tiles in the same sandbox as the BasicTarget
+     */
+    public Set<TileUID> coexistingTiles(){
+        assert sandbox != null;
+        return sandbox.allTiles();
     }
 }

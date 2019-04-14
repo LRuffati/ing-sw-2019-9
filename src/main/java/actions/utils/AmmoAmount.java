@@ -9,8 +9,19 @@ import java.util.Map;
  * This class represents a fixed ammunition amount, it can represent a cost or the amount available to the player
  */
 public class AmmoAmount implements Comparable<AmmoAmount> {
-    private final Map<AmmoColor, Integer> amounts;
+
+    /**
+     * The maximum amount available, this is a global variable
+     * TODO: load from configuration file
+     */
     private static Integer maximumAmmo = 3;
+
+
+    /**
+     * The amount represented by the class
+     */
+    private final Map<AmmoColor, Integer> amounts;
+
     /**
      * This method initializes the class by receiving a Map and checking that all the values associated with an element
      * of AmmoColor are between 0 and the max
@@ -29,8 +40,8 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
 
     /**
      * This functions implements a comparison with the following logic:
-     * a>o if the ammo in a can be used to run an action costing o
-     * a<o if the ammo in a is not sufficient to cover o
+     * a &gt; o if the ammo in a can be used to run an action costing o
+     * a &lt; o if the ammo in a is not sufficient to cover o
      * @param o The other AmmoAmount
      * @return 1 if I can pay o using a and -1 otherwise
      */

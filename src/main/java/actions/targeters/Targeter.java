@@ -10,10 +10,7 @@ import board.Sandbox;
 import genericitems.Tuple;
 import uid.TileUID;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -27,7 +24,7 @@ public class Targeter {
 
 
     /**
-     * The Map containing the functions that will be used by the selector, if the target is a group
+     * The Map containing the functions that will be used by the selector
      */
     private static  Map<String, Function<Sandbox, Function<TileUID, Stream<Targetable>>>> targetBuilders = new HashMap<>();
     static {
@@ -39,14 +36,52 @@ public class Targeter {
     }
     private static String groupString = "group";
 
+    /**
+     * The sandbox of the weapon use currently being explored
+     */
     private final Sandbox sandbox;
+
+    /**
+     * {@link TargeterTemplate#selector}
+     */
     private final Tuple<String, Selector> selector;
+
+    /**
+     * {@link TargeterTemplate#filters}
+     */
     private final List<Tuple<String, Condition>> filters;
+
+    /**
+     * The {@link ChoiceMaker} interface represents an entity (player or computer) making a choice
+     * between multiple targets when needed
+     * @see ChoiceMaker
+     */
     private final ChoiceMaker master;
+
+    /**
+     * The targets acquired prior to this Targeter being run
+     */
     private final Map<String, Targetable> previousTargets;
+
+
+    /**
+     * {@link TargeterTemplate#newTarg}
+     */
     private final boolean newTarg;
+
+    /**
+     * {@link TargeterTemplate#automatic}
+     */
     private final boolean automatic;
+
+    /**
+     * @see Targeter#targetBuilders
+     */
     private final String type;
+
+    /**
+     * {@link TargeterTemplate#optional}
+     */
     private final boolean optional;
 
     /**
@@ -77,7 +112,22 @@ public class Targeter {
         }
     }
 
-    public Targetable generateTarget() throws NotEnoughTargetsException {
+    /**
+     * The main purpose of the Targeter, this class will:
+     * 1. Generate, via {@link Selector#select(Targetable, Function)} a list of viable targets
+     * 2. Filter it using {@link Condition#checkTarget(Targetable, Targetable)}
+     * 3. Check other conditions:
+     *      a. If the target is new
+     *      b. If it is optional
+     * 4. If the selection is not automatic it then asks the {@link Targeter#master} to pick one
+     * of many and returns it
+     *
+     * @return a target if picked, an empty Optional if {@link Targeter#optional is True}
+     * @throws NotEnoughTargetsException is thrown when the target is mandatory but no target
+     * exists which satisfies the conditions
+     */
+    public Optional<Targetable> generateTarget() throws NotEnoughTargetsException {
+
         Function<TileUID, Stream<Targetable>> fun;
         String funType;
         if (type.equals(groupString)) {
@@ -99,6 +149,8 @@ public class Targeter {
         if (newTarg) {
             validTargets = validTargets.stream()
                     .filter(Predicate.not(previousTargets.values()::contains))
+                    //Todo: find a way to check only BasicTargets, not tiletargets or similar
+                    // containing a BasicTarget
                     .collect(Collectors.toList());
         }
 
@@ -115,11 +167,24 @@ public class Targeter {
             throw new NotEnoughTargetsException("0 targets available in non optional selector");
         }
 
-        if (automatic) return validTargets.get(0);
-
+        if (automatic) {
+            Optional<Targetable> ret;
+            if (validTargets.get(0).getSelectedPawns().isEmpty() && validTargets.get(0).getSelectedTiles().isEmpty()){
+                ret = Optional.empty();
+            } else {
+                ret = Optional.of(validTargets.get(0));
+            }
+            return ret;
+        }
         else {
             int picked = this.master.pickTarget(validTargets);
-            return  validTargets.get(picked);
+            Optional<Targetable> ret;
+            if (validTargets.get(picked).getSelectedPawns().isEmpty() && validTargets.get(picked).getSelectedTiles().isEmpty()){
+                ret = Optional.empty();
+            } else {
+                ret = Optional.of(validTargets.get(0));
+            }
+            return ret;
         }
     }
 

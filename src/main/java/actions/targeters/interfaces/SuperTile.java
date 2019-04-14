@@ -11,7 +11,7 @@ import java.util.Set;
  */
 public interface  SuperTile extends Targetable {
     /**
-     * @return
+     * @return all the tiles contained in the supertile
      */
     Set<TileUID> containedTiles();
 }
