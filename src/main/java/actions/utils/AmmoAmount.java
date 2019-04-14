@@ -38,6 +38,17 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
         amounts=temp;
     }
 
+    public AmmoAmount(){
+        Map<AmmoColor, Integer> temp = new EnumMap<>(AmmoColor.class);
+        for (AmmoColor i: AmmoColor.values()){
+            Integer amount = temp.putIfAbsent(i,0);
+            if (amount!=null && (amount<0 || amount>maximumAmmo)){
+                temp.put(i, Math.min(maximumAmmo, Math.max(amount, 0)));
+            }
+        }
+        amounts=temp;
+    }
+
     /**
      * This functions implements a comparison with the following logic:
      * a &gt; o if the ammo in a can be used to run an action costing o

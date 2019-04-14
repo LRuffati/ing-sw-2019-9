@@ -44,7 +44,7 @@ public class Actor {
         this.startingPlayerMarker = false;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
-        this.ammoAviable = null;
+        this.ammoAviable = new AmmoAmount();
         this.frenzy = false;
         this.marks = null;
         this.gm = map;
