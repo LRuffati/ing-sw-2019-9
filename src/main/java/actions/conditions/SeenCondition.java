@@ -16,7 +16,7 @@ public class SeenCondition extends Condition {
      *
      * @param negate true if I'm interested in unseen targets
      */
-    SeenCondition(boolean negate){
+    public SeenCondition(boolean negate){
         this.negate = negate;
     }
 
@@ -26,7 +26,7 @@ public class SeenCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    boolean checkTarget(Visible target,  PointLike checker) {
+    public boolean checkTarget(Visible target,  PointLike checker) {
         return target.seen(checker, negate);
     }
 }

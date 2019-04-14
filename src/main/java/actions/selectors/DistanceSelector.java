@@ -35,7 +35,7 @@ public class DistanceSelector implements  Selector{
      * @param max The maximum included distance
      * @param logical If true don't go through walls
      */
-    DistanceSelector(int min, int max, boolean logical){
+    public DistanceSelector(int min, int max, boolean logical){
         this.min = min;
         this.max = max;
         this.logical = logical;
@@ -47,7 +47,7 @@ public class DistanceSelector implements  Selector{
      * @param function the transformation function
      * @return targets within this distance
      */
-    Collection<Targetable> select(@NotNull PointLike sourceTarget, Function<TileUID, Stream<Targetable>> function) {
+    public Collection<Targetable> select(@NotNull PointLike sourceTarget, Function<TileUID, Stream<Targetable>> function) {
         return sourceTarget.distanceSelector(min,max,logical).stream().flatMap(function).collect(Collectors.toSet());
     }
 }

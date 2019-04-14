@@ -16,7 +16,7 @@ public class InCondition extends Condition {
      *
      * @param negated true if I want to check the target is not in the Supertile
      */
-    InCondition(boolean negated){
+    public InCondition(boolean negated){
 
         this.negated = negated;
     }
@@ -26,7 +26,7 @@ public class InCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    boolean checkTarget(PointLike target, SuperTile checker) {
+    public boolean checkTarget(PointLike target, SuperTile checker) {
         return negated ^ checker.containedTiles().contains(target.location());
     }
 }

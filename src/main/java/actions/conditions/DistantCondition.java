@@ -37,7 +37,7 @@ public class DistantCondition extends Condition {
      * @param logical true if I don't want to go through walls
      * @param negated true if I'm interested in targets further or closer than the range
      */
-    DistantCondition(int min, int max, boolean logical, boolean negated){
+    public DistantCondition(int min, int max, boolean logical, boolean negated){
 
         this.min = min;
         this.max = max;
@@ -50,7 +50,7 @@ public class DistantCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    boolean checkTarget(Targetable target, PointLike checker) {
+    public boolean checkTarget(Targetable target, PointLike checker) {
         return negated ^ checker.distanceSelector(min,max,logical)
                 .parallelStream().map(i -> target.getSelectedTiles().contains(i))
                 .collect(Collectors.toSet()).contains(Boolean.TRUE);

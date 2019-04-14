@@ -16,7 +16,7 @@ public class HasCondition extends Condition {
      *
      * @param negated true if I'm interested in targets not containing something
      */
-    HasCondition(boolean negated){
+    public HasCondition(boolean negated){
 
         this.negated = negated;
     }
@@ -26,7 +26,7 @@ public class HasCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    boolean checkTarget(SuperTile target, PointLike checker) {
+    public boolean checkTarget(SuperTile target, PointLike checker) {
         return negated ^ target.containedTiles().contains(checker.location());
     }
 }

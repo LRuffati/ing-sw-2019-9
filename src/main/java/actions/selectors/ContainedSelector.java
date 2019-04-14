@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 public class ContainedSelector implements Selector {
 
 
-    ContainedSelector(){
+    public ContainedSelector(){
     }
 
     /**
@@ -24,7 +24,7 @@ public class ContainedSelector implements Selector {
      * @param function the transform function
      * @return the targets contained in the supertile
      */
-    Collection<Targetable> select(SuperTile container, Function<TileUID, Stream<Targetable>> function) {
+    public Collection<Targetable> select(SuperTile container, Function<TileUID, Stream<Targetable>> function) {
         return container.containedTiles().stream().flatMap(function)
                 .collect(Collectors.toSet());
     }

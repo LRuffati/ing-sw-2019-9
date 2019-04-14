@@ -29,7 +29,7 @@ public class ReachableSelector implements Selector {
      * @param min the minimum (included) number of steps
      * @param max the maximum (included) number of steps
      */
-    ReachableSelector(int min, int max){
+    public ReachableSelector(int min, int max){
 
         this.min = min;
         this.max = max;
@@ -42,7 +42,8 @@ public class ReachableSelector implements Selector {
      * @return all the targets reachable by the source in the given amount of steps
      */
     //TODO: test with a DominationPoint as source
-    Collection<Targetable> select(@NotNull PointLike source, Function<TileUID, Stream<Targetable>> function){
+    public Collection<Targetable> select(@NotNull PointLike source, Function<TileUID,
+            Stream<Targetable>> function){
         return source.reachableSelector(min, max).stream()
                 .flatMap(function)
                 .collect(Collectors.toSet());

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
  */
 public class VisibleSelector implements Selector {
 
-    VisibleSelector(){}
+    public VisibleSelector(){}
 
     /**
      *
@@ -24,7 +24,8 @@ public class VisibleSelector implements Selector {
      * @param function the conversion function from [TileUID] to [Targetable]
      * @return all the targets seen by the source
      */
-    Collection<Targetable> select(@NotNull PointLike source, Function<TileUID, Stream<Targetable>> function){
+    public Collection<Targetable> select(@NotNull PointLike source, Function<TileUID,
+            Stream<Targetable>> function){
         return source.tilesSeen().stream().flatMap(function).collect(Collectors.toSet());
     }
 }

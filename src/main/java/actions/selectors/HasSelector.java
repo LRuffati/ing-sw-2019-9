@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  */
 public class HasSelector implements Selector {
 
-    HasSelector(){}
+    public HasSelector(){}
 
     /**
      *
@@ -23,7 +23,8 @@ public class HasSelector implements Selector {
      * @param function the transformation function
      * @return a list with a single element
      */
-    Collection<Targetable> select(@NotNull PointLike target, @NotNull Function<TileUID, Stream<Targetable>> function) {
+    public Collection<Targetable> select(@NotNull PointLike target, @NotNull Function<TileUID,
+            Stream<Targetable>> function) {
         return function.apply(target.location()).collect(Collectors.toSet());
     }
 

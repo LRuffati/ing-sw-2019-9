@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class ExistSelector implements Selector{
 
     @Contract(pure = true)
-    ExistSelector(){}
+    public ExistSelector(){}
 
     /**
      *

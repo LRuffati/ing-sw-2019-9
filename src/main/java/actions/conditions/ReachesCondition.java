@@ -31,7 +31,7 @@ public class ReachesCondition extends Condition {
      * @param max the maximum (included) number of steps
      * @param negate true if I'm looking for unreachable targets
      */
-    ReachesCondition(int min, int max, boolean negate){
+    public ReachesCondition(int min, int max, boolean negate){
         this.min = min;
         this.max = max;
         this.negate = negate;
@@ -41,7 +41,7 @@ public class ReachesCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    boolean checkTarget(Targetable target,  PointLike checker) {
+    public boolean checkTarget(Targetable target,  PointLike checker) {
         return negate ^ checker.reachableSelector(min,max)
                 .parallelStream().map(i -> target.getSelectedTiles().contains(i))
                 .collect(Collectors.toSet()).contains(Boolean.TRUE);
