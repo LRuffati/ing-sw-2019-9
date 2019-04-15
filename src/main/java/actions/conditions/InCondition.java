@@ -2,6 +2,7 @@ package actions.conditions;
 
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
+import actions.targeters.targets.Targetable;
 
 /**
  * Pointlike (in SuperTile)
@@ -26,7 +27,14 @@ public class InCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    public boolean checkTarget(PointLike target, SuperTile checker) {
-        return negated ^ checker.containedTiles().contains(target.location());
+    @Override
+    public boolean checkTarget(Targetable target, Targetable checker) {
+        if (!(target instanceof PointLike)){
+            throw new IllegalArgumentException("Expecting a PointLike target");
+        }
+        if (!(checker instanceof SuperTile)){
+            throw new IllegalArgumentException("Expecting a SuperTile checker");
+        }
+        return negated ^ ((SuperTile)checker).containedTiles().contains(((PointLike)target).location());
     }
 }

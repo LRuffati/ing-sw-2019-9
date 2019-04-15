@@ -5,6 +5,7 @@ import actions.targeters.targets.Targetable;
 import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,8 +25,15 @@ public class VisibleSelector implements Selector {
      * @param function the conversion function from [TileUID] to [Targetable]
      * @return all the targets seen by the source
      */
-    public Collection<Targetable> select(@NotNull PointLike source, Function<TileUID,
-            Stream<Targetable>> function){
-        return source.tilesSeen().stream().flatMap(function).collect(Collectors.toSet());
+    public Collection<Targetable> select(Targetable source,
+                                         Function<TileUID, Stream<Targetable>> function) {
+        if (source instanceof PointLike){
+            var castedContainer = (PointLike) source;
+            return castedContainer.tilesSeen().stream()
+                    .flatMap(function).collect(Collectors.toSet());
+
+        } else {
+            throw new InvalidParameterException("Targeter not compatible with action");
+        }
     }
 }

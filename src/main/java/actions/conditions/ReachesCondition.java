@@ -1,6 +1,7 @@
 package actions.conditions;
 
 import actions.targeters.interfaces.PointLike;
+import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
 
 import java.util.stream.Collectors;
@@ -41,8 +42,12 @@ public class ReachesCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    public boolean checkTarget(Targetable target,  PointLike checker) {
-        return negate ^ checker.reachableSelector(min,max)
+    @Override
+    public boolean checkTarget(Targetable target,  Targetable checker) {
+        if (!(checker instanceof PointLike)){
+            throw new IllegalArgumentException("Expecting a PointLike checker");
+        }
+        return negate ^ ((PointLike) checker).reachableSelector(min,max)
                 .parallelStream().map(i -> target.getSelectedTiles().contains(i))
                 .collect(Collectors.toSet()).contains(Boolean.TRUE);
     }

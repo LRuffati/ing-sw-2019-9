@@ -4,6 +4,7 @@ import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
 import uid.TileUID;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -24,9 +25,16 @@ public class ContainedSelector implements Selector {
      * @param function the transform function
      * @return the targets contained in the supertile
      */
-    public Collection<Targetable> select(SuperTile container, Function<TileUID, Stream<Targetable>> function) {
-        return container.containedTiles().stream().flatMap(function)
-                .collect(Collectors.toSet());
+    @Override
+    public Collection<Targetable> select(Targetable container,
+                                         Function<TileUID, Stream<Targetable>> function) {
+        if (container instanceof SuperTile){
+            var castedContainer = (SuperTile) container;
+            return castedContainer.containedTiles().stream()
+                    .flatMap(function).collect(Collectors.toSet());
+        } else {
+            throw new InvalidParameterException("Targeter not compatible with action");
+        }
     }
 
 }

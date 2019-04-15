@@ -1,10 +1,12 @@
 package actions.selectors;
 
 import actions.targeters.interfaces.PointLike;
+import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
 import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,7 +49,15 @@ public class DistanceSelector implements  Selector{
      * @param function the transformation function
      * @return targets within this distance
      */
-    public Collection<Targetable> select(@NotNull PointLike sourceTarget, Function<TileUID, Stream<Targetable>> function) {
-        return sourceTarget.distanceSelector(min,max,logical).stream().flatMap(function).collect(Collectors.toSet());
+    @Override
+    public Collection<Targetable> select(Targetable sourceTarget,
+                                         Function<TileUID, Stream<Targetable>> function) {
+        if (sourceTarget instanceof PointLike){
+            var castedContainer = (PointLike) sourceTarget;
+            return castedContainer.distanceSelector(min,max,logical).stream()
+                    .flatMap(function).collect(Collectors.toSet());
+        } else {
+            throw new InvalidParameterException("Targeter not compatible with action");
+        }
     }
 }

@@ -5,6 +5,7 @@ import actions.targeters.targets.Targetable;
 import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,9 +24,16 @@ public class HasSelector implements Selector {
      * @param function the transformation function
      * @return a list with a single element
      */
-    public Collection<Targetable> select(@NotNull PointLike target, @NotNull Function<TileUID,
-            Stream<Targetable>> function) {
-        return function.apply(target.location()).collect(Collectors.toSet());
+    @Override
+    public Collection<Targetable> select(Targetable target,
+                                         Function<TileUID, Stream<Targetable>> function) {
+        if (target instanceof PointLike){
+            var castedContainer = (PointLike) target;
+            return function.apply(castedContainer.location()).collect(Collectors.toSet());
+
+        } else {
+            throw new InvalidParameterException("Targeter not compatible with action");
+        }
     }
 
 }

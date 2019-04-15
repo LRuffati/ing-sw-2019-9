@@ -3,9 +3,9 @@ package actions.selectors;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,9 +28,16 @@ public class ExistSelector implements Selector{
      * @param function the transformation function
      * @return all targets in the sandbox
      */
-    public Collection<Targetable> select(@NotNull BasicTarget self,
+    @Override
+    public Collection<Targetable> select(Targetable self,
                                          Function<TileUID, Stream<Targetable>> function) {
-        return self.coexistingTiles().stream()
-                .flatMap(function).collect(Collectors.toSet());
+        if (self instanceof BasicTarget){
+            var castedContainer = (BasicTarget) self;
+            return castedContainer.coexistingTiles().stream()
+                    .flatMap(function).collect(Collectors.toSet());
+
+        } else {
+            throw new InvalidParameterException("Targeter not compatible with action");
+        }
     }
 }

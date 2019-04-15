@@ -23,7 +23,6 @@ public interface Selector {
     // the default exception.
     //TODO: test calling different Selectors from a list, create a list of selectors of different
     // kinds intermixed and check that it returns the appropriate results
-    default Collection<Targetable> select(Targetable sourceTarget, Function<TileUID, Stream<Targetable>> converter) {
-        throw new InvalidParameterException("Targeter not compatible with action");
-    }
+    Collection<Targetable> select(Targetable sourceTarget,
+                                  Function<TileUID, Stream<Targetable>> converter);
 }

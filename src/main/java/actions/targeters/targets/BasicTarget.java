@@ -1,5 +1,6 @@
 package actions.targeters.targets;
 
+import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.interfaces.TargetedSelector;
 import actions.targeters.interfaces.Visible;
@@ -9,7 +10,6 @@ import org.jetbrains.annotations.NotNull;
 import player.DominationPoint;
 import player.Pawn;
 import uid.DamageableUID;
-import actions.targeters.interfaces.PointLike;
 import uid.TileUID;
 
 import java.util.ArrayList;
@@ -201,7 +201,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      * @return negation XOR whether this can be reached by the source in the given number of steps
      */
     @Override
-    public boolean reachedCondition(int min, int max, @NotNull PointLike source, boolean negation) {
+    public boolean reachedCondition(int min, int max, @NotNull actions.targeters.interfaces.PointLike source, boolean negation) {
         Set<TileUID> circle = source.reachableSelector(min, max);
         return negation ^ circle.contains(location());
     }
@@ -245,7 +245,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      * @return negation XOR whether this Pawn can be seen by the source
      */
     @Override
-    public boolean seen(PointLike source, boolean negation) {
+    public boolean seen(actions.targeters.interfaces.PointLike source, boolean negation) {
         return negation ^ source.tilesSeen().contains(location());
     }
 

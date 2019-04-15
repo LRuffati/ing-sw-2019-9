@@ -3,6 +3,7 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
 
+import java.lang.annotation.Target;
 import java.util.stream.Collectors;
 
 /**
@@ -50,9 +51,15 @@ public class DistantCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    public boolean checkTarget(Targetable target, PointLike checker) {
-        return negated ^ checker.distanceSelector(min,max,logical)
-                .parallelStream().map(i -> target.getSelectedTiles().contains(i))
-                .collect(Collectors.toSet()).contains(Boolean.TRUE);
+    @Override
+    public boolean checkTarget(Targetable target, Targetable checker) {
+        if (checker instanceof PointLike) {
+            return negated ^ ((PointLike) checker).distanceSelector(min,max,logical)
+                    .parallelStream().map(i -> target.getSelectedTiles().contains(i))
+                    .collect(Collectors.toSet()).contains(Boolean.TRUE);
+        }
+        else {
+            throw new IllegalArgumentException("Checker should be PointLike");
+        }
     }
 }

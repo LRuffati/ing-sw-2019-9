@@ -2,6 +2,7 @@ package actions.conditions;
 
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.Visible;
+import actions.targeters.targets.Targetable;
 
 /**
  * target (... &amp; seen checker)
@@ -26,7 +27,15 @@ public class SeenCondition extends Condition {
      * @param checker the filter
      * @return the result of the check
      */
-    public boolean checkTarget(Visible target,  PointLike checker) {
-        return target.seen(checker, negate);
+    @Override
+    public boolean checkTarget(Targetable target, Targetable checker) {
+        if (!(target instanceof Visible)){
+            throw new IllegalArgumentException("Expecting a Visible target");
+        }
+        if (!(checker instanceof PointLike)){
+            throw new IllegalArgumentException("Expecting a PointLike checker");
+        }
+
+        return ((Visible) target).seen((PointLike) checker, negate);
     }
 }

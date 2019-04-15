@@ -5,6 +5,7 @@ import actions.targeters.targets.Targetable;
 import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
+import java.security.InvalidParameterException;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -42,10 +43,17 @@ public class ReachableSelector implements Selector {
      * @return all the targets reachable by the source in the given amount of steps
      */
     //TODO: test with a DominationPoint as source
-    public Collection<Targetable> select(@NotNull PointLike source, Function<TileUID,
-            Stream<Targetable>> function){
-        return source.reachableSelector(min, max).stream()
-                .flatMap(function)
-                .collect(Collectors.toSet());
+    @Override
+    public Collection<Targetable> select(Targetable source,
+                                         Function<TileUID, Stream<Targetable>> function) {
+        if (source instanceof PointLike){
+            var castedContainer = (PointLike) source;
+            return castedContainer.reachableSelector(min, max).stream()
+                    .flatMap(function)
+                    .collect(Collectors.toSet());
+
+        } else {
+            throw new InvalidParameterException("Targeter not compatible with action");
+        }
     }
 }

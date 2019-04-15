@@ -13,8 +13,6 @@ public abstract class Condition {
      */
     //TODO: check that the overloading works as intended, test using a List<Condition> containing
     // conditions of different types, such as DistantCondition and SeenCondition
-    public boolean checkTarget(Targetable target, Targetable checker){
-        throw new IllegalArgumentException("Invalid Target");
-    }
+    public abstract boolean checkTarget(Targetable target, Targetable checker);
 
 }
