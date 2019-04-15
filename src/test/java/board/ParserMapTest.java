@@ -32,7 +32,7 @@ public class ParserMapTest {
         res.add(map.getPosition(new Coord(0,2)));
         res.add(map.getPosition(new Coord(1,3)));
 
-        assertEquals(res, map.getTile(map.getPosition(new Coord(2,2))).getSurroundings(true, 2));
+        assertEquals(res, map.getSurroundings(true, 2, map.getPosition(new Coord(2,2))));
 
         res.clear();
         res.add(map.getPosition(new Coord(2,2)));
@@ -42,7 +42,7 @@ public class ParserMapTest {
 
         res.add(map.getPosition(new Coord(1,1)));
         res.add(map.getPosition(new Coord(1,3)));
-        assertEquals(res, map.getTile(map.getPosition(new Coord(2,2))).getSurroundings(false, 2));
+        assertEquals(res, map.getSurroundings(false, 2, map.getPosition(new Coord(2,2))));
     }
 
     @Test

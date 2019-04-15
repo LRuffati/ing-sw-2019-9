@@ -95,11 +95,9 @@ public class ParserMap {
             str = scanner.nextLine();
         }
 
-        scanner.nextLine();
-
         Color color;
         try {
-            Field field = Class.forName("java.awt.Color").getField("yellow");
+            Field field = Class.forName("java.awt.Color").getField(scanner.nextLine());
             color = (Color)field.get(null);
         } catch (Exception e) {
             color = null; // Not defined

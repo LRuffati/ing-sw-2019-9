@@ -5,7 +5,6 @@ import uid.TileUID;
 import java.awt.*;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -43,33 +42,17 @@ public class Room{
     }
 
     /**
+     * @return The identifier of the Room
+     */
+    public RoomUID getRoomID(){
+        return this.roomID;
+    }
+
+    /**
      * @return The color used to identify the room
      */
     public Color getColor(){
         return color;
-    }
-
-    /**
-     * @return An iterator that allow to access to the Tiles in the room. Remove() launch an UnsupportedOperationException is called
-     */
-    public Iterator<TileUID> getTilesIterator(){
-        Iterator<TileUID> iterator = tiles.iterator();
-        return new Iterator<TileUID>() {
-            @Override
-            public boolean hasNext() {
-                return iterator.hasNext();
-            }
-
-            @Override
-            public TileUID next() {
-                return iterator.next();
-            }
-
-            @Override
-            public void remove(){
-                throw new UnsupportedOperationException("Remove method can't be used here");
-            }
-        };
     }
 
     /**

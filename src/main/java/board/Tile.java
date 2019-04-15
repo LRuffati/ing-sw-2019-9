@@ -68,42 +68,6 @@ public class Tile{
     }
 
     /**
-     * This function gets all the cells within a certain distance of the cell, including the cell itself
-     *
-     * The result is a Set and an arbitrary range of (Logical in this case) distances [a,b] can be obtained by:
-     *
-     * getSurroundings(False, b).removeAll(getSurroundings(False, a) )
-     * @param physical True for physical, False for logical
-     * @param range The depth of the depth first search to run.
-     * The function will return **all** cells at a distance less or equal this parameter
-     *
-     * If range is 0 the correct behaviour is to return this.tileID
-     * If less than 0 return an empty set
-     * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
-     */
-    public Set<TileUID> getSurroundings(Boolean physical, Integer range) {
-        Set<TileUID> ret = new HashSet<>();
-        Set<TileUID> border = new HashSet<>();
-        Set<TileUID> newBorder = new HashSet<>();
-        if(range < 0) return ret;
-        ret.add(this.tileID);
-        border.add(this.tileID);
-        for(int i=0; i<range; i++) {
-            for (TileUID t : border) {
-                for (NeightTile t1 : map.getTile(t).neighbors.values()) {
-                    TileUID t2;
-                    t2 = physical ? t1.physical() : t1.logical().orElse(null);
-                    if (t2 != null) newBorder.add(t2);
-                }
-                ret.addAll(newBorder);
-                border = new HashSet<>(newBorder);
-                newBorder.clear();
-            }
-        }
-        return ret;
-    }
-
-    /**
      * Give the neightbor in a given direction, return an empty Optional if the tile has nothing on that direction
      * @param physical True for physical, False for logical
      * @param direction Direction of the asked tile
@@ -124,7 +88,7 @@ public class Tile{
      * @param physical True to pass through walls, False to only follow traversable links
      * @return The Collection is ordered from closest (always the current cell) to farthest
      */
-    public List<TileUID> getDirection(Boolean physical, Direction direction) {
+        public List<TileUID> getDirection(Boolean physical, Direction direction) {
         List<TileUID> ret = new ArrayList<>();
         ret.add(tileID);
         Optional<TileUID> t = getNeighbor(physical, direction);
@@ -180,27 +144,6 @@ public class Tile{
     }
 
 
-    private Room getRoomObj(){
-        return map.getRoom(roomID);
-    }
-
-    /**
-     * Finds all the Tiles that are visible from itself
-     * @return A Set containing all the visible Tiles
-     */
-    public Set<TileUID> getVisible(){
-        Set<TileUID> ret = new HashSet<>();
-        Set<TileUID> surr = getSurroundings(true, 1);
-        for(TileUID t : surr){
-            Iterator<TileUID> iterator = map.getTile(t).getRoomObj().getTilesIterator();
-            while(iterator.hasNext()){
-                ret.add(iterator.next());
-            }
-        }
-        return ret;
-    }
-
-
     /**
      * Returns a collection with all the DamageableUID contained in the tile
      * @return A collections containing the DamageableUID in the tile
@@ -234,7 +177,7 @@ public class Tile{
      * @param physical true to check through walls, false otherwise
      * @return A Map containing surrounding Tiles
      */
-    public Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
+    protected Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
         Map<Direction, TileUID> ret = new EnumMap<>(Direction.class);
         Optional<TileUID> t;
         for( Direction d : neighbors.keySet()){

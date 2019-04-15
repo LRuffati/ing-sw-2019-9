@@ -3,68 +3,49 @@ package board;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.RoomUID;
-import uid.TileUID;
 
 import java.awt.*;
-import java.util.Collection;
+import java.io.FileNotFoundException;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RoomTest {
 
-    private HashSet<TileUID> tiles = new HashSet<>();
-    private Color color;
+    private GameMap map;
+
     @BeforeEach
-    void setUp() {
-        tiles.add(new TileUID());
-        tiles.add(new TileUID());
-        tiles.add(new TileUID());
-        tiles.add(new TileUID());
-        tiles.add(new TileUID());
-
-        color = new Color(10,10,10);
-    }
-
-    @Test
-    void testColor(){
-        Room room = new Room(new RoomUID(), tiles, color);
-        assertEquals(new Color(10,10,10), room.getColor());
-    }
-
-    @Test
-    void testGetTilesNotEmpty(){
-        Room room = new Room(new RoomUID(), tiles, color);
-        Iterator<TileUID> i = room.getTilesIterator();
-        while(i.hasNext()) {
-            TileUID tile = i.next();
-            assertTrue(tiles.contains(tile));
+    void setup(){
+        map = null;
+        try {
+            map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
-
-        Collection<TileUID> c = room.getTiles();
-        assertEquals(c.size(), tiles.size());
-    }
-
-    @Test
-    void testGetTilesEmpty(){
-        Room room = new Room(new RoomUID(), new HashSet<>(), color);
-        Iterator<TileUID> i = room.getTilesIterator();
-        while(i.hasNext()) {
-            assertTrue(tiles.contains(i.next()));
+        catch (FileNotFoundException e){
+            System.exit(-100);
         }
     }
 
     @Test
-    void removeItemFromIterator(){
-        Room room = new Room(new RoomUID(), tiles, color);
-        Iterator<TileUID> i = room.getTilesIterator();
-        assertThrows(UnsupportedOperationException.class , i::remove);
-        int c = 0;
-        while(i.hasNext()) {
-            i.next();
-            c++;
-        }
-        assertEquals(tiles.size(), c);
+    void getColorTest(){
+        assertEquals(Color.BLUE , map.getRoom(map.room(map.getPosition(new Coord(0,0)))).getColor());
+        assertEquals(Color.WHITE , map.getRoom(map.room(map.getPosition(new Coord(2,1)))).getColor());
+        assertEquals(Color.YELLOW , map.getRoom(map.room(map.getPosition(new Coord(2,3)))).getColor());
+    }
+
+    @Test
+    void getTilesTest(){
+        Room r;
+        r = map.getRoom(map.room(map.getPosition(new Coord(0,0))));
+        assertTrue(r.getTiles().contains(map.getPosition(new Coord(0,0))));
+        r = map.getRoom(map.room(map.getPosition(new Coord(0,0))));
+        assertTrue(r.getTiles().contains(map.getPosition(new Coord(0,2))));
+        r = map.getRoom(map.room(map.getPosition(new Coord(2,2))));
+        assertFalse(r.getTiles().contains(map.getPosition(new Coord(0,3))));
+
+        assertThrows(NoSuchElementException.class , () -> map.getRoom(new RoomUID()).getTiles());
+
+        Room room = new Room(new RoomUID(), new HashSet<>(), null);
+        assertTrue(room.getTiles().isEmpty());
     }
 }

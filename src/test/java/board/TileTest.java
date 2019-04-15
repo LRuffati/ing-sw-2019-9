@@ -75,7 +75,7 @@ class TileTest {
         Map<RoomUID, Room> roomUIDMap = Map.of(room, new Room(room, Set.of(thisTile, tUp, tDown, tLeft, tRight),
                                                                                 new Color(255,255,255)));
 
-        map = new GameMap(roomUIDMap, tileUIDMap, null, null);
+        map = new GameMap(roomUIDMap, tileUIDMap, null, null, null);
 
         tileUp.setMap(map);        tileDown.setMap(map);        tileLeft.setMap(map);        tileRight.setMap(map);
         tile.setMap(map);
@@ -172,9 +172,9 @@ class TileTest {
 
     @Test
     void testGetSurroundings(){
-        assertEquals(tile.getSurroundings(true, 5) , tile.getSurroundings(true, 1));
-        assertEquals(1 , tile.getSurroundings(true, 0).size());
-        assertTrue(tile.getSurroundings(true, -3).isEmpty());
+        assertEquals(map.getSurroundings(true, 5, thisTile) , map.getSurroundings(true, 1, thisTile));
+        assertEquals(1 , map.getSurroundings(true, 0, thisTile).size());
+        assertTrue(map.getSurroundings(true, -3, thisTile).isEmpty());
     }
 
     @Test
@@ -188,7 +188,7 @@ class TileTest {
 
     @Test
     void testgetVisible(){
-        assertEquals(5 , tile.getVisible().size());
+        assertEquals(5 , map.getVisible(thisTile).size());
     }
 
 

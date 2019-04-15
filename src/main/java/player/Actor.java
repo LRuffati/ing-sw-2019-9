@@ -57,7 +57,7 @@ public class Actor {
      */
     public void movePlayer(TileUID t){
 
-        if(turn && (frenzy && gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t)||gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t))){
+        if(turn && (frenzy && gm.getSurroundings(false, 4, pawn.getTile()).contains(t)|| gm.getSurroundings(false, 4, pawn.getTile()).contains(t))){
             pawn.move(t);
         }
     }

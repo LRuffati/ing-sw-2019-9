@@ -21,14 +21,16 @@ public class GameMap {
      */
     public GameMap(Map<RoomUID,Room> roomUIDMap,
                    Map<TileUID, Tile> tileUIDMap,
-                   Map<Coord, TileUID> position,
+                   List<TileUID> position,
+                   Coord maxPos,
                    Map<DamageableUID, Pawn> damageableUIDMap) {
-        //TODO fare un vero costruttore
         this.roomUIDMap = roomUIDMap;
         this.tileUIDMap = tileUIDMap;
         this.position = position;
         this.damageableUIDMap = damageableUIDMap;
+        this.maxPos = maxPos;
     }
+
 
     public Sandbox createSandbox(){
         Map<RoomUID, RoomTarget> targetRooms=  roomUIDMap.entrySet().stream()
@@ -46,6 +48,11 @@ public class GameMap {
     }
 
     /**
+     * Holds the length and width of the Map
+     */
+    private Coord maxPos;
+
+    /**
      *  Map between RoomUID and the Room Class
      */
     private Map<RoomUID,Room> roomUIDMap;
@@ -58,7 +65,7 @@ public class GameMap {
     /**
      * Stores the absolute position of each Tile. Should not be used to access to TileUID
      */
-    private Map<Coord, TileUID> position;
+    private List<TileUID> position;
 
     /**
      * Map between DamageableUID and Damageable Class
@@ -107,10 +114,13 @@ public class GameMap {
      * @return the TileUID corresponding to the Coordinate. If no Tile is found, an empty Optional is returned
      * @exception NoSuchElementException If no Coord is found, an exception is returned
      */
-    //TODO check if this method is correct or necessary. Probably incorrect, maybe unnecessary
     public TileUID getPosition(Coord coord) {
-        if(position.containsKey(coord))
-            return position.get(coord);
+        int pos = coord.getX()*maxPos.getX() + coord.getY();
+        if(pos < maxPos.getX()*maxPos.getY()
+                && position.get(pos) != null
+                && coord.getX() <= maxPos.getX()
+                && coord.getY() <= maxPos.getY())
+            return position.get(pos);
         else
             throw new NoSuchElementException("This Coord does not exists");
     }
@@ -165,4 +175,50 @@ public class GameMap {
         return getRoom(room).getTiles();
     }
 
+    /**
+     * This function gets all the cells within a certain distance of the cell, including the cell itself
+     *
+     * The result is a Set and an arbitrary range of (Logical in this case) distances [a,b] can be obtained by:
+     *
+     * getSurroundings(False, b).removeAll(getSurroundings(False, a) )
+     * @param physical True for physical, False for logical
+     * @param range The depth of the depth first search to run.
+     * The function will return **all** cells at a distance less or equal this parameter
+     *
+     * If range is 0 the correct behaviour is to return this.tileID
+     * If less than 0 return an empty set
+     * @param tile
+     * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
+     */
+    public Set<TileUID> getSurroundings(Boolean physical, Integer range, TileUID tile) {
+        Set<TileUID> ret = new HashSet<>();
+        Set<TileUID> border = new HashSet<>();
+        Set<TileUID> newBorder = new HashSet<>();
+        if(range < 0) return ret;
+        ret.add(tile);
+        border.add(tile);
+        for(int i=0; i<range; i++) {
+            for (TileUID t : border) {
+                newBorder.addAll(neighbors(t, !physical).values());
+                ret.addAll(newBorder);
+            }
+            border = new HashSet<>(newBorder);
+            newBorder.clear();
+        }
+        return ret;
+    }
+
+    /**
+     * Finds all the Tiles that are visible from itself
+     * @return A Collection containing all the visible Tiles
+     * @param tile
+     */
+    public Collection<TileUID> getVisible(TileUID tile){
+        Set<TileUID> ret = new HashSet<>();
+        Set<TileUID> surr = getSurroundings(false, 1, tile);
+        for(TileUID t : surr){
+            ret.addAll(tilesInRoom(room(t)));
+        }
+        return ret;
+    }
 }
