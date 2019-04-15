@@ -1,6 +1,7 @@
 package player;
 
 import actions.PowerUp;
+import actions.utils.AmmoAmount;
 import board.GameMap;
 import grabbables.Weapon;
 import board.Tile;
@@ -8,6 +9,7 @@ import uid.DamageableUID;
 import uid.GrabbableUID;
 import uid.TileUID;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Optional;
@@ -22,7 +24,7 @@ public class Actor {
     private Dictionary<DamageableUID, Integer> marks;
     private Collection<Weapon> weapons;
     private Collection<PowerUp> powerups;
-    //private AmmoAmount ammoAviable;                   //cannot use AmmoAmount, need something else
+    private AmmoAmount ammoAviable;                   //cannot use AmmoAmount, need something else
     private boolean startingPlayerMarker;
     private Pawn pawn;
     private Boolean frenzy;
@@ -39,8 +41,10 @@ public class Actor {
         this.numOfDeaths = 0;
         this.pawn = new Pawn();
         pawn.setBinding(this);
-        this.startingPlayerMarker = false; //TODO I need to check in some way if any other player is already the first.
-        this.weapons = null; //TODO Weapon constructor.
+        this.startingPlayerMarker = false;
+        this.weapons = new ArrayList<>();
+        this.powerups = new ArrayList<>();
+        this.ammoAviable = new AmmoAmount();
         this.frenzy = false;
         this.marks = null;
         this.gm = map;
@@ -52,7 +56,8 @@ public class Actor {
      * @param t is the Tile id where the player is trying to move to.
      */
     public void movePlayer(TileUID t){
-        if((frenzy && gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t)||gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t))){
+
+        if(turn && (frenzy && gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t)||gm.getTile(pawn.getTile()).getSurroundings(false, 4).contains(t))){
             pawn.move(t);
         }
     }
@@ -65,15 +70,18 @@ public class Actor {
      */
     public void pickUp(GrabbableUID item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
         //TODO check validity.
-        //if(tileToMove.isPresent() && steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t))
-        Tile pos = gm.getTile(this.pawn.getTile());
-        Collection<GrabbableUID> gr = pos.getGrabbable();
-        if(gr.contains(item)){
-            if(weapons.size() >= 3 && wToRemove.isPresent()){
-                removeWeapon(wToRemove.get());
+        if(turn){
+
+            //if(tileToMove.isPresent() && steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t))
+            Tile pos = gm.getTile(this.pawn.getTile());
+            Collection<GrabbableUID> gr = pos.getGrabbable();
+            if(gr.contains(item)) {
+                if (weapons.size() >= 3 && wToRemove.isPresent()) {
+                    removeWeapon(wToRemove.get());
+                }
+                pos.pickUpGrabbable(item);
+                //weapon.add(item);
             }
-            pos.pickUpGrabbable(item);
-            //weapon.add(item);
         }
     }
 
@@ -119,5 +127,26 @@ public class Actor {
         return turn;
     }
 
+    /**
+     * Needed to other class to set who's the first player playing (needed for Frenzy Final).
+     */
+    public void setStartingPlayerMarker() {
+        this.startingPlayerMarker = true;
+    }
 
+    /**
+     *
+     * @return the points actually owned by the player.
+     */
+    public int getPoints() {
+        return points;
+    }
+
+    /**
+     * Needed to end and start a player turn.
+     * @param turn true to start the turn, false to end it.
+     */
+    public void setTurn(Boolean turn) {
+        this.turn = turn;
+    }
 }
