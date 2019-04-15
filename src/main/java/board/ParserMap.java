@@ -7,10 +7,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Builds a GameMap from a file
+ */
 public class ParserMap {
 
     private static int length;
@@ -19,11 +21,15 @@ public class ParserMap {
     private static List<RoomUID> roomOfTile;
     private static List<Room> room = new ArrayList<>();
     private static List<Integer> excluded = new ArrayList<>();
-
-
     private static List<Map<Direction, NeightTile>> allNeight;
 
+    private ParserMap(){}
 
+    /**
+     * @param path The Path of the Map file
+     * @return a GameMap built upon the path file
+     * @throws FileNotFoundException If path is not found, throws an Exception
+     */
     public static GameMap parseMap(String path) throws FileNotFoundException{
 
         String str;
@@ -102,11 +108,10 @@ public class ParserMap {
     }
 
     private static void readDoor(Scanner scanner){
-        int size = length*width;
         Scanner sLine;
         allNeight = new ArrayList<>();
 
-        for(int i=0; i<size; i++){
+        for(int i=0; i<length*width; i++){
             Map<Direction, NeightTile> neight = new EnumMap<>(Direction.class);
 
             addElem(neight, i, -length, Direction.UP);
@@ -163,9 +168,8 @@ public class ParserMap {
         if(x1==x2 && y1>y2)   return Direction.LEFT;
         if(x1==x2 && y1<y2)   return Direction.RIGHT;
         if(x1<x2 && y1==y2)   return Direction.DOWN;
-        return Direction.UP;
-        //if(x1>x2 && y1==y2)   return Direction.UP;
-        //return null;
+        if(x1>x2 && y1==y2)   return Direction.UP;
+        return null;
     }
 
 
