@@ -34,6 +34,7 @@ public class Targeter {
         targetBuilders.put("direction_p",sandbox-> tileUID -> sandbox.neighbors(tileUID, false).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),false)));
         targetBuilders.put("room",sandbox-> tileUID -> Stream.of(sandbox.getRoom(sandbox.room(tileUID))));
     }
+
     private static String groupString = "group";
 
     /**
@@ -75,6 +76,11 @@ public class Targeter {
     private final boolean automatic;
 
     /**
+     * The ID of the target
+     */
+    private final String targetID;
+
+    /**
      * @see Targeter#targetBuilders
      */
     private final String type;
@@ -91,10 +97,10 @@ public class Targeter {
      * @param master the ChoiceMaker to confirm targets
      * @param previousTargets a Map of previous targets
      */
-    Targeter(Sandbox sandbox,
-             ChoiceMaker master,
-             Map<String, Targetable> previousTargets,
-             TargeterTemplate template){
+    public Targeter(Sandbox sandbox,
+                    ChoiceMaker master,
+                    Map<String, Targetable> previousTargets,
+                    TargeterTemplate template, String targetID){
 
         this.sandbox = sandbox;
         this.selector = template.selector;
@@ -103,6 +109,7 @@ public class Targeter {
         this.previousTargets = previousTargets;
         this.newTarg = template.newTarg;
         this.automatic = template.automatic;
+        this.targetID = targetID;
         if (template.type.equals(groupString)){
             this.optional = false;
             this.type = "pawn";
@@ -164,12 +171,12 @@ public class Targeter {
         if (optional) validTargets.add(new StubTarget(sandbox));
 
         if (validTargets.isEmpty()){
-            throw new NotEnoughTargetsException("0 targets available in non optional selector");
+            throw new NotEnoughTargetsException("0 targets available in non optional targeter");
         }
 
         if (automatic) {
             Optional<Targetable> ret;
-            if (validTargets.get(0).getSelectedPawns().isEmpty() && validTargets.get(0).getSelectedTiles().isEmpty()){
+            if (validTargets.get(0) instanceof StubTarget ){
                 ret = Optional.empty();
             } else {
                 ret = Optional.of(validTargets.get(0));
@@ -177,9 +184,9 @@ public class Targeter {
             return ret;
         }
         else {
-            int picked = this.master.pickTarget(validTargets);
+            int picked = this.master.pickTarget(targetID, validTargets);
             Optional<Targetable> ret;
-            if (validTargets.get(picked).getSelectedPawns().isEmpty() && validTargets.get(picked).getSelectedTiles().isEmpty()){
+            if (validTargets.get(picked) instanceof StubTarget ){
                 ret = Optional.empty();
             } else {
                 ret = Optional.of(validTargets.get(0));

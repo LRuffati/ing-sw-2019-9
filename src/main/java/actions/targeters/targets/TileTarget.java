@@ -81,7 +81,7 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      */
     @Override
     public boolean filteringHas(@NotNull PointLike target, boolean negation) {
-        return negation ^ (target.location() == tileUID);
+        return negation ^ (target.location().equals(tileUID));
     }
 
     /**

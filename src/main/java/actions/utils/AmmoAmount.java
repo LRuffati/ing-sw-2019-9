@@ -3,10 +3,14 @@ package actions.utils;
 import org.jetbrains.annotations.*;
 
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.Integer.min;
 
 /**
  * This class represents a fixed ammunition amount, it can represent a cost or the amount available to the player
+ * <br/>It is important that AmmoAmount be immutable
  */
 public class AmmoAmount implements Comparable<AmmoAmount> {
 
@@ -50,11 +54,39 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
     }
 
     /**
+     * This method creates a new AmmoAmount to represent a cost having been paid
+     * @param c the cost
+     * @return the original ammoAmount decreased by c
+     */
+    public AmmoAmount subtract(AmmoAmount c){
+        if (this.compareTo(c)>0) {
+            Map<AmmoColor,Integer> newMap = new HashMap<>(amounts);
+            for (Map.Entry<AmmoColor, Integer> i: c.amounts.entrySet()){
+                newMap.put(i.getKey(), amounts.get(i.getKey())-i.getValue());
+            }
+            return new AmmoAmount(newMap);
+        } else throw new IllegalArgumentException("Cost is greater than available amounts");
+    }
+
+    /**
+     * This method creates a new AmmoAmount to represent a reloaded amount
+     * @param r the AmmoAmount to add
+     * @return An AmmoAmount which is the pointwise sum of
+     */
+    public AmmoAmount add(AmmoAmount r){
+        Map<AmmoColor,Integer> newMap = new HashMap<>(amounts);
+        for (Map.Entry<AmmoColor, Integer> i: r.amounts.entrySet()){
+            newMap.put(i.getKey(), min(3, amounts.get(i.getKey())+i.getValue()));
+        }
+        return new AmmoAmount(newMap);
+    }
+
+    /**
      * This functions implements a comparison with the following logic:
-     * a &gt; o if the ammo in a can be used to run an action costing o
-     * a &lt; o if the ammo in a is not sufficient to cover o
+     * this &gt; o if the ammo in this can be used to run an action costing o
+     * this &lt; o if the ammo in this is not sufficient to cover o
      * @param o The other AmmoAmount
-     * @return 1 if I can pay o using a and -1 otherwise
+     * @return 1 if I can pay o using this and -1 otherwise
      */
     @Override
     public int compareTo(@NotNull AmmoAmount o) {

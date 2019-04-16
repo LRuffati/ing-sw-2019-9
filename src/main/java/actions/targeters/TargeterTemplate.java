@@ -8,6 +8,9 @@ import java.util.List;
 
 /**
  * This class holds the information about a targeter without needing a sandbox, nor providing any methods
+ *
+ * The class should be immutable to allow easier passing without worrying about performing a deep
+ * copy
  */
 public class TargeterTemplate {
     /**
@@ -59,4 +62,5 @@ public class TargeterTemplate {
         this.newTarg = newTarg;
         this.automatic = automatic;
     }
+
 }
