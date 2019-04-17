@@ -1,6 +1,7 @@
 package gamemanager;
 
 
+import genericitems.Tuple3;
 import grabbables.Deck;
 import genericitems.Tuple;
 
@@ -17,7 +18,7 @@ import java.util.Set;
 public class MementoPattern<T> {
 
     private Collection<T> deckComp;
-    private Tuple<Collection<T>, Set<T>> deckTuple;
+    private Tuple3<Collection<T>, Set<T>, Set<T>> deckTuple;
 
 
     public MementoPattern(){
