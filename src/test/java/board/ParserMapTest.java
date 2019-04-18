@@ -13,12 +13,14 @@ public class ParserMapTest {
     void map1Test(){
         GameMap map = null;
         try {
-            map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
+            map =  GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt", 0);
+            //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
         catch (FileNotFoundException e){
             System.exit(-100);
         }
 
+        assertNotNull(map);
         assertEquals(map.getPosition(new Coord(0,0)), map.getTile(map.getPosition(new Coord(0,1))).getNeighbor(false, Direction.LEFT).get());
 
         Set<TileUID> res = new HashSet<>();

@@ -1,8 +1,8 @@
 package board;
+import grabbables.Grabbable;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
-import uid.GrabbableUID;
 
 import java.awt.*;
 import java.util.*;
@@ -20,15 +20,21 @@ public class Tile{
      * @param roomID The identifier of the room
      * @param neighbors The neighbors of the tile
      */
-    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction,NeightTile> neighbors) {
+    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction,NeightTile> neighbors, boolean spawnPoint) {
         this.map = map;
         this.roomID = roomID;
         this.tileID = tileID;
         this.neighbors = neighbors;
+        this.spawnPoint = spawnPoint;
 
         damageable = new HashSet<>();
-        grabbable = new HashSet<>();
+        grabbableSet = new HashSet<>();
     }
+
+    /**
+     * True if the tile is a Spawn Point, and can contain Weapons
+     */
+    private final boolean spawnPoint;
 
     /**
      * The UID of the room that contains the cell
@@ -50,7 +56,7 @@ public class Tile{
     /**
      * List of Grabbable elements (Weapon, TileCard)
      */
-    private Set<GrabbableUID> grabbable;
+    private Set<Grabbable> grabbableSet;
 
     /**
      * List of Damageable units in the Tile
@@ -88,7 +94,7 @@ public class Tile{
      * @param physical True to pass through walls, False to only follow traversable links
      * @return The Collection is ordered from closest (always the current cell) to farthest
      */
-        public List<TileUID> getDirection(Boolean physical, Direction direction) {
+    protected List<TileUID> getDirection(Boolean physical, Direction direction) {
         List<TileUID> ret = new ArrayList<>();
         ret.add(tileID);
         Optional<TileUID> t = getNeighbor(physical, direction);
@@ -103,26 +109,26 @@ public class Tile{
      *
      * @return A Set containing all the Grabbable elements
      */
-    public Set<GrabbableUID> getGrabbable(){
-        return new HashSet<>(grabbable);
+    protected Set<Grabbable> getGrabbable(){
+        return new HashSet<>(grabbableSet);
     }
 
     /**
      * Adds a Grabbable elements in this Tile
-     * @param grabbableID The identifier of the grabbable item
+     * @param grabbable The identifier of the grabbable item
      */
-    public void addGrabbable(GrabbableUID grabbableID){
-        this.grabbable.add(grabbableID);
+    protected void addGrabbable(Grabbable grabbable){
+        grabbableSet.add(grabbable);
     }
 
     /**
      * Removes the element from the Grabbable set. If there is not this element, throws a NoSuchElementException
-     * @param grabbableID The identifier of the grabbable item
+     * @param grabbable The identifier of the grabbable item
      * @throws NoSuchElementException If this GrabbableUID is not found, an exception is returned
      */
-    public void pickUpGrabbable(GrabbableUID grabbableID) {
-        if(grabbable.contains(grabbableID))
-            grabbable.remove(grabbableID);
+    protected void pickUpGrabbable(Grabbable grabbable) {
+        if(grabbableSet.contains(grabbable))
+            grabbableSet.remove(grabbable);
         else
             throw new NoSuchElementException("This GrabbableID is not in this Tile");
     }
@@ -148,7 +154,7 @@ public class Tile{
      * Returns a collection with all the DamageableUID contained in the tile
      * @return A collections containing the DamageableUID in the tile
      */
-    public Collection<DamageableUID> getDamageable(){
+    protected Collection<DamageableUID> getDamageable(){
         return new HashSet<>(damageable);
     }
 
@@ -156,7 +162,7 @@ public class Tile{
      * Adds a Damageable element in the tile
      * @param damageableUID The Damageable element that has to be added
      */
-    public void addDamageable(DamageableUID damageableUID){
+    protected void addDamageable(DamageableUID damageableUID){
         damageable.add(damageableUID);
     }
 
@@ -165,7 +171,7 @@ public class Tile{
      * @param damageableID The identifier of the damageable item
      * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
      */
-    public void removeDamageable(DamageableUID damageableID) {
+    protected void removeDamageable(DamageableUID damageableID) {
         if(damageable.contains(damageableID))
             damageable.remove(damageableID);
         else
@@ -186,6 +192,10 @@ public class Tile{
                 ret.put(d, t.get());
         }
         return ret;
+    }
+
+    protected boolean spawnPoint(){
+        return this.spawnPoint;
     }
 
 }

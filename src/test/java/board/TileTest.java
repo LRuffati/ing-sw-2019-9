@@ -1,4 +1,4 @@
-package board;
+/*package board;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -192,4 +192,4 @@ class TileTest {
     }
 
 
-}
+}*/

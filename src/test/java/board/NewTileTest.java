@@ -1,9 +1,10 @@
 package board;
 
+import grabbables.Grabbable;
+import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.DamageableUID;
-import uid.GrabbableUID;
 import uid.TileUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +20,8 @@ class NewTileTest {
     void setup(){
         map = null;
         try {
-            map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
+            map = GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt", 0);
+            //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
         catch (FileNotFoundException e){
         }
@@ -76,14 +78,21 @@ class NewTileTest {
         assertEquals(map.getRoom(tile.getRoom()).getColor(), tile.getColor());
     }
 
+    @Test
+    void testSpawn(){
+        assertFalse(map.getTile(map.getPosition(new Coord(0,0))).spawnPoint());
+        assertFalse(map.getTile(map.getPosition(new Coord(0,3))).spawnPoint());
+        assertTrue(map.getTile(map.getPosition(new Coord(0,2))).spawnPoint());
+    }
+
 
     @Test
     void testGrabbable(){
         Tile tile = map.getTile(map.getPosition(new Coord(1,1)));
         //TODO: check
 
-        Set<GrabbableUID> g;
-        GrabbableUID g1 = new GrabbableUID();
+        Set<Grabbable> g;
+        Grabbable g1 = new Weapon();
         g = tile.getGrabbable();
         assertTrue(g.isEmpty());
         g.add(g1);

@@ -18,7 +18,9 @@ public class newGameMapTest {
     void setup(){
         map = null;
         try {
-            map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
+            map = GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt"
+                    , 3);
+            //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
         catch (FileNotFoundException e){
         }
@@ -46,27 +48,39 @@ public class newGameMapTest {
 
     @Test
     void pawnTest(){
-        //TODO: add pawn
-        /*
-        assertThrows(NoSuchElementException.class , () -> map.tile(pawn1));
-        map.getTile(thisTile).addDamageable(pawn1);
-        assertEquals(thisTile ,  map.tile(pawn1));
-        assertEquals(Set.of(pawn1) , map.containedPawns(thisTile));
-        tile.removeDamageable(pawn1);
-        assertThrows(NoSuchElementException.class , () -> map.tile(pawn1));
-        assertTrue(map.containedPawns(thisTile).isEmpty());
-        assertTrue(map.containedPawns(tLeft).isEmpty());
-        */
+        assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
+
+        DamageableUID[] listD = new DamageableUID[map.getDamageable().size()];
+        map.getDamageable().toArray(listD);
+
+        map.addDamageable(map.getPosition(new Coord(0,0)) , listD[0]);
+        assertEquals(map.getPosition(new Coord(0,0)) ,  map.tile(listD[0]));
+        assertEquals(Set.of(listD[0]) ,  map.containedPawns(map.getPosition(new Coord(0,0))));
+
+        map.removeDamageable(map.getPosition(new Coord(0,0)) , listD[0]);
+        assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
+        assertThrows(NoSuchElementException.class , () -> map.removeDamageable(map.getPosition(new Coord(1,1)), listD[0]));
+        assertTrue(map.containedPawns(map.getPosition(new Coord(0,0))).isEmpty());
+        assertTrue(map.containedPawns(map.getPosition(new Coord(0,2))).isEmpty());
+        assertTrue(map.containedPawns(map.getPosition(new Coord(0,3))).isEmpty());
+
+
+        map.addDamageable(map.getPosition(new Coord(2,2)) , listD[1]);
+        map.addDamageable(map.getPosition(new Coord(2,2)) , listD[2]);
+        assertEquals(2 , map.getDamageable(map.getPosition(new Coord(2,2))).size());
+        assertTrue(map.getDamageable(map.getPosition(new Coord(2,2))).containsAll(Set.of(listD[1],listD[2])));
+
+        assertTrue(map.containedPawns(map.getPosition(new Coord(2,2))).contains(listD[1]));
+        assertFalse(map.containedPawns(map.getPosition(new Coord(1,2))).contains(listD[1]));
+        assertFalse(map.containedPawns(map.getPosition(new Coord(0,2))).contains(listD[0]));
+        assertThrows(NoSuchElementException.class , () -> map.getPawn(new DamageableUID()));
+
     }
 
     @Test
     void sandboxTest(){
-        //TODO: add Pawn
-        /*
-        Sandbox s = null;
-        s = map.createSandbox();
+        Sandbox s = map.createSandbox();
         assertNotNull(s);
-        */
     }
 
     @Test
@@ -135,42 +149,19 @@ public class newGameMapTest {
     }
 
     @Test
-    void getVisibleTest(){
+    void getVisibleTest() {
         ArrayList<TileUID> res = new ArrayList<>();
-        res.add(map.getPosition(new Coord(0,0)));
-        res.add(map.getPosition(new Coord(0,1)));
-        res.add(map.getPosition(new Coord(0,2)));
-        assertTrue(map.getVisible(map.getPosition(new Coord(0,1))).containsAll(res));
-        assertTrue(map.getVisible(map.getPosition(new Coord(0,1)))
-                .containsAll(map.tilesInRoom(map.room(map.getPosition(new Coord(0,0))))));
+        res.add(map.getPosition(new Coord(0, 0)));
+        res.add(map.getPosition(new Coord(0, 1)));
+        res.add(map.getPosition(new Coord(0, 2)));
+        assertTrue(map.getVisible(map.getPosition(new Coord(0, 1))).containsAll(res));
+        assertTrue(map.getVisible(map.getPosition(new Coord(0, 1)))
+                .containsAll(map.tilesInRoom(map.room(map.getPosition(new Coord(0, 0))))));
 
         res.clear();
-        res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(0,0)))));
-        res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(1,0)))));
-        res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(1,3)))));
-        assertTrue(map.getVisible(map.getPosition(new Coord(1,2))).containsAll(res));
+        res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(0, 0)))));
+        res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(1, 0)))));
+        res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(1, 3)))));
+        assertTrue(map.getVisible(map.getPosition(new Coord(1, 2))).containsAll(res));
     }
-
-    /*
-    @Test
-    void testGetters(){
-        assertEquals(map.getTile(thisTile) , tile);
-        assertEquals(map.getTile(tUp) , tileUp);
-        assertThrows(NoSuchElementException.class , () -> map.getTile(new TileUID()));
-
-        assertEquals(roomObj , map.getRoom(room));
-        assertThrows(NoSuchElementException.class , () -> map.getRoom(new RoomUID()));
-
-        assertEquals(p1 , map.getDamageable(pawn1));
-        assertEquals(p2 , map.getDamageable(pawn2));
-        assertThrows(NoSuchElementException.class , () -> map.getDamageable(new DamageableUID()));
-
-        assertEquals(room , map.room(thisTile));
-        assertEquals(room , map.room(tUp));
-
-        assertEquals(Set.of(thisTile,tUp,tDown,tRight) , map.tilesInRoom(room));
-    }
-    */
-
-
 }
