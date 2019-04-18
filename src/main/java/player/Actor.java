@@ -3,12 +3,10 @@ package player;
 import actions.PowerUp;
 import actions.utils.AmmoAmount;
 import board.GameMap;
+import grabbables.Grabbable;
 import grabbables.Weapon;
-import board.Tile;
 import uid.DamageableUID;
-import uid.GrabbableUID;
 import uid.TileUID;
-import uid.WeaponUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +29,7 @@ public class Actor {
     private Pawn pawn;
     private Boolean frenzy;
     private Boolean turn;
-    private GameMap gm;
+    private transient GameMap gm;
 
     /**
      * The constructor assigns null points and deaths counter and bind a new pawn to the player. It checks if it's the
@@ -53,6 +51,34 @@ public class Actor {
     }
 
     /**
+     * This constructor gets the GameMap and the Pawn, and build the Actor
+     * @param map GameMap
+     * @param pawn the Pawn that has to be associated with this Actor
+     */
+    public Actor(GameMap map, Pawn pawn){
+        this.points = 0;
+        this.numOfDeaths = 0;
+        this.damageTaken = new ArrayList<>();
+        this.pawn = pawn;
+        pawn.setBinding(this);
+        this.startingPlayerMarker = false;
+        this.weapons = new ArrayList<>();
+        this.powerups = new ArrayList<>();
+        this.ammoAviable = new AmmoAmount();
+        this.frenzy = false;
+        this.marks = null;
+        this.gm = map;
+    }
+
+    /**
+     *  Sets the GameMap of the Actor
+     * @param map The GameMap
+     */
+    public void setMap(GameMap map){
+        gm = map;
+    }
+
+    /**
      * This method implements the first phase of a player turn.
      * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
      * @param t is the Tile id where the player is trying to move to.
@@ -70,21 +96,18 @@ public class Actor {
      * If it is then makes the player choose what weapon discard.
      * @param item is the grabbable picked up by the player.
      */
-    public void pickUp(GrabbableUID item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
+    public void pickUp(Grabbable item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
         //TODO check validity.
         if(turn){
 
             //if(tileToMove.isPresent() && steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t))
-            Tile pos = gm.getTile(this.pawn.getTile());
-            Collection<GrabbableUID> gr = pos.getGrabbable();
+            TileUID pos = this.pawn.getTile();
+            Collection<Grabbable> gr = gm.getGrabbable(pos);
             if(gr.contains(item)) {
                 if (weapons.size() >= 3 && wToRemove.isPresent()) {
                     removeWeapon(wToRemove.get());
                 }
-                pos.pickUpGrabbable(item);
-                //if(item:WeaponUID){}
-
-
+                gm.pickUpGrabbable(pos, item);
                 //weapon.add(item);
             }
         }

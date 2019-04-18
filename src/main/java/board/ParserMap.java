@@ -1,5 +1,6 @@
 package board;
 
+import genericitems.Tuple4;
 import uid.RoomUID;
 import uid.TileUID;
 
@@ -22,6 +23,7 @@ public class ParserMap {
     private static List<Room> room = new ArrayList<>();
     private static List<Integer> excluded = new ArrayList<>();
     private static List<Map<Direction, NeightTile>> allNeight;
+    private static List<Integer> spawnPoint;
 
     private ParserMap(){}
 
@@ -30,7 +32,7 @@ public class ParserMap {
      * @return a GameMap built upon the path file
      * @throws FileNotFoundException If path is not found, throws an Exception
      */
-    public static GameMap parseMap(String path) throws FileNotFoundException{
+    public static Tuple4 parseMap(String path) throws FileNotFoundException{
 
         String str;
         Scanner scanner;
@@ -56,9 +58,11 @@ public class ParserMap {
                 case "Door":
                     readDoor(scanner);
                     break;
+                case "Spawn":
+                    readSpawn(scanner);
+                    break;
                 default:
                     break;
-
             }
         }
         scanner.close();
@@ -120,14 +124,16 @@ public class ParserMap {
             allNeight.add(neight);
         }
 
+        String str = scanner.nextLine();
         int[] co = new int[4];
-        while(scanner.hasNextLine()){
-            sLine = new Scanner(scanner.nextLine());
+        while(!str.startsWith(".")){
+            sLine = new Scanner(str);
             co[0] = sLine.nextInt();
             co[1] = sLine.nextInt();
             co[2] = sLine.nextInt();
             co[3] = sLine.nextInt();
             sLine.close();
+            str = scanner.nextLine();
 
 
             Map<Direction, NeightTile> m;
@@ -139,8 +145,18 @@ public class ParserMap {
             m.put(getDirection(co[2],co[3],co[0],co[1]), new NeightTile(tile.get(index(co[0],co[1])),true));
             allNeight.set(index(co[2],co[3]), m);
         }
+    }
 
-
+    private static void readSpawn(Scanner scanner) {
+        spawnPoint = new ArrayList<>();
+        Scanner sLine;
+        String str = scanner.nextLine();
+        while (!str.startsWith(".")) {
+            sLine = new Scanner(str);
+            spawnPoint.add(index(sLine.nextInt(), sLine.nextInt()));
+            sLine.close();
+            str = scanner.nextLine();
+        }
     }
 
 
@@ -171,11 +187,13 @@ public class ParserMap {
     }
 
 
-    private static GameMap buildMap(){
+    private static Tuple4 buildMap(){
         List<Tile> tileObj = new ArrayList<>();
 
+        boolean isSpawn;
         for(int i=0; i<tile.size(); i++){
-            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i) ));
+            isSpawn = spawnPoint.contains(i);
+            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn ));
         }
 
 
@@ -188,12 +206,6 @@ public class ParserMap {
             tileUIDMap.put(tile.get(i) , tileObj.get(i));
         }
 
-        GameMap map = new GameMap(roomUIDMap, tileUIDMap, tile, new Coord(length,width), null);
-
-        for(Tile t : tileObj){
-            t.setMap(map);
-        }
-
-        return map;
+        return new Tuple4(roomUIDMap, tileUIDMap, tile, new Coord(length,width));
     }
 }

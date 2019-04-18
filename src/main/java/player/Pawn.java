@@ -1,5 +1,6 @@
 package player;
 import board.Tile;
+import exception.AlreadyBoundedActorException;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -24,6 +25,14 @@ public class Pawn {
         this.actor = actor;
     }
 
+    /**
+     * This constructor need the binding between Pawn and Actor
+     */
+    public Pawn(DamageableUID damageableUID, TileUID position){
+        this.tile = position;
+        this.damageableUID = damageableUID;
+    }
+
     public Pawn(){
         this.damageableUID = new DamageableUID();
     }
@@ -32,10 +41,17 @@ public class Pawn {
      * The method set a bound between an unbounded player and the pawn.
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
-    //TODO Write the AlreadyBoundedActor exception.
     protected void setBinding(Actor player){
         if(actor == null && player.getPawn().actor == null) this.actor = player;
     }
+    /*
+    protected void setBinding(Actor player) throws AlreadyBoundedActorException{
+        if(player.getPawn().actor != null){
+            throw new AlreadyBoundedActorException("thie actor is already bounded");
+        }
+        if(actor == null && player.getPawn().actor == null) this.actor = player;
+    }
+    */
 
     /**
      * To move the pawn in a selected tile.
