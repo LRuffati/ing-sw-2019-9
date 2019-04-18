@@ -1,0 +1,26 @@
+package grabbables;
+
+import uid.GrabbableUID;
+
+public abstract class Grabbable {
+    private GrabbableUID uid;
+
+    public GrabbableUID getId(){
+        return uid;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(obj ==  null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+
+        return uid.equals( ((Grabbable)obj).getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+}
