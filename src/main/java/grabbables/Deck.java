@@ -104,6 +104,17 @@ public class Deck<T> implements Iterator<T>{
         stash.add(card);
     }
 
+
+    /**
+     * This methods checks if the card is in the pickedCard set.
+     * Typically a card can be used only if it is not in the Stash or in the Deck
+     * @param card The card that is requested to check
+     * @return True if the card is not in the Deck or in the Stash
+     */
+    public boolean isPicked(T card){
+        return pickedCard.contains(card);
+    }
+
     /**
      * This method turns the information contained in the Deck into a tuple for storage.
      * Calling the method destroys the Deck class, and if the class were still needed it'd have to be constructed using the appropriate constructor
