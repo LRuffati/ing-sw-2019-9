@@ -46,6 +46,7 @@ public class Scoreboard {
     /**
      * Add to the @points attribute of every player (in the class actor) the points gain from a kill.
      */
+    //TODO DA CORREGGERE
     public void score(Actor dead){
         if(dead.getPawn().getTile()==null){
             dead.getDamageTaken().get(0).addPoints(1);
@@ -68,16 +69,11 @@ public class Scoreboard {
     /**
      * Remove a skull and add the killer marker(s).
      * @param killer is the player who got the kill.
-     * @param overkill if has been done more damage than what was necessary to kill the target.
      */
     //TODO Understand how to manage all the kill cases.
-    public void addKill(Actor killer, Boolean overkill){
+    public void addKill(Actor killer, Actor victim){
         Map<Actor, Integer> m = new HashMap<>();
-        if(overkill){
-            m.put(killer,2);
-        } else {
-            m.put(killer,1);
-        }
+        //if(victim.getDamageTaken().get(11)!= null)                    gestire overkill con marchi
         this.skullBox.add(m);
         numOfDeaths++;
     }

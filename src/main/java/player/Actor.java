@@ -166,4 +166,6 @@ public class Actor {
     public void addPoints(int p){
         this.points+=p;
     }
+
+
 }
