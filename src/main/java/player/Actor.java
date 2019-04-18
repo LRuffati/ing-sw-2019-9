@@ -8,6 +8,7 @@ import board.Tile;
 import uid.DamageableUID;
 import uid.GrabbableUID;
 import uid.TileUID;
+import uid.WeaponUID;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,6 +22,7 @@ import java.util.Optional;
 public class Actor {
     private int points;
     private int numOfDeaths;
+    private ArrayList<Actor> damageTaken;
     private Dictionary<DamageableUID, Integer> marks;
     private Collection<Weapon> weapons;
     private Collection<PowerUp> powerups;
@@ -28,7 +30,6 @@ public class Actor {
     private boolean startingPlayerMarker;
     private Pawn pawn;
     private Boolean frenzy;
-    //private ActionBoard actionBoard;
     private Boolean turn;
     private GameMap gm;
 
@@ -39,6 +40,7 @@ public class Actor {
     public Actor(GameMap map){
         this.points = 0;
         this.numOfDeaths = 0;
+        this.damageTaken = new ArrayList<>();
         this.pawn = new Pawn();
         pawn.setBinding(this);
         this.startingPlayerMarker = false;
@@ -80,6 +82,9 @@ public class Actor {
                     removeWeapon(wToRemove.get());
                 }
                 pos.pickUpGrabbable(item);
+                //if(item:WeaponUID){}
+
+
                 //weapon.add(item);
             }
         }
@@ -104,12 +109,7 @@ public class Actor {
         }
     }
     */
-    /**
-     * Add to the @points attribute the points gain from a kill.
-     */
-    public void score(){
-        //TODO
-    }
+
 
     /**
      *
@@ -148,5 +148,22 @@ public class Actor {
      */
     public void setTurn(Boolean turn) {
         this.turn = turn;
+    }
+
+    /**
+     * Add the attacker who damaged the player on his playerboard. The first element is the first player who attacked
+     * "this".
+     * @param shooter is the attacker.
+     */
+    public void getDMG(Actor shooter){
+        damageTaken.add(shooter);
+    }
+
+    public ArrayList<Actor> getDamageTaken() {
+        return damageTaken;
+    }
+
+    public void addPoints(int p){
+        this.points+=p;
     }
 }

@@ -1,3 +1,3 @@
 package uid;
 
-public class WeaponUID extends ObjectUID {}
+public class WeaponUID extends GrabbableUID {}
