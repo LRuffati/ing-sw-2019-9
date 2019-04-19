@@ -31,7 +31,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      * of AmmoColor are between 0 and the max
      * @param amountGiven is an existing map which may or may not have a value for each color
      */
-    AmmoAmount(Map<AmmoColor, Integer> amountGiven){
+    public AmmoAmount(Map<AmmoColor, Integer> amountGiven){
         Map<AmmoColor, Integer> temp = new EnumMap<>(amountGiven);
         for (AmmoColor i: AmmoColor.values()){
             Integer amount = temp.putIfAbsent(i,0);
@@ -79,6 +79,14 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
             newMap.put(i.getKey(), min(3, amounts.get(i.getKey())+i.getValue()));
         }
         return new AmmoAmount(newMap);
+    }
+
+    /**
+     * Returns a Map containing the number of ammo in this AmmoAmount
+     * @return a Map containing the number of ammo in this AmmoAmount
+     */
+    public Map<AmmoColor, Integer> getAmounts(){
+        return new EnumMap<>(amounts);
     }
 
     /**
