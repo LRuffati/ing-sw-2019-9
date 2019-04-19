@@ -308,7 +308,7 @@ public class GameMap {
      * @param grabbable The identifier of the grabbable item
      * @throws NoSuchElementException If this GrabbableUID is not found, an exception is returned
      */
-    public void pickUpGrabbable(TileUID tile, Grabbable grabbable) {
+    public Grabbable pickUpGrabbable(TileUID tile, Grabbable grabbable) {
         getTile(tile).pickUpGrabbable(grabbable);
         //TODO: da fare adesso o alla fine del turno?
         if (getTile(tile).spawnPoint()) {
@@ -316,6 +316,34 @@ public class GameMap {
         } else {
             addGrabbable(tile, deckOfAmmoCard.next());
         }
+
+        return grabbable;
+    }
+
+    /**
+     * Allows the player to discard a PowerUp card.
+     * If the Card is not discardable (if it is in the deck or in the stash) an InvalidParameterException is thrown
+     * @param grabbable the Card to be discarded
+     */
+    public void discardPowerUp(Grabbable grabbable){
+        if(deckOfPowerUp.isPicked(grabbable)){
+            deckOfPowerUp.discard(grabbable);
+        }
+        else
+            throw new InvalidParameterException("This PowerUp cannot be discarded");
+    }
+
+    /**
+     * Allows the player to discard an AmmoCard.
+     * If the Card is not discardable (if it is in the deck or in the stash) an InvalidParameterException is thrown
+     * @param grabbable the Card to be discarded
+     */
+    public void discardAmmoCard(Grabbable grabbable){
+        if(deckOfAmmoCard.isPicked(grabbable)){
+            deckOfAmmoCard.discard(grabbable);
+        }
+        else
+            throw new InvalidParameterException("This AmmoCard cannot be discarded");
     }
 
     /**
@@ -323,7 +351,7 @@ public class GameMap {
      *
      * @return A collections containing the DamageableUID in the tile
      */
-    protected Collection<DamageableUID> getDamageable(TileUID tile) {
+    public Collection<DamageableUID> getDamageable(TileUID tile) {
         return getTile(tile).getDamageable();
     }
 
@@ -332,7 +360,7 @@ public class GameMap {
      *
      * @param damageableUID The Damageable element that has to be added
      */
-    protected void addDamageable(TileUID tile, DamageableUID damageableUID) {
+    public void addDamageable(TileUID tile, DamageableUID damageableUID) {
         getTile(tile).addDamageable(damageableUID);
     }
 
@@ -342,11 +370,16 @@ public class GameMap {
      * @param damageableID The identifier of the damageable item
      * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
      */
-    protected void removeDamageable(TileUID tile, DamageableUID damageableID) {
+    public void removeDamageable(TileUID tile, DamageableUID damageableID) {
         getTile(tile).removeDamageable(damageableID);
     }
 
-    protected Set<DamageableUID> getDamageable(){
+
+    /**
+     * Returns all the Damageable Objects (Pawns and Domination points) in the map
+     * @return A set containing all the Damageable UID
+     */
+    public Set<DamageableUID> getDamageable(){
         return damageableUIDMap.keySet();
     }
 
