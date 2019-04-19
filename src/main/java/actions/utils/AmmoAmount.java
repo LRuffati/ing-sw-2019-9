@@ -3,7 +3,6 @@ package actions.utils;
 import org.jetbrains.annotations.*;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Integer.min;
@@ -60,7 +59,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      */
     public AmmoAmount subtract(AmmoAmount c){
         if (this.compareTo(c)>0) {
-            Map<AmmoColor,Integer> newMap = new HashMap<>(amounts);
+            Map<AmmoColor,Integer> newMap = new EnumMap<>(amounts);
             for (Map.Entry<AmmoColor, Integer> i: c.amounts.entrySet()){
                 newMap.put(i.getKey(), amounts.get(i.getKey())-i.getValue());
             }
@@ -74,7 +73,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      * @return An AmmoAmount which is the pointwise sum of
      */
     public AmmoAmount add(AmmoAmount r){
-        Map<AmmoColor,Integer> newMap = new HashMap<>(amounts);
+        Map<AmmoColor,Integer> newMap = new EnumMap<>(amounts);
         for (Map.Entry<AmmoColor, Integer> i: r.amounts.entrySet()){
             newMap.put(i.getKey(), min(3, amounts.get(i.getKey())+i.getValue()));
         }
