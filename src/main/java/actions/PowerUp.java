@@ -22,12 +22,9 @@ public class PowerUp {
 
     }
 
-    public void useTeleporter(Actor a, Tile t) {
-        //Todo: make compatible with just using UIDs
-        // if (a.isTurn()) a.movePlayer(t);
-    }
-    public void useTeleporter(Actor a, TileUID t){
-        if (a.isTurn()) a.getPawn().move(t);
+    public void useTeleporter(Actor actor, TileUID tile){
+        if (actor.isTurn())
+            actor.unconditionalMove(tile);
     }
 
     public void useTagbackGranade(Actor a, Actor target){
@@ -38,7 +35,7 @@ public class PowerUp {
         //if (a.isTurn()) target.movePlayer(target.getPawn().getTile().getNeighbor(true, dir)); //Correction to getNeighbor needed.
      }
 
-     public void useTargettingScope(Actor a, List<Actor> targets){
+     public void useTargettingScope(Actor actor, Actor target){
         //TODO attack action needed.
      }
 

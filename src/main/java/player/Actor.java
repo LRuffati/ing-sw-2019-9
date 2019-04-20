@@ -71,7 +71,7 @@ public class Actor {
     }
 
     /**
-     *  Sets the GameMap of the Actor
+     * Sets the GameMap of the Actor
      * @param map The GameMap
      */
     public void setMap(GameMap map){
@@ -84,10 +84,28 @@ public class Actor {
      * @param t is the Tile id where the player is trying to move to.
      */
     public void movePlayer(TileUID t){
-
-        if(turn && (frenzy && gm.getSurroundings(false, 4, pawn.getTile()).contains(t)|| gm.getSurroundings(false, 4, pawn.getTile()).contains(t))){
-            pawn.move(t);
+        if(turn &&
+                (!frenzy && gm.getSurroundings(false, 3, pawn.getTile()).contains(t))
+                ||
+                (frenzy && gm.getSurroundings(false, 4, pawn.getTile()).contains(t))
+        ) {
+            move(t);
         }
+    }
+
+    public void unconditionalMove(TileUID tile){
+        move(tile);
+    }
+
+    /**
+     * This method implements the basic action of movement
+     * It modifies the tile of the Pawn and move the Player in the GameMap
+     * @param tile the tile where the Pawn must be put
+     */
+    private void move(TileUID tile){
+        gm.removeDamageable(pawn.getTile(), pawn.damageableUID);
+        pawn.move(tile);
+        gm.addDamageable(tile, pawn.damageableUID);
     }
 
     /**
