@@ -40,7 +40,7 @@ public class Actor {
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
         this.pawn = new Pawn();
-        pawn.setBinding(this);
+        //pawn.setBinding(this);
         this.startingPlayerMarker = false;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
@@ -60,7 +60,7 @@ public class Actor {
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
         this.pawn = pawn;
-        pawn.setBinding(this);
+        //pawn.setBinding(this);
         this.startingPlayerMarker = false;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
