@@ -2,16 +2,14 @@ package player;
 
 import actions.PowerUp;
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoColor;
 import board.GameMap;
 import grabbables.Grabbable;
 import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.TileUID;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Dictionary;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * The class Actor implements the status of the player in the game.
@@ -24,27 +22,29 @@ public class Actor {
     private Dictionary<DamageableUID, Integer> marks;
     private Collection<Weapon> weapons;
     private Collection<PowerUp> powerups;
-    private AmmoAmount ammoAviable;                   //cannot use AmmoAmount, need something else
+    private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
     private Pawn pawn;
     private Boolean frenzy;
     private Boolean turn;
     private transient GameMap gm;
 
+    private DamageableUID pawnID;
+
     /**
-     * The constructor assigns null points and deaths counter and bind a new pawn to the player. It checks if it's the
-     * starting player.
+     * The constructor assigns null points and deaths counter and bind a new pawn to the player.
+     * It checks if it's the starting player.
      */
     public Actor(GameMap map){
         this.points = 0;
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
-        this.pawn = new Pawn();
+        //this.pawn = new Pawn();
         //pawn.setBinding(this);
         this.startingPlayerMarker = false;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
-        this.ammoAviable = new AmmoAmount();
+        this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
         this.marks = null;
         this.gm = map;
@@ -53,21 +53,30 @@ public class Actor {
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
      * @param map GameMap
-     * @param pawn the Pawn that has to be associated with this Actor
+     * @param pawnId the Pawn identifier that has to be associated with this Actor
+     * @param firstPlayer True if the Actor is the first player in the game
      */
-    public Actor(GameMap map, Pawn pawn){
+    public Actor(GameMap map, DamageableUID pawnId, boolean firstPlayer){
         this.points = 0;
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
-        this.pawn = pawn;
-        //pawn.setBinding(this);
-        this.startingPlayerMarker = false;
+        this.pawnID = pawnId;
+        pawn().setBinding(this);
+        this.startingPlayerMarker = firstPlayer;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
-        this.ammoAviable = new AmmoAmount();
+        this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
         this.marks = null;
         this.gm = map;
+    }
+
+    /**
+     * Provides a faster way to get the Pawn object given the identifier
+     * @return The pawn
+     */
+    private Pawn pawn(){
+        return gm.getPawn(pawnID);
     }
 
     /**
@@ -190,12 +199,17 @@ public class Actor {
     }
 
     /**
-     * Add the attacker who damaged the player on his playerboard. The first element is the first player who attacked
-     * "this".
+     * Add the attacker who damaged the player on his playerboard.
+     * The first element is the first player who attacked "this".
+     * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
      */
     public void getDMG(Actor shooter){
         damageTaken.add(shooter);
+        for(int i=0; i<marks.get(shooter.pawnID); i++){
+            if(damageTaken.size() <= 10)    damageTaken.add(shooter);
+        }
+        marks.put(shooter.pawnID, 0);
     }
 
     public ArrayList<Actor> getDamageTaken() {
@@ -206,5 +220,11 @@ public class Actor {
         this.points+=p;
     }
 
+    public AmmoAmount getAmmo() {
+        return ammoAvailable;
+    }
 
+    public int getNumOfDeaths() {
+        return numOfDeaths;
+    }
 }

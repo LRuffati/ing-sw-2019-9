@@ -1,7 +1,5 @@
 package player;
 import board.GameMap;
-import board.Tile;
-import exception.AlreadyBoundedActorException;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -13,6 +11,7 @@ import uid.TileUID;
 
 public class Pawn {
     private TileUID tile;
+    private Actor actor;
     public final DamageableUID damageableUID;
     private final GameMap map;
 
@@ -24,6 +23,7 @@ public class Pawn {
         this.tile = position;
         this.damageableUID = damageableUID;
         this.map = map;
+        this.actor = null;
     }
 
     public Pawn(){
@@ -35,7 +35,7 @@ public class Pawn {
      * The method set a bound between an unbounded player and the pawn.
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
-    /*protected void setBinding(Actor player){
+    protected void setBinding(Actor player){
         if(actor == null && player.getPawn().actor == null) this.actor = player;
     }
     /*
@@ -69,7 +69,11 @@ public class Pawn {
      * To remove the pawn from the map when the player is dead.
      */
     public void removeFromMap(){
-        this.tile = map.getEmptyTile();
+        //this.tile = map.getEmptyTile();
+        this.tile = null;
     }
 
+    public Actor getActor() {
+        return actor;
+    }
 }

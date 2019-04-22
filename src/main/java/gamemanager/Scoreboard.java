@@ -15,6 +15,8 @@ public class Scoreboard {
     private int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
 
+    private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);
+
     /**
      * Constructor for a standard game (8 skulls).
      */
@@ -46,22 +48,40 @@ public class Scoreboard {
     /**
      * Add to the @points attribute of every player (in the class actor) the points gain from a kill.
      */
-    //TODO DA CORREGGERE
     public void score(Actor dead){
+        TreeSet<Actor> set = new TreeSet<>
+                (Comparator.comparing(
+                        x -> Collections.frequency(dead.getDamageTaken(), x)
+                ));
+
         if(dead.getPawn().getTile()==null){
             dead.getDamageTaken().get(0).addPoints(1);
-            ArrayList<Integer> max = new ArrayList<>();
+
+            set.addAll(dead.getDamageTaken());
+
+            int num = dead.getNumOfDeaths();
+            for(Actor actor : set.descendingSet()){
+                // TODO: OK O <= O ALTRO?
+                if(num < pointForDeath.size()) {
+                    actor.addPoints(pointForDeath.get(num));
+                    num++;
+                }
+            }
+
+            /*ArrayList<Integer> max = new ArrayList<>();
             max.add(0);
             for(Actor i:actorsList){
                 int count = Collections.frequency(dead.getDamageTaken(), i);
                 if(count > max.get(0)) max.add(count);
             }
+
             //TODO check if it parse the players in the same order twice (probably it doesn't).
             for(Actor i:actorsList){
                 if(max.get(0)==0) break;
                 i.addPoints(max.get(0));
                 max.remove(0);
             }
+            */
 
         }
     }
