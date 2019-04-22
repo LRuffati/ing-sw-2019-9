@@ -103,9 +103,7 @@ public class Actor {
      * @param tile the tile where the Pawn must be put
      */
     private void move(TileUID tile){
-        gm.removeDamageable(pawn.getTile(), pawn.damageableUID);
-        pawn.move(tile);
-        gm.addDamageable(tile, pawn.damageableUID);
+        pawn.move(tile, gm);
     }
 
     /**

@@ -1,5 +1,6 @@
 package board;
 
+import genericitems.Tuple3;
 import org.junit.jupiter.api.*;
 import player.Actor;
 import player.Pawn;
@@ -25,7 +26,7 @@ public class SandBoxTest {
         map = null;
         try {
             map = GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt"
-                    , 3);
+                    , 3, new Tuple3<>(null,null,null));
         }
         catch (FileNotFoundException e){
         }

@@ -7,13 +7,17 @@ import java.util.stream.Collectors;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.RoomTarget;
 import actions.targeters.targets.TileTarget;
+import genericitems.Tuple3;
 import genericitems.Tuple4;
+import grabbables.AmmoCard;
 import grabbables.Deck;
 import grabbables.Grabbable;
+import grabbables.Weapon;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
+
 /**
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
  */
@@ -27,11 +31,16 @@ public class GameMap {
                    Map<TileUID, Tile> tileUIDMap,
                    List<TileUID> position,
                    Coord maxPos,
-                   int numOfPlayer) {
+                   int numOfPlayer,
+            Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards) {
         this.roomUIDMap = roomUIDMap;
         this.tileUIDMap = tileUIDMap;
         this.position = position;
         this.maxPos = maxPos;
+
+        this.deckOfWeapon = cards.x;
+        this.deckOfAmmoCard = cards.y;
+        this.deckOfPowerUp = cards.z;
 
         this.emptyTile = new TileUID();
 
@@ -44,13 +53,12 @@ public class GameMap {
     }
 
 
-    public static GameMap gameMapFactory(String path, int numOfPlayer) throws FileNotFoundException {
-        Tuple4 res = ParserMap.parseMap(path);
-        return new GameMap(
-                    (Map<RoomUID, Room>)res.x,
-                    (Map<TileUID, Tile>)res.y,
-                    (List<TileUID>)res.z,
-                    (Coord)res.t, numOfPlayer);
+    public static GameMap gameMapFactory(String path,
+                                         int numOfPlayer,
+                                         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
+            throws FileNotFoundException {
+        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
+        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
     }
 
 
@@ -72,35 +80,35 @@ public class GameMap {
     /**
      * Holds the length and width of the Map
      */
-    private Coord maxPos;
+    private final Coord maxPos;
 
     /**
      * Map between RoomUID and the Room Class
      */
-    private Map<RoomUID, Room> roomUIDMap;
+    private final Map<RoomUID, Room> roomUIDMap;
 
     /**
      * Map between TileUID and the Tile Class
      */
-    private Map<TileUID, Tile> tileUIDMap;
+    private final Map<TileUID, Tile> tileUIDMap;
 
     /**
      * Stores the absolute position of each Tile. Should not be used to access to TileUID
      */
-    private List<TileUID> position;
+    private final List<TileUID> position;
 
     /**
      * Map between DamageableUID and Damageable Class
      */
-    private Map<DamageableUID, Pawn> damageableUIDMap;
+    private final Map<DamageableUID, Pawn> damageableUIDMap;
 
 
-    private TileUID emptyTile;
+    private final TileUID emptyTile;
 
 
-    private Deck<Grabbable> deckOfWeapon;
-    private Deck<Grabbable> deckOfAmmoCard;
-    private Deck<Grabbable> deckOfPowerUp;
+    private final Deck<Weapon> deckOfWeapon;
+    private final Deck<AmmoCard> deckOfAmmoCard;
+    private final Deck<grabbables.PowerUp> deckOfPowerUp;
 
 
     /**
@@ -277,6 +285,21 @@ public class GameMap {
         return ret;
     }
 
+    /**
+     * Refill all the Tiles with cards.
+     * Spawn point will receive up to 3 Weapon, non-Spawn poin will receive an Ammo Card
+     */
+    public void refill(){
+        //TODO: test this method
+        for(TileUID tile : tileUIDMap.keySet()){
+            if(getTile(tile).spawnPoint())
+                deckOfWeapon.take(3 - getGrabbable(tile).size())
+                    .forEach(x -> addGrabbable(tile, x));
+            else
+                deckOfAmmoCard.take(1 - getGrabbable(tile).size())
+                        .forEach(x -> addGrabbable(tile, x));
+        }
+    }
 
     /**
      * Returns a Set containing all the Grabbable elements in this Tile
@@ -294,9 +317,9 @@ public class GameMap {
      * @param grabbable the card
      */
     public void addGrabbable(TileUID tile, Grabbable grabbable) {
-        if (getTile(tile).spawnPoint() && deckOfWeapon.isPicked(grabbable))
+        if (getTile(tile).spawnPoint() && deckOfWeapon.isPicked((Weapon)grabbable))
             getTile(tile).addGrabbable(grabbable);
-        else if (!getTile(tile).spawnPoint() && deckOfAmmoCard.isPicked(grabbable))
+        else if (!getTile(tile).spawnPoint() && deckOfAmmoCard.isPicked((AmmoCard)grabbable))
             getTile(tile).addGrabbable(grabbable);
         else
             throw new InvalidParameterException("The card cannot be added");
@@ -326,8 +349,8 @@ public class GameMap {
      * @param grabbable the Card to be discarded
      */
     public void discardPowerUp(Grabbable grabbable){
-        if(deckOfPowerUp.isPicked(grabbable)){
-            deckOfPowerUp.discard(grabbable);
+        if(deckOfPowerUp.isPicked((grabbables.PowerUp)grabbable)){
+            deckOfPowerUp.discard((grabbables.PowerUp)grabbable);
         }
         else
             throw new InvalidParameterException("This PowerUp cannot be discarded");
@@ -339,8 +362,8 @@ public class GameMap {
      * @param grabbable the Card to be discarded
      */
     public void discardAmmoCard(Grabbable grabbable){
-        if(deckOfAmmoCard.isPicked(grabbable)){
-            deckOfAmmoCard.discard(grabbable);
+        if(deckOfAmmoCard.isPicked((AmmoCard)grabbable)){
+            deckOfAmmoCard.discard((AmmoCard)grabbable);
         }
         else
             throw new InvalidParameterException("This AmmoCard cannot be discarded");
@@ -383,7 +406,12 @@ public class GameMap {
         return damageableUIDMap.keySet();
     }
 
-
+    /**
+     * @return The empty Tile used to store dead pawns
+     */
+    public TileUID getEmptyTile(){
+        return emptyTile;
+    }
 
     private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){
         Map<DamageableUID, Pawn> res = new HashMap<>();
@@ -391,7 +419,7 @@ public class GameMap {
         DamageableUID uid;
         for(int i=0; i<numOfPlayer; i++){
             uid = new DamageableUID();
-            p = new Pawn(uid, map.emptyTile);
+            p = new Pawn(uid, map.emptyTile, this);
             res.put(uid, p);
         }
         return res;

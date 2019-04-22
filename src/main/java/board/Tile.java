@@ -188,14 +188,16 @@ public class Tile{
         Optional<TileUID> t;
         for( Direction d : neighbors.keySet()){
             t = getNeighbor(physical, d);
-            if(t.isPresent())
-                ret.put(d, t.get());
+
+            t.ifPresent(x -> ret.put(d, x));
         }
         return ret;
     }
 
-    protected boolean spawnPoint(){
+    /**
+     * @return True iif the Tile is a spawnPoint
+     */
+    public boolean spawnPoint(){
         return this.spawnPoint;
     }
-
 }

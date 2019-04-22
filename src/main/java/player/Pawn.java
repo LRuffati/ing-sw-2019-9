@@ -1,4 +1,5 @@
 package player;
+import board.GameMap;
 import board.Tile;
 import exception.AlreadyBoundedActorException;
 import uid.DamageableUID;
@@ -13,18 +14,21 @@ import uid.TileUID;
 public class Pawn {
     private TileUID tile;
     public final DamageableUID damageableUID;
+    private final GameMap map;
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
      * as UID.
      */
-    public Pawn(DamageableUID damageableUID, TileUID position){
+    public Pawn(DamageableUID damageableUID, TileUID position, GameMap map){
         this.tile = position;
         this.damageableUID = damageableUID;
+        this.map = map;
     }
 
     public Pawn(){
         this.damageableUID = new DamageableUID();
+        this.map = null;
     }
 
     /**
@@ -45,10 +49,12 @@ public class Pawn {
 
     /**
      * To move the pawn in a selected tile.
-     * @param t is the position where the pawn will be moved.
+     * @param tile is the position where the pawn will be moved.
      */
-    public void move(TileUID t){
-       this.tile = t;
+    public void move(TileUID tile, GameMap gm){
+        map.removeDamageable(getTile(), damageableUID);
+        this.tile = tile;
+        map.addDamageable(tile, damageableUID);
     }
 
     /**
@@ -63,7 +69,7 @@ public class Pawn {
      * To remove the pawn from the map when the player is dead.
      */
     public void removeFromMap(){
-        this.tile = null;
+        this.tile = map.getEmptyTile();
     }
 
 }

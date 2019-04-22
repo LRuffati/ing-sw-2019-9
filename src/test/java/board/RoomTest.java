@@ -1,5 +1,6 @@
 package board;
 
+import genericitems.Tuple3;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.RoomUID;
@@ -19,7 +20,8 @@ class RoomTest {
     void setup(){
         map = null;
         try {
-            map = GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt", 0);
+            map = GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt"
+                    , 0, new Tuple3<>(null,null,null));
             //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
         catch (FileNotFoundException e){
