@@ -57,6 +57,7 @@ public class GameMap {
                                          int numOfPlayer,
                                          Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
             throws FileNotFoundException {
+
         Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
         return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
     }

@@ -1,7 +1,9 @@
 package board;
 
 import genericitems.Tuple3;
+import grabbables.AmmoCard;
 import grabbables.Grabbable;
+import grabbables.PowerUp;
 import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -94,7 +96,7 @@ class NewTileTest {
         //TODO: check
 
         Set<Grabbable> g;
-        Grabbable g1 = new Weapon();
+        Grabbable g1 = new PowerUp();
         g = tile.getGrabbable();
         assertTrue(g.isEmpty());
         g.add(g1);
