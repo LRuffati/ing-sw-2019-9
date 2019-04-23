@@ -35,12 +35,12 @@ public class Actor {
      * The constructor assigns null points and deaths counter and bind a new pawn to the player.
      * It checks if it's the starting player.
      */
-    public Actor(GameMap map){
+    public Actor(GameMap map, DamageableUID pawnId){
         this.points = 0;
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
-        //this.pawn = new Pawn();
-        //pawn.setBinding(this);
+        this.pawnID = pawnId;
+        pawn().setBinding(this);
         this.startingPlayerMarker = false;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
@@ -124,8 +124,6 @@ public class Actor {
     public void pickUp(Grabbable item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
         //TODO check validity.
         if(turn){
-
-            //if(tileToMove.isPresent() && steps >= 0 && ((frenzy && steps <=4) || steps <= 3)&& gm.getTile(t).getSurroundings(false, steps).contains(t))
             TileUID pos = this.pawn.getTile();
             Collection<Grabbable> gr = gm.getGrabbable(pos);
             if(gr.contains(item)) {
@@ -212,18 +210,34 @@ public class Actor {
         marks.put(shooter.pawnID, 0);
     }
 
+    /**
+     * Method needed in the Scoreboard class.
+     * @return the damage taken from a single shot.
+     */
     public ArrayList<Actor> getDamageTaken() {
         return damageTaken;
     }
 
+    /**
+     *
+     * @param p is the number of points to be added to the player current points.
+     */
     public void addPoints(int p){
         this.points+=p;
     }
 
+    /**
+     *
+     * @return the amount of ammo ready to be used.
+     */
     public AmmoAmount getAmmo() {
         return ammoAvailable;
     }
 
+    /**
+     *
+     * @return the number of deaths in order to know how many points will get the player that will shoot next time.
+     */
     public int getNumOfDeaths() {
         return numOfDeaths;
     }
