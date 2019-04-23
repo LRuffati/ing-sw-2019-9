@@ -19,6 +19,11 @@ public class Weapon extends Grabbable{
 
     private Map<String, ActionTemplate> actions;
 
+    /**
+     * Constructor used only for tests
+     */
+    public Weapon(){}
+
 
     public Weapon(String name,
                   String description,

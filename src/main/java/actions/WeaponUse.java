@@ -1,6 +1,5 @@
 package actions;
 
-import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import board.GameMap;

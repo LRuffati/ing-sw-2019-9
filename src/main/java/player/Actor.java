@@ -1,14 +1,18 @@
 package player;
 
-import actions.PowerUp;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.GameMap;
+import exception.AmmoException;
+import grabbables.AmmoCard;
 import grabbables.Grabbable;
+import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.TileUID;
 
+import java.lang.invoke.WrongMethodTypeException;
+import java.security.InvalidParameterException;
 import java.util.*;
 
 /**
@@ -120,46 +124,76 @@ public class Actor {
     }
 
     /**
-     * Check if the player is in the same tile as the grabbable item.
+     * Checks if in the player's tile there is the grabbable item.
      * Check if the item is weapon, then if weapons' inventory is full.
-     * If it is then makes the player choose what weapon discard.
-     * @param item is the grabbable picked up by the player.
+     * Checks if the weapon chosen to be discarded is a valid weapon.
+     * Picks up the weapon or the ammotile, add all the necessary ammo and powerUps
+     * @param item is the grabbable element that the player want to pick up
+     * @param wToRemove contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
+     * @throws InvalidParameterException if the parameters aren't valid
+     * @throws WrongMethodTypeException if it's not the player's turn
+     * @throws AmmoException if the player doesn't have enough ammo
      */
-    public void pickUp(Grabbable item, Optional<TileUID> tileToMove, Optional<Weapon> wToRemove){
-        //TODO check validity.
-        if(turn){
-            TileUID pos = this.pawn.getTile();
-            Collection<Grabbable> gr = gm.getGrabbable(pos);
-            if(gr.contains(item)) {
-                if (weapons.size() >= 3 && wToRemove.isPresent()) {
-                    removeWeapon(wToRemove.get());
-                }
-                gm.pickUpGrabbable(pos, item);
-                //weapon.add(item);
-            }
-        }
-    }
+    public void pickUp(Grabbable item, Weapon wToRemove) throws AmmoException{
+        if(!turn) throw new WrongMethodTypeException("It's not your turn");
 
-    /**
-     * Check if the weapon is owned by the player, then remove it permanently from the actual game.
-     * @param w is the weapon to be discarded.
-     */
-    public void removeWeapon(Weapon w){
-        weapons.remove(w);
+        TileUID tile = this.pawn.getTile();
+
+        if(!gm.getGrabbable(tile).contains(item))
+            throw new InvalidParameterException("There isn't this item here");
+
+        if(gm.getTile(tile).spawnPoint()){
+
+            Optional<AmmoAmount> result = ((Weapon)item).canReload(ammoAvailable);
+            if(result.isPresent()) {
+                ammoAvailable = result.get();
+                ((Weapon)item).setLoaded();
+            }
+            else
+                throw new AmmoException("Not enough ammo available");
+
+            if(weapons.size() >= 3) {
+                if (wToRemove != null)
+                    throw new InvalidParameterException("A weapon must be discarded");
+                else
+                    if(!weapons.contains(wToRemove))
+                        throw new InvalidParameterException("You haven't this weapon");
+                    else
+                        gm.addGrabbable(tile, wToRemove);
+                weapons.remove(wToRemove);
+            }
+            weapons.add((Weapon)gm.pickUpGrabbable(tile, item));
+        }
+        else{
+            AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
+            ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
+            for(int i = 0; i<card.getNumOfPowerUp(); i++)
+                powerups.add((PowerUp)gm.pickUpPowerUp());
+            gm.discardAmmoCard(card);
+        }
     }
 
     /**
      * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
-     * @param w is the weapon to be reloaded.
+     * @param weapon is the weapon to be reloaded.
+     * @throws AmmoException if the player doesn't have enough ammo
      */
-    public void reloadWeapon(Weapon w){
-        if(weapons.contains(w) && !w.isLoaded()){
-            w.canReload(ammoAvailable).ifPresent(ammoAvailable -> w.canReload(ammoAvailable));
-            w.setLoaded();
+    public void reloadWeapon(Weapon weapon) throws AmmoException{
+        if(!weapons.contains(weapon)) throw new InvalidParameterException("This actor has not this weapon");
+        if(!weapon.isLoaded())   throw new InvalidParameterException("This weapon is already loaded");
+
+        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable);
+        if(result.isPresent()) {
+            ammoAvailable = result.get();
+            weapon.setLoaded();
         }
+        else
+            throw new AmmoException("Not enough ammo available");
+        /*
+        weapon.canReload(ammoAvailable).ifPresent(ammoAvailable -> weapon.canReload(ammoAvailable));
+        weapon.setLoaded();
+        */
     }
-
-
 
     /**
      *

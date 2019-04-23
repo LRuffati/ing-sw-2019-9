@@ -335,14 +335,11 @@ public class GameMap {
      */
     public Grabbable pickUpGrabbable(TileUID tile, Grabbable grabbable) {
         getTile(tile).pickUpGrabbable(grabbable);
-        //TODO: da fare adesso o alla fine del turno?
-        if (getTile(tile).spawnPoint()) {
-            addGrabbable(tile, deckOfWeapon.next());
-        } else {
-            addGrabbable(tile, deckOfAmmoCard.next());
-        }
-
         return grabbable;
+    }
+
+    public Grabbable pickUpPowerUp(){
+        return deckOfPowerUp.next();
     }
 
     /**
