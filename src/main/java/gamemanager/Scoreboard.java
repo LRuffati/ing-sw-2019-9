@@ -12,7 +12,7 @@ import java.util.*;
 public class Scoreboard {
     private ArrayList<Actor> actorsList;
     private int numOfDeaths;
-    private int maxDeaths;
+    private final int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
 
     private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);

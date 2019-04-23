@@ -18,10 +18,11 @@ class gameBuilderTest {
 
     @BeforeEach
     void setup(){
-        String path = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/ammoTile.txt";
+        String tilePath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/ammoTile.txt";
+        String mapPath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt";
         try {
-            ammoCardCollection = ParserAmmoTile.parse(path);
-            ammoCardDeck = new GameBuilder(null, null, null, path).getDeckOfAmmoCard();
+            ammoCardCollection = ParserAmmoTile.parse(tilePath);
+            ammoCardDeck = new GameBuilder(mapPath, null, null, tilePath, 1).getDeckOfAmmoCard();
         }
         catch (FileNotFoundException e){
         }
@@ -29,9 +30,10 @@ class gameBuilderTest {
 
     void setup2(){
         String path = "C:\\Users\\pietr\\Desktop\\Polimi\\anno3\\periodo2\\IngSw\\ing-sw-2019-9\\src\\test\\java\\gamemanager\\TileTest";
+        String mapPath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt";
         try {
             ammoCardCollection = ParserAmmoTile.parse(path);
-            ammoCardDeck = new GameBuilder(null, null, null, path).getDeckOfAmmoCard();
+            ammoCardDeck = new GameBuilder(mapPath, null, null, path, 1).getDeckOfAmmoCard();
         }
         catch (FileNotFoundException e){
             System.out.println(e.getStackTrace());
@@ -42,7 +44,7 @@ class gameBuilderTest {
     void testWrongFile(){
         assertThrows(FileNotFoundException.class, () -> ParserAmmoTile.parse(""));
         assertThrows(FileNotFoundException.class,
-                () -> new GameBuilder(null,null,null,""));
+                () -> new GameBuilder(null,null,null,"", 1));
     }
 
     @Test

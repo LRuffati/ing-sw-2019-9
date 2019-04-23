@@ -28,10 +28,10 @@ public class GameMap {
      * Private constructor, to build a map gameMapFactory must be used
      */
     GameMap(Map<RoomUID, Room> roomUIDMap,
-                   Map<TileUID, Tile> tileUIDMap,
-                   List<TileUID> position,
-                   Coord maxPos,
-                   int numOfPlayer,
+            Map<TileUID, Tile> tileUIDMap,
+            List<TileUID> position,
+            Coord maxPos,
+            int numOfPlayer,
             Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards) {
         this.roomUIDMap = roomUIDMap;
         this.tileUIDMap = tileUIDMap;
@@ -44,9 +44,10 @@ public class GameMap {
 
         this.emptyTile = new TileUID();
 
-        for(Tile t : tileUIDMap.values()){
-            t.setMap(this);
-        }
+        tileUIDMap.values().forEach(x -> x.setMap(this));
+
+        //TODO: create weapon cards
+        // refill();
 
         this.damageableUIDMap = buildPawn(this, numOfPlayer);
 

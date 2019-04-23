@@ -61,7 +61,6 @@ public class Actor {
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
         this.pawnID = pawnId;
-        pawn().setBinding(this);
         this.startingPlayerMarker = firstPlayer;
         this.weapons = new ArrayList<>();
         this.powerups = new ArrayList<>();
@@ -69,6 +68,11 @@ public class Actor {
         this.frenzy = false;
         this.marks = null;
         this.gm = map;
+    }
+
+
+    public void setBinding(){
+        pawn().setBinding(this);
     }
 
     /**
@@ -162,7 +166,7 @@ public class Actor {
      * @return the pawn bound to the player.
      */
     public Pawn getPawn() {
-        return pawn;
+        return pawn();
     }
 
     /**
