@@ -52,7 +52,7 @@ public class Pawn {
      * To move the pawn in a selected tile.
      * @param tile is the position where the pawn will be moved.
      */
-    public void move(TileUID tile, GameMap gm){
+    public void move(TileUID tile){
         map.removeDamageable(getTile(), damageableUID);
         this.tile = tile;
         map.addDamageable(tile, damageableUID);

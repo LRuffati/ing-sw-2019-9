@@ -20,7 +20,7 @@ public class AmmoCard extends Grabbable {
         return ammoAmount;
     }
 
-    public int getNumOfPowerUP() {
+    public int getNumOfPowerUp() {
         return numOfPowerUp;
     }
 

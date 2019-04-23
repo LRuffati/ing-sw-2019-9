@@ -45,6 +45,12 @@ public class GameBuilder {
     Deck<AmmoCard> getDeckOfAmmoCard(){
         return deckOfAmmoCard;
     }
+    GameMap getMap() {
+        return map;
+    }
+    List<Actor> getActorList() {
+        return List.copyOf(actorList);
+    }
 
 
     private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
@@ -60,16 +66,15 @@ public class GameBuilder {
     }
 
     private List<Actor> buildActor(GameMap map) {
-        List<Actor> actorList = new ArrayList<>();
+        List<Actor> actors = new ArrayList<>();
         boolean firstPlayer = true;
         for(DamageableUID pawnID : map.getDamageable()){
-            System.out.println(map.getPawn(pawnID));
             Actor actor = new Actor(map, pawnID, firstPlayer);
             actor.setBinding();
-            actorList.add(actor);
+            actors.add(actor);
             firstPlayer = false;
         }
-        return actorList;
+        return actors;
     }
 
 }

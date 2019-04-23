@@ -120,7 +120,7 @@ public class Actor {
      * @param tile the tile where the Pawn must be put
      */
     private void move(TileUID tile){
-        pawn.move(tile, gm);
+        pawn.move(tile);
     }
 
     /**
@@ -135,21 +135,16 @@ public class Actor {
      * @throws AmmoException if the player doesn't have enough ammo
      */
     public void pickUp(Grabbable item, Weapon wToRemove) throws AmmoException{
-        if(!turn) throw new WrongMethodTypeException("It's not your turn");
-
         TileUID tile = this.pawn.getTile();
 
+        if(!turn)
+            throw new WrongMethodTypeException("It's not your turn");
         if(!gm.getGrabbable(tile).contains(item))
             throw new InvalidParameterException("There isn't this item here");
 
         if(gm.getTile(tile).spawnPoint()){
 
-            Optional<AmmoAmount> result = ((Weapon)item).canReload(ammoAvailable);
-            if(result.isPresent()) {
-                ammoAvailable = result.get();
-                ((Weapon)item).setLoaded();
-            }
-            else
+            if(!checkAmmo((Weapon) item))
                 throw new AmmoException("Not enough ammo available");
 
             if(weapons.size() >= 3) {
@@ -163,6 +158,7 @@ public class Actor {
                 weapons.remove(wToRemove);
             }
             weapons.add((Weapon)gm.pickUpGrabbable(tile, item));
+            ((Weapon)item).setLoaded();
         }
         else{
             AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
@@ -181,18 +177,24 @@ public class Actor {
     public void reloadWeapon(Weapon weapon) throws AmmoException{
         if(!weapons.contains(weapon)) throw new InvalidParameterException("This actor has not this weapon");
         if(!weapon.isLoaded())   throw new InvalidParameterException("This weapon is already loaded");
-
-        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable);
-        if(result.isPresent()) {
-            ammoAvailable = result.get();
+        if(checkAmmo(weapon))
             weapon.setLoaded();
-        }
         else
             throw new AmmoException("Not enough ammo available");
         /*
         weapon.canReload(ammoAvailable).ifPresent(ammoAvailable -> weapon.canReload(ammoAvailable));
         weapon.setLoaded();
         */
+    }
+
+    private boolean checkAmmo(Weapon weapon){
+        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable);
+        if(result.isPresent()) {
+            ammoAvailable = result.get();
+            return true;
+        }
+        else
+            return false;
     }
 
     /**

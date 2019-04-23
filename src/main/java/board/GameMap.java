@@ -22,8 +22,6 @@ import uid.RoomUID;
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
  */
 public class GameMap {
-    //TODO Damageable statico, non modificabili
-
     /**
      * Private constructor, to build a map gameMapFactory must be used
      */

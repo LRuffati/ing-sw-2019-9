@@ -74,7 +74,7 @@ class gameBuilderTest {
         AmmoCard c1 = ammoCardDeck.next();
         AmmoCard c2 = ammoCardDeck.next();
         assertFalse(c1.getAmmoAmount().compareTo(c2.getAmmoAmount()) > 0);
-        assertNotEquals(c1.getNumOfPowerUP(), c2.getNumOfPowerUP());
+        assertNotEquals(c1.getNumOfPowerUp(), c2.getNumOfPowerUp());
 
         assertNotEquals(c1,c2);
     }

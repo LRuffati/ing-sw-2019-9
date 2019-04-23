@@ -1,6 +1,5 @@
 package gamemanager;
 
-import board.GameMap;
 import player.Actor;
 
 import java.util.*;
@@ -98,16 +97,19 @@ public class Scoreboard {
         numOfDeaths++;
     }
 
+
     /**
      * This method add a player to the game.
      * @param a is the actor controlled by the player.
      */
     public void addPlayer(Actor a){
-        if(this.actorsList == null){
+        //TODO: check if useless. Players should be added in GameBuilder class
+        /*if(this.actorsList == null){
             a.setStartingPlayerMarker();
         }
-        actorsList.add(a);
+        actorsList.add(a);*/
     }
+
 
     /**
      * Parse the players list and return the player with more points.
