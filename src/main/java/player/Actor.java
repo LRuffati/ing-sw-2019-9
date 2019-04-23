@@ -150,13 +150,13 @@ public class Actor {
      * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
      * @param w is the weapon to be reloaded.
      */
-    /*public void reloadWeapon(Weapon w){
-        if(weapons.contains(w)){
-            w.reloaded = true;
-            //TODO Ammo management.
+    public void reloadWeapon(Weapon w){
+        if(weapons.contains(w) && !w.isLoaded()){
+            w.canReload(ammoAvailable).ifPresent(ammoAvailable -> w.canReload(ammoAvailable));
+            w.setLoaded();
         }
     }
-    */
+
 
 
     /**

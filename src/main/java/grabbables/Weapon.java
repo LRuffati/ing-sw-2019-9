@@ -12,7 +12,7 @@ import java.util.Optional;
 public class Weapon extends Grabbable{
     private AmmoAmount buyCost;
     private AmmoAmount reloadCost;
-
+    private boolean isLoaded;
     private String name;
     private String weaponID;
     private String description;
@@ -33,6 +33,8 @@ public class Weapon extends Grabbable{
         this.actions = actions;
 
         this.weaponID = name;
+
+        this.isLoaded = true;
     }
 
     public String getDescription() {
@@ -89,6 +91,21 @@ public class Weapon extends Grabbable{
             ret = Optional.empty();
         }
         return ret;
+    }
+
+    /**
+     * Silly method to set the weapon from the Actor class.
+     */
+    public void setLoaded(){
+        this.isLoaded = true;
+    }
+
+    /**
+     *
+     * @return true if the weapon is loaded and ready to be used.
+     */
+    public boolean isLoaded() {
+        return isLoaded;
     }
 }
 
