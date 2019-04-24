@@ -281,4 +281,28 @@ public class Actor {
     public int getNumOfDeaths() {
         return numOfDeaths;
     }
+
+    /**
+     *
+     * @return true if Frenzy turn.
+     */
+    public Boolean getFrenzy() {
+        return frenzy;
+    }
+
+    /**
+     * Needed for tests.
+     * @return marks owned by the player.
+     */
+    public Dictionary<DamageableUID, Integer> getMarks() {
+        return marks;
+    }
+
+    /**
+     * Needed for tests.
+     * @return the map of the game the player is playing.
+     */
+    public GameMap getGm() {
+        return gm;
+    }
 }

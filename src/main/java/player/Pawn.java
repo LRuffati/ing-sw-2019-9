@@ -74,7 +74,19 @@ public class Pawn {
         this.tile = null;
     }
 
+    /**
+     *
+     * @return the actor bound to the pawn.
+     */
     public Actor getActor() {
         return actor;
+    }
+
+    /**
+     *
+     * @return the pawn ID.
+     */
+    public DamageableUID getDamageableUID() {
+        return damageableUID;
     }
 }
