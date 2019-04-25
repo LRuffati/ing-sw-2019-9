@@ -96,7 +96,7 @@ class NewTileTest {
         //TODO: check
 
         Set<Grabbable> g;
-        Grabbable g1 = new PowerUp();
+        Grabbable g1 = new PowerUp(null, null);
         g = tile.getGrabbable();
         assertTrue(g.isEmpty());
         g.add(g1);

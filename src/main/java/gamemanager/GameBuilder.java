@@ -10,13 +10,30 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to create a new Game. It creates the GameMap, all the Decks and the Scoreboard.
+ * Everything is built in the constructor, attributes have to be accessed through methods.
+ */
 public class GameBuilder {
     private Deck<Weapon> deckOfWeapon;
     private Deck<PowerUp> deckOfPowerUp;
     private Deck<AmmoCard> deckOfAmmoCard;
     private List<Actor> actorList;
     private GameMap map;
+    private Scoreboard scoreboard;
 
+    /**
+     * Constructor of the class. It builds all the modules needed for the game to start.
+     * Requires the configuration files for all the components.
+     * The syntax of the files is not checked, so new files must be written very accurately.
+     *
+     * @param mapPath Path of the map file.
+     * @param weaponPath Path of the Weapons file.
+     * @param powerUpPath Path of the PowerUps file
+     * @param ammoCardPath Path of the AmmoCard file.
+     * @param numOfPlayer Number of players that will join the game.
+     * @throws FileNotFoundException If any file isn't found, this exception will be called.
+     */
     public GameBuilder(String mapPath,
                        String weaponPath,
                        String powerUpPath,
@@ -34,22 +51,8 @@ public class GameBuilder {
         map = GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
 
         actorList = buildActor(map);
-    }
 
-    public Deck<Weapon> getDeckOfWeapon(){
-        return deckOfWeapon;
-    }
-    public Deck<PowerUp> getDeckOfPowerUp(){
-        return deckOfPowerUp;
-    }
-    public Deck<AmmoCard> getDeckOfAmmoCard(){
-        return deckOfAmmoCard;
-    }
-    public GameMap getMap(){
-        return map;
-    }
-    public List<Actor> getActorList(){
-        return List.copyOf(actorList);
+        scoreboard = new Scoreboard(actorList);
     }
 
 
@@ -57,8 +60,8 @@ public class GameBuilder {
         return new Deck<>(ParserAmmoTile.parse(ammoCardPath));
     }
 
-    private Deck<PowerUp> parserPowerUp(String powerUpPath) {
-        return null;
+    private Deck<PowerUp> parserPowerUp(String powerUpPath) throws FileNotFoundException {
+        return new Deck<>(ParserPowerUp.parse(powerUpPath));
     }
 
     private Deck<Weapon> parserWeapon(String weaponPath) {
@@ -77,5 +80,24 @@ public class GameBuilder {
         return actors;
     }
 
+
+    public Deck<Weapon> getDeckOfWeapon(){
+        return deckOfWeapon;
+    }
+    public Deck<PowerUp> getDeckOfPowerUp(){
+        return deckOfPowerUp;
+    }
+    public Deck<AmmoCard> getDeckOfAmmoCard(){
+        return deckOfAmmoCard;
+    }
+    public GameMap getMap(){
+        return map;
+    }
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+    public List<Actor> getActorList(){
+        return List.copyOf(actorList);
+    }
 }
 

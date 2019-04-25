@@ -9,7 +9,7 @@ import java.util.*;
  * every kills to the Scoreboard with the player who committed the frag and how many tokens he got from it.
  */
 public class Scoreboard {
-    private ArrayList<Actor> actorsList;
+    private final List<Actor> actorsList;
     private int numOfDeaths;
     private final int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
@@ -19,21 +19,24 @@ public class Scoreboard {
     /**
      * Constructor for a standard game (8 skulls).
      */
-    public Scoreboard(){
-        this.actorsList = new ArrayList<>();
-        this.maxDeaths = 8;
-        this.numOfDeaths = 0;
-        this.skullBox = new ArrayList<>();
+    public Scoreboard(List<Actor> actorList){
+        this(actorList, 8);
     }
 
     /**
      * Constructor for a custom game.
      * @param skulls will be the lenght of the scoreboard.
      */
-    public Scoreboard(int skulls){
+    public Scoreboard(List<Actor> actorList, int skulls){
+        this.actorsList = actorList;
         this.maxDeaths = skulls;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();
+    }
+
+    public Scoreboard(){
+        this.actorsList = null;
+        this.maxDeaths = 0;
     }
 
     /**
