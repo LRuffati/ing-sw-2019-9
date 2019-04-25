@@ -26,6 +26,9 @@ public class Pawn {
         this.actor = null;
     }
 
+    /**
+     * Constructor used for DominationPoint class.
+     */
     public Pawn(){
         this.damageableUID = new DamageableUID();
         this.map = null;
@@ -36,8 +39,10 @@ public class Pawn {
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
     protected void setBinding(Actor player){
-        if(actor == null && player.getPawn().actor == null)
+        if(this.actor == null && player.getPawn().actor == null) {
+            player.setPawn(this);
             this.actor = player;
+        }
     }
     /*
     protected void setBinding(Actor player) throws AlreadyBoundedActorException{
@@ -53,9 +58,12 @@ public class Pawn {
      * @param tile is the position where the pawn will be moved.
      */
     public void move(TileUID tile){
-        map.removeDamageable(getTile(), damageableUID);
-        this.tile = tile;
-        map.addDamageable(tile, damageableUID);
+        if (map != null) {
+            map.removeDamageable(getTile(), damageableUID);
+            this.tile = tile;
+            map.addDamageable(tile, damageableUID);
+        }
+        //TODO throw exception
     }
 
     /**
@@ -88,5 +96,13 @@ public class Pawn {
      */
     public DamageableUID getDamageableUID() {
         return damageableUID;
+    }
+
+    /**
+     * Needed for tests.
+     * @return the whole map where the pawn is placed.
+     */
+    public GameMap getMap() {
+        return map;
     }
 }

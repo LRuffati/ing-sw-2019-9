@@ -74,6 +74,12 @@ public class Actor {
         this.gm = map;
     }
 
+    /**
+     * Constructor needed for pawn tests.
+     */
+    public Actor(){
+        this.pawn = null;
+    }
 
     public void setBinding(){
         pawn().setBinding(this);
@@ -296,5 +302,13 @@ public class Actor {
      */
     public GameMap getGm() {
         return gm;
+    }
+
+    /**
+     * Neede for tests.
+     * @param pawn
+     */
+    public void setPawn(Pawn pawn) {
+        this.pawn = pawn;
     }
 }
