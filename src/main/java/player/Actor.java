@@ -72,6 +72,10 @@ public class Actor {
         this.frenzy = false;
         this.marks = null;
         this.gm = map;
+
+        this.turn = false;
+        //TODO: initializa turn here or later?
+        //this.turn = firstPlayer ? true : false;
     }
 
     /**
@@ -215,6 +219,7 @@ public class Actor {
      * Needed to other class to set who's the first player playing (needed for Frenzy Final).
      */
     public void setStartingPlayerMarker() {
+        //TODO: useless, needs to be safe deleted
         this.startingPlayerMarker = true;
     }
 
@@ -302,6 +307,10 @@ public class Actor {
      */
     public GameMap getGm() {
         return gm;
+    }
+
+    public boolean getFirstPlayer(){
+        return startingPlayerMarker;
     }
 
     /**

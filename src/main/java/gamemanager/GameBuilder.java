@@ -36,19 +36,19 @@ public class GameBuilder {
         actorList = buildActor(map);
     }
 
-    Deck<Weapon> getDeckOfWeapon(){
+    public Deck<Weapon> getDeckOfWeapon(){
         return deckOfWeapon;
     }
-    Deck<PowerUp> getDeckOfPowerUp(){
+    public Deck<PowerUp> getDeckOfPowerUp(){
         return deckOfPowerUp;
     }
-    Deck<AmmoCard> getDeckOfAmmoCard(){
+    public Deck<AmmoCard> getDeckOfAmmoCard(){
         return deckOfAmmoCard;
     }
-    GameMap getMap() {
+    public GameMap getMap(){
         return map;
     }
-    List<Actor> getActorList() {
+    public List<Actor> getActorList(){
         return List.copyOf(actorList);
     }
 

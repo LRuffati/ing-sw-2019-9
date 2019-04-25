@@ -58,8 +58,10 @@ public class Pawn {
      * @param tile is the position where the pawn will be moved.
      */
     public void move(TileUID tile){
+        TileUID startingTile = getTile();
         if (map != null) {
-            map.removeDamageable(getTile(), damageableUID);
+            if(startingTile != map.getEmptyTile() && startingTile != null)
+                map.removeDamageable(startingTile, damageableUID);
             this.tile = tile;
             map.addDamageable(tile, damageableUID);
         }
@@ -78,6 +80,7 @@ public class Pawn {
      * To remove the pawn from the map when the player is dead.
      */
     public void removeFromMap(){
+        //TODO: decide which is better
         //this.tile = map.getEmptyTile();
         this.tile = null;
     }
