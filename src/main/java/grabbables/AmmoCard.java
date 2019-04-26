@@ -31,7 +31,7 @@ public class AmmoCard extends Grabbable {
         ret = "RED:" + amount.get(AmmoColor.RED)
                 +" BLUE:" + amount.get(AmmoColor.BLUE)
                 +" YELLOW:" + amount.get(AmmoColor.YELLOW)
-                +" POWERUP: "+ numOfPowerUp;
+                +" POWERUP:"+ numOfPowerUp;
         return ret;
     }
 
