@@ -290,7 +290,7 @@ public class GameMap {
      * Spawn point will receive up to 3 Weapon, non-Spawn poin will receive an Ammo Card
      */
     public void refill(){
-        //TODO: test this method
+        //TODO: test this method, needs also weapon managment
         for(TileUID tile : tileUIDMap.keySet()){
             if(getTile(tile).spawnPoint())
                 deckOfWeapon.take(3 - getGrabbable(tile).size())
@@ -317,9 +317,13 @@ public class GameMap {
      * @param grabbable the card
      */
     public void addGrabbable(TileUID tile, Grabbable grabbable) {
-        if (getTile(tile).spawnPoint() && deckOfWeapon.isPicked((Weapon)grabbable))
+        if (getTile(tile).spawnPoint()
+                && grabbable instanceof Weapon
+                && deckOfWeapon.isPicked((Weapon)grabbable))
             getTile(tile).addGrabbable(grabbable);
-        else if (!getTile(tile).spawnPoint() && deckOfAmmoCard.isPicked((AmmoCard)grabbable))
+        else if (!getTile(tile).spawnPoint()
+                && grabbable instanceof AmmoCard
+                && deckOfAmmoCard.isPicked((AmmoCard)grabbable))
             getTile(tile).addGrabbable(grabbable);
         else
             throw new InvalidParameterException("The card cannot be added");

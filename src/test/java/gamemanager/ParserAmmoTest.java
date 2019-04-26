@@ -11,15 +11,15 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class gameBuilderTest {
+class ParserAmmoTest {
 
     private Deck<AmmoCard> ammoCardDeck;
     private Collection<AmmoCard> ammoCardCollection;
 
     @BeforeEach
     void setup(){
-        String tilePath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/ammoTile.txt";
-        String mapPath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt";
+        String tilePath = "src/resources/ammoTile.txt";
+        String mapPath = "src/resources/map1.txt";
         try {
             ammoCardCollection = ParserAmmoTile.parse(tilePath);
             ammoCardDeck = new GameBuilder(mapPath, null, null, tilePath, 1).getDeckOfAmmoCard();
@@ -29,8 +29,8 @@ class gameBuilderTest {
     }
 
     void setup2(){
-        String path = "C:\\Users\\pietr\\Desktop\\Polimi\\anno3\\periodo2\\IngSw\\ing-sw-2019-9\\src\\test\\java\\gamemanager\\TileTest";
-        String mapPath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt";
+        String path = "src/test/java/gamemanager/TileTest";
+        String mapPath = "src/resources/map1.txt";
         try {
             ammoCardCollection = ParserAmmoTile.parse(path);
             ammoCardDeck = new GameBuilder(mapPath, null, null, path, 1).getDeckOfAmmoCard();

@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class AmmoCard extends Grabbable {
 
-    private AmmoAmount ammoAmount;
-    private int numOfPowerUp;
+    private final AmmoAmount ammoAmount;
+    private final int numOfPowerUp;
 
     public AmmoCard(AmmoAmount ammoAmount, int numOfPowerUp){
         this.ammoAmount= ammoAmount;
@@ -37,12 +37,7 @@ public class AmmoCard extends Grabbable {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null)
-            return false;
-        if (this.getClass() != obj.getClass())
-            return false;
-        //TODO: is that a valid check?
-        return toString().equals(obj.toString());
+        return super.equals(obj);
     }
 
     @Override

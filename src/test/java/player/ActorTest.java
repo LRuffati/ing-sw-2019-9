@@ -28,8 +28,8 @@ class ActorTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String tilePath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/ammoTile.txt";
-        String mapPath = "C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt";
+        String tilePath = "src/resources/ammoTile.txt";
+        String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
                     mapPath, null, null, tilePath, 2);

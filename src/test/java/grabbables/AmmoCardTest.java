@@ -39,7 +39,7 @@ class AmmoCardTest {
         int numOfPu = 1;
         AmmoCard ac = new AmmoCard(am, numOfPu);
         AmmoCard second = null;
-        assertFalse(am.equals(second));
+        assertNotEquals(second, am);
     }
 
     @Test
@@ -48,6 +48,6 @@ class AmmoCardTest {
         int numOfPu = 1;
         AmmoCard ac = new AmmoCard(am, numOfPu);
         Object second = new ArrayList<>();
-        assertFalse(am.equals(second));
+        assertNotEquals(second, am);
     }
 }

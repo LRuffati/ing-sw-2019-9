@@ -41,9 +41,9 @@ public class GameBuilder {
                        int numOfPlayer)
             throws FileNotFoundException{
 
-        deckOfWeapon = parserWeapon(weaponPath);
-        deckOfPowerUp = parserPowerUp(powerUpPath);
-        deckOfAmmoCard = parserAmmoTile(ammoCardPath);
+        if(weaponPath!=null) deckOfWeapon = parserWeapon(weaponPath);
+        if(powerUpPath!=null) deckOfPowerUp = parserPowerUp(powerUpPath);
+        if(ammoCardPath!=null) deckOfAmmoCard = parserAmmoTile(ammoCardPath);
 
         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>>
                 decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);

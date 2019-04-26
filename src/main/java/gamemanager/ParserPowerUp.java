@@ -20,8 +20,8 @@ public class ParserPowerUp {
 
         Scanner scanner;
         Scanner sLine;
-        PowerUpType type;
-        AmmoColor col;
+        PowerUpType type = null;
+        AmmoColor col = null;
 
         try {
             scanner = new Scanner(new File(path));
@@ -31,16 +31,19 @@ public class ParserPowerUp {
 
         while (scanner.hasNextLine()){
 
-            sLine = new Scanner(scanner.nextLine());
+            String str = scanner.nextLine();
+            sLine = new Scanner(str);
             sLine.useDelimiter("-");
 
-            type = getType(sLine.next());
-            col = getCol(sLine.next());
 
-            if(type != null && col != null){
-                powerUpCollection.add(new PowerUp(type, new AmmoAmount(Map.of(col,1))));
+            if(sLine.hasNext()){
+                type = getType(sLine.next());
+                col = getCol(sLine.next());
+                if(type != null && col != null){
+                    powerUpCollection.add(new PowerUp(type, new AmmoAmount(Map.of(col,1))));
+                }
+
             }
-
             sLine.close();
         }
         scanner.close();

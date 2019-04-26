@@ -25,7 +25,7 @@ public class SandBoxTest {
     void setup(){
         map = null;
         try {
-            map = GameMap.gameMapFactory("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt"
+            map = GameMap.gameMapFactory("src/resources/map1.txt"
                     , 3, new Tuple3<>(null,null,null));
         }
         catch (FileNotFoundException e){
@@ -77,8 +77,8 @@ public class SandBoxTest {
     @Test
     void testPawn(){
         //TODO complete the changes on Pawn and Player classes
-        /*
-        TileUID thisTile = map.getPosition(new Coord(1,1));
+
+        /*TileUID thisTile = map.getPosition(new Coord(1,1));
 
         DamageableUID[] listD = new DamageableUID[map.getDamageable().size()];
         map.getDamageable().toArray(listD);

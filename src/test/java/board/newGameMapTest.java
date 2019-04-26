@@ -1,6 +1,9 @@
 package board;
 
 import genericitems.Tuple3;
+import grabbables.AmmoCard;
+import grabbables.Grabbable;
+import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.DamageableUID;
@@ -8,6 +11,7 @@ import uid.RoomUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
+import java.security.InvalidParameterException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,9 +23,8 @@ public class newGameMapTest {
     void setup(){
         map = null;
         try {
-            map = GameMap.gameMapFactory("map1.txt"
+            map = GameMap.gameMapFactory("src/resources/map1.txt"
                     , 3, new Tuple3<>(null,null,null));
-            //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
         catch (FileNotFoundException e){
         }
