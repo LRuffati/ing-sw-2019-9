@@ -53,7 +53,7 @@ class PawnTest {
     }
 
     @Test
-    void moveTest(){
+    void moveTest() throws NoSuchFieldException {
         pietro = actorList.get(0).getPawn();
         TileUID tomove;
         tomove = map.getPosition(new Coord(0,0));
@@ -72,7 +72,7 @@ class PawnTest {
     }
 
     @Test
-    void deadPawnTest(){
+    void deadPawnTest() throws NoSuchFieldException {
         pietro = actorList.get(0).getPawn();
         pietro.removeFromMap();
         for(TileUID t : map.allTiles())

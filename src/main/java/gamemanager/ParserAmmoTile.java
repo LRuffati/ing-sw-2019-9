@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ParserAmmoTile {
+public class  ParserAmmoTile {
     ParserAmmoTile(){}
 
     public static Collection<AmmoCard> parse(String path) throws FileNotFoundException {

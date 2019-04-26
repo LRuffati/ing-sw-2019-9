@@ -69,22 +69,6 @@ public class Scoreboard {
                     num++;
                 }
             }
-
-            /*ArrayList<Integer> max = new ArrayList<>();
-            max.add(0);
-            for(Actor i:actorsList){
-                int count = Collections.frequency(dead.getDamageTaken(), i);
-                if(count > max.get(0)) max.add(count);
-            }
-
-            //TODO check if it parse the players in the same order twice (probably it doesn't).
-            for(Actor i:actorsList){
-                if(max.get(0)==0) break;
-                i.addPoints(max.get(0));
-                max.remove(0);
-            }
-            */
-
         }
     }
 
@@ -98,19 +82,6 @@ public class Scoreboard {
         //if(victim.getDamageTaken().get(11)!= null)                    gestire overkill con marchi
         this.skullBox.add(m);
         numOfDeaths++;
-    }
-
-
-    /**
-     * This method add a player to the game.
-     * @param a is the actor controlled by the player.
-     */
-    public void addPlayer(Actor a){
-        //TODO: check if useless. Players should be added in GameBuilder class
-        /*if(this.actorsList == null){
-            a.setStartingPlayerMarker();
-        }
-        actorsList.add(a);*/
     }
 
 

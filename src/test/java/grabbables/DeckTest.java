@@ -1,5 +1,6 @@
 package grabbables;
 
+import genericitems.Tuple3;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +19,16 @@ class DeckTest {
             integerSet.add(random.nextInt(255));
         }
         return new ArrayList<>(integerSet);
+    }
+
+    @Test
+    void testFirstConstructor(){
+        ArrayList<Integer> integerArrayList = generateList();
+        Deck<Integer> integerDeck = new Deck<>(integerArrayList);
+        Deck<Integer> newDeck = new Deck<>(integerDeck.getDeckState());
+        while(integerDeck.hasNext()){
+            assertEquals(integerDeck.next(), newDeck.next());
+        }
     }
 
     @Test
@@ -84,6 +95,14 @@ class DeckTest {
     @Test
     void testException(){
         Deck<Integer> integerDeck = new Deck<>(new ArrayList<>());
-        assertThrows(NoSuchElementException.class, ()-> {integerDeck.next();});
+        assertThrows(NoSuchElementException.class, integerDeck::next);
+    }
+
+    @Test
+    void testCardPicked(){
+        Deck<Integer> integerDeck = new Deck<>(new ArrayList<>());
+        int n = (new Random()).nextInt(100);
+        integerDeck.take(n);
+        assertTrue(integerDeck.isPicked(n));
     }
 }

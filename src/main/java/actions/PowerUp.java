@@ -22,7 +22,7 @@ public class PowerUp {
 
     }
 
-    public void useTeleporter(Actor actor, TileUID tile){
+    public void useTeleporter(Actor actor, TileUID tile) throws NoSuchFieldException {
         if (actor.isTurn())
             actor.unconditionalMove(tile);
     }

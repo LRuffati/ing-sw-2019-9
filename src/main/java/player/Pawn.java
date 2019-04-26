@@ -57,15 +57,16 @@ public class Pawn {
      * To move the pawn in a selected tile.
      * @param tile is the position where the pawn will be moved.
      */
-    public void move(TileUID tile){
+    public void move(TileUID tile) throws NoSuchFieldException{
         TileUID startingTile = getTile();
         if (map != null) {
             if(startingTile != map.getEmptyTile() && startingTile != null)
                 map.removeDamageable(startingTile, damageableUID);
             this.tile = tile;
             map.addDamageable(tile, damageableUID);
+        } else {
+            throw new NoSuchFieldException("Tile not present in the map.");
         }
-        //TODO throw exception
     }
 
     /**
@@ -79,10 +80,12 @@ public class Pawn {
     /**
      * To remove the pawn from the map when the player is dead.
      */
-    public void removeFromMap(){
-        //TODO: decide which is better
-        //this.tile = map.getEmptyTile();
-        this.tile = null;
+    public void removeFromMap() throws NullPointerException{
+        if (map != null) {
+            this.tile = map.getEmptyTile();
+        } else {
+            throw new NullPointerException();
+        }
     }
 
     /**

@@ -73,8 +73,7 @@ public class Actor {
         this.marks = null;
         this.gm = map;
 
-        this.turn = false;
-        //TODO: initializa turn here or later?
+        this.turn = false;                                          //turn will be initialized with the Server Class
         //this.turn = firstPlayer ? true : false;
     }
 
@@ -102,7 +101,7 @@ public class Actor {
      * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
      * @param t is the Tile id where the player is trying to move to.
      */
-    public void movePlayer(TileUID t){
+    public void movePlayer(TileUID t) throws NoSuchFieldException {
         if(turn &&
                 (!frenzy && gm.getSurroundings(false, 3, pawn.getTile()).contains(t))
                 ||
@@ -112,7 +111,7 @@ public class Actor {
         }
     }
 
-    public void unconditionalMove(TileUID tile){
+    public void unconditionalMove(TileUID tile) throws NoSuchFieldException {
         move(tile);
     }
 
@@ -121,7 +120,7 @@ public class Actor {
      * It modifies the tile of the Pawn and move the Player in the GameMap
      * @param tile the tile where the Pawn must be put
      */
-    private void move(TileUID tile){
+    private void move(TileUID tile) throws NoSuchFieldException {
         pawn.move(tile);
     }
 
@@ -213,14 +212,6 @@ public class Actor {
      */
     public boolean isTurn(){
         return turn;
-    }
-
-    /**
-     * Needed to other class to set who's the first player playing (needed for Frenzy Final).
-     */
-    public void setStartingPlayerMarker() {
-        //TODO: useless, needs to be safe deleted
-        this.startingPlayerMarker = true;
     }
 
     /**
