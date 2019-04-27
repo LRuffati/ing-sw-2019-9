@@ -77,7 +77,6 @@ public class Deck<T> implements Iterator<T>{
         ArrayList<T> ret = new ArrayList<>(maxN);
         for (int i=0; (i<maxN) && hasNext(); i++){
             ret.add(next());
-            pickedCard.add(next());
         }
         return ret;
     }

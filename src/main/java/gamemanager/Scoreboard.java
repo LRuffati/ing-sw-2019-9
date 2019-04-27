@@ -1,5 +1,7 @@
 package gamemanager;
 
+import player.Actor;
+
 import java.util.*;
 
 /**

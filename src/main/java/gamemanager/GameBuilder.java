@@ -3,6 +3,7 @@ package gamemanager;
 import board.GameMap;
 import genericitems.Tuple3;
 import grabbables.*;
+import player.Actor;
 import uid.DamageableUID;
 
 import java.io.FileNotFoundException;

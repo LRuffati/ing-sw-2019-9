@@ -9,6 +9,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.InaccessibleObjectException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,7 +92,7 @@ class PawnTest {
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tile).contains(pietro.getDamageableUID()));
         pietro.setNullMap();
-        assertThrows(NullPointerException.class, ()->{
+        assertThrows(InaccessibleObjectException.class, ()->{
             pietro.removeFromMap();
         });
     }

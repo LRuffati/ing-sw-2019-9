@@ -1,10 +1,8 @@
 package gamemanager;
 
 import org.junit.jupiter.api.Test;
-<<<<<<< HEAD
-=======
+
 import player.Actor;
->>>>>>> 99e86d991d2e57a47b497cadba1e2e635bd565d5
 
 import java.util.ArrayList;
 import java.util.List;

@@ -3,6 +3,7 @@ package actions;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Direction;
+import player.Actor;
 import uid.PowerUpUID;
 import uid.TileUID;
 

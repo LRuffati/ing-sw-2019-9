@@ -11,6 +11,7 @@ import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.TileUID;
 
+import java.awt.*;
 import java.lang.invoke.WrongMethodTypeException;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -28,12 +29,28 @@ public class Actor {
     private Collection<PowerUp> powerups;
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
-    private Pawn pawn;
     private Boolean frenzy;
     private Boolean turn;
     private transient GameMap gm;
 
     private DamageableUID pawnID;
+
+    /**
+     * The constructor assigns null points and deaths counter and bind a new pawn to the player.
+     * It checks if it's the starting player.
+     */
+    public Actor(GameMap map){
+        this.points = 0;
+        this.numOfDeaths = 0;
+        this.damageTaken = new ArrayList<>();
+        this.startingPlayerMarker = false;
+        this.weapons = new ArrayList<>();
+        this.powerups = new ArrayList<>();
+        this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
+        this.frenzy = false;
+        this.marks = null;
+        this.gm = map;
+    }
 
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
@@ -54,17 +71,15 @@ public class Actor {
         this.marks = null;
         this.gm = map;
 
-        this.turn = false;                                          //turn will be initialized with the Server Class
-        //this.turn = firstPlayer ? true : false;
+        this.turn = false;         //turn will be initialized with the Server Class
     }
+
+    public Actor(){}
+
 
     /**
-     * Constructor needed for pawn tests.
+     * Provide the binding between the Actor and the DamageableUID
      */
-    public Actor(){
-        this.pawn = null;
-    }
-
     public void setBinding(){
         pawn().setBinding(this);
     }
@@ -84,16 +99,12 @@ public class Actor {
      */
     public void movePlayer(TileUID t) throws NoSuchFieldException {
         if(turn &&
-                (!frenzy && gm.getSurroundings(false, 3, pawn.getTile()).contains(t))
+                (!frenzy && gm.getSurroundings(false, 3, pawn().getTile()).contains(t))
                 ||
-                (frenzy && gm.getSurroundings(false, 4, pawn.getTile()).contains(t))
+                (frenzy && gm.getSurroundings(false, 4, pawn().getTile()).contains(t))
         ) {
             move(t);
         }
-    }
-
-    public void unconditionalMove(TileUID tile) throws NoSuchFieldException {
-        move(tile);
     }
 
     /**
@@ -101,8 +112,8 @@ public class Actor {
      * It modifies the tile of the Pawn and move the Player in the GameMap
      * @param tile the tile where the Pawn must be put
      */
-    private void move(TileUID tile) throws NoSuchFieldException {
-        pawn.move(tile);
+    public void move(TileUID tile) throws NoSuchFieldException {
+        pawn().move(tile);
     }
 
     /**
@@ -117,7 +128,7 @@ public class Actor {
      * @throws AmmoException if the player doesn't have enough ammo
      */
     public void pickUp(Grabbable item, Weapon wToRemove) throws AmmoException{
-        TileUID tile = this.pawn.getTile();
+        TileUID tile = pawn().getTile();
 
         if(!turn)
             throw new WrongMethodTypeException("It's not your turn");
@@ -130,13 +141,13 @@ public class Actor {
                 throw new AmmoException("Not enough ammo available");
 
             if(weapons.size() >= 3) {
-                if (wToRemove != null)
+                if (wToRemove == null)
                     throw new InvalidParameterException("A weapon must be discarded");
-                else
-                    if(!weapons.contains(wToRemove))
-                        throw new InvalidParameterException("You haven't this weapon");
-                    else
-                        gm.addGrabbable(tile, wToRemove);
+
+                if(!weapons.contains(wToRemove))
+                    throw new InvalidParameterException("You haven't this weapon");
+
+                gm.addGrabbable(tile, wToRemove);
                 weapons.remove(wToRemove);
             }
             weapons.add((Weapon)gm.pickUpGrabbable(tile, item));
@@ -146,7 +157,8 @@ public class Actor {
             AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
             ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
             for(int i = 0; i<card.getNumOfPowerUp(); i++)
-                powerups.add((PowerUp)gm.pickUpPowerUp());
+                if(powerups.size() < 3)
+                    powerups.add((PowerUp)gm.pickUpPowerUp());
             gm.discardAmmoCard(card);
         }
     }
@@ -163,10 +175,6 @@ public class Actor {
             weapon.setLoaded();
         else
             throw new AmmoException("Not enough ammo available");
-        /*
-        weapon.canReload(ammoAvailable).ifPresent(ammoAvailable -> weapon.canReload(ammoAvailable));
-        weapon.setLoaded();
-        */
     }
 
     private boolean checkAmmo(Weapon weapon){
@@ -281,19 +289,57 @@ public class Actor {
         return gm;
     }
 
+    /**
+     *
+     * @return True iif the Actor is the player that started the game
+     */
     public boolean getFirstPlayer(){
         return startingPlayerMarker;
     }
 
     /**
-     * Neede for tests.
+     * Adds a certain number of marks from pawn to this.
+     * If the pawn already assigned 3 marks nothing happens.
      * @param pawn
+     * @param numOfMarks
+     * @return the number of marks successfully applied
      */
-    public void setPawn(Pawn pawn) {
-        this.pawn = pawn;
+    public int addMark(DamageableUID pawn, int numOfMarks){
+        int totMarks = 0;
+        for(DamageableUID p : gm.allPawns()){
+            gm.getPawn(p).getActor().getMarks().get(pawn);
+            totMarks++;
+        }
+
+        if(totMarks > 3)
+            return -1;
+
+        //TODO: carefully test this method
+        int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
+        marks.put(pawn, marks.get(pawn) + applied);
+        return applied;
     }
 
-    public Pawn getNullPawn(){
-        return this.pawn;
+
+    /**
+     * This method initialize the Actor when there is need to respawn.
+     * It sets the new Tile and resets the damageTaken field.
+     * @param color Where the player wants to respawn. It is the color of the discarded PowerUp
+     * @throws InvalidParameterException if the actor is not dead.
+     */
+    public void respawn(AmmoColor color){
+        if(pawn().getTile() != gm.getEmptyTile() && pawn().getTile() != null)
+            throw new InvalidParameterException("The player is not dead");
+
+        for (TileUID t : gm.allTiles()){
+            Color colTile = gm.getTile(t).getColor();
+            if(gm.getTile(t).spawnPoint() && colTile.toString().equals(color.toString())){
+                try{
+                    move(t);
+                }
+                catch (NoSuchFieldException ignore){}
+            }
+        }
     }
 }
+
