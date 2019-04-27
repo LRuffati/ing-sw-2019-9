@@ -75,7 +75,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     @NotNull
     @Contract("_ -> new")
     public static BasicTarget basicFactory(@NotNull Pawn target){
-        return new BasicTarget(target.damageableUID, target.getTile());
+        return new BasicTarget(target.getDamageableUID(), target.getTile());
     }
 
     /**

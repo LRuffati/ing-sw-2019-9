@@ -2,10 +2,13 @@ package board;
 
 import genericitems.Tuple3;
 import org.junit.jupiter.api.*;
+import player.Pawn;
+import uid.DamageableUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,13 +73,25 @@ public class SandBoxTest {
     @Test
     void testPawn(){
         //TODO complete the changes on Pawn and Player classes
+        //TODO: without the first assert there is a Failure
 
-        /*TileUID thisTile = map.getPosition(new Coord(1,1));
+
+        TileUID thisTile = map.getPosition(new Coord(1,1));
 
         DamageableUID[] listD = new DamageableUID[map.getDamageable().size()];
         map.getDamageable().toArray(listD);
-        DamageableUID pawn1 = listD[0];
+        Pawn pawn1 = map.getPawn(listD[0]);
 
+        try {
+            pawn1.move(thisTile);
+            sandbox = map.createSandbox();
+            assertEquals(map.room(pawn1.getTile()) , sandbox.room(pawn1.getDamageableUID()));
+            assertEquals(thisTile , sandbox.tile(pawn1.getDamageableUID()));
+        }
+        catch (Exception e){}
+
+
+        /*DamageableUID pawn1 = listD[0];
         map.addDamageable(thisTile, listD[0]);
         sandbox = map.createSandbox();
 
