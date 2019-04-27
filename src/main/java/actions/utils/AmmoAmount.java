@@ -104,4 +104,11 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
         }
         return 1;
     }
+
+    @Override
+    public String toString() {
+        return "RED:" + amounts.get(AmmoColor.RED)
+                +" BLUE:" + amounts.get(AmmoColor.BLUE)
+                +" YELLOW:" + amounts.get(AmmoColor.YELLOW);
+    }
 }

@@ -12,9 +12,18 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * Class used to parse a file containing PowerUp cards.
+ */
 public class ParserPowerUp {
     ParserPowerUp() {}
 
+    /**
+     * Static method that parse the file
+     * @param path the Path of the file that has to be parsed
+     * @return A collection containing all the Card parsed
+     * @throws FileNotFoundException If the file is not found
+     */
     public static Collection<PowerUp> parse(String path) throws FileNotFoundException {
         Collection<PowerUp> powerUpCollection = new ArrayList<>();
 

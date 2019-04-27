@@ -1,10 +1,7 @@
 package grabbables;
 
 import actions.utils.AmmoAmount;
-import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
-
-import java.util.Map;
 
 public class PowerUp extends Grabbable {
     private final PowerUpType type;
@@ -15,25 +12,24 @@ public class PowerUp extends Grabbable {
         this.ammo = ammo;
     }
 
+    /**
+     * @return The type of powerUp contained
+     */
     public PowerUpType getType() {
         return type;
     }
 
+    /**
+     * @return The type of Ammo equivalent to the PowerUp
+     */
     public AmmoAmount getAmmo() {
         return ammo;
     }
 
     @Override
     public String toString() {
-        String ret;
-        Map<AmmoColor, Integer> amount = ammo.getAmounts();
-        ret = getType().toString();
-        ret += "RED:" + amount.get(AmmoColor.RED)
-                +" BLUE:" + amount.get(AmmoColor.BLUE)
-                +" YELLOW:" + amount.get(AmmoColor.YELLOW);
-        return ret;
+        return getType().toString() + ammo.toString();
     }
-
 
     @Override
     public boolean equals(Object obj) {

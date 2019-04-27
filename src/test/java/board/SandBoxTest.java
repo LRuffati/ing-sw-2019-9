@@ -2,17 +2,10 @@ package board;
 
 import genericitems.Tuple3;
 import org.junit.jupiter.api.*;
-import player.Actor;
-import player.Pawn;
-import uid.DamageableUID;
-import uid.RoomUID;
 import uid.TileUID;
 
-import java.awt.*;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 

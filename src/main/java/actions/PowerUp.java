@@ -3,12 +3,8 @@ package actions;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Direction;
-import player.Actor;
 import uid.PowerUpUID;
-import board.Tile;
 import uid.TileUID;
-
-import java.util.List;
 
 public class PowerUp {
     private PowerUpType type;
@@ -24,7 +20,7 @@ public class PowerUp {
 
     public void useTeleporter(Actor actor, TileUID tile) throws NoSuchFieldException {
         if (actor.isTurn())
-            actor.unconditionalMove(tile);
+            actor.move(tile);
     }
 
     public void useTagbackGranade(Actor a, Actor target){

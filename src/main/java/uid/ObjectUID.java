@@ -2,7 +2,13 @@ package uid;
 
 import java.rmi.server.UID;
 
+/**
+ * This class contains the basic unit used to identify an object
+ */
 public abstract class ObjectUID {
+    /**
+     * Identifier used to identify the object applied to
+     */
     private UID uid;
 
     ObjectUID(){

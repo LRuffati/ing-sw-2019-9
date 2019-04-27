@@ -2,6 +2,9 @@ package grabbables;
 
 import uid.GrabbableUID;
 
+/**
+ * Generic item that can be picked Up. Identified by a UID.
+ */
 public abstract class Grabbable {
     private GrabbableUID uid;
 

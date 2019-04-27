@@ -62,6 +62,10 @@ public class GameMap {
     }
 
 
+    /**
+     * Creates a sandbox used to test the validity of any action
+     * @return the Sandbox
+     */
     public Sandbox createSandbox() {
         Map<RoomUID, RoomTarget> targetRooms = roomUIDMap.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
@@ -102,7 +106,9 @@ public class GameMap {
      */
     private final Map<DamageableUID, Pawn> damageableUIDMap;
 
-
+    /**
+     * A tile used to store dead players waiting to be spawned
+     */
     private final TileUID emptyTile;
 
 
@@ -178,6 +184,15 @@ public class GameMap {
      */
     public Set<TileUID> allTiles(){
         return new HashSet<>(tileUIDMap.keySet());
+    }
+
+
+    /**
+     *
+     * @return A Set containing all the PawnUID in the map
+     */
+    public Set<DamageableUID> allPawns(){
+        return new HashSet<>(damageableUIDMap.keySet());
     }
 
 
@@ -340,6 +355,10 @@ public class GameMap {
         return grabbable;
     }
 
+    /**
+     * Removes and returns a PowerUp card picked from the Deck
+     * @return A PowerUp card
+     */
     public Grabbable pickUpPowerUp(){
         return deckOfPowerUp.next();
     }
@@ -413,6 +432,8 @@ public class GameMap {
     public TileUID getEmptyTile(){
         return emptyTile;
     }
+
+
 
     private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){
         Map<DamageableUID, Pawn> res = new HashMap<>();

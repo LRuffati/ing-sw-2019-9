@@ -3,7 +3,6 @@ package gamemanager;
 import board.GameMap;
 import genericitems.Tuple3;
 import grabbables.*;
-import player.Actor;
 import uid.DamageableUID;
 
 import java.io.FileNotFoundException;
@@ -45,8 +44,7 @@ public class GameBuilder {
         if(powerUpPath!=null) deckOfPowerUp = parserPowerUp(powerUpPath);
         if(ammoCardPath!=null) deckOfAmmoCard = parserAmmoTile(ammoCardPath);
 
-        Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>>
-                decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
+        Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
 
         map = GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
 

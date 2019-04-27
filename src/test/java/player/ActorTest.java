@@ -71,7 +71,7 @@ class ActorTest {
     void unconditionalMovement() throws NoSuchFieldException {
         Actor Pietro = actorList.get(0);
         Pietro.setTurn(false);
-        Pietro.unconditionalMove(map.getPosition(new Coord(1,1)));
+        Pietro.move(map.getPosition(new Coord(1,1)));
         assertEquals(map.getPosition(new Coord(1,1)), Pietro.getPawn().getTile());
     }
 

@@ -1,14 +1,19 @@
 package grabbables;
 
 import actions.utils.AmmoAmount;
-import actions.utils.AmmoColor;
 
-import java.util.Map;
-
-
+/**
+ * Card containing an AmmoCard
+ */
 public class AmmoCard extends Grabbable {
-
+    /**
+     * The Ammo available in the card
+     */
     private final AmmoAmount ammoAmount;
+    /**
+     * The number of PowerUps available in the card.
+     * Standard cards always contains up to 1 PowerUp
+     */
     private final int numOfPowerUp;
 
     public AmmoCard(AmmoAmount ammoAmount, int numOfPowerUp){
@@ -16,23 +21,23 @@ public class AmmoCard extends Grabbable {
         this.numOfPowerUp = numOfPowerUp;
     }
 
+    /**
+     * @return The amount of ammo contained in the Card
+     */
     public AmmoAmount getAmmoAmount() {
         return ammoAmount;
     }
 
+    /**
+     * @return The number of PowerUps available in the card
+     */
     public int getNumOfPowerUp() {
         return numOfPowerUp;
     }
 
     @Override
     public String toString() {
-        String ret;
-        Map<AmmoColor, Integer> amount = ammoAmount.getAmounts();
-        ret = "RED:" + amount.get(AmmoColor.RED)
-                +" BLUE:" + amount.get(AmmoColor.BLUE)
-                +" YELLOW:" + amount.get(AmmoColor.YELLOW)
-                +" POWERUP:"+ numOfPowerUp;
-        return ret;
+        return ammoAmount.toString() +" POWERUP:"+ numOfPowerUp;
     }
 
     //TODO Check if the overrides are needed.

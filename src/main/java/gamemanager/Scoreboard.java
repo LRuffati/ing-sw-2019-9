@@ -1,7 +1,5 @@
 package gamemanager;
 
-import player.Actor;
-
 import java.util.*;
 
 /**
@@ -34,8 +32,8 @@ public class Scoreboard {
         this.skullBox = new ArrayList<>();
     }
 
-    public Scoreboard(){
-        this.actorsList = null;
+    Scoreboard(){
+        this.actorsList = new ArrayList<>();
         this.maxDeaths = 0;
     }
 
@@ -44,7 +42,7 @@ public class Scoreboard {
      * @return true if all the skulls are removed and the final phase of the game needs to start.
      */
     public boolean finalFrenzy(){
-        return numOfDeaths == maxDeaths;
+        return numOfDeaths >= maxDeaths;
     }
 
     /**
@@ -76,11 +74,14 @@ public class Scoreboard {
      * Remove a skull and add the killer marker(s).
      * @param killer is the player who got the kill.
      */
-    //TODO Understand how to manage all the kill cases.
     public void addKill(Actor killer, Actor victim){
-        Map<Actor, Integer> m = new HashMap<>();
-        //if(victim.getDamageTaken().get(11)!= null)                    gestire overkill con marchi
-        this.skullBox.add(m);
+        int numPoints = 1;
+        if(victim.getDamageTaken().get(11)!= null) {
+            numPoints = 2;
+            //TODO: probably should't be done here
+            victim.addMark(killer.getPawn().getDamageableUID(), 1);
+        }
+        skullBox.add(Map.of(killer, numPoints));
         numOfDeaths++;
     }
 

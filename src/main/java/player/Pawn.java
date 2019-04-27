@@ -3,6 +3,8 @@ import board.GameMap;
 import uid.DamageableUID;
 import uid.TileUID;
 
+import java.lang.reflect.InaccessibleObjectException;
+
 /**
  * This class implements a playable character in the game. Every pawn in the game is bound to a player and every player
  * to a single pawn. The pawn represents the player in the map and it is the damageable and movable component of every
@@ -38,9 +40,8 @@ public class Pawn {
      * The method set a bound between an unbounded player and the pawn.
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
-    protected void setBinding(Actor player){
+    void setBinding(Actor player){
         if(this.actor == null && player.getPawn().actor == null) {
-            player.setPawn(this);
             this.actor = player;
         }
     }
@@ -80,11 +81,11 @@ public class Pawn {
     /**
      * To remove the pawn from the map when the player is dead.
      */
-    public void removeFromMap() throws NullPointerException{
+    public void removeFromMap(){
         if (map != null) {
             this.tile = map.getEmptyTile();
         } else {
-            throw new NullPointerException();
+            throw new InaccessibleObjectException("The map doesn't exist");
         }
     }
 
