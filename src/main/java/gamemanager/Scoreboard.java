@@ -115,4 +115,36 @@ public class Scoreboard {
 
         }
     }
+
+    /**
+     * Needed for tests.
+     * @return list of actors.
+     */
+    public List<Actor> getActorsList() {
+        return actorsList;
+    }
+
+    /**
+     * Needed for tests.
+     * @return num of deaths of the game.
+     */
+    public int getNumOfDeaths() {
+        return numOfDeaths;
+    }
+
+    /**
+     * Needed for tests.
+     * @return num max of deaths before the end of the game.
+     */
+    public int getMaxDeaths() {
+        return maxDeaths;
+    }
+
+    /**
+     * Needed for tests.
+     * @return the object skullbox.
+     */
+    public ArrayList<Map<Actor, Integer>> getSkullBox() {
+        return skullBox;
+    }
 }

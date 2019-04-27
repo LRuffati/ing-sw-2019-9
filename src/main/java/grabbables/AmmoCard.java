@@ -35,6 +35,8 @@ public class AmmoCard extends Grabbable {
         return ret;
     }
 
+    //TODO Check if the overrides are needed.
+    /*
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
@@ -44,4 +46,6 @@ public class AmmoCard extends Grabbable {
     public int hashCode() {
         return super.hashCode();
     }
+    */
+
 }
