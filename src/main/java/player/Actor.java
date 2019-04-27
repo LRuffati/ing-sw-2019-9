@@ -36,25 +36,6 @@ public class Actor {
     private DamageableUID pawnID;
 
     /**
-     * The constructor assigns null points and deaths counter and bind a new pawn to the player.
-     * It checks if it's the starting player.
-     */
-    public Actor(GameMap map){
-        this.points = 0;
-        this.numOfDeaths = 0;
-        this.damageTaken = new ArrayList<>();
-        this.pawn = new Pawn();
-        pawn.setBinding(this);
-        this.startingPlayerMarker = false;
-        this.weapons = new ArrayList<>();
-        this.powerups = new ArrayList<>();
-        this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
-        this.frenzy = false;
-        this.marks = null;
-        this.gm = map;
-    }
-
-    /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
      * @param map GameMap
      * @param pawnId the Pawn identifier that has to be associated with this Actor

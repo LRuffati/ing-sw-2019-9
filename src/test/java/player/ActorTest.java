@@ -18,11 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ActorTest {
 
-    DamageableUID dUID;
-    TileUID tUID;
     GameMap map;
-    Actor attore;
-    Pawn pietro;
     List<Actor> actorList;
 
     @BeforeEach
@@ -38,11 +34,10 @@ class ActorTest {
         }
         map = builder.getMap();
         actorList = builder.getActorList();
-
     }
 
     @Test
-    void firstConstructor(){
+    void constructorTest(){
         for(Actor Pietro : actorList) {
             assertEquals(0, Pietro.getPoints());
             assertEquals(0, Pietro.getNumOfDeaths());
