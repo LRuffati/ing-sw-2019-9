@@ -62,6 +62,12 @@ class ActorTest {
     }
 
     @Test
+    void nullConstructorTest(){
+        Actor melo = new Actor();
+        assertNull(melo.getNullPawn());
+    }
+
+    @Test
     void unconditionalMovement() throws NoSuchFieldException {
         Actor Pietro = actorList.get(0);
         Pietro.setTurn(false);

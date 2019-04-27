@@ -56,6 +56,8 @@ class PawnTest {
     void moveTest() throws NoSuchFieldException {
         pietro = actorList.get(0).getPawn();
         TileUID tomove;
+        final TileUID finalTomove;
+        finalTomove = map.getPosition(new Coord(0,0));
         tomove = map.getPosition(new Coord(0,0));
         pietro.move(tomove);
         for(TileUID t : map.allTiles())
@@ -69,6 +71,10 @@ class PawnTest {
             if(!t.equals(tomove))
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tomove).contains(pietro.getDamageableUID()));
+        pietro.setNullMap();
+        assertThrows(NoSuchFieldException.class, ()->{
+            pietro.move(finalTomove);
+        });
     }
 
     @Test
@@ -84,6 +90,9 @@ class PawnTest {
             if(!t.equals(tile))
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tile).contains(pietro.getDamageableUID()));
-
+        pietro.setNullMap();
+        assertThrows(NullPointerException.class, ()->{
+            pietro.removeFromMap();
+        });
     }
 }

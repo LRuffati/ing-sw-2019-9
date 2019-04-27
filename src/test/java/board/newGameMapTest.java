@@ -16,7 +16,7 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class newGameMapTest {
+class newGameMapTest {
     private GameMap map;
 
     @BeforeEach
@@ -89,7 +89,7 @@ public class newGameMapTest {
 
     @Test
     void containedPawnsTest(){
-        //TODO: add Paw
+        //TODO: add Pawn
     }
 
     @Test
@@ -167,5 +167,10 @@ public class newGameMapTest {
         res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(1, 0)))));
         res.addAll(map.tilesInRoom(map.room(map.getPosition(new Coord(1, 3)))));
         assertTrue(map.getVisible(map.getPosition(new Coord(1, 2))).containsAll(res));
+    }
+
+    @Test
+    void addGrabTest(){
+
     }
 }

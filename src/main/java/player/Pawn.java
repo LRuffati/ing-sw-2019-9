@@ -13,7 +13,7 @@ public class Pawn {
     private TileUID tile;
     private Actor actor;
     public final DamageableUID damageableUID;
-    private final GameMap map;
+    private GameMap map;
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
@@ -110,5 +110,9 @@ public class Pawn {
      */
     public GameMap getMap() {
         return map;
+    }
+
+    public void setNullMap(){
+        map = null;
     }
 }

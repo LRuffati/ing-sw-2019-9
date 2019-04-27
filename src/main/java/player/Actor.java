@@ -292,4 +292,8 @@ public class Actor {
     public void setPawn(Pawn pawn) {
         this.pawn = pawn;
     }
+
+    public Pawn getNullPawn(){
+        return this.pawn;
+    }
 }

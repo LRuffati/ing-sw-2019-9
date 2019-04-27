@@ -287,10 +287,10 @@ public class GameMap {
 
     /**
      * Refill all the Tiles with cards.
-     * Spawn point will receive up to 3 Weapon, non-Spawn poin will receive an Ammo Card
+     * Spawn point will receive up to 3 Weapon, non-Spawn point will receive an Ammo Card
      */
     public void refill(){
-        //TODO: test this method, needs also weapon managment
+        //TODO: test this method, needs also weapon management
         for(TileUID tile : tileUIDMap.keySet()){
             if(getTile(tile).spawnPoint())
                 deckOfWeapon.take(3 - getGrabbable(tile).size())
