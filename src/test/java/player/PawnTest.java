@@ -10,6 +10,7 @@ import uid.TileUID;
 
 import java.io.FileNotFoundException;
 import java.lang.reflect.InaccessibleObjectException;
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,13 +74,13 @@ class PawnTest {
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tomove).contains(pietro.getDamageableUID()));
         pietro.setNullMap();
-        assertThrows(NoSuchFieldException.class, ()->{
+        assertThrows(InvalidParameterException.class, ()->{
             pietro.move(finalTomove);
         });
     }
 
     @Test
-    void deadPawnTest() throws NoSuchFieldException {
+    void deadPawnTest(){
         pietro = actorList.get(0).getPawn();
         pietro.removeFromMap();
         for(TileUID t : map.allTiles())

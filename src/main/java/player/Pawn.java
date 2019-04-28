@@ -4,6 +4,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.lang.reflect.InaccessibleObjectException;
+import java.security.InvalidParameterException;
 
 /**
  * This class implements a playable character in the game. Every pawn in the game is bound to a player and every player
@@ -58,7 +59,7 @@ public class Pawn {
      * To move the pawn in a selected tile.
      * @param tile is the position where the pawn will be moved.
      */
-    public void move(TileUID tile) throws NoSuchFieldException{
+    public void move(TileUID tile) {
         TileUID startingTile = getTile();
         if (map != null) {
             if(startingTile != map.getEmptyTile() && startingTile != null)
@@ -66,7 +67,7 @@ public class Pawn {
             this.tile = tile;
             map.addDamageable(tile, damageableUID);
         } else {
-            throw new NoSuchFieldException("Tile not present in the map.");
+            throw new InvalidParameterException("Tile not present in the map.");
         }
     }
 
@@ -82,11 +83,10 @@ public class Pawn {
      * To remove the pawn from the map when the player is dead.
      */
     public void removeFromMap(){
-        if (map != null) {
-            this.tile = map.getEmptyTile();
-        } else {
-            throw new InaccessibleObjectException("The map doesn't exist");
-        }
+        if(map == null)
+            throw new InaccessibleObjectException("The map doesn't exists");
+        if(!tile.equals(map.getEmptyTile()))
+            move(map.getEmptyTile());
     }
 
     /**

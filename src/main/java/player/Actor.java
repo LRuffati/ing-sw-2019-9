@@ -48,7 +48,7 @@ public class Actor {
         this.powerups = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
-        this.marks = null;
+        this.marks = new Hashtable<>();
         this.gm = map;
     }
 
@@ -68,7 +68,7 @@ public class Actor {
         this.powerups = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
-        this.marks = null;
+        this.marks = new Hashtable<>();
         this.gm = map;
 
         this.turn = false;         //turn will be initialized with the Server Class
@@ -97,7 +97,7 @@ public class Actor {
      * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
      * @param t is the Tile id where the player is trying to move to.
      */
-    public void movePlayer(TileUID t) throws NoSuchFieldException {
+    public void movePlayer(TileUID t) {
         if(turn &&
                 (!frenzy && gm.getSurroundings(false, 3, pawn().getTile()).contains(t))
                 ||
@@ -112,7 +112,7 @@ public class Actor {
      * It modifies the tile of the Pawn and move the Player in the GameMap
      * @param tile the tile where the Pawn must be put
      */
-    public void move(TileUID tile) throws NoSuchFieldException {
+    public void move(TileUID tile) {
         pawn().move(tile);
     }
 
@@ -227,8 +227,12 @@ public class Actor {
      */
     public void getDMG(Actor shooter){
         damageTaken.add(shooter);
+
+        //TODO: check if the player put some marks before
         for(int i=0; i<marks.get(shooter.pawnID); i++){
-            if(damageTaken.size() <= 10)    damageTaken.add(shooter);
+            System.out.println(marks.get(shooter.pawnID));
+            if(damageTaken.size() <= 10)
+                damageTaken.add(shooter);
         }
         marks.put(shooter.pawnID, 0);
     }
@@ -341,10 +345,7 @@ public class Actor {
         for (TileUID t : gm.allTiles()){
             Color colTile = gm.getTile(t).getColor();
             if(gm.getTile(t).spawnPoint() && colTile.toString().equals(color.toString())){
-                try{
-                    move(t);
-                }
-                catch (NoSuchFieldException ignore){}
+                move(t);
             }
         }
     }
