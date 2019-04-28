@@ -1,5 +1,6 @@
 package player;
 
+
 import actions.utils.AmmoColor;
 import board.Coord;
 import board.GameMap;
@@ -7,6 +8,7 @@ import gamemanager.GameBuilder;
 import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -15,6 +17,7 @@ import java.lang.invoke.WrongMethodTypeException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class ActorTest {
 
@@ -65,6 +68,20 @@ class ActorTest {
     void nullConstructorTest(){
         /*Actor melo = new Actor();
         assertNull(melo.getNullPawn());*/
+    }
+
+    @Test
+    void moveTest() throws NoSuchFieldException{
+        Actor Pietro = actorList.get(0);
+        Pietro.setTurn(true);
+        Pietro.move(map.getPosition(new Coord(1,1)));
+        Pietro.movePlayer(map.getPosition(new Coord(1, 2)));
+        assertEquals(map.getPosition(new Coord(1,2)), Pietro.getPawn().getTile());
+        Pietro.setFrenzy();
+        //TODO the following test works with the coordinates (2,3) but not with the coordinates (3,2). Why?
+        Coord c = new Coord(2,3);
+        Pietro.movePlayer(map.getPosition(c));
+        assertEquals(map.getPosition(c), Pietro.getPawn().getTile());
     }
 
     @Test

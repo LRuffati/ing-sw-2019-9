@@ -298,6 +298,13 @@ public class Actor {
     }
 
     /**
+     * Set the attribute frenzy to true.
+     */
+    public void setFrenzy(){
+        this.frenzy = true;
+    }
+
+    /**
      * Adds a certain number of marks from pawn to this.
      * If the pawn already assigned 3 marks nothing happens.
      * @param pawn

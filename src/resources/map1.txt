@@ -1,6 +1,6 @@
 Map
 Size
-4 3
+40 30
 
 Excluded
 0 3
