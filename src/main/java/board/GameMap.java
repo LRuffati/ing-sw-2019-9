@@ -423,7 +423,7 @@ public class GameMap {
      * @return A set containing all the Damageable UID
      */
     public Set<DamageableUID> getDamageable(){
-        return damageableUIDMap.keySet();
+        return new HashSet<>(damageableUIDMap.keySet());
     }
 
     /**

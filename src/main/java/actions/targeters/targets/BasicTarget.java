@@ -64,6 +64,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
         else {
             selfUID = template.selfUID;
             this.sandbox = sandbox;
+            this.location = template.location;
         }
     }
 

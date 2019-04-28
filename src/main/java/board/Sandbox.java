@@ -19,8 +19,20 @@ public class Sandbox {
 
     Sandbox(Map<RoomUID, RoomTarget> rooms, Map<TileUID, TileTarget> tiles, Map<DamageableUID, BasicTarget> pawns, GameMap map){
 
-        this.rooms = rooms;
-        this.tiles = tiles;
+        //this.rooms = rooms;
+        //this.tiles = tiles;
+        //TODO: check if is a correct assignment
+
+        this.rooms = rooms.entrySet()
+                .stream().collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> new RoomTarget(this, e.getValue())));
+
+        this.tiles = tiles.entrySet()
+                .stream().collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> new TileTarget(this, e.getValue())));
+
         this.pawns = pawns.entrySet()
                 .stream().collect(Collectors.toMap(
                         Map.Entry::getKey,
@@ -132,7 +144,6 @@ public class Sandbox {
         }
 
         return visible;
-
     }
 
     public Set<TileUID> allTiles(){
