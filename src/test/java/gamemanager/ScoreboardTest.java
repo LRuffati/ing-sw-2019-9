@@ -22,5 +22,32 @@ public class ScoreboardTest {
         assertEquals(listaAttori, sb.getActorsList());
         assertEquals(5,sb.getMaxDeaths());
         assertEquals(0, sb.getNumOfDeaths());
+        assertFalse(sb.finalFrenzy());
+    }
+
+    @Test
+    void stdConstructor(){
+        Actor pietro = new Actor();
+        listaAttori = new ArrayList<>();
+        listaAttori.add(pietro);
+        Scoreboard sb = new Scoreboard(listaAttori);
+        assertEquals(listaAttori, sb.getActorsList());
+        assertEquals(8,sb.getMaxDeaths());
+        assertEquals(0, sb.getNumOfDeaths());
+    }
+
+    @Test
+    void dumbConstructor(){
+        Scoreboard sb = new Scoreboard();
+        assertEquals(0,sb.getMaxDeaths());
+    }
+
+    @Test
+    void scoringTest(){
+        Actor pietro = new Actor();
+        listaAttori = new ArrayList<>();
+        listaAttori.add(pietro);
+        Scoreboard sb = new Scoreboard(listaAttori);
+        pietro.getPawn().removeFromMap();
     }
 }

@@ -93,6 +93,16 @@ class ActorTest {
     }
 
     @Test
+    void gettingDmgTest(){
+        //TODO Incomplete test, review the method getDMG(Actor actor).
+        Actor Pietro = actorList.get(0);
+        Actor melo = actorList.get(1);
+        Pietro.getDMG(melo);
+        assertTrue(Pietro.getDamageTaken().contains(melo));
+        assertEquals(0, Pietro.getMarks().get(melo.getPawn().getDamageableUID()));
+    }
+
+    @Test
     void falseTurnPickUP(){
         //TODO: needs weapon managment
         /*
