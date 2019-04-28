@@ -317,7 +317,7 @@ public class Actor {
      */
     public int addMark(DamageableUID pawn, int numOfMarks){
         int totMarks = 0;
-        for(DamageableUID p : gm.allPawns()){
+        for(DamageableUID p : gm.getDamageable()){
             gm.getPawn(p).getActor().getMarks().get(pawn);
             totMarks++;
         }

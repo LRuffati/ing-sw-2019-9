@@ -188,15 +188,6 @@ public class GameMap {
 
 
     /**
-     *
-     * @return A Set containing all the PawnUID in the map
-     */
-    public Set<DamageableUID> allPawns(){
-        return new HashSet<>(damageableUIDMap.keySet());
-    }
-
-
-    /**
      * Returns the neighbors of the cell
      *
      * @param tile    the source tile

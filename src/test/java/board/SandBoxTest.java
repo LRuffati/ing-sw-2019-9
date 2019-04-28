@@ -29,7 +29,6 @@ public class SandBoxTest {
         }
         map = builder.getMap();
         sandbox = map.createSandbox();
-
     }
 
     @Test

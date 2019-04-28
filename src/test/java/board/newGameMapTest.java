@@ -1,9 +1,10 @@
 package board;
 
+import gamemanager.GameBuilder;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
-import grabbables.Grabbable;
-import grabbables.Weapon;
+import grabbables.Deck;
+import grabbables.PowerUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.DamageableUID;
@@ -18,16 +19,24 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class newGameMapTest {
     private GameMap map;
+    private Deck<AmmoCard> ammoCardDeck;
+    private Deck<PowerUp> powerUpDeck;
 
     @BeforeEach
     void setup(){
-        map = null;
+        GameBuilder builder = null;
+        String mapPath = "src/resources/map1.txt";
+        String ammoPath = "src/resources/ammoTile.txt";
+        String powerPath = "src/resources/powerUp.txt";
         try {
-            map = GameMap.gameMapFactory("src/resources/map1.txt"
-                    , 3, new Tuple3<>(null,null,null));
+            builder = new GameBuilder(
+                    mapPath, null, powerPath, ammoPath, 3);
         }
         catch (FileNotFoundException e){
         }
+        map = builder.getMap();
+        ammoCardDeck = builder.getDeckOfAmmoCard();
+        powerUpDeck = builder.getDeckOfPowerUp();
     }
 
     @Test
@@ -86,17 +95,6 @@ class newGameMapTest {
         Sandbox s = map.createSandbox();
         assertNotNull(s);
     }
-
-    @Test
-    void containedPawnsTest(){
-        //TODO: add Pawn
-    }
-
-    @Test
-    void tileTest(){
-        //TODO: add Pawn
-    }
-
 
     @Test
     void getterTest(){
@@ -170,7 +168,15 @@ class newGameMapTest {
     }
 
     @Test
-    void addGrabTest(){
+    void emptyGrabbableTest(){
+        for(TileUID t : map.allTiles()){
+            assertTrue(map.getGrabbable(t).isEmpty());
+        }
+    }
 
+    @Test
+    void addGrabbableTest(){
+        map.addGrabbable(map.getPosition(new Coord(0,0)), ammoCardDeck.next());
+        assertThrows(InvalidParameterException.class , () -> map.addGrabbable(map.getPosition(new Coord(0,0)), powerUpDeck.next()));
     }
 }
