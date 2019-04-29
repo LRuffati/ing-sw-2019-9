@@ -21,12 +21,13 @@ import java.util.*;
  */
 
 public class Actor {
+    private final int HP = 10;
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
     private Map<DamageableUID, Integer> marks;
     private Collection<Weapon> weapons;
-    private Collection<PowerUp> powerups;
+    private Collection<PowerUp> powerUps;
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
     private Boolean frenzy;
@@ -45,7 +46,7 @@ public class Actor {
         this.damageTaken = new ArrayList<>();
         this.startingPlayerMarker = false;
         this.weapons = new ArrayList<>();
-        this.powerups = new ArrayList<>();
+        this.powerUps = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
         this.marks = new Hashtable<>();
@@ -65,13 +66,13 @@ public class Actor {
         this.pawnID = pawnId;
         this.startingPlayerMarker = firstPlayer;
         this.weapons = new ArrayList<>();
-        this.powerups = new ArrayList<>();
+        this.powerUps = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
         this.marks = new HashMap<>();
         this.gm = map;
 
-        this.turn = false;         //turn will be initialized with the Server Class
+        this.turn = false;
     }
 
     public Actor(){}
@@ -89,7 +90,6 @@ public class Actor {
      * @return The pawn
      */
     public Pawn pawn(){
-
         return gm.getPawn(pawnID);
     }
 
@@ -158,8 +158,8 @@ public class Actor {
             AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
             ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
             for(int i = 0; i<card.getNumOfPowerUp(); i++)
-                if(powerups.size() < 3)
-                    powerups.add((PowerUp)gm.pickUpPowerUp());
+                if(powerUps.size() < 3)
+                    powerUps.add((PowerUp)gm.pickUpPowerUp());
             gm.discardAmmoCard(card);
         }
     }
@@ -233,7 +233,7 @@ public class Actor {
         if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
                 System.out.println(marks.get(shooter.pawnID));
-                if (damageTaken.size() <= 10)
+                if (damageTaken.size() <= HP)
                     damageTaken.add(shooter);
             }
             marks.put(shooter.pawnID, 0);
@@ -312,6 +312,14 @@ public class Actor {
     }
 
     /**
+     *
+     * @return True iif the player is dead
+     */
+    public boolean isDead(){
+        return damageTaken.size()>=HP;
+    }
+
+    /**
      * Adds a certain number of marks from pawn to this.
      * If the pawn already assigned 3 marks nothing happens.
      * @param pawn
@@ -342,7 +350,7 @@ public class Actor {
      * @throws InvalidParameterException if the actor is not dead.
      */
     public void respawn(AmmoColor color){
-        if(pawn().getTile() != gm.getEmptyTile() && pawn().getTile() != null)
+        if(pawn().getTile() != gm.getEmptyTile() || !isDead())
             throw new InvalidParameterException("The player is not dead");
 
         for (TileUID t : gm.allTiles()){

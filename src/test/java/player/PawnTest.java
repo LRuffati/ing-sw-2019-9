@@ -82,7 +82,6 @@ class PawnTest {
     @Test
     void deadPawnTest(){
         pietro = actorList.get(0).getPawn();
-        pietro.removeFromMap();
         for(TileUID t : map.allTiles())
             assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
 
@@ -92,9 +91,5 @@ class PawnTest {
             if(!t.equals(tile))
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tile).contains(pietro.getDamageableUID()));
-        pietro.setNullMap();
-        assertThrows(InaccessibleObjectException.class, ()->{
-            pietro.removeFromMap();
-        });
     }
 }

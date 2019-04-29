@@ -62,7 +62,7 @@ public class Pawn {
     public void move(TileUID tile) {
         TileUID startingTile = getTile();
         if (map != null) {
-            if(startingTile != map.getEmptyTile() && startingTile != null)
+            if(startingTile != map.getEmptyTile())
                 map.removeDamageable(startingTile, damageableUID);
             this.tile = tile;
             map.addDamageable(tile, damageableUID);
@@ -77,16 +77,6 @@ public class Pawn {
      */
     public TileUID getTile() {
         return tile;
-    }
-
-    /**
-     * To remove the pawn from the map when the player is dead.
-     */
-    public void removeFromMap(){
-        if(map == null)
-            throw new InaccessibleObjectException("The map doesn't exists");
-        if(!tile.equals(map.getEmptyTile()))
-            move(map.getEmptyTile());
     }
 
     /**
