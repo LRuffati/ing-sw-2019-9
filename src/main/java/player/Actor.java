@@ -68,7 +68,7 @@ public class Actor {
         this.powerups = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
-        this.marks = new Hashtable<>();
+        this.marks = new HashMap<>();
         this.gm = map;
 
         this.turn = false;         //turn will be initialized with the Server Class
@@ -88,7 +88,8 @@ public class Actor {
      * Provides a faster way to get the Pawn object given the identifier
      * @return The pawn
      */
-    private Pawn pawn(){
+    public Pawn pawn(){
+
         return gm.getPawn(pawnID);
     }
 
@@ -228,7 +229,7 @@ public class Actor {
     public void getDMG(Actor shooter){
         damageTaken.add(shooter);
 
-        //TODO: check if the player put some marks before
+        //TODO: check if the method correctly checks the "marks" attribute.
         if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
                 System.out.println(marks.get(shooter.pawnID));

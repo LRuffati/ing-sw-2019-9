@@ -14,8 +14,10 @@ import uid.TileUID;
 
 import java.io.FileNotFoundException;
 import java.lang.invoke.WrongMethodTypeException;
+import java.security.InvalidParameterException;
 import java.util.List;
 
+import static actions.utils.AmmoColor.YELLOW;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -46,7 +48,7 @@ class ActorTest {
             assertEquals(0, Pietro.getNumOfDeaths());
             assertEquals(1, Pietro.getAmmo().getAmounts().get(AmmoColor.BLUE));
             assertEquals(1, Pietro.getAmmo().getAmounts().get(AmmoColor.RED));
-            assertEquals(1, Pietro.getAmmo().getAmounts().get(AmmoColor.YELLOW));
+            assertEquals(1, Pietro.getAmmo().getAmounts().get(YELLOW));
             assertFalse(Pietro.getFrenzy());
             assertTrue(Pietro.getMarks().isEmpty());
             assertEquals(map, Pietro.getGm());
@@ -78,7 +80,6 @@ class ActorTest {
         Pietro.movePlayer(map.getPosition(new Coord(1, 2)));
         assertEquals(map.getPosition(new Coord(1,2)), Pietro.getPawn().getTile());
         Pietro.setFrenzy();
-        //TODO the following test works with the coordinates (2,3) but not with the coordinates (3,2). Why?
         Coord c = new Coord(2,3);
         Pietro.movePlayer(map.getPosition(c));
         assertEquals(map.getPosition(c), Pietro.getPawn().getTile());
@@ -105,8 +106,9 @@ class ActorTest {
 
     //@Test
         //TODO: needs weapon managment
-    /*
+
     void falseTurnPickUP(){
+        /*
         Actor Pietro = new Actor(map);
         Weapon w = new Weapon();
         Weapon toRemove = new Weapon();
@@ -114,8 +116,33 @@ class ActorTest {
         assertThrows(WrongMethodTypeException.class, () -> {
             Pietro.pickUp(w, toRemove);
         });
-
+        */
     }
-    */
 
+    @Test
+    void addMarkTest(){
+        /*
+        Actor Pietro = actorList.get(0);
+        Actor Lore = actorList.get(1);
+
+        assertEquals(1, Pietro.addMark(Lore.getPawn().getDamageableUID(),1));
+        */
+    }
+
+
+
+    @Test
+    void respawnTest(){
+        //TODO Pietro please fix the getTile() exception.
+        /*
+        Actor Pietro = actorList.get(0);
+        Pietro.getPawn().move(map.getPosition(new Coord(1,1)));
+        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
+        TileUID t = null;
+        Pietro.getPawn().move(t);
+        Pietro.respawn(YELLOW);
+        assertTrue(Pietro.getDamageTaken().isEmpty());
+
+        */
+    }
 }

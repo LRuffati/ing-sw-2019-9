@@ -41,7 +41,6 @@ public class GameMap {
         this.deckOfPowerUp = cards.z;
 
         this.emptyTile = new TileUID();
-
         tileUIDMap.values().forEach(x -> x.setMap(this));
 
         //TODO: create weapon cards
