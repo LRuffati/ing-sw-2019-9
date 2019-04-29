@@ -24,7 +24,7 @@ public class Actor {
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
-    private Dictionary<DamageableUID, Integer> marks;
+    private Map<DamageableUID, Integer> marks;
     private Collection<Weapon> weapons;
     private Collection<PowerUp> powerups;
     private AmmoAmount ammoAvailable;
@@ -229,12 +229,14 @@ public class Actor {
         damageTaken.add(shooter);
 
         //TODO: check if the player put some marks before
-        for(int i=0; i<marks.get(shooter.pawnID); i++){
-            System.out.println(marks.get(shooter.pawnID));
-            if(damageTaken.size() <= 10)
-                damageTaken.add(shooter);
+        if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
+            for (int i = 0; i < marks.get(shooter.pawnID); i++) {
+                System.out.println(marks.get(shooter.pawnID));
+                if (damageTaken.size() <= 10)
+                    damageTaken.add(shooter);
+            }
+            marks.put(shooter.pawnID, 0);
         }
-        marks.put(shooter.pawnID, 0);
     }
 
     /**
@@ -281,7 +283,7 @@ public class Actor {
      * Needed for tests.
      * @return marks owned by the player.
      */
-    public Dictionary<DamageableUID, Integer> getMarks() {
+    public Map<DamageableUID, Integer> getMarks() {
         return marks;
     }
 
@@ -348,6 +350,7 @@ public class Actor {
                 move(t);
             }
         }
+        this.damageTaken.clear();
     }
 }
 
