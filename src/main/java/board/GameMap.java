@@ -9,10 +9,7 @@ import actions.targeters.targets.RoomTarget;
 import actions.targeters.targets.TileTarget;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
-import grabbables.AmmoCard;
-import grabbables.Deck;
-import grabbables.Grabbable;
-import grabbables.Weapon;
+import grabbables.*;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -349,7 +346,7 @@ public class GameMap {
      * Removes and returns a PowerUp card picked from the Deck
      * @return A PowerUp card
      */
-    public Grabbable pickUpPowerUp(){
+    public PowerUp pickUpPowerUp(){
         return deckOfPowerUp.next();
     }
 
@@ -358,9 +355,9 @@ public class GameMap {
      * If the Card is not discardable (if it is in the deck or in the stash) an InvalidParameterException is thrown
      * @param grabbable the Card to be discarded
      */
-    public void discardPowerUp(Grabbable grabbable){
-        if(deckOfPowerUp.isPicked((grabbables.PowerUp)grabbable)){
-            deckOfPowerUp.discard((grabbables.PowerUp)grabbable);
+    public void discardPowerUp(PowerUp grabbable){
+        if(deckOfPowerUp.isPicked(grabbable)){
+            deckOfPowerUp.discard(grabbable);
         }
         else
             throw new InvalidParameterException("This PowerUp cannot be discarded");
@@ -371,12 +368,22 @@ public class GameMap {
      * If the Card is not discardable (if it is in the deck or in the stash) an InvalidParameterException is thrown
      * @param grabbable the Card to be discarded
      */
-    public void discardAmmoCard(Grabbable grabbable){
-        if(deckOfAmmoCard.isPicked((AmmoCard)grabbable)){
-            deckOfAmmoCard.discard((AmmoCard)grabbable);
+    public void discardAmmoCard(AmmoCard grabbable){
+        if(deckOfAmmoCard.isPicked(grabbable)){
+            deckOfAmmoCard.discard(grabbable);
         }
         else
             throw new InvalidParameterException("This AmmoCard cannot be discarded");
+    }
+
+    public void discardWeapon(TileUID tile, Weapon grabbable){
+        if(getGrabbable(tile).size() == 3)
+            throw new InvalidParameterException("A weapon cannot be discarded here");
+        if(deckOfWeapon.isPicked(grabbable)){
+            addGrabbable(tile, grabbable);
+        }
+        else
+            throw new InvalidParameterException("This Weapon cannot be discarded");
     }
 
     /**

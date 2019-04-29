@@ -1,7 +1,6 @@
 package board;
 
 import gamemanager.GameBuilder;
-import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.Deck;
 import grabbables.PowerUp;
@@ -16,6 +15,7 @@ import java.security.InvalidParameterException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class newGameMapTest {
     private GameMap map;
@@ -175,8 +175,58 @@ class newGameMapTest {
     }
 
     @Test
-    void addGrabbableTest(){
-        map.addGrabbable(map.getPosition(new Coord(0,0)), ammoCardDeck.next());
-        assertThrows(InvalidParameterException.class , () -> map.addGrabbable(map.getPosition(new Coord(0,0)), powerUpDeck.next()));
+    void addAndPickUpGrabbableTest(){
+        TileUID tile = map.getPosition(new Coord(0,0));
+        AmmoCard card = ammoCardDeck.next();
+
+        assertThrows(InvalidParameterException.class ,
+                () -> map.addGrabbable(tile, powerUpDeck.next()));
+        assertThrows(NoSuchElementException.class,
+                () -> map.pickUpGrabbable(tile, ammoCardDeck.next()));
+
+        map.addGrabbable(tile, card);
+        assertTrue(map.getGrabbable(tile).contains(card));
+        map.pickUpGrabbable(tile, card);
+        assertFalse(map.getGrabbable(tile).contains(card));
+        assertTrue(ammoCardDeck.isPicked(card));
+
+        map.discardAmmoCard(card);
+        assertFalse(ammoCardDeck.isPicked(card));
+
+    }
+
+    @Test
+    void powerUpGrabbableTest(){
+        PowerUp pUp = map.pickUpPowerUp();
+        assertTrue(powerUpDeck.isPicked(pUp));
+
+        assertThrows(InvalidParameterException.class ,
+                () -> map.addGrabbable(map.getPosition(new Coord(0,0)), pUp));
+
+        map.discardPowerUp(pUp);
+        assertFalse(powerUpDeck.isPicked(pUp));
+    }
+
+    @Test
+    void testGrabbableException(){
+        PowerUp pUp = map.pickUpPowerUp();
+        map.discardPowerUp(pUp);
+        assertThrows(InvalidParameterException.class, () -> map.discardPowerUp(pUp));
+
+        map.addGrabbable(map.getPosition(new Coord(1,1)), ammoCardDeck.next());
+        AmmoCard card =
+                (AmmoCard)map.pickUpGrabbable(
+                        map.getPosition(new Coord(1,1)),
+                        (map.getGrabbable(map.getPosition(new Coord(1,1))).iterator().next()
+                        )
+                );
+        final AmmoCard ammo = card;
+        map.discardAmmoCard(ammo);
+        assertThrows(InvalidParameterException.class, () -> map.discardAmmoCard(ammo));
+
+        card = ammoCardDeck.next();
+        final AmmoCard ammo1 = card;
+        ammoCardDeck.discard(ammo1);
+        assertThrows(InvalidParameterException.class, () -> map.discardAmmoCard(ammo1));
     }
 }

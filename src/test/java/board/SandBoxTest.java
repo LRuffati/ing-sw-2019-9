@@ -99,10 +99,6 @@ public class SandBoxTest {
             thisTile = map.getPosition(new Coord(2,2));
             pawn1.move(thisTile);
             allControls(pawn1, thisTile);
-
-            thisTile = map.getEmptyTile();
-            pawn1.removeFromMap();
-            allControls(pawn1, thisTile);
         }
         catch (Exception e){
             e.printStackTrace();

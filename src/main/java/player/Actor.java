@@ -148,7 +148,7 @@ public class Actor {
                 if(!weapons.contains(wToRemove))
                     throw new InvalidParameterException("You haven't this weapon");
 
-                gm.addGrabbable(tile, wToRemove);
+                gm.discardWeapon(tile, wToRemove);
                 weapons.remove(wToRemove);
             }
             weapons.add((Weapon)gm.pickUpGrabbable(tile, item));
