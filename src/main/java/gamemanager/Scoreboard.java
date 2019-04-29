@@ -56,7 +56,7 @@ public class Scoreboard {
                         x -> Collections.frequency(dead.getDamageTaken(), x)
                 ));
 
-        if(dead.getPawn().getTile()==null){
+        if(dead.isDead()){
             dead.getDamageTaken().get(0).addPoints(1);
 
             scoreSet.addAll(dead.getDamageTaken());

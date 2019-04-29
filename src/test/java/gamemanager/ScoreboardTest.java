@@ -25,7 +25,7 @@ public class ScoreboardTest {
         String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 2);
+                    mapPath, null, null, tilePath, 3);
         }
         catch (FileNotFoundException e){
         }
@@ -64,12 +64,21 @@ public class ScoreboardTest {
 
     @Test
     void scoringTest(){
-        //TODO Pietro please fix the getTile() exception.
         Scoreboard sb = new Scoreboard(actorList);
         Actor Pietro = actorList.get(0);
-        Pietro.getPawn().move(null);
-        sb.score(Pietro);
-        assertEquals(1, Pietro.getDamageTaken().get(0).getPoints());
+        Actor Lorenzo = actorList.get(1);
+        Actor Carmelo = actorList.get(2);
 
+        //TODO: add tests and verify other cases
+        Pietro.getDMG(Carmelo);
+        for(int i=0; i<10;i++)
+            Pietro.getDMG(Lorenzo);
+        sb.score(Pietro);
+
+        assertEquals(7, Pietro.getDamageTaken().get(0).getPoints());
+        assertEquals(8, Pietro.getDamageTaken().get(1).getPoints());
+
+        assertEquals(Carmelo , Pietro.getDamageTaken().get(0));
+        assertEquals(Lorenzo , Pietro.getDamageTaken().get(1));
     }
 }
