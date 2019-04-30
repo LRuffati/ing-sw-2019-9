@@ -47,7 +47,14 @@ public class GameMap {
 
     }
 
-
+    /**
+     * Constructor of the GameMap object
+     * @param path path of the map file
+     * @param numOfPlayer the number of player that join the game
+     * @param cards a Tuple containing the Decks: deck of Weapon, deck of Ammo and deck of PowerUp
+     * @return the GameMap object
+     * @throws FileNotFoundException if the path is not correct
+     */
     public static GameMap gameMapFactory(String path,
                                          int numOfPlayer,
                                          Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
@@ -251,7 +258,7 @@ public class GameMap {
      *                 <p>
      *                 If range is 0 the correct behaviour is to return this.tileID
      *                 If less than 0 return an empty set
-     * @param tile
+     * @param tile  Tile identifier
      * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
      */
     public Set<TileUID> getSurroundings(Boolean physical, Integer range, TileUID tile) {
@@ -275,7 +282,7 @@ public class GameMap {
     /**
      * Finds all the Tiles that are visible from itself
      *
-     * @param tile
+     * @param tile Tile identifier
      * @return A Collection containing all the visible Tiles
      */
     public Collection<TileUID> getVisible(TileUID tile) {
@@ -376,8 +383,13 @@ public class GameMap {
             throw new InvalidParameterException("This AmmoCard cannot be discarded");
     }
 
+    /**
+     * Allow the player to discard a Weapon. Needed if the stash is empty
+     * @param tile the Tile where the weapon must be put
+     * @param grabbable The weapon that has to be discarded
+     */
     public void discardWeapon(TileUID tile, Weapon grabbable){
-        if(getGrabbable(tile).size() == 3)
+        if(getGrabbable(tile).size() == 3 || !emptyWeaponDeck())
             throw new InvalidParameterException("A weapon cannot be discarded here");
         if(deckOfWeapon.isPicked(grabbable)){
             addGrabbable(tile, grabbable);
@@ -430,6 +442,20 @@ public class GameMap {
         return emptyTile;
     }
 
+
+    /**
+     *
+     * @return True iif the Deck of weapon is empty
+     */
+    public boolean emptyWeaponDeck(){
+        try{
+            deckOfWeapon.next();
+        }
+        catch (NoSuchElementException e){
+            return true;
+        }
+        return false;
+    }
 
 
     private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){

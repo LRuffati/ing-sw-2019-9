@@ -229,4 +229,22 @@ class newGameMapTest {
         ammoCardDeck.discard(ammo1);
         assertThrows(InvalidParameterException.class, () -> map.discardAmmoCard(ammo1));
     }
+
+    @Test
+    void testEmptyWeaponDeckWithoutWeapon(){
+        Deck<Integer> deck= new Deck<>(Set.of(1,2,3,4,5));
+        assertFalse(emptyWeaponDeck(deck));
+        deck.take(7);
+        assertTrue(emptyWeaponDeck(deck));
+    }
+
+    private boolean emptyWeaponDeck(Deck deck){
+        try{
+            deck.next();
+        }
+        catch (NoSuchElementException e){
+            return true;
+        }
+        return false;
+    }
 }
