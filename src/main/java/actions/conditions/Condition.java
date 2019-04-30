@@ -1,6 +1,7 @@
 package actions.conditions;
 
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 public abstract class Condition {
     /**
@@ -11,6 +12,6 @@ public abstract class Condition {
      */
     //TODO: check that the overloading works as intended, test using a List<Condition> containing
     // conditions of different types, such as DistantCondition and SeenCondition
-    public abstract boolean checkTarget(Targetable target, Targetable checker);
+    public abstract boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker);
 
 }

@@ -16,12 +16,6 @@ import java.util.stream.Collectors;
 public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSelector, Visible, HavingPointLike {
 
     /**
-     * The sandbox to which the tile belongs, similar to how {@link board.Tile} contains a
-     * reference to {@link board.GameMap}
-     */
-    private final Sandbox sandbox;
-
-    /**
      * This is the same TileUID the actual {@link board.Tile} has, allowing all Tile methods to
      * be re used for the TargetTile
      */
@@ -35,111 +29,94 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      */
     public TileTarget(TileUID id){
         tileUID = id;
-        sandbox = null;
     }
 
     /**
-     * This constructor is called by the Sandbox and creates a full TileTarget
-     *
-     * @param sandbox the sandbox containing the Tile
-     * @param template the TileTarget without sandbox reference {@link TileTarget#TileTarget(TileUID)}
-     */
-    public TileTarget(Sandbox sandbox, TileTarget template){
-        if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
-        else {
-            tileUID = template.tileUID;
-            this.sandbox = sandbox;
-        }
-
-    }
-
-    /**
-     * @see Targetable#getSelectedPawns()
+     * @see Targetable#getSelectedPawns(Sandbox)
      * @return the Pawns contained in the tile
      */
     @Override
-    public Set<DamageableUID> getSelectedPawns() {
-        assert sandbox != null;
+    public Set<DamageableUID> getSelectedPawns(Sandbox sandbox) {
         return new HashSet<>(sandbox.containedPawns(tileUID));
     }
 
     /**
-     * @see Targetable#getSelectedTiles()
+     * @see Targetable#getSelectedTiles(Sandbox)
      */
     @Override
-    public Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles(Sandbox sandbox) {
         Set<TileUID> ret = new HashSet<>();
         ret.add(tileUID);
         return ret;
     }
 
     /**
-     * @see HavingPointLike#filteringHas(PointLike, boolean)
+     * @see HavingPointLike#filteringHas(Sandbox, PointLike, boolean)
      * @param target the pawn or tile I'm checking is in this tile
      * @param negation negate the result
      * @return negation XOR (target.location() == this.location())
      */
     @Override
-    public boolean filteringHas(@NotNull PointLike target, boolean negation) {
-        return negation ^ (target.location().equals(tileUID));
+    public boolean filteringHas(Sandbox sandbox, @NotNull PointLike target, boolean negation) {
+        return negation ^ (target.location(sandbox).equals(tileUID));
     }
 
     /**
-     * @see PointLike#location()
+     * @see PointLike#location(Sandbox)
      * @return the TileUID of this tile
      */
     @Override
-    public TileUID location() {
+    public TileUID location(Sandbox sandbox) {
         return tileUID;
     }
 
     /**
-     * @see PointLike#tilesSeen()
+     * @see PointLike#tilesSeen(Sandbox)
      * @return All the cells which can be seen from this cell
      */
     @Override
-    public Set<TileUID> tilesSeen() {
+    public Set<TileUID> tilesSeen(Sandbox sandbox) {
         assert sandbox != null;
-        return sandbox.tilesSeen(location());
+        return sandbox.tilesSeen(location(sandbox));
     }
 
     /**
-     * @see PointLike#reachedSelector(int)
+     * @see PointLike#reachedSelector(Sandbox, int)
      * @param radius the number of moves it takes at most to reach the cells being returned
      * @return a set of cells at most radius moves distant from this
      */
     @Override
-    public Set<DamageableUID> reachedSelector(int radius) {
+    public Set<DamageableUID> reachedSelector(Sandbox sandbox, int radius) {
         assert sandbox != null;
-        return distanceSelector(radius, true).stream() // All the TileUID within range
+        return distanceSelector(sandbox, radius, true).stream() // All the TileUID within range
                 .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
-                .filter(i->sandbox.getBasic(i).reachableSelector(radius).contains(this.location())) // Only the BasicTargets which can reach "this"
+                .filter(i->sandbox.getBasic(i).reachableSelector(sandbox, radius).contains(this.location(sandbox))) // Only the BasicTargets which can reach "this"
                 .collect(Collectors.toSet());
     }
 
     /**
-     * @see PointLike#distanceSelector(int, boolean)
+     * @see PointLike#distanceSelector(Sandbox, int, boolean)
      * @param radius is the maximum distance, anything less than 0 should return an empty set, with 0 returning just the UIDS.TileUID of the current cell
      * @param logical if true don't cross walls
      * @return a list of reachable points in the given amount of steps or less
      */
     @Override
-    public Set<TileUID> distanceSelector(int radius, boolean logical) {
+    public Set<TileUID> distanceSelector(Sandbox sandbox, int radius, boolean logical) {
         assert sandbox != null;
-        return sandbox.circle(location(),radius,logical);
+        return sandbox.circle(location(sandbox),radius,logical);
     }
 
     /**
-     * @see SuperTile#containedTiles()
+     * @see SuperTile#containedTiles(Sandbox)
      * @return all the tiles contained in the supertile
      */
     @Override
-    public Set<TileUID> containedTiles() {
-        return getSelectedTiles();
+    public Set<TileUID> containedTiles(Sandbox sandbox) {
+        return getSelectedTiles(sandbox);
     }
 
     /**
-     * @see TargetedSelector#reachedCondition(int, int, PointLike, boolean)
+     * @see TargetedSelector#reachedCondition(Sandbox, int, int, PointLike, boolean)
      * @param min the minimum included distance (0 includes the current tile, negative values return an empty set
      * @param max the maximum included distance
      * @param source the PointLike Target for which reachableSelector is calculated
@@ -147,12 +124,12 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      * @return negation XOR this tile can be reached by source in the given range
      */
     @Override
-    public boolean reachedCondition(int min, int max, PointLike source, boolean negation) {
-        return distanceCondition(min,max,source,negation, true);
+    public boolean reachedCondition(Sandbox sandbox, int min, int max, PointLike source, boolean negation) {
+        return distanceCondition(sandbox, min,max,source,negation, true);
     }
 
     /**
-     * @see TargetedSelector#distanceCondition(int, int, PointLike, boolean, boolean)
+     * @see TargetedSelector#distanceCondition(Sandbox, int, int, PointLike, boolean, boolean)
      * @param min the minimum included distance (0 includes the current tile, negative values return an empty set
      * @param max the maximum included distance
      * @param source the PointLike Target from which the distance is calculated
@@ -161,31 +138,31 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      * @return negation XOR this tile is in the given distance range from source
      */
     @Override
-    public boolean distanceCondition(int min, int max, @NotNull PointLike source, boolean negation, boolean logical) {
-        Set<TileUID> circle = source.distanceSelector(min, max, logical);
-        return negation ^ circle.contains(location());
+    public boolean distanceCondition(Sandbox sandbox, int min, int max, @NotNull PointLike source, boolean negation, boolean logical) {
+        Set<TileUID> circle = source.distanceSelector(sandbox, min, max, logical);
+        return negation ^ circle.contains(location(sandbox));
     }
 
     /**
-     * @see TargetedSelector#containedSelector(SuperTile, boolean)
+     * @see TargetedSelector#containedSelector(Sandbox, SuperTile, boolean)
      *
      * @param container the SuperTile establishing the condition
      * @param negation whether the condition should be negated or not
      * @return negation XOR this tile is in the SuperTile container
      */
     @Override
-    public boolean containedSelector(@NotNull SuperTile container, boolean negation) {
-        return negation ^ container.containedTiles().contains(tileUID);
+    public boolean containedSelector(Sandbox sandbox, @NotNull SuperTile container, boolean negation) {
+        return negation ^ container.containedTiles(sandbox).contains(tileUID);
     }
 
     /**
-     * @see Visible#seen(PointLike, boolean)
+     * @see Visible#seen(Sandbox, PointLike, boolean)
      * @param source the observer, which has method sees
      * @param negation whether this is a positive or negative condition
      * @return negation XOR this tile can be seen by source
      */
     @Override
-    public boolean seen(@NotNull PointLike source, boolean negation) {
-        return negation ^ source.tilesSeen().contains(location());
+    public boolean seen(Sandbox sandbox, @NotNull PointLike source, boolean negation) {
+        return negation ^ source.tilesSeen(sandbox).contains(location(sandbox));
     }
 }

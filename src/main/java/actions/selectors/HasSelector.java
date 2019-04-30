@@ -2,6 +2,7 @@ package actions.selectors;
 
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
@@ -25,11 +26,11 @@ public class HasSelector implements Selector {
      * @return a list with a single element
      */
     @Override
-    public Collection<Targetable> select(Targetable target,
+    public Collection<Targetable> select(Sandbox sandbox, Targetable target,
                                          Function<TileUID, Stream<Targetable>> function) {
         if (target instanceof PointLike){
             var castedContainer = (PointLike) target;
-            return function.apply(castedContainer.location()).collect(Collectors.toSet());
+            return function.apply(castedContainer.location(sandbox)).collect(Collectors.toSet());
 
         } else {
             throw new InvalidParameterException("Targeter not compatible with action");

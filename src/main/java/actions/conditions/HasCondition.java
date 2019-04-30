@@ -3,6 +3,7 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 /**
  * SuperTile (has PointLike)
@@ -28,13 +29,13 @@ public class HasCondition extends Condition {
      * @return the result of the check
      */
     @Override
-    public boolean checkTarget(Targetable target, Targetable checker) {
+    public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {
         if (!(target instanceof SuperTile)){
             throw new IllegalArgumentException("Expecting a Supertile target");
         }
         if (!(checker instanceof PointLike)){
             throw new IllegalArgumentException("Expecting a PointLike checker");
         }
-        return negated ^ ((SuperTile) target).containedTiles().contains(((PointLike) checker).location());
+        return negated ^ ((SuperTile) target).containedTiles(sandbox).contains(((PointLike) checker).location(sandbox));
     }
 }

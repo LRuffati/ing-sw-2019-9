@@ -2,6 +2,7 @@ package actions.selectors;
 
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import uid.TileUID;
 
 import java.security.InvalidParameterException;
@@ -26,11 +27,11 @@ public class ContainedSelector implements Selector {
      * @return the targets contained in the supertile
      */
     @Override
-    public Collection<Targetable> select(Targetable container,
+    public Collection<Targetable> select(Sandbox sandbox, Targetable container,
                                          Function<TileUID, Stream<Targetable>> function) {
         if (container instanceof SuperTile){
             var castedContainer = (SuperTile) container;
-            return castedContainer.containedTiles().stream()
+            return castedContainer.containedTiles(sandbox).stream()
                     .flatMap(function).collect(Collectors.toSet());
         } else {
             throw new InvalidParameterException("Targeter not compatible with action");

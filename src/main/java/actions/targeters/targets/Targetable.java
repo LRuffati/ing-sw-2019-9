@@ -13,13 +13,15 @@ import java.util.stream.Stream;
  */
 public interface Targetable {
     /**
+     * @param sandbox The sandbox to query
      * @return a set of all Pawns (the actual pawns and the domination points) in the current
      * selection, if the selector primarily identifies tiles return all pawns in those tiles
      */
-    Set<DamageableUID> getSelectedPawns();
+    Set<DamageableUID> getSelectedPawns(Sandbox sandbox);
 
     /**
+     * @param sandbox The sandbox to query
      * @return a set of all Tiles in or occupied by elements of the Target
      */
-    Set<TileUID> getSelectedTiles();
+    Set<TileUID> getSelectedTiles(Sandbox sandbox);
 }

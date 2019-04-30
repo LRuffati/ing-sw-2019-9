@@ -1,6 +1,7 @@
 package actions.targeters.interfaces;
 
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import uid.TileUID;
 
 import java.util.Set;
@@ -13,5 +14,5 @@ public interface  SuperTile extends Targetable {
     /**
      * @return all the tiles contained in the supertile
      */
-    Set<TileUID> containedTiles();
+    Set<TileUID> containedTiles(Sandbox sandbox);
 }

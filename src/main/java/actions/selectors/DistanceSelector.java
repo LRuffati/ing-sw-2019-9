@@ -3,6 +3,7 @@ package actions.selectors;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import org.jetbrains.annotations.NotNull;
 import uid.TileUID;
 
@@ -50,11 +51,11 @@ public class DistanceSelector implements  Selector{
      * @return targets within this distance
      */
     @Override
-    public Collection<Targetable> select(Targetable sourceTarget,
+    public Collection<Targetable> select(Sandbox sandbox, Targetable sourceTarget,
                                          Function<TileUID, Stream<Targetable>> function) {
         if (sourceTarget instanceof PointLike){
             var castedContainer = (PointLike) sourceTarget;
-            return castedContainer.distanceSelector(min,max,logical).stream()
+            return castedContainer.distanceSelector(sandbox,min,max,logical).stream()
                     .flatMap(function).collect(Collectors.toSet());
         } else {
             throw new InvalidParameterException("Targeter not compatible with action");

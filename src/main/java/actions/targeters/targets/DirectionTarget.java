@@ -18,11 +18,6 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
     private List<TileUID> tiles;
 
     /**
-     * the sandbox bound to the target
-     */
-    private final Sandbox sandbox;
-
-    /**
      *
      * @param sandbox the sandbox I'm simulating in
      * @param origin the first cell
@@ -38,8 +33,6 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
             tiles.add(next.get(direction));
             next = sandbox.neighbors(next.get(direction),logical);
         }
-
-        this.sandbox = sandbox;
     }
 
     /**
@@ -47,7 +40,7 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
      * @return all the pawns in the direction
      */
     @Override
-    public Set<DamageableUID> getSelectedPawns() {
+    public Set<DamageableUID> getSelectedPawns(Sandbox sandbox) {
         Set<DamageableUID> allPawns = new HashSet<>();
         for (TileUID i: tiles){
             allPawns.addAll(sandbox.containedPawns(i));
@@ -60,17 +53,17 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
      * @return a set of cells on a cardinal direction starting from a given cell
      */
     @Override
-    public Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles(Sandbox sandbox) {
         return new HashSet<>(tiles);
     }
 
     /**
      *
-     * @return same as {@link DirectionTarget#getSelectedTiles()}
+     * @return same as {@link DirectionTarget#getSelectedTiles(Sandbox)}
      */
     @Override
-    public Set<TileUID> containedTiles() {
-        return getSelectedTiles();
+    public Set<TileUID> containedTiles(Sandbox sandbox) {
+        return getSelectedTiles(sandbox);
     }
 
     /**
@@ -79,7 +72,7 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
      * @return negation XOR target is in the direction
      */
     @Override
-    public boolean filteringHas(@NotNull PointLike target, boolean negation) {
-        return negation ^ tiles.contains(target.location());
+    public boolean filteringHas(Sandbox sandbox, @NotNull PointLike target, boolean negation) {
+        return negation ^ tiles.contains(target.location(sandbox));
     }
 }

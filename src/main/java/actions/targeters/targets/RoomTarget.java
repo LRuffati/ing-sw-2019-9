@@ -20,11 +20,6 @@ import java.util.Set;
 public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTile {
 
     /**
-     * The sandbox connected to the target
-     */
-    private final Sandbox sandbox;
-
-    /**
      * The UID of the room, this is the same as the UID of the original room in the actual map
      */
     private final RoomUID roomid;
@@ -35,31 +30,15 @@ public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTi
      */
     public RoomTarget(RoomUID id){
         roomid = id;
-        sandbox = null;
-    }
-
-    /**
-     * Binds the RoomTarget to the sandbox
-     * @see TileTarget#TileTarget(Sandbox, TileTarget)
-     * @param sandbox the sandbox which will bind to the Target
-     * @param template the RoomTarget without sandbox
-     */
-    public RoomTarget(Sandbox sandbox, RoomTarget template){
-        if (template.sandbox != null) throw new IllegalStateException("A sandbox already exists");
-        else {
-            roomid = template.roomid;
-            this.sandbox = sandbox;
-        }
-
     }
 
     /**
      * Returns the UIDs of all the BasicTargets in the cells contained in the room
-     * See {@link Targetable#getSelectedPawns()}
+     * See {@link Targetable#getSelectedPawns(Sandbox)}
      * @return the pawns in tiles in the room
      */
     @Override
-    public Set<DamageableUID> getSelectedPawns() {
+    public Set<DamageableUID> getSelectedPawns(Sandbox sandbox) {
         assert sandbox != null;
         Set<DamageableUID> retVal = new HashSet<>();
         for (TileUID i: sandbox.tilesInRoom(roomid)){
@@ -70,48 +49,48 @@ public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTi
 
     /**
      * The UIDs of the cells contained in the room
-     * @see Targetable#getSelectedTiles()
+     * @see Targetable#getSelectedTiles(Sandbox)
      * @return the tilesUID of the room
      */
     @Override
-    public Set<TileUID> getSelectedTiles() {
+    public Set<TileUID> getSelectedTiles(Sandbox sandbox) {
         assert sandbox != null;
         return new HashSet<>(sandbox.tilesInRoom(roomid));
     }
 
 
     /**
-     * See {@link HavingPointLike#filteringHas(PointLike, boolean)}
+     * See {@link HavingPointLike#filteringHas(Sandbox, PointLike, boolean)}
      *
      * @param target the target which I'm checking is in the HavingPointLike object
      * @param negation if I'm looking for a positive or negative check
      * @return negation XOR whether the target is on this cell
      */
     @Override
-    public boolean filteringHas(@NotNull PointLike target, boolean negation) {
-        return negation ^ getSelectedTiles().contains(target.location());
+    public boolean filteringHas(Sandbox sandbox, @NotNull PointLike target, boolean negation) {
+        return negation ^ getSelectedTiles(sandbox).contains(target.location(sandbox));
     }
 
     /**
-     * See {@link SuperTile#containedTiles()}
+     * See {@link SuperTile#containedTiles(Sandbox)}
      * @return a set with only this Tile's UID
      */
     @Override
-    public Set<TileUID> containedTiles() {
-        return getSelectedTiles();
+    public Set<TileUID> containedTiles(Sandbox sandbox) {
+        return getSelectedTiles(sandbox);
     }
 
     /**
-     * See {@link Visible#seen(PointLike, boolean)}
+     * See {@link Visible#seen(Sandbox, PointLike, boolean)}
      *
      * @param source the observer, which has method sees
      * @param negation whether this is a positive or negative condition
      * @return negation XOR this tile can be seen by source
      */
     @Override
-    public boolean seen(@NotNull PointLike source, boolean negation) {
-        Set<TileUID> seenTiles = source.tilesSeen();
-        return negation ^ getSelectedTiles().parallelStream().anyMatch(seenTiles::contains);
+    public boolean seen(Sandbox sandbox, @NotNull PointLike source, boolean negation) {
+        Set<TileUID> seenTiles = source.tilesSeen(sandbox);
+        return negation ^ getSelectedTiles(sandbox).parallelStream().anyMatch(seenTiles::contains);
     }
 
 }

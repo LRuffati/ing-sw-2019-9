@@ -3,6 +3,7 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 import java.util.stream.Collectors;
 
@@ -43,12 +44,12 @@ public class ReachesCondition extends Condition {
      * @return the result of the check
      */
     @Override
-    public boolean checkTarget(Targetable target,  Targetable checker) {
+    public boolean checkTarget(Sandbox sandbox, Targetable target,  Targetable checker) {
         if (!(checker instanceof PointLike)){
             throw new IllegalArgumentException("Expecting a PointLike checker");
         }
-        return negate ^ ((PointLike) checker).reachableSelector(min,max)
-                .parallelStream().map(i -> target.getSelectedTiles().contains(i))
+        return negate ^ ((PointLike) checker).reachableSelector(sandbox, min,max)
+                .parallelStream().map(i -> target.getSelectedTiles(sandbox).contains(i))
                 .collect(Collectors.toSet()).contains(Boolean.TRUE);
     }
 }

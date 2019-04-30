@@ -1,6 +1,7 @@
 package actions.selectors;
 
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import uid.TileUID;
 
 import java.security.InvalidParameterException;
@@ -23,6 +24,6 @@ public interface Selector {
     // the default exception.
     //TODO: test calling different Selectors from a list, create a list of selectors of different
     // kinds intermixed and check that it returns the appropriate results
-    Collection<Targetable> select(Targetable sourceTarget,
+    Collection<Targetable> select(Sandbox sandbox, Targetable sourceTarget,
                                   Function<TileUID, Stream<Targetable>> converter);
 }
