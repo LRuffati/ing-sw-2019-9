@@ -35,11 +35,6 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      */
     private final DamageableUID selfUID;
 
-    /**
-     * The cell I'm standing on
-     */
-    private TileUID location;
-
     // Constructors
 
     /**
@@ -51,7 +46,6 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     BasicTarget(@NotNull DamageableUID target, @NotNull TileUID initialPosition){
         selfUID = target;
         sandbox = null;
-        location = initialPosition;
     }
 
     /**
@@ -64,7 +58,6 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
         else {
             selfUID = template.selfUID;
             this.sandbox = sandbox;
-            this.location = template.location;
         }
     }
 
@@ -151,7 +144,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      */
     @Override
     public TileUID location() {
-        return location;
+        return sandbox.tile(selfUID);
     }
 
     /**
@@ -184,7 +177,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     public Set<DamageableUID> reachedSelector(int radius) {
         return distanceSelector(radius, true).stream() // All the TileUID within range
                 .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
-                .filter(i->sandbox.getBasic(i).reachableSelector(radius).contains(this.location)) // Only the BasicTargets which can reach "this"
+                .filter(i->sandbox.getBasic(i).reachableSelector(radius).contains(this.location())) // Only the BasicTargets which can reach "this"
                 .collect(Collectors.toSet());
     }
 
