@@ -151,22 +151,6 @@ public class Tile{
 
 
     /**
-     * Returns a collection with all the DamageableUID contained in the tile
-     * @return A collections containing the DamageableUID in the tile
-     */
-    protected Collection<DamageableUID> getDamageable(){
-        return new HashSet<>(damageable);
-    }
-
-    /**
-     * Adds a Damageable element in the tile
-     * @param damageableUID The Damageable element that has to be added
-     */
-    protected void addDamageable(DamageableUID damageableUID){
-        damageable.add(damageableUID);
-    }
-
-    /**
      * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
      * @param damageableID The identifier of the damageable item
      * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned

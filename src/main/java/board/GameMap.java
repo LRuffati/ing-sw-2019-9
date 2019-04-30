@@ -19,64 +19,10 @@ import uid.RoomUID;
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
  */
 public class GameMap {
-    /**
-     * Private constructor, to build a map gameMapFactory must be used
+
+    /*
+    Attributes
      */
-    GameMap(Map<RoomUID, Room> roomUIDMap,
-            Map<TileUID, Tile> tileUIDMap,
-            List<TileUID> position,
-            Coord maxPos,
-            int numOfPlayer,
-            Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards) {
-        this.roomUIDMap = roomUIDMap;
-        this.tileUIDMap = tileUIDMap;
-        this.position = position;
-        this.maxPos = maxPos;
-
-        this.deckOfWeapon = cards.x;
-        this.deckOfAmmoCard = cards.y;
-        this.deckOfPowerUp = cards.z;
-
-        this.emptyTile = new TileUID();
-        tileUIDMap.values().forEach(x -> x.setMap(this));
-
-        //TODO: create weapon cards
-        // refill();
-
-        this.damageableUIDMap = buildPawn(this, numOfPlayer);
-
-    }
-
-
-    public static GameMap gameMapFactory(String path,
-                                         int numOfPlayer,
-                                         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
-            throws FileNotFoundException {
-
-        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
-        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
-    }
-
-
-    /**
-     * Creates a sandbox used to test the validity of any action
-     * @return the Sandbox
-     */
-    public Sandbox createSandbox() {
-        Map<RoomUID, RoomTarget> targetRooms = roomUIDMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
-
-        Map<TileUID, TileTarget> targetTiles = tileUIDMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new TileTarget(e.getKey())));
-
-        Map<DamageableUID, BasicTarget> targetPawns = damageableUIDMap.entrySet()
-                .stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> BasicTarget.basicFactory(e.getValue())));
-
-        return new Sandbox(targetRooms, targetTiles, targetPawns, this);
-    }
-
     /**
      * Holds the length and width of the Map
      */
@@ -112,6 +58,69 @@ public class GameMap {
     private final Deck<AmmoCard> deckOfAmmoCard;
     private final Deck<grabbables.PowerUp> deckOfPowerUp;
 
+    /*
+    Constructors
+     */
+
+    /**
+     * Private constructor, to build a map gameMapFactory must be used
+     */
+    GameMap(Map<RoomUID, Room> roomUIDMap,
+            Map<TileUID, Tile> tileUIDMap,
+            List<TileUID> position,
+            Coord maxPos,
+            int numOfPlayer,
+            Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards) {
+        this.roomUIDMap = roomUIDMap;
+        this.tileUIDMap = tileUIDMap;
+        this.position = position;
+        this.maxPos = maxPos;
+
+        this.deckOfWeapon = cards.x;
+        this.deckOfAmmoCard = cards.y;
+        this.deckOfPowerUp = cards.z;
+
+        this.emptyTile = new TileUID();
+        tileUIDMap.values().forEach(x -> x.setMap(this));
+
+        //TODO: create weapon cards
+        // refill();
+
+        this.damageableUIDMap = buildPawn(this, numOfPlayer);
+
+    }
+
+    public static GameMap gameMapFactory(String path,
+                                         int numOfPlayer,
+                                         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
+            throws FileNotFoundException {
+
+        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
+        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
+    }
+
+    /*
+    Methods called from outside
+     */
+
+    /**
+     * Creates a sandbox used to test the validity of any action
+     * @return the Sandbox
+     */
+    public Sandbox createSandbox() {
+        Map<RoomUID, RoomTarget> targetRooms = roomUIDMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
+
+        Map<TileUID, TileTarget> targetTiles = tileUIDMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> new TileTarget(e.getKey())));
+
+        Map<DamageableUID, BasicTarget> targetPawns = damageableUIDMap.entrySet()
+                .stream().collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> BasicTarget.basicFactory(e.getValue())));
+
+        return new Sandbox(targetRooms, targetTiles, targetPawns, this);
+    }
 
     /**
      * Returns the Tile Object given a TileUID
@@ -173,7 +182,6 @@ public class GameMap {
             throw new NoSuchElementException("This Coord does not exists");
     }
 
-
     /**
      *
      * @return A Set containing all the Tiles in the map
@@ -181,7 +189,6 @@ public class GameMap {
     public Set<TileUID> allTiles(){
         return new HashSet<>(tileUIDMap.keySet());
     }
-
 
     /**
      * Returns the neighbors of the cell
@@ -201,7 +208,10 @@ public class GameMap {
      * @return a Collection containing all the Damageable unit in the tile
      */
     public Collection<DamageableUID> containedPawns(TileUID tile) {
-        return getTile(tile).getDamageable();
+        return damageableUIDMap.entrySet()
+                .stream().filter(i -> i.getValue().getTile().equals(tile))
+                .map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
+
     }
 
     /**
@@ -222,7 +232,7 @@ public class GameMap {
      */
     public TileUID tile(DamageableUID pawn) {
         for (TileUID t : tileUIDMap.keySet()) {
-            if (getTile(t).getDamageable().contains(pawn))
+            if (containedPawns(t).contains(pawn))
                 return t;
         }
         throw new NoSuchElementException("The pawn is not in the map");
@@ -392,28 +402,8 @@ public class GameMap {
      * @return A collections containing the DamageableUID in the tile
      */
     public Collection<DamageableUID> getDamageable(TileUID tile) {
-        return getTile(tile).getDamageable();
+        return containedPawns(tile);
     }
-
-    /**
-     * Adds a Damageable element in the tile
-     *
-     * @param damageableUID The Damageable element that has to be added
-     */
-    public void addDamageable(TileUID tile, DamageableUID damageableUID) {
-        getTile(tile).addDamageable(damageableUID);
-    }
-
-    /**
-     * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
-     *
-     * @param damageableID The identifier of the damageable item
-     * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
-     */
-    public void removeDamageable(TileUID tile, DamageableUID damageableID) {
-        getTile(tile).removeDamageable(damageableID);
-    }
-
 
     /**
      * Returns all the Damageable Objects (Pawns and Domination points) in the map
@@ -429,8 +419,6 @@ public class GameMap {
     public TileUID getEmptyTile(){
         return emptyTile;
     }
-
-
 
     private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){
         Map<DamageableUID, Pawn> res = new HashMap<>();

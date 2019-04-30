@@ -62,10 +62,7 @@ public class Pawn {
     public void move(TileUID tile) {
         TileUID startingTile = getTile();
         if (map != null) {
-            if(startingTile != map.getEmptyTile())
-                map.removeDamageable(startingTile, damageableUID);
             this.tile = tile;
-            map.addDamageable(tile, damageableUID);
         } else {
             throw new InvalidParameterException("Tile not present in the map.");
         }
