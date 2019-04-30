@@ -8,13 +8,14 @@ import java.util.*;
  * This class implements the Scoreboard for the Deathmatch games. It checks if the Final Frenzy is starting and add
  * every kills to the Scoreboard with the player who committed the frag and how many tokens he got from it.
  */
+//TODO: see what is part of the model and what part of the controller
 public class Scoreboard {
     private final List<Actor> actorsList;
     private int numOfDeaths;
     private final int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
 
-    private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);
+    private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1); //TODO: caricare da file settings
 
     /**
      * Constructor for a standard game (8 skulls).
@@ -37,6 +38,10 @@ public class Scoreboard {
     Scoreboard(){
         this.actorsList = new ArrayList<>();
         this.maxDeaths = 0;
+    }
+
+    public int getMaxDeaths() {
+        return maxDeaths;
     }
 
     /**
@@ -90,33 +95,14 @@ public class Scoreboard {
 
     /**
      * Parse the players list and return the player with more points.
-     * @param actorsList are the players playing this game.
      * @return the actor controller by the winner player.
      */
-    public Actor claimWinner(Collection<Actor> actorsList){
+    public Actor claimWinner(){
         Actor maxA = null;
         for(Actor a:actorsList){
             if(maxA == null || a.getPoints()>maxA.getPoints()) maxA = a;
         }
         return maxA;
-    }
-
-    /**
-     * End the player turn and start the next player's turn.
-     */
-    public void nextTurn(){
-        boolean flag = false;
-        for(Actor a:actorsList){
-            if(flag){
-                a.setTurn(true);
-                break;
-            }
-            if(a.isTurn()){
-                a.setTurn(false);
-                flag = true;
-            }
-
-        }
     }
 
     /**
@@ -129,25 +115,9 @@ public class Scoreboard {
 
     /**
      * Needed for tests.
-     * @return num of deaths of the game.
-     */
-    public int getNumOfDeaths() {
-        return numOfDeaths;
-    }
-
-    /**
-     * Needed for tests.
-     * @return num max of deaths before the end of the game.
-     */
-    public int getMaxDeaths() {
-        return maxDeaths;
-    }
-
-    /**
-     * Needed for tests.
      * @return the object skullbox.
      */
-    public ArrayList<Map<Actor, Integer>> getSkullBox() {
-        return skullBox;
+    public List<Map<Actor, Integer>> getSkullBox() {
+        return new ArrayList<>(skullBox);
     }
 }

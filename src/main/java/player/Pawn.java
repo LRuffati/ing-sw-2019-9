@@ -14,9 +14,9 @@ import java.security.InvalidParameterException;
 
 public class Pawn {
     private TileUID tile;
-    private Actor actor;
+    private transient Actor actor;
     public final DamageableUID damageableUID;
-    private GameMap map;
+    private transient GameMap map;
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
@@ -46,6 +46,7 @@ public class Pawn {
             this.actor = player;
         }
     }
+
     /*
     protected void setBinding(Actor player) throws AlreadyBoundedActorException{
         if(player.getPawn().actor != null){
@@ -62,10 +63,7 @@ public class Pawn {
     public void move(TileUID tile) {
         TileUID startingTile = getTile();
         if (map != null) {
-            if(startingTile != map.getEmptyTile())
-                map.removeDamageable(startingTile, damageableUID);
             this.tile = tile;
-            map.addDamageable(tile, damageableUID);
         } else {
             throw new InvalidParameterException("Tile not present in the map.");
         }

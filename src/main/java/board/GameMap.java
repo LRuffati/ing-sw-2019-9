@@ -19,6 +19,49 @@ import uid.RoomUID;
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
  */
 public class GameMap {
+
+    /*
+    Attributes
+     */
+    /**
+     * Holds the length and width of the Map
+     */
+    private final Coord maxPos;
+
+    /**
+     * Map between RoomUID and the Room Class
+     */
+    private final Map<RoomUID, Room> roomUIDMap;
+
+    /**
+     * Map between TileUID and the Tile Class
+     */
+    private final Map<TileUID, Tile> tileUIDMap;
+
+    /**
+     * Stores the absolute position of each Tile. Should not be used to access to TileUID
+     */
+    private final List<TileUID> position;
+
+    /**
+     * Map between DamageableUID and Damageable Class
+     */
+    private final Map<DamageableUID, Pawn> damageableUIDMap;
+
+    /**
+     * A tile used to store dead players waiting to be spawned
+     */
+    private final TileUID emptyTile;
+
+
+    private final Deck<Weapon> deckOfWeapon;
+    private final Deck<AmmoCard> deckOfAmmoCard;
+    private final Deck<grabbables.PowerUp> deckOfPowerUp;
+
+    /*
+    Constructors
+     */
+
     /**
      * Private constructor, to build a map gameMapFactory must be used
      */
@@ -64,6 +107,9 @@ public class GameMap {
         return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
     }
 
+    /*
+    Methods called from outside
+     */
 
     /**
      * Creates a sandbox used to test the validity of any action
@@ -83,42 +129,6 @@ public class GameMap {
 
         return new Sandbox(targetRooms, targetTiles, targetPawns, this);
     }
-
-    /**
-     * Holds the length and width of the Map
-     */
-    private final Coord maxPos;
-
-    /**
-     * Map between RoomUID and the Room Class
-     */
-    private final Map<RoomUID, Room> roomUIDMap;
-
-    /**
-     * Map between TileUID and the Tile Class
-     */
-    private final Map<TileUID, Tile> tileUIDMap;
-
-    /**
-     * Stores the absolute position of each Tile. Should not be used to access to TileUID
-     */
-    private final List<TileUID> position;
-
-    /**
-     * Map between DamageableUID and Damageable Class
-     */
-    private final Map<DamageableUID, Pawn> damageableUIDMap;
-
-    /**
-     * A tile used to store dead players waiting to be spawned
-     */
-    private final TileUID emptyTile;
-
-
-    private final Deck<Weapon> deckOfWeapon;
-    private final Deck<AmmoCard> deckOfAmmoCard;
-    private final Deck<grabbables.PowerUp> deckOfPowerUp;
-
 
     /**
      * Returns the Tile Object given a TileUID
@@ -180,7 +190,6 @@ public class GameMap {
             throw new NoSuchElementException("This Coord does not exists");
     }
 
-
     /**
      *
      * @return A Set containing all the Tiles in the map
@@ -188,7 +197,6 @@ public class GameMap {
     public Set<TileUID> allTiles(){
         return new HashSet<>(tileUIDMap.keySet());
     }
-
 
     /**
      * Returns the neighbors of the cell
@@ -208,7 +216,10 @@ public class GameMap {
      * @return a Collection containing all the Damageable unit in the tile
      */
     public Collection<DamageableUID> containedPawns(TileUID tile) {
-        return getTile(tile).getDamageable();
+        return damageableUIDMap.entrySet()
+                .stream().filter(i -> i.getValue().getTile().equals(tile))
+                .map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
+
     }
 
     /**
@@ -229,7 +240,7 @@ public class GameMap {
      */
     public TileUID tile(DamageableUID pawn) {
         for (TileUID t : tileUIDMap.keySet()) {
-            if (getTile(t).getDamageable().contains(pawn))
+            if (containedPawns(t).contains(pawn))
                 return t;
         }
         throw new NoSuchElementException("The pawn is not in the map");
@@ -404,28 +415,8 @@ public class GameMap {
      * @return A collections containing the DamageableUID in the tile
      */
     public Collection<DamageableUID> getDamageable(TileUID tile) {
-        return getTile(tile).getDamageable();
+        return containedPawns(tile);
     }
-
-    /**
-     * Adds a Damageable element in the tile
-     *
-     * @param damageableUID The Damageable element that has to be added
-     */
-    public void addDamageable(TileUID tile, DamageableUID damageableUID) {
-        getTile(tile).addDamageable(damageableUID);
-    }
-
-    /**
-     * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
-     *
-     * @param damageableID The identifier of the damageable item
-     * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
-     */
-    public void removeDamageable(TileUID tile, DamageableUID damageableID) {
-        getTile(tile).removeDamageable(damageableID);
-    }
-
 
     /**
      * Returns all the Damageable Objects (Pawns and Domination points) in the map
@@ -456,8 +447,7 @@ public class GameMap {
         }
         return false;
     }
-
-
+    
     private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){
         Map<DamageableUID, Pawn> res = new HashMap<>();
         Pawn p;
