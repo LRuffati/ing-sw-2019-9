@@ -1,5 +1,6 @@
 package grabbables;
 
+import gamemanager.GameBuilder;
 import genericitems.Tuple3;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
@@ -99,6 +100,16 @@ class DeckTest {
     }
 
     @Test
-    void testCardPicked(){
+    void testforGenericGrabbable(){
+        Grabbable g1 = new PowerUp(null, null);
+        Grabbable g2 = new PowerUp(null, null);
+        Grabbable g3 = new AmmoCard(null, 0);
+
+        assertNotEquals(g1, g2);
+        assertNotEquals(null, g1);
+        assertNotEquals(g1, g3);
+        assertEquals(g1, g1);
+        assertEquals(g2, g2);
+        assertEquals(g3, g3);
     }
 }

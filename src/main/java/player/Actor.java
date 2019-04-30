@@ -21,7 +21,7 @@ import java.util.*;
  */
 
 public class Actor {
-    private final int HP = 10;
+    private final static int HP = 10;
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
@@ -32,7 +32,7 @@ public class Actor {
     private boolean startingPlayerMarker;
     private Boolean frenzy;
     private Boolean turn;
-    private transient GameMap gm;
+    private final GameMap gm;
 
     private DamageableUID pawnID;
 
@@ -75,7 +75,9 @@ public class Actor {
         this.turn = false;
     }
 
-    public Actor(){}
+    public Actor(){
+        gm = null;
+    }
 
 
     /**
@@ -178,6 +180,11 @@ public class Actor {
             throw new AmmoException("Not enough ammo available");
     }
 
+    /**
+     * This method checks if the Weapon can be reloaded, and reloads it
+     * @param weapon The weapon that must be reloaded
+     * @return True if can be reloaded, false otherwise
+     */
     private boolean checkAmmo(Weapon weapon){
         Optional<AmmoAmount> result = weapon.canReload(ammoAvailable);
         if(result.isPresent()) {
@@ -198,7 +205,7 @@ public class Actor {
 
     /**
      *
-     * @return true is the actor turn has started and it's not finished yet.
+     * @return true if the actor turn has started and it's not finished yet.
      */
     public boolean isTurn(){
         return turn;
@@ -221,12 +228,23 @@ public class Actor {
     }
 
     /**
+     * Damage the player
+     * @param shooter the attacker
+     * @param numOfDmg number of damage points
+     */
+    public void addDamage(Actor shooter, int numOfDmg){
+        for(int i=0; i<numOfDmg; i++){
+            getDMG(shooter);
+        }
+    }
+
+    /**
      * Add the attacker who damaged the player on his playerboard.
      * The first element is the first player who attacked "this".
      * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
      */
-    public void getDMG(Actor shooter){
+    private void getDMG(Actor shooter){
         damageTaken.add(shooter);
 
         //TODO: check if the method correctly checks the "marks" attribute.
@@ -350,7 +368,7 @@ public class Actor {
      * @throws InvalidParameterException if the actor is not dead.
      */
     public void respawn(AmmoColor color){
-        if(pawn().getTile() != gm.getEmptyTile() || !isDead())
+        if(pawn().getTile() != gm.getEmptyTile() && !isDead())
             throw new InvalidParameterException("The player is not dead");
 
         for (TileUID t : gm.allTiles()){

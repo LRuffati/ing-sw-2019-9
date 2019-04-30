@@ -70,9 +70,9 @@ public class ScoreboardTest {
         Actor Carmelo = actorList.get(2);
 
         //TODO: add tests and verify other cases
-        Pietro.getDMG(Carmelo);
+        Pietro.addDamage(Carmelo, 1);
         for(int i=0; i<10;i++)
-            Pietro.getDMG(Lorenzo);
+            Pietro.addDamage(Lorenzo, 1);
         sb.score(Pietro);
 
         assertEquals(7, Pietro.getDamageTaken().get(0).getPoints());
