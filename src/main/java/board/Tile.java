@@ -20,7 +20,7 @@ public class Tile{
      * @param roomID The identifier of the room
      * @param neighbors The neighbors of the tile
      */
-    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction,NeightTile> neighbors, boolean spawnPoint) {
+    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction, NeighTile> neighbors, boolean spawnPoint) {
         this.map = map;
         this.roomID = roomID;
         this.tileID = tileID;
@@ -46,7 +46,7 @@ public class Tile{
      *
      * Handle this via an appropriate getter
      */
-    private final Map<Direction , NeightTile> neighbors;
+    private final Map<Direction , NeighTile> neighbors;
 
     /**
      * The UID of the cell
@@ -70,7 +70,9 @@ public class Tile{
 
 
     protected void setMap(GameMap map){
-        this.map = map;
+        if (map==null)
+            this.map = map;
+        //Todo: review this silent fail
     }
 
     /**
@@ -149,25 +151,12 @@ public class Tile{
         return roomID;
     }
 
-
-    /**
-     * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
-     * @param damageableID The identifier of the damageable item
-     * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
-     */
-    protected void removeDamageable(DamageableUID damageableID) {
-        if(damageable.contains(damageableID))
-            damageable.remove(damageableID);
-        else
-            throw new NoSuchElementException("This GrabbableID is not in this Tile");
-    }
-
     /**
      * Returns a Map containing surrounding Tiles. If there is no Tile, the corresponding direction is not present in the Map
      * @param physical true to check through walls, false otherwise
      * @return A Map containing surrounding Tiles
      */
-    protected Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
+    protected Map<Direction, TileUID> getMapOfNeighbor(boolean physical){
         Map<Direction, TileUID> ret = new EnumMap<>(Direction.class);
         Optional<TileUID> t;
         for( Direction d : neighbors.keySet()){

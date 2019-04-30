@@ -26,7 +26,8 @@ public class Actor {
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
     private Map<DamageableUID, Integer> marks;
-    private Collection<Weapon> weapons;
+    private Collection<Weapon> unloadedWeapon;
+    private Collection<Weapon> loadedWeapon;
     private Collection<PowerUp> powerUps;
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
@@ -37,6 +38,15 @@ public class Actor {
     private DamageableUID pawnID;
 
     /**
+     * This class keeps track of PowerUp cards possibly being used as ammunition
+     * @return the sum of ammoAvailable and all the powerups
+     */
+    //TODO: complete this
+    public AmmoAmount ammoAvailable(){
+        return null;
+    }
+
+    /**
      * The constructor assigns null points and deaths counter and bind a new pawn to the player.
      * It checks if it's the starting player.
      */
@@ -45,7 +55,8 @@ public class Actor {
         this.numOfDeaths = 0;
         this.damageTaken = new ArrayList<>();
         this.startingPlayerMarker = false;
-        this.weapons = new ArrayList<>();
+        this.loadedWeapon = new ArrayList<>();
+        this.unloadedWeapon = new ArrayList<>();
         this.powerUps = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
@@ -65,7 +76,8 @@ public class Actor {
         this.damageTaken = new ArrayList<>();
         this.pawnID = pawnId;
         this.startingPlayerMarker = firstPlayer;
-        this.weapons = new ArrayList<>();
+        this.loadedWeapon = new ArrayList<>();
+        this.unloadedWeapon = new ArrayList<>();
         this.powerUps = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
@@ -74,9 +86,6 @@ public class Actor {
 
         this.turn = false;
     }
-
-    public Actor(){}
-
 
     /**
      * Provide the binding between the Actor and the DamageableUID
@@ -128,6 +137,8 @@ public class Actor {
      * @throws WrongMethodTypeException if it's not the player's turn
      * @throws AmmoException if the player doesn't have enough ammo
      */
+    //TODO: rewrite to handle separately weapon and ammo. If you pick up a weapon put it in the
+    // loaded list
     public void pickUp(Grabbable item, Weapon wToRemove) throws AmmoException{
         TileUID tile = pawn().getTile();
 
@@ -141,18 +152,20 @@ public class Actor {
             if(!checkAmmo((Weapon) item))
                 throw new AmmoException("Not enough ammo available");
 
-            if(weapons.size() >= 3) {
+            if((loadedWeapon.size() + unloadedWeapon.size()) >= 3) {
                 if (wToRemove == null)
                     throw new InvalidParameterException("A weapon must be discarded");
 
-                if(!weapons.contains(wToRemove))
+                if(!(loadedWeapon.contains(wToRemove)||unloadedWeapon.contains(wToRemove)))
                     throw new InvalidParameterException("You haven't this weapon");
 
                 gm.discardWeapon(tile, wToRemove);
-                weapons.remove(wToRemove);
+
+                if (loadedWeapon.contains(wToRemove))
+                    loadedWeapon.remove(wToRemove);
+                else unloadedWeapon.remove(wToRemove);
             }
-            weapons.add((Weapon)gm.pickUpGrabbable(tile, item));
-            ((Weapon)item).setLoaded();
+            loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, item));
         }
         else{
             AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
@@ -164,23 +177,11 @@ public class Actor {
         }
     }
 
-    /**
-     * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
-     * @param weapon is the weapon to be reloaded.
-     * @throws AmmoException if the player doesn't have enough ammo
-     */
-    public void reloadWeapon(Weapon weapon) throws AmmoException{
-        if(!weapons.contains(weapon)) throw new InvalidParameterException("This actor has not this weapon");
-        if(!weapon.isLoaded())   throw new InvalidParameterException("This weapon is already loaded");
-        if(checkAmmo(weapon))
-            weapon.setLoaded();
-        else
-            throw new AmmoException("Not enough ammo available");
-    }
-
+    //TODO: review the side effect in this method and use ammoAvailable() if needed
     private boolean checkAmmo(Weapon weapon){
-        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable);
+        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable());
         if(result.isPresent()) {
+            //TODO: user should be prompted whether to use powerups, cubes or a mix of the two
             ammoAvailable = result.get();
             return true;
         }

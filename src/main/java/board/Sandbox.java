@@ -91,7 +91,8 @@ public class Sandbox {
      */
     public Collection<DamageableUID> containedPawns(TileUID tile){
         return pawns.entrySet()
-                .stream().filter(i -> i.getValue().location().equals(tile)).map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
+                .stream().filter(i -> i.getValue().location().equals(tile))
+                .map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**

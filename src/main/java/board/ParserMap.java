@@ -22,7 +22,7 @@ public class ParserMap {
     private static List<RoomUID> roomOfTile;
     private static List<Room> room = new ArrayList<>();
     private static List<Integer> excluded = new ArrayList<>();
-    private static List<Map<Direction, NeightTile>> allNeight;
+    private static List<Map<Direction, NeighTile>> allNeight;
     private static List<Integer> spawnPoint;
 
     private ParserMap(){}
@@ -114,7 +114,7 @@ public class ParserMap {
         allNeight = new ArrayList<>();
 
         for(int i=0; i<length*width; i++){
-            Map<Direction, NeightTile> neight = new EnumMap<>(Direction.class);
+            Map<Direction, NeighTile> neight = new EnumMap<>(Direction.class);
 
             addElem(neight, i, -length, Direction.UP);
             addElem(neight, i, -1, Direction.LEFT);
@@ -136,13 +136,13 @@ public class ParserMap {
             str = scanner.nextLine();
 
 
-            Map<Direction, NeightTile> m;
+            Map<Direction, NeighTile> m;
             m = allNeight.get(index(co[0],co[1]));
-            m.put(getDirection(co[0],co[1],co[2],co[3]), new NeightTile(tile.get(index(co[2],co[3])),true));
+            m.put(getDirection(co[0],co[1],co[2],co[3]), new NeighTile(tile.get(index(co[2],co[3])),true));
             allNeight.set(index(co[0],co[1]), m);
 
             m = allNeight.get(index(co[2],co[3]));
-            m.put(getDirection(co[2],co[3],co[0],co[1]), new NeightTile(tile.get(index(co[0],co[1])),true));
+            m.put(getDirection(co[2],co[3],co[0],co[1]), new NeighTile(tile.get(index(co[0],co[1])),true));
             allNeight.set(index(co[2],co[3]), m);
         }
     }
@@ -161,14 +161,14 @@ public class ParserMap {
 
 
 
-    private static void addElem(Map<Direction, NeightTile> neight, int index, int diff, Direction d){
+    private static void addElem(Map<Direction, NeighTile> neight, int index, int diff, Direction d){
         int val = index+diff;
         if(val>=0 && val<length*width && !excluded.contains(val) && !excluded.contains(index)) {
             if (roomOfTile.get(index) == roomOfTile.get(val)) {
-                neight.put(d, new NeightTile(tile.get(val), true));
+                neight.put(d, new NeighTile(tile.get(val), true));
             }
             else{
-                neight.put(d, new NeightTile(tile.get(val), false));
+                neight.put(d, new NeighTile(tile.get(val), false));
             }
         }
     }
