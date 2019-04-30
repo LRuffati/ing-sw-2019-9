@@ -30,7 +30,7 @@ public class ParserPowerUpTest {
         }
     }
 
-    void setup2(){
+    private void setup2(){
         String path = "src/test/java/gamemanager/PowerUpTestFile";
         String mapPath = "src/resources/map1.txt";
         try {

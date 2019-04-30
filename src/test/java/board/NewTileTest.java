@@ -111,26 +111,4 @@ class NewTileTest {
         assertTrue(tile.getGrabbable().isEmpty());
         assertEquals(new HashSet<>() , tile.getGrabbable());
     }
-
-    @Test
-    void testDamageable(){
-        Tile tile = map.getTile(map.getPosition(new Coord(1,1)));
-        //TODO: check
-        Set<DamageableUID> g;
-        DamageableUID g1 = new DamageableUID();
-        g = (HashSet) tile.getDamageable();
-        assertTrue(g.isEmpty());
-        g.add(g1);
-        assertNotEquals(g, tile.getDamageable());
-        assertThrows(NoSuchElementException.class , () -> tile.removeDamageable(g1));
-
-        tile.addDamageable(g1);
-        g = (HashSet) tile.getDamageable();
-        assertFalse(g.isEmpty());
-        assertEquals(g, tile.getDamageable());
-        tile.removeDamageable(g1);
-        assertTrue(tile.getDamageable().isEmpty());
-        assertEquals(new HashSet<>() , tile.getDamageable());
-    }
-
 }

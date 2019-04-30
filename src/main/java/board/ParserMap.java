@@ -32,8 +32,7 @@ public class ParserMap {
      * @return a GameMap built upon the path file
      * @throws FileNotFoundException If path is not found, throws an Exception
      */
-    public static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord>
-        parseMap(String path) throws FileNotFoundException{
+    public static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> parseMap(String path) throws FileNotFoundException{
 
         String str;
         Scanner scanner;

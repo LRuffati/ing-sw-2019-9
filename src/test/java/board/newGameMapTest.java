@@ -6,11 +6,13 @@ import grabbables.Deck;
 import grabbables.PowerUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import player.Pawn;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -66,22 +68,27 @@ class newGameMapTest {
         DamageableUID[] listD = new DamageableUID[map.getDamageable().size()];
         map.getDamageable().toArray(listD);
 
-        map.addDamageable(map.getPosition(new Coord(0,0)) , listD[0]);
-        assertEquals(map.getPosition(new Coord(0,0)) ,  map.tile(listD[0]));
-        assertEquals(Set.of(listD[0]) ,  map.containedPawns(map.getPosition(new Coord(0,0))));
+        Pawn pawn = map.getPawn(listD[0]);
+        Pawn pawn1 = map.getPawn(listD[1]);
+        Pawn pawn2 = map.getPawn(listD[2]);
 
-        map.removeDamageable(map.getPosition(new Coord(0,0)) , listD[0]);
+
+        pawn.move(map.getPosition(new Coord(0,0)));
+        assertEquals(map.getPosition(new Coord(0,0)) ,  map.tile(listD[0]));
+        assertEquals(new ArrayList<>(Set.of(listD[0])) ,  map.containedPawns(map.getPosition(new Coord(0,0))));
+
+        pawn.move(map.getPosition(new Coord(1,1)));
         assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
-        assertThrows(NoSuchElementException.class , () -> map.removeDamageable(map.getPosition(new Coord(1,1)), listD[0]));
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,0))).isEmpty());
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,2))).isEmpty());
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,3))).isEmpty());
 
 
-        map.addDamageable(map.getPosition(new Coord(2,2)) , listD[1]);
-        map.addDamageable(map.getPosition(new Coord(2,2)) , listD[2]);
+        pawn1.move(map.getPosition(new Coord(2,2)));
+        pawn2.move(map.getPosition(new Coord(2,2)));
         assertEquals(2 , map.getDamageable(map.getPosition(new Coord(2,2))).size());
-        assertTrue(map.getDamageable(map.getPosition(new Coord(2,2))).containsAll(Set.of(listD[1],listD[2])));
+        assertTrue(map.getDamageable(map.getPosition(new Coord(2,2)))
+                .containsAll(Set.of(listD[1],listD[2])));
 
         assertTrue(map.containedPawns(map.getPosition(new Coord(2,2))).contains(listD[1]));
         assertFalse(map.containedPawns(map.getPosition(new Coord(1,2))).contains(listD[1]));

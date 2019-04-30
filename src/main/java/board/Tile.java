@@ -1,6 +1,5 @@
 package board;
 import grabbables.Grabbable;
-import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
 
@@ -27,7 +26,6 @@ public class Tile{
         this.neighbors = neighbors;
         this.spawnPoint = spawnPoint;
 
-        damageable = new HashSet<>();
         grabbableSet = new HashSet<>();
     }
 
@@ -59,18 +57,13 @@ public class Tile{
     private Set<Grabbable> grabbableSet;
 
     /**
-     * List of Damageable units in the Tile
-     */
-    private Set<DamageableUID> damageable;
-
-    /**
      * Reference of the global map
      */
     private transient GameMap map;
 
 
     protected void setMap(GameMap map){
-        if (map==null)
+        if (this.map==null)
             this.map = map;
         //Todo: review this silent fail
     }

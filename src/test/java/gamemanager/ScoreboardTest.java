@@ -35,25 +35,25 @@ public class ScoreboardTest {
 
     @Test
     void fullConstructor(){
-        Actor pietro = new Actor();
+        Actor pietro = new Actor(null,null,false);
         listaAttori = new ArrayList<>();
         listaAttori.add(pietro);
         Scoreboard sb = new Scoreboard(listaAttori, 5);
         assertEquals(listaAttori, sb.getActorsList());
         assertEquals(5,sb.getMaxDeaths());
-        assertEquals(0, sb.getNumOfDeaths());
+        assertEquals(0, sb.getSkullBox().size());
         assertFalse(sb.finalFrenzy());
     }
 
     @Test
     void stdConstructor(){
-        Actor pietro = new Actor();
+        Actor pietro = new Actor(null,null,false);
         listaAttori = new ArrayList<>();
         listaAttori.add(pietro);
         Scoreboard sb = new Scoreboard(listaAttori);
         assertEquals(listaAttori, sb.getActorsList());
         assertEquals(8,sb.getMaxDeaths());
-        assertEquals(0, sb.getNumOfDeaths());
+        assertEquals(0, sb.getSkullBox().size());
     }
 
     @Test

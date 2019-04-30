@@ -3,7 +3,6 @@ import board.GameMap;
 import uid.DamageableUID;
 import uid.TileUID;
 
-import java.lang.reflect.InaccessibleObjectException;
 import java.security.InvalidParameterException;
 
 /**
@@ -61,7 +60,6 @@ public class Pawn {
      * @param tile is the position where the pawn will be moved.
      */
     public void move(TileUID tile) {
-        TileUID startingTile = getTile();
         if (map != null) {
             this.tile = tile;
         } else {
