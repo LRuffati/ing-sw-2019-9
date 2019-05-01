@@ -4,6 +4,7 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
+import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.Grabbable;
 import grabbables.PowerUp;
@@ -268,12 +269,11 @@ public class Actor {
      * @param shooter is the attacker.
      */
     private void getDMG(Actor shooter){
-        damageTaken.add(shooter);
+        if(damageTaken.size() <= HP)
+            damageTaken.add(shooter);
 
-        //TODO: test if the method correctly checks the "marks" attribute.
         if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
-                System.out.println(marks.get(shooter.pawnID));
                 if (damageTaken.size() <= HP)
                     damageTaken.add(shooter);
             }
@@ -346,6 +346,14 @@ public class Actor {
     }
 
     /**
+     *
+     * @return the number of damage that an actor can take before the death
+     */
+    public int HP() {
+        return HP;
+    }
+
+    /**
      * Set the attribute frenzy to true.
      */
     public void setFrenzy(){
@@ -367,6 +375,7 @@ public class Actor {
      * @param numOfMarks
      * @return the number of marks successfully applied
      */
+    //TODO: convert this to addMark(Actor attackerActor, int numOfMarks) ?
     public int addMark(DamageableUID attackerPawn, int numOfMarks){
         int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
 
@@ -400,7 +409,12 @@ public class Actor {
 
         for (TileUID t : gm.allTiles()){
             Color colTile = gm.getTile(t).getColor();
-            if(gm.getTile(t).spawnPoint() && colTile.toString().equals(color.toString())){
+            Tuple3<Integer, Integer, Integer> colAmmo = color.toRGB();
+
+            if(gm.getTile(t).spawnPoint() &&
+                    colTile.getRed() == colAmmo.x
+                    && colTile.getGreen() == colAmmo.y
+                    && colTile.getBlue() == colAmmo.z){
                 move(t);
             }
         }

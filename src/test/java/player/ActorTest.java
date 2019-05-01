@@ -9,7 +9,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.TileUID;
 
+import java.awt.print.PrinterIOException;
 import java.io.FileNotFoundException;
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import static actions.utils.AmmoColor.YELLOW;
@@ -81,19 +83,6 @@ class ActorTest {
         assertEquals(map.getPosition(new Coord(1,1)), Pietro.getPawn().getTile());
     }
 
-
-    @Test
-    void addDamageTest(){
-        //TODO Incomplete test.
-        Actor Pietro = actorList.get(0);
-        Actor melo = actorList.get(1);
-        Pietro.addDamage(melo,2);
-        assertTrue(Pietro.getDamageTaken().contains(melo));
-        Pietro.addMark(melo.pawnID(), 1);
-        //TODO the following assert should be false.
-        assertEquals(1, Pietro.getMarks().get(melo.getPawn().getDamageableUID()));
-    }
-
     @Test
     //TODO: needs weapon management
     void falseTurnPickUP(){
@@ -136,24 +125,100 @@ class ActorTest {
         assertEquals(0, Pietro.numOfMarksApplied());
     }
 
+    @Test
+    void addDamageTest(){
+        Actor Pietro = actorList.get(0);
+        Actor melo = actorList.get(1);
 
+        Pietro.move(map.getPosition(new Coord(0,0)));
+
+        Pietro.addDamage(melo,2);
+        assertTrue(Pietro.getDamageTaken().contains(melo));
+        assertEquals(2, Pietro.getDamageTaken().size());
+        assertFalse(Pietro.isDead());
+
+        Pietro.addMark(melo.pawnID(), 1);
+        assertEquals(1, Pietro.getMarks().get(melo.pawnID()));
+
+        Pietro.addDamage(melo, 3);
+        assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
+        assertEquals(6, Pietro.getDamageTaken().size());
+
+        assertFalse(Pietro.isDead());
+        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
+
+
+        Pietro.addMark(melo.pawnID(), 3);
+        Pietro.addDamage(melo, 5);
+        assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
+        assertEquals(Pietro.HP()+1, Pietro.getDamageTaken().size());
+        assertTrue(Pietro.isDead());
+
+        Pietro.respawn(YELLOW);
+    }
+
+    //TODO: valid behaviour?
+    @Test
+    void testAddDamage0(){
+        Actor Pietro = actorList.get(0);
+        Actor melo = actorList.get(1);
+        Pietro.addMark(melo.pawnID(), 2);
+        Pietro.addDamage(melo, 0);
+        assertEquals(2, Pietro.getMarks().get(melo.pawnID()));
+        assertEquals(0, Pietro.getDamageTaken().size());
+    }
+
+    @Test
+    void addDamageTest2(){
+        Actor a1 = actorList.get(0);
+        Actor a2 = actorList.get(1);
+        Actor a3 = actorList.get(2);
+
+        a1.addDamage(a2,1);
+        a1.addDamage(a3,2);
+        assertEquals(3, a1.getDamageTaken().size());
+        a1.addMark(a2.pawnID(), 2);
+        a1.addMark(a3.pawnID(), 3);
+        a3.addMark(a2.pawnID(), 1);
+        assertEquals(2, a1.getMarks().get(a2.pawnID()));
+        assertEquals(3, a1.getMarks().get(a3.pawnID()));
+
+        a1.addDamage(a3, 1);
+        assertEquals(2, a1.getMarks().get(a2.pawnID()));
+        assertEquals(0, a1.getMarks().get(a3.pawnID()));
+        assertEquals(7, a1.getDamageTaken().size());
+
+        a1.addDamage(a2, 1);
+        assertEquals(0, a1.getMarks().get(a2.pawnID()));
+        assertEquals(0, a1.getMarks().get(a3.pawnID()));
+        assertEquals(10, a1.getDamageTaken().size());
+
+        assertTrue(a1.isDead());
+
+        a1.addDamage(a2, 1);
+        assertEquals(a1.HP()+1, a1.getDamageTaken().size());
+        assertTrue(a1.isDead());
+
+        a1.addDamage(a2, 3);
+        assertEquals(a1.HP()+1, a1.getDamageTaken().size());
+    }
 
     @Test
     void respawnTest(){
-        assertTrue(map.allTiles().size() == 10);
-        actorList.get(0).move(map.getPosition(new Coord(0,3)));
-
-        assertFalse(map.allTiles().contains(map.getPosition(new Coord(0,3))));
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
         Pietro.respawn(AmmoColor.YELLOW);
-        Pietro.respawn(AmmoColor.BLUE);
-        assertEquals(map.getPosition(new Coord(3,1)), Pietro.getPawn().getTile());
+        melo.respawn(AmmoColor.BLUE);
+
+        assertTrue(map.getTile(map.getPosition(new Coord(2,3))).spawnPoint());
+        assertTrue(map.getTile(Pietro.getPawn().getTile()).spawnPoint());
+
+        assertEquals(map.getPosition(new Coord(2,3)), Pietro.getPawn().getTile());
         assertEquals(map.getPosition(new Coord(0,2)), melo.getPawn().getTile());
 
-        Pietro.getPawn().move(map.getPosition(new Coord(1,1)));
+        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
         Pietro.addDamage(actorList.get(1), 10);
-        //assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
+        assertFalse(Pietro.getDamageTaken().isEmpty());
 
         Pietro.respawn(YELLOW);
         assertTrue(Pietro.getDamageTaken().isEmpty());
