@@ -93,19 +93,21 @@ class ActorTest {
         assertEquals(map.getPosition(new Coord(1,1)), Pietro.getPawn().getTile());
     }
 
+
     @Test
-    void gettingDmgTest(){
-        //TODO Incomplete test, review the method getDMG(Actor actor).
-        /*Actor Pietro = actorList.get(0);
+    void addDamageTest(){
+        //TODO Incomplete test.
+        Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
-        Pietro.getDMG(melo);
+        Pietro.addDamage(melo,2);
         assertTrue(Pietro.getDamageTaken().contains(melo));
-        assertEquals(0, Pietro.getMarks().get(melo.getPawn().getDamageableUID()));
-        */
+        Pietro.dumbAddMark(melo);
+        //TODO the following assert should be false.
+        assertEquals(1, Pietro.getMarks().get(melo.getPawn().getDamageableUID()));
     }
 
     //@Test
-        //TODO: needs weapon managment
+        //TODO: needs weapon management
 
     void falseTurnPickUP(){
         /*

@@ -41,8 +41,8 @@ public class Actor {
      * This method keeps track of PowerUp cards possibly being used as ammunition
      * @return the sum of ammoAvailable and all the powerups
      */
-    //TODO: need to be tested
-    public AmmoAmount ammoAvailable(){
+
+    private AmmoAmount ammoAvailable(){
         AmmoAmount am = ammoAvailable;
         for(PowerUp pu : powerUps){
             am.add(pu.getAmmo());
@@ -207,7 +207,6 @@ public class Actor {
      * @param weapon The weapon that must be reloaded
      * @return True if can be reloaded, false otherwise
      */
-    //TODO: review the side effect in this method and use ammoAvailable() if needed
     private boolean checkAmmo(Weapon weapon){
         Optional<AmmoAmount> result = weapon.canReload(ammoAvailable());
         if(result.isPresent()) {
@@ -271,7 +270,7 @@ public class Actor {
     private void getDMG(Actor shooter){
         damageTaken.add(shooter);
 
-        //TODO: check if the method correctly checks the "marks" attribute.
+        //TODO: test if the method correctly checks the "marks" attribute.
         if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
                 System.out.println(marks.get(shooter.pawnID));
@@ -384,6 +383,9 @@ public class Actor {
         return applied;
     }
 
+    public void dumbAddMark(Actor marker){
+        marks.put(marker.getPawn().getDamageableUID(),1);
+    }
 
     /**
      * This method initialize the Actor when there is need to respawn.
