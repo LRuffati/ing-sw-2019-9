@@ -38,12 +38,16 @@ public class Actor {
     private DamageableUID pawnID;
 
     /**
-     * This class keeps track of PowerUp cards possibly being used as ammunition
+     * This method keeps track of PowerUp cards possibly being used as ammunition
      * @return the sum of ammoAvailable and all the powerups
      */
-    //TODO: complete this
+    //TODO: need to be tested
     public AmmoAmount ammoAvailable(){
-        return null;
+        AmmoAmount am = ammoAvailable;
+        for(PowerUp pu : powerUps){
+            am.add(pu.getAmmo());
+        }
+        return am;
     }
 
     /**
