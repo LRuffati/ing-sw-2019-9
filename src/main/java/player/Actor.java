@@ -377,9 +377,10 @@ public class Actor {
         if(totMarks > 3)
             return -1;
 
-        //TODO: carefully test this method
         int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
-        marks.put(pawn, marks.get(pawn) + applied);
+        if(marks.get(pawn)!=null) {
+            marks.put(pawn, marks.get(pawn) + applied);
+        }
         return applied;
     }
 

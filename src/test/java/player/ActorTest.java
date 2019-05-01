@@ -106,9 +106,8 @@ class ActorTest {
         assertEquals(1, Pietro.getMarks().get(melo.getPawn().getDamageableUID()));
     }
 
-    //@Test
-        //TODO: needs weapon management
-
+    @Test
+    //TODO: needs weapon management
     void falseTurnPickUP(){
         /*
         Actor Pietro = new Actor(map);
@@ -123,12 +122,12 @@ class ActorTest {
 
     @Test
     void addMarkTest(){
-        /*
-        Actor Pietro = actorList.get(0);
-        Actor Lore = actorList.get(1);
 
-        assertEquals(1, Pietro.addMark(Lore.getPawn().getDamageableUID(),1));
-        */
+        Actor Pietro = actorList.get(0);
+        Actor melo = actorList.get(1);
+
+        assertEquals(1, Pietro.addMark(melo.getPawn().getDamageableUID(),4));
+
     }
 
 
