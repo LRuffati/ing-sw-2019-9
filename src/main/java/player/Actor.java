@@ -326,7 +326,7 @@ public class Actor {
      * @return marks owned by the player.
      */
     public Map<DamageableUID, Integer> getMarks() {
-        return marks;
+        return Map.copyOf(marks);
     }
 
     /**
@@ -363,29 +363,29 @@ public class Actor {
     /**
      * Adds a certain number of marks from pawn to this.
      * If the pawn already assigned 3 marks nothing happens.
-     * @param pawn
+     * @param attackerPawn The attacker
      * @param numOfMarks
      * @return the number of marks successfully applied
      */
-    public int addMark(DamageableUID pawn, int numOfMarks){
-        int totMarks = 0;
-        for(DamageableUID p : gm.getDamageable()){
-            gm.getPawn(p).getActor().getMarks().get(pawn);
-            totMarks++;
-        }
-
-        if(totMarks > 3)
-            return -1;
+    public int addMark(DamageableUID attackerPawn, int numOfMarks){
+        int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
 
         int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
-        if(marks.get(pawn)!=null) {
-            marks.put(pawn, marks.get(pawn) + applied);
-        }
+
+        if(marks.containsKey(attackerPawn))
+            marks.put(attackerPawn, marks.get(attackerPawn) + applied);
+        else
+            marks.put(attackerPawn, applied);
         return applied;
     }
 
-    public void dumbAddMark(Actor marker){
-        marks.put(marker.getPawn().getDamageableUID(),1);
+    public int numOfMarksApplied(){
+        int totMarks = 0;
+        for(DamageableUID p : gm.getDamageable()){
+            if(gm.getPawn(p).getActor().getMarks().containsKey(this.pawnID))
+                totMarks += gm.getPawn(p).getActor().getMarks().get(this.pawnID());
+        }
+        return totMarks;
     }
 
     /**
@@ -405,6 +405,14 @@ public class Actor {
             }
         }
         this.damageTaken.clear();
+    }
+
+    /**
+     *
+     * @return the ID of the pawn associated with the actor
+     */
+    public DamageableUID pawnID() {
+        return pawnID;
     }
 }
 

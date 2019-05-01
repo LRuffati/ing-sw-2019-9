@@ -5,26 +5,20 @@ import actions.utils.AmmoColor;
 import board.Coord;
 import board.GameMap;
 import gamemanager.GameBuilder;
-import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import uid.DamageableUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
-import java.lang.invoke.WrongMethodTypeException;
-import java.security.InvalidParameterException;
 import java.util.List;
 
 import static actions.utils.AmmoColor.YELLOW;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class ActorTest {
 
-    GameMap map;
-    List<Actor> actorList;
+    private GameMap map;
+    private List<Actor> actorList;
 
     @BeforeEach
     void setup(){
@@ -33,7 +27,7 @@ class ActorTest {
         String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 2);
+                    mapPath, null, null, tilePath, 3);
         }
         catch (FileNotFoundException e){
         }
@@ -67,13 +61,7 @@ class ActorTest {
     }
 
     @Test
-    void nullConstructorTest(){
-        /*Actor melo = new Actor();
-        assertNull(melo.getNullPawn());*/
-    }
-
-    @Test
-    void moveTest() throws NoSuchFieldException{
+    void moveTest() {
         Actor Pietro = actorList.get(0);
         Pietro.setTurn(true);
         Pietro.move(map.getPosition(new Coord(1,1)));
@@ -86,7 +74,7 @@ class ActorTest {
     }
 
     @Test
-    void unconditionalMovement() throws NoSuchFieldException {
+    void unconditionalMovement() {
         Actor Pietro = actorList.get(0);
         Pietro.setTurn(false);
         Pietro.move(map.getPosition(new Coord(1,1)));
@@ -101,7 +89,7 @@ class ActorTest {
         Actor melo = actorList.get(1);
         Pietro.addDamage(melo,2);
         assertTrue(Pietro.getDamageTaken().contains(melo));
-        Pietro.dumbAddMark(melo);
+        Pietro.addMark(melo.pawnID(), 1);
         //TODO the following assert should be false.
         assertEquals(1, Pietro.getMarks().get(melo.getPawn().getDamageableUID()));
     }
@@ -122,28 +110,52 @@ class ActorTest {
 
     @Test
     void addMarkTest(){
-
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
+        Actor Lorenzo = actorList.get(2);
 
-        assertEquals(1, Pietro.addMark(melo.getPawn().getDamageableUID(),4));
+        //melo gives 3 marks to pietro
+        assertEquals(3, Pietro.addMark(melo.pawnID(),4));
+        assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
 
+        //melo gives 2 marks to pietro
+        assertEquals(0, Pietro.addMark(melo.pawnID(), 2));
+        assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
+
+        //melo gives 1 mark to lorenzo
+        assertEquals(0, Lorenzo.addMark(melo.pawnID(), 1));
+
+        //lorenzo gives 2 marks to pietro
+        assertEquals(1, Pietro.addMark(Lorenzo.pawnID(), 1));
+        assertEquals(1, Pietro.addMark(Lorenzo.pawnID(), 1));
+        assertEquals(2, Pietro.getMarks().get(Lorenzo.pawnID()));
+        assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
+
+        assertEquals(3, melo.numOfMarksApplied());
+        assertEquals(2, Lorenzo.numOfMarksApplied());
+        assertEquals(0, Pietro.numOfMarksApplied());
     }
 
 
 
     @Test
     void respawnTest(){
-        //TODO Pietro please fix the getTile() exception.
-        /*
+        assertTrue(map.allTiles().size() == 10);
+        actorList.get(0).move(map.getPosition(new Coord(0,3)));
+
+        assertFalse(map.allTiles().contains(map.getPosition(new Coord(0,3))));
         Actor Pietro = actorList.get(0);
+        Actor melo = actorList.get(1);
+        Pietro.respawn(AmmoColor.YELLOW);
+        Pietro.respawn(AmmoColor.BLUE);
+        assertEquals(map.getPosition(new Coord(3,1)), Pietro.getPawn().getTile());
+        assertEquals(map.getPosition(new Coord(0,2)), melo.getPawn().getTile());
+
         Pietro.getPawn().move(map.getPosition(new Coord(1,1)));
-        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
-        TileUID t = null;
-        Pietro.getPawn().move(t);
+        Pietro.addDamage(actorList.get(1), 10);
+        //assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
+
         Pietro.respawn(YELLOW);
         assertTrue(Pietro.getDamageTaken().isEmpty());
-
-        */
     }
 }
