@@ -12,7 +12,6 @@ import uid.RoomUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.util.*;
 
@@ -42,11 +41,21 @@ class newGameMapTest {
     }
 
     @Test
+    void nullTileTest(){
+        assertThrows(NoSuchElementException.class , () -> map.getPosition(new Coord(0,3)));
+        assertThrows(NoSuchElementException.class , () -> map.getPosition(new Coord(2,0)));
+    }
+
+    @Test
+    void allTileTest(){
+        assertEquals(12-2 , map.allTiles().size());
+    }
+
+    @Test
     void neighborTest(){
         helperTest(map.getPosition(new Coord(0,0)),true);
         helperTest(map.getPosition(new Coord(0,0)),false);
         helperTest(map.getPosition(new Coord(1,1)),true);
-        assertTrue(map.neighbors(map.getPosition(new Coord(0,3)),false).isEmpty());
     }
     private void helperTest(TileUID t, boolean logical){
         Map<Direction, TileUID> m;
@@ -81,7 +90,6 @@ class newGameMapTest {
         assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,0))).isEmpty());
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,2))).isEmpty());
-        assertTrue(map.containedPawns(map.getPosition(new Coord(0,3))).isEmpty());
 
 
         pawn1.move(map.getPosition(new Coord(2,2)));
@@ -121,10 +129,6 @@ class newGameMapTest {
                 map.neighbors(map.getPosition(new Coord(2,3)), true));
         assertEquals(map.getTile(map.getPosition(new Coord(2,3))).getMapOfNeighbor(false) ,
                 map.neighbors(map.getPosition(new Coord(2,3)), true));
-        assertEquals(map.getTile(map.getPosition(new Coord(0,3))).getMapOfNeighbor(true) ,
-                map.neighbors(map.getPosition(new Coord(0,3)), true));
-
-        assertTrue(map.neighbors(map.getPosition(new Coord(0,3)), true).isEmpty());
 
         assertEquals(2, map.neighbors(map.getPosition(new Coord(2,3)), true).size());
     }

@@ -8,8 +8,8 @@ import genericitems.Tuple;
  */
 public class Coord {
     private Tuple<Integer, Integer> pos;
-    public Coord(int x, int y){
-         pos = new Tuple<>(x,y);
+    public Coord(int down, int left){
+         pos = new Tuple<>(down, left);
     }
 
     /**

@@ -84,9 +84,15 @@ class NewTileTest {
 
     @Test
     void testSpawn(){
-        assertFalse(map.getTile(map.getPosition(new Coord(0,0))).spawnPoint());
-        assertFalse(map.getTile(map.getPosition(new Coord(0,3))).spawnPoint());
-        assertTrue(map.getTile(map.getPosition(new Coord(0,2))).spawnPoint());
+        for(TileUID t : map.allTiles()){
+            if(t.equals(map.getPosition(new Coord(0,2)))
+                        || t.equals(map.getPosition(new Coord(1,0)))
+                        || t.equals(map.getPosition(new Coord(2,3)))
+                )
+                assertTrue(map.getTile(t).spawnPoint());
+            else
+                assertFalse(map.getTile(t).spawnPoint());
+        }
     }
 
 

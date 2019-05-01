@@ -44,7 +44,7 @@ class RoomTest {
         r = map.getRoom(map.room(map.getPosition(new Coord(0,0))));
         assertTrue(r.getTiles().contains(map.getPosition(new Coord(0,2))));
         r = map.getRoom(map.room(map.getPosition(new Coord(2,2))));
-        assertFalse(r.getTiles().contains(map.getPosition(new Coord(0,3))));
+        assertFalse(r.getTiles().contains(map.getPosition(new Coord(2,3))));
 
         assertThrows(NoSuchElementException.class , () -> map.getRoom(new RoomUID()).getTiles());
 

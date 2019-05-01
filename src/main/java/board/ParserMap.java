@@ -191,9 +191,9 @@ public class ParserMap {
         List<Tile> tileObj = new ArrayList<>();
 
         boolean isSpawn;
-        for(int i=0; i<tile.size(); i++){
+        for(int i=0; i<tile.size(); i++) {
             isSpawn = spawnPoint.contains(i);
-            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn ));
+            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn));
         }
 
 
@@ -203,7 +203,8 @@ public class ParserMap {
             roomUIDMap.put(r.getRoomID(), r);
         }
         for(int i=0; i<tile.size(); i++){
-            tileUIDMap.put(tile.get(i) , tileObj.get(i));
+            if(!excluded.contains(i))
+                tileUIDMap.put(tile.get(i) , tileObj.get(i));
         }
 
         return new Tuple4<>(roomUIDMap, tileUIDMap, tile, new Coord(length,width));

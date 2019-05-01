@@ -138,7 +138,7 @@ public class GameMap {
      * @throws NoSuchElementException If no Tile is found, an exception is returned
      */
     public Tile getTile(TileUID tileID) {
-        if (tileUIDMap.containsKey(tileID))
+        if (tileUIDMap.containsKey(tileID) && tileUIDMap.get(tileID) != null)
             return tileUIDMap.get(tileID);
         else
             throw new NoSuchElementException("This TileUID does not exists");
@@ -182,9 +182,10 @@ public class GameMap {
     public TileUID getPosition(Coord coord) {
         int pos = coord.getX() * maxPos.getX() + coord.getY();
         if (pos < maxPos.getX() * maxPos.getY()
-                && position.get(pos) != null
                 && coord.getX() <= maxPos.getX()
-                && coord.getY() <= maxPos.getY())
+                && coord.getY() <= maxPos.getY()
+                && allTiles().contains(position.get(pos))
+        )
             return position.get(pos);
         else
             throw new NoSuchElementException("This Coord does not exists");
@@ -195,7 +196,12 @@ public class GameMap {
      * @return A Set containing all the Tiles in the map
      */
     public Set<TileUID> allTiles(){
-        return new HashSet<>(tileUIDMap.keySet());
+        HashSet<TileUID> ret = new HashSet<>();
+        for(Map.Entry t : tileUIDMap.entrySet()){
+            if(t.getValue() != null)
+                ret.add((TileUID)t.getKey());
+        }
+        return ret;
     }
 
     /**
