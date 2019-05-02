@@ -16,6 +16,7 @@ import java.awt.*;
 import java.lang.invoke.WrongMethodTypeException;
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.List;
 
 /**
  * The class Actor implements the status of the player in the game.
@@ -108,21 +109,6 @@ public class Actor {
     }
 
     /**
-     * This method implements the first phase of a player turn.
-     * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
-     * @param t is the Tile id where the player is trying to move to.
-     */
-    public void movePlayer(TileUID t) {
-        if(turn &&
-                (!frenzy && gm.getSurroundings(false, 3, pawn().getTile()).contains(t))
-                ||
-                (frenzy && gm.getSurroundings(false, 4, pawn().getTile()).contains(t))
-        ) {
-            move(t);
-        }
-    }
-
-    /**
      * This method implements the basic action of movement
      * It modifies the tile of the Pawn and move the Player in the GameMap
      * @param tile the tile where the Pawn must be put
@@ -133,90 +119,103 @@ public class Actor {
 
     /**
      * Checks if in the player's tile there is the grabbable item.
-     * Check if the item is weapon, then if weapons' inventory is full.
-     * Checks if the weapon chosen to be discarded is a valid weapon.
-     * Picks up the weapon or the ammotile, add all the necessary ammo and powerUps
-     * @param item is the grabbable element that the player want to pick up
-     * @param wToRemove contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
-     * @throws InvalidParameterException if the parameters aren't valid
-     * @throws WrongMethodTypeException if it's not the player's turn
-     * @throws AmmoException if the player doesn't have enough ammo
+     * Picks up the weapon or the ammoTile, adds all the necessary ammo and powerUps
+     * @param ammoCard is the ammoCard element that the player want to pick up
      */
-    //TODO: rewrite to handle separately weapon and ammo. If you pick up a weapon put it in the
-    // loaded list
-    public void pickUp(Grabbable item, Weapon wToRemove) throws AmmoException{
+    public void pickUp(AmmoCard ammoCard){
         TileUID tile = pawn().getTile();
-
         if(!turn)
             throw new WrongMethodTypeException("It's not your turn");
-        if(!gm.getGrabbable(tile).contains(item))
+        if(!gm.getGrabbable(tile).contains(ammoCard))
             throw new InvalidParameterException("There isn't this item here");
 
-        if(gm.getTile(tile).spawnPoint()){
-
-            if(!checkAmmo((Weapon) item))
-                throw new AmmoException("Not enough ammo available");
-
-            if((loadedWeapon.size() + unloadedWeapon.size()) >= 3) {
-                if (wToRemove == null)
-                    throw new InvalidParameterException("A weapon must be discarded");
-
-                if(!(loadedWeapon.contains(wToRemove)||unloadedWeapon.contains(wToRemove)))
-                    throw new InvalidParameterException("You haven't this weapon");
-
-                gm.discardWeapon(tile, wToRemove);
-
-                if (loadedWeapon.contains(wToRemove))
-                    loadedWeapon.remove(wToRemove);
-                else unloadedWeapon.remove(wToRemove);
-            }
-            loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, item));
-        }
-        else{
-            AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
-            ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
-            for(int i = 0; i<card.getNumOfPowerUp(); i++)
-                if(powerUps.size() < 3)
-                    powerUps.add((PowerUp)gm.pickUpPowerUp());
-            gm.discardAmmoCard(card);
-        }
+        AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
+        ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
+        for(int i=0; i<card.getNumOfPowerUp() && powerUps.size()<3; i++)
+            powerUps.add(gm.pickUpPowerUp());
+        gm.discardAmmoCard(card);
     }
 
+    /**
+     * Checks if in the player's tile there is the weapon.
+     * Check if weapons' inventory is full.
+     * Checks if the weapon chosen to be discarded is a valid weapon.
+     * Picks up the weapon and discard all the weapon and powerUps
+     * @param weapon is the weapon that the player want to pick up
+     * @param weaponToDiscard contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
+     * @param powerUpToPay the powerUps that the player want to use to pay the weapon
+     * @throws AmmoException if the Ammo amount is not sufficient
+     */
+    public void pickUp(Weapon weapon, Weapon weaponToDiscard, List<PowerUp> powerUpToPay) throws AmmoException{
+        TileUID tile = pawn().getTile();
+        if(!turn)
+            throw new WrongMethodTypeException("It's not your turn");
+        if(!gm.getGrabbable(tile).contains(weapon))
+            throw new InvalidParameterException("There isn't this item here");
+        if(!checkAmmo(weapon.getBuyCost(), powerUpToPay))
+            throw new AmmoException("Not enough ammo available");
+
+        if((loadedWeapon.size() + unloadedWeapon.size()) >= 3) {
+            if(weaponToDiscard == null)
+                throw new InvalidParameterException("A weapon must be discarded");
+            if(!(loadedWeapon.contains(weaponToDiscard) || unloadedWeapon.contains(weaponToDiscard)))
+                throw new InvalidParameterException("You haven't this weapon");
+
+            gm.discardWeapon(tile, weaponToDiscard);
+            if (loadedWeapon.contains(weaponToDiscard))
+                loadedWeapon.remove(weaponToDiscard);
+            else
+                unloadedWeapon.remove(weaponToDiscard);
+        }
+
+        loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, weapon));
+        pay(weapon.getBuyCost(), powerUpToPay);
+        for(PowerUp p : powerUpToPay)
+            gm.discardPowerUp(p);
+    }
 
     /**
      * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
      * @param weapon is the weapon to be reloaded.
      * @throws AmmoException if the player doesn't have enough ammo
      */
-    //TODO: delete reload method?
-    public void reloadWeapon(Weapon weapon) throws AmmoException{
+    public void reloadWeapon(Weapon weapon, List<PowerUp> powerUpToPay) throws AmmoException{
         if(!unloadedWeapon.contains(weapon) && !loadedWeapon.contains(weapon))
             throw new InvalidParameterException("This actor has not this weapon");
         if(!unloadedWeapon.contains(weapon))
             throw new InvalidParameterException("This weapon is already loaded");
-        if(checkAmmo(weapon)) {
-            //TODO: reduce ammo
-            unloadedWeapon.remove(weapon);
-            loadedWeapon.add(weapon);
-        }
-        else
+        if(!checkAmmo(weapon.getReloadCost(), powerUpToPay))
             throw new AmmoException("Not enough ammo available");
+
+        pay(weapon.getReloadCost(), powerUpToPay);
+        unloadedWeapon.remove(weapon);
+        loadedWeapon.add(weapon);
     }
 
     /**
-     * This method checks if the Weapon can be reloaded, and reloads it
-     * @param weapon The weapon that must be reloaded
+     * This method checks if a certain amount of Ammo can be reached using a list of PowerUps and player's AmmoTile
+     * @param ammoAmount The amount of ammo that has to be reached
+     * @param powerUpToPay the powerUps that the have to be considered in the check
      * @return True if can be reloaded, false otherwise
      */
-    private boolean checkAmmo(Weapon weapon){
-        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable());
-        if(result.isPresent()) {
-            //TODO: user should be prompted whether to use powerups, cubes or a mix of the two
-            ammoAvailable = result.get();
-            return true;
+    public boolean checkAmmo(AmmoAmount ammoAmount, List<PowerUp> powerUpToPay){
+        AmmoAmount amount = new AmmoAmount();
+        for(PowerUp p : powerUpToPay){
+            amount = amount.add(p.getAmmo());
         }
-        else
-            return false;
+        amount.add(ammoAvailable);
+
+        return ammoAmount.compareTo(amount)>0;
+    }
+
+    /**
+     * Consumes all the powerUps, and then reduce the amount of ammoAvailable
+     */
+    private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
+        for(PowerUp p : powerUpToPay){
+            amount = amount.subtract(p.getAmmo());
+        }
+        ammoAvailable = ammoAvailable.subtract(amount);
     }
 
     /**
