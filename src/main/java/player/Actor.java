@@ -179,8 +179,6 @@ public class Actor {
 
         loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, weapon));
         pay(weapon.getBuyCost(), powerUpToPay);
-        for(PowerUp p : powerUpToPay)
-            gm.discardPowerUp(p);
     }
 
     /**
@@ -223,6 +221,7 @@ public class Actor {
     private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
         for(PowerUp p : powerUpToPay){
             amount = amount.subtract(p.getAmmo());
+            gm.discardPowerUp(p);
         }
         ammoAvailable = ammoAvailable.subtract(amount);
     }
