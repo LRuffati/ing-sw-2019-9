@@ -6,7 +6,6 @@ import board.GameMap;
 import exception.AmmoException;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
-import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
@@ -39,6 +38,10 @@ public class Actor {
 
     private DamageableUID pawnID;
 
+    private Set<Actor> damagedPlayer;
+    //TODO: is this necessary?
+    private Set<Actor> damagedBy;
+
     /**
      * This method keeps track of PowerUp cards possibly being used as ammunition
      * @return the sum of ammoAvailable and all the powerups
@@ -66,8 +69,11 @@ public class Actor {
         this.powerUps = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
-        this.marks = new Hashtable<>();
+        this.marks = new HashMap<>();
         this.gm = map;
+
+        this.damagedBy = new HashSet<>();
+        this.damagedPlayer = new HashSet<>();
     }
 
     /**
@@ -89,6 +95,9 @@ public class Actor {
         this.frenzy = false;
         this.marks = new HashMap<>();
         this.gm = map;
+
+        this.damagedBy = new HashSet<>();
+        this.damagedPlayer = new HashSet<>();
 
         this.turn = false;
     }
@@ -244,9 +253,14 @@ public class Actor {
 
     /**
      * Needed to end and start a player turn.
+     * At the end of the turn clear damagedPlayer and damagedBy Sets
      * @param turn true to start the turn, false to end it.
      */
     public void setTurn(Boolean turn) {
+        if(!turn){
+            damagedPlayer.clear();
+            damagedBy.clear();
+        }
         this.turn = turn;
     }
 
@@ -263,13 +277,18 @@ public class Actor {
 
     /**
      * Add the attacker who damaged the player on his playerboard.
+     * Adds the shooter to the attacked's damagedBy Set
+     * and the shooted to the attacker's damagedPlayer Set.
      * The first element is the first player who attacked "this".
      * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
      */
     private void getDMG(Actor shooter){
-        if(damageTaken.size() <= HP)
+        if(damageTaken.size() <= HP){
+            damagedBy.add(shooter);
+            shooter.damagedPlayer.add(this);
             damageTaken.add(shooter);
+        }
 
         if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
@@ -284,7 +303,7 @@ public class Actor {
      * Method needed in the Scoreboard class.
      * @return the damage taken from a single shot.
      */
-    public ArrayList<Actor> getDamageTaken() {
+    public List<Actor> getDamageTaken() {
         return damageTaken;
     }
 
@@ -328,6 +347,7 @@ public class Actor {
         return Map.copyOf(marks);
     }
 
+    //TODO: delete this method
     /**
      * Needed for tests.
      * @return the map of the game the player is playing.
@@ -350,6 +370,22 @@ public class Actor {
      */
     public int HP() {
         return HP;
+    }
+
+    /**
+     *
+     * @return The set containing all the Player that damaged the Player before his turn
+     */
+    public Set<Actor> getDamagedBy() {
+        return new HashSet<>(damagedBy);
+    }
+
+    /**
+     *
+     * @return a Set containing all the Player that have been damaged by this during his turn
+     */
+    public Set<Actor> getDamagedPlayer() {
+        return new HashSet<>(damagedBy);
     }
 
     /**
@@ -387,6 +423,10 @@ public class Actor {
         return applied;
     }
 
+    /**
+     *
+     * @return how many marks this Actor applied to other Actors
+     */
     public int numOfMarksApplied(){
         int totMarks = 0;
         for(DamageableUID p : gm.getDamageable()){
