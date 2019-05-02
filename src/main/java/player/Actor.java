@@ -368,7 +368,7 @@ public class Actor {
      *
      * @return the number of damage that an actor can take before the death
      */
-    public int HP() {
+    public int hp() {
         return HP;
     }
 

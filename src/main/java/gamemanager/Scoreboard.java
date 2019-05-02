@@ -15,8 +15,9 @@ public class Scoreboard {
     private final int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
 
-    private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1); //TODO: caricare da file settings
-
+    //TODO: caricare da file setting
+    private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);
+    private final List<Integer> pointForDeathFinal = List.of(2,1,1,1);
     /**
      * Constructor for a standard game (8 skulls).
      */
@@ -69,9 +70,17 @@ public class Scoreboard {
             int num = dead.getNumOfDeaths();
             for(Actor actor : scoreSet.descendingSet()){
                 // TODO: OK O <= O ALTRO?
-                if(num < pointForDeath.size()) {
-                    actor.addPoints(pointForDeath.get(num));
-                    num++;
+                if(!finalFrenzy()) {
+                    if (num < pointForDeath.size()) {
+                        actor.addPoints(pointForDeath.get(num));
+                        num++;
+                    }
+                }
+                else {
+                    if (num < pointForDeathFinal.size()) {
+                        actor.addPoints(pointForDeathFinal.get(num));
+                        num++;
+                    }
                 }
             }
         }

@@ -7,9 +7,7 @@ import board.GameMap;
 import gamemanager.GameBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uid.TileUID;
 
-import java.awt.print.PrinterIOException;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.List;
@@ -150,7 +148,7 @@ class ActorTest {
         Pietro.addMark(melo.pawnID(), 3);
         Pietro.addDamage(melo, 5);
         assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
-        assertEquals(Pietro.HP()+1, Pietro.getDamageTaken().size());
+        assertEquals(Pietro.hp()+1, Pietro.getDamageTaken().size());
         assertTrue(Pietro.isDead());
 
         Pietro.respawn(YELLOW);
@@ -195,11 +193,11 @@ class ActorTest {
         assertTrue(a1.isDead());
 
         a1.addDamage(a2, 1);
-        assertEquals(a1.HP()+1, a1.getDamageTaken().size());
+        assertEquals(a1.hp()+1, a1.getDamageTaken().size());
         assertTrue(a1.isDead());
 
         a1.addDamage(a2, 3);
-        assertEquals(a1.HP()+1, a1.getDamageTaken().size());
+        assertEquals(a1.hp()+1, a1.getDamageTaken().size());
     }
 
     @Test
