@@ -317,7 +317,7 @@ public class GameMap {
      */
     public void refill(){
         //TODO: test this method, needs also weapon management
-        for(TileUID tile : tileUIDMap.keySet()){
+        for(TileUID tile : allTiles()){
             if(getTile(tile).spawnPoint())
                 deckOfWeapon.take(3 - getGrabbable(tile).size())
                     .forEach(x -> addGrabbable(tile, x));

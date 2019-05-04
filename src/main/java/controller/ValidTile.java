@@ -4,6 +4,7 @@ import board.GameMap;
 import player.Actor;
 import uid.TileUID;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class ValidTile {
      * @param actorList List containing all the Actors in the game. This list must have the same order of the game sequence
      * @return A Set containing all the Tiles that can be reached with a Move action in the current phase of the game
      */
-    public static Set<TileUID> getMove(GameMap map, Actor actor, List<Actor> actorList){
+    public static List<TileUID> getMove(GameMap map, Actor actor, List<Actor> actorList){
         return allOperations(map,actor,actorList,
                 new Values(-1,0,3,0,4));
     }
@@ -29,7 +30,7 @@ public class ValidTile {
      * @param actorList List containing all the Actors in the game. This list must have the same order of the game sequence
      * @return A Set containing all the Tiles that can be reached with a Grab action in the current phase of the game
      */
-    public static Set<TileUID> getGrab(GameMap map, Actor actor, List<Actor> actorList){
+    public static List<TileUID> getGrab(GameMap map, Actor actor, List<Actor> actorList){
         return allOperations(map,actor,actorList,
                 new Values(3,1,2,3,2));
     }
@@ -41,26 +42,28 @@ public class ValidTile {
      * @param actorList List containing all the Actors in the game. This list must have the same order of the game sequence
      * @return A Set containing all the Tiles that can be reached with a Fire action in the current phase of the game
      */
-    public static Set<TileUID> getFire(GameMap map, Actor actor, List<Actor> actorList){
+    public static List<TileUID> getFire(GameMap map, Actor actor, List<Actor> actorList){
         return allOperations(map,actor,actorList,
                 new Values(6,0,1,2,1));
     }
 
-    private static Set<TileUID> allOperations(GameMap map, Actor actor, List<Actor> actorList, Values v){
+    private static List<TileUID> allOperations(GameMap map, Actor actor, List<Actor> actorList, Values v){
         TileUID tile = actor.pawn().getTile();
         List<Actor> dmg = actor.getDamageTaken();
+        Set<TileUID> ret;
         if(!actor.getFrenzy()){
             if (dmg.size() < v.limitInDmg)
-                return map.getSurroundings(false, v.distBeforeLim, tile);
+                ret = map.getSurroundings(false, v.distBeforeLim, tile);
             else
-                return map.getSurroundings(false, v.distAfterLim, tile);
+                ret = map.getSurroundings(false, v.distAfterLim, tile);
         }
         else {
             if(beforeFirstFrenzy(actor, actorList))
-                return map.getSurroundings(false, v.distBeforeFirstFrenzy, tile);
+                ret =  map.getSurroundings(false, v.distBeforeFirstFrenzy, tile);
             else
-                return map.getSurroundings(false, v.distAfterFirstFrenzy, tile);
+                ret =  map.getSurroundings(false, v.distAfterFirstFrenzy, tile);
         }
+        return new ArrayList<>(ret);
     }
 
     private static boolean beforeFirstFrenzy(Actor actor, List<Actor> actorList){

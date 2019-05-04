@@ -445,5 +445,14 @@ public class Actor {
     public DamageableUID pawnID() {
         return pawnID;
     }
+
+
+    public Collection<Weapon> getLoadedWeapon() {
+        return loadedWeapon;
+    }
+
+    public Collection<Weapon> getUnloadedWeaponoadedWeapon() {
+        return unloadedWeapon;
+    }
 }
 
