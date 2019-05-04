@@ -9,8 +9,11 @@ import player.Actor;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class ScoreboardTest {
@@ -80,5 +83,23 @@ public class ScoreboardTest {
 
         assertEquals(Carmelo , Pietro.getDamageTaken().get(0));
         assertEquals(Lorenzo , Pietro.getDamageTaken().get(1));
+    }
+
+    @Test
+    void winnerClaimingTest(){
+        Scoreboard sb = new Scoreboard(actorList);
+        Actor Pietro = actorList.get(0);
+        Pietro.addPoints(1);
+        assertEquals(Pietro, sb.claimWinner());
+    }
+
+    @Test
+    void killTest(){
+        Scoreboard sb = new Scoreboard(actorList);
+        Actor Pietro = actorList.get(0);
+        Actor melo = actorList.get(1);
+        sb.addKill(Pietro, melo);
+        assertEquals(1,sb.getNumOfDeaths());
+        //assertTrue(sb.getSkullBox().contains(Map.of(Pietro,2)));
     }
 }

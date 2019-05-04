@@ -1,14 +1,19 @@
 package player;
 
 
+import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.Coord;
 import board.GameMap;
 import gamemanager.GameBuilder;
+import grabbables.AmmoCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import uid.GrabbableUID;
+import uid.TileUID;
 
 import java.io.FileNotFoundException;
+import java.lang.invoke.WrongMethodTypeException;
 import java.security.InvalidParameterException;
 import java.util.List;
 
@@ -78,20 +83,6 @@ class ActorTest {
         Pietro.setTurn(false);
         Pietro.move(map.getPosition(new Coord(1,1)));
         assertEquals(map.getPosition(new Coord(1,1)), Pietro.getPawn().getTile());
-    }
-
-    @Test
-    //TODO: needs weapon management
-    void falseTurnPickUP(){
-        /*
-        Actor Pietro = new Actor(map);
-        Weapon w = new Weapon();
-        Weapon toRemove = new Weapon();
-        Pietro.setTurn(false);
-        assertThrows(WrongMethodTypeException.class, () -> {
-            Pietro.pickUp(w, toRemove);
-        });
-        */
     }
 
     @Test
@@ -219,5 +210,14 @@ class ActorTest {
 
         Pietro.respawn(YELLOW);
         assertTrue(Pietro.getDamageTaken().isEmpty());
+    }
+
+    @Test
+    void ammoPickUpTest(){
+        AmmoCard am = new AmmoCard(new AmmoAmount(),0);
+        Actor Pietro = actorList.get(0);
+        assertThrows(WrongMethodTypeException.class, () -> Pietro.pickUp(am), "It's not your turn");
+        Pietro.setTurn(true);
+        //TODO put the ammocard in a tile and check if the player grabs it.
     }
 }
