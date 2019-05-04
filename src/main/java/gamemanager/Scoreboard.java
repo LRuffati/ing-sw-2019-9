@@ -92,7 +92,7 @@ public class Scoreboard {
      */
     public void addKill(Actor killer, Actor victim){
         int numPoints = 1;
-        if(victim.getDamageTaken().get(11)!= null) {
+        if(victim.getDamageTaken().size()>10 && victim.getDamageTaken().get(11)!= null) {
             numPoints = 2;
             //TODO: probably should't be done here
             victim.addMark(killer.getPawn().getDamageableUID(), 1);
@@ -128,5 +128,13 @@ public class Scoreboard {
      */
     public List<Map<Actor, Integer>> getSkullBox() {
         return new ArrayList<>(skullBox);
+    }
+
+    /**
+     * Needed for tests.
+     * @return the number of current deaths in the game.
+     */
+    public int getNumOfDeaths() {
+        return numOfDeaths;
     }
 }
