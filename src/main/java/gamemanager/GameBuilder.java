@@ -41,9 +41,9 @@ public class GameBuilder {
                        int numOfPlayer)
             throws FileNotFoundException{
 
-        if(weaponPath!=null) deckOfWeapon = parserWeapon(weaponPath);
-        if(powerUpPath!=null) deckOfPowerUp = parserPowerUp(powerUpPath);
-        if(ammoCardPath!=null) deckOfAmmoCard = parserAmmoTile(ammoCardPath);
+        deckOfWeapon = parserWeapon(weaponPath);
+        deckOfPowerUp = parserPowerUp(powerUpPath);
+        deckOfAmmoCard = parserAmmoTile(ammoCardPath);
 
         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
 
@@ -56,15 +56,24 @@ public class GameBuilder {
 
 
     private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
-        return new Deck<>(ParserAmmoTile.parse(ammoCardPath));
+        return ammoCardPath==null
+                ? new Deck<>(ParserAmmoTile.parse(ParserConfiguration.parsePath("ammoTilePath")))
+                : new Deck<>(ParserAmmoTile.parse(ammoCardPath));
     }
 
     private Deck<PowerUp> parserPowerUp(String powerUpPath) throws FileNotFoundException {
-        return new Deck<>(ParserPowerUp.parse(powerUpPath));
+        return powerUpPath==null
+                ? new Deck<>(ParserPowerUp.parse(ParserConfiguration.parsePath("powerUpPath")))
+                : new Deck<>(ParserPowerUp.parse(powerUpPath));
     }
 
     private Deck<Weapon> parserWeapon(String weaponPath) {
         return null;
+        /*
+        return weaponPath==null
+                ? new Deck<>(ParserWeapon.parse(ParserConfiguration.parsePath("weaponPath")))
+                : new Deck<>(ParserWeapon.parse(weaponPath));
+        */
     }
 
     private List<Actor> buildActor(GameMap map) {

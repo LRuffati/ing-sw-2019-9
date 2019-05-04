@@ -9,17 +9,14 @@ import player.Actor;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 public class ScoreboardTest {
-    List<Actor> listaAttori;
-    GameMap map;
-    List<Actor> actorList;
+    private List<Actor> listaAttori;
+    private GameMap map;
+    private List<Actor> actorList;
 
     @BeforeEach
     void setup(){

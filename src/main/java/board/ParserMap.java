@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Builds a GameMap from a file
  */
-public class ParserMap {
+class ParserMap {
 
     private static int length;
     private static int width;
@@ -32,7 +32,7 @@ public class ParserMap {
      * @return a GameMap built upon the path file
      * @throws FileNotFoundException If path is not found, throws an Exception
      */
-    public static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> parseMap(String path) throws FileNotFoundException{
+    static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> parseMap(String path) throws FileNotFoundException{
 
         String str;
         Scanner scanner;

@@ -1,0 +1,34 @@
+#All the paths
+-ammoTilePath
+src/resources/ammoTile.txt
+
+#weaponPath
+src/resources/weapon.txt
+
+-powerUpPath
+src/resources/powerUp.txt
+
+-map1Path
+src/resources/map1.txt
+
+
+#Options of the game
+-scoreBeforeFrenzy
+8,6,4,2,1,1,1,1
+
+-scoreAfterFrenzy
+2,1,1,1
+
+-numOfDeaths
+8
+
+
+#Options of the Player (not implemented)
+-Hp
+10
+
+-maxNumOfWeapon
+3
+
+-maxNumOfPowerUp
+3

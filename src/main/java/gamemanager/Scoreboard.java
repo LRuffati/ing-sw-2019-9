@@ -3,6 +3,7 @@ package gamemanager;
 import player.Actor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class implements the Scoreboard for the Deathmatch games. It checks if the Final Frenzy is starting and add
@@ -15,14 +16,21 @@ public class Scoreboard {
     private final int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
 
-    //TODO: caricare da file setting
-    private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);
-    private final List<Integer> pointForDeathFinal = List.of(2,1,1,1);
+    private final List<Integer> pointForDeath
+            = Arrays.stream(ParserConfiguration.parse("scoreBeforeFrenzy").split(","))
+            .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
+
+    private final List<Integer> pointForDeathFinal
+            = Arrays.stream(ParserConfiguration.parse("scoreAfterFrenzy").split(","))
+            .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
+    //private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);
+    //private final List<Integer> pointForDeathFinal = List.of(2,1,1,1);
+
     /**
      * Constructor for a standard game (8 skulls).
      */
     public Scoreboard(List<Actor> actorList){
-        this(actorList, 8);
+        this(actorList, ParserConfiguration.parseInt("numOfDeaths"));
     }
 
     /**
@@ -41,6 +49,10 @@ public class Scoreboard {
         this.maxDeaths = 0;
     }
 
+    /**
+     *
+     * @return The number of death needed to start the Final Frenzy
+     */
     public int getMaxDeaths() {
         return maxDeaths;
     }

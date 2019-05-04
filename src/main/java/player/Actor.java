@@ -4,6 +4,7 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
+import gamemanager.ParserConfiguration;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
@@ -22,7 +23,9 @@ import java.util.List;
  */
 
 public class Actor {
-    private static final int HP = 10;
+    private static final int HP = ParserConfiguration.parseInt("Hp");
+    private static final int maxWeapon = ParserConfiguration.parseInt("maxNumOfWeapon");
+    private static final int maxPUp = ParserConfiguration.parseInt("maxNumOfPowerUp");
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
