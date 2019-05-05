@@ -1,17 +1,18 @@
 package CLI;
 
+import board.Coord;
 import gamemanager.GameBuilder;
+import grabbables.Weapon;
 import player.Actor;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CLIMap {
     private int maxY;
     private int maxX;
-    private String[][] tiles;
+    private Character[][] tiles;
     private Map<Actor,Character> players;
 
 
@@ -29,7 +30,7 @@ public class CLIMap {
 
         this.maxX = builder.getMap().getMaxPos().getX();
         this.maxY = builder.getMap().getMaxPos().getY();
-        tiles = new String[maxX][maxY];
+        tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
         String dictionary = "abcdefghi";
@@ -45,27 +46,27 @@ public class CLIMap {
      * Fill the attribute tiles with the right ASCII characters.
      */
     private void generateMap(){
-        tiles[0][0] = "╔";
+        tiles[0][0] = '╔';
         for (int c = 1; c < maxX - 1; c++) {
-            tiles[c][0] = "═";
+            tiles[c][0] = '═';
         }
 
-        tiles[maxX - 1][0] = "╗";
+        tiles[maxX - 1][0] = '╗';
 
         for (int r = 1; r < maxY - 1; r++) {
-            tiles[0][r] = "║";
+            tiles[0][r] = '║';
             for (int c = 1; c < maxX - 1; c++) {
-                tiles[c][r] = " ";
+                tiles[c][r] = ' ';
             }
-            tiles[maxX-1][r] = "║";
+            tiles[maxX-1][r] = '║';
         }
 
-        tiles[0][maxY - 1] = "╚";
+        tiles[0][maxY - 1] = '╚';
         for (int c = 1; c < maxX - 1; c++) {
-            tiles[c][maxY - 1] = "═";
+            tiles[c][maxY - 1] = '═';
         }
 
-        tiles[maxX - 1][maxY - 1] = "╝";
+        tiles[maxX - 1][maxY - 1] = '╝';
 
     }
 
@@ -83,15 +84,18 @@ public class CLIMap {
 
     /**
      * Put the current players in the map with the correct ASCII characters.
+     * @param player is the player to be put on the map.
+     * @param spawnPoint is the initial spawn of the player.
      */
-    private void putPlayer(){
-
+    private void putPlayer(Actor player, Coord spawnPoint){
+        tiles[spawnPoint.getX()][spawnPoint.getY()] = players.get(player);
     }
 
     /**
      * Put weapons and Ammotiles in the map with correct ASCII characters.
+     * @param spawnWeapon
      */
-    private void putWeaponsAndAmmotiles(){
-
+    private void putWeaponsAndAmmotiles(Coord spawnWeapon){
+        tiles[spawnWeapon.getX()][spawnWeapon.getY()] = 'w';
     }
 }

@@ -26,7 +26,7 @@ public class CLIDemo {
      * @param tile is where the player needs to be moved.
      * @param player is the player (correct ASCII character) to be moved.
      */
-    public void moveThing(Actor player, TileUID tile){
+    public void movePlayer(Actor player, TileUID tile){
 
     }
 
