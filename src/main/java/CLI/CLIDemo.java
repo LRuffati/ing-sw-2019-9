@@ -8,11 +8,12 @@ import java.io.FileNotFoundException;
 import java.util.Objects;
 
 public class CLIDemo {
+    private static CLIMap toPrintMap;
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
     public static void start() {
-        CLIMap toPrintMap = null;
+
         try {
             toPrintMap = new CLIMap();
         } catch (FileNotFoundException e) {
@@ -21,14 +22,6 @@ public class CLIDemo {
         Objects.requireNonNull(toPrintMap).printMap();
     }
 
-    /**
-     * Move the ASCII character to the designated position on the map.
-     * @param tile is where the player needs to be moved.
-     * @param player is the player (correct ASCII character) to be moved.
-     */
-    public void movePlayer(Actor player, TileUID tile){
-
-    }
 
     /**
      * Leave an ASCII character on the player position.
@@ -36,7 +29,8 @@ public class CLIDemo {
      * @param player that drops the weapon. (Needed also to get the position where to drop the weapon.
      */
     public void dropWeapon(Actor player, Weapon w){
-
+        //TODO I need to get the coordinates from a TileUID.
+        //toPrintMap.writeOnMap('w',player.getPawn().getMap().);
     }
 
     /**

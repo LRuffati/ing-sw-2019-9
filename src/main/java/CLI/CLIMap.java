@@ -85,10 +85,10 @@ public class CLIMap {
     /**
      * Put the current players in the map with the correct ASCII characters.
      * @param player is the player to be put on the map.
-     * @param spawnPoint is the initial spawn of the player.
+     * @param pos is the position where to place the ASCII character.
      */
-    private void putPlayer(Actor player, Coord spawnPoint){
-        tiles[spawnPoint.getX()][spawnPoint.getY()] = players.get(player);
+    public void movePlayer(Actor player, Coord pos){
+        tiles[pos.getX()][pos.getY()] = players.get(player);
     }
 
     /**
@@ -97,5 +97,9 @@ public class CLIMap {
      */
     private void putWeaponsAndAmmotiles(Coord spawnWeapon){
         tiles[spawnWeapon.getX()][spawnWeapon.getY()] = 'w';
+    }
+
+    public void writeOnMap(Character ascii, Coord pos){
+        tiles[pos.getX()][pos.getY()] = ascii;
     }
 }

@@ -102,4 +102,6 @@ public class Pawn {
     public void setNullMap(){
         map = null;
     }
+
+
 }
