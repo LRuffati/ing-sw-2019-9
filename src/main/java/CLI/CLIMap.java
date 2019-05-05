@@ -5,6 +5,7 @@ import player.Actor;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class CLIMap {
@@ -29,6 +30,7 @@ public class CLIMap {
         this.maxX = builder.getMap().getMaxPos().getX();
         this.maxY = builder.getMap().getMaxPos().getY();
         tiles = new String[maxX][maxY];
+        players = new HashMap<>();
         //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
         String dictionary = "abcdefghi";
         int i = 0;
@@ -45,25 +47,25 @@ public class CLIMap {
     private void generateMap(){
         tiles[0][0] = "╔";
         for (int c = 1; c < maxX - 1; c++) {
-            tiles[0][c] = "═";
+            tiles[c][0] = "═";
         }
 
-        tiles[0][maxX - 1] = "╗";
+        tiles[maxX - 1][0] = "╗";
 
         for (int r = 1; r < maxY - 1; r++) {
-            tiles[r][0] = "║";
+            tiles[0][r] = "║";
             for (int c = 1; c < maxX - 1; c++) {
-                tiles[r][c] = " ";
+                tiles[c][r] = " ";
             }
-            tiles[r][maxX-1] = "║";
+            tiles[maxX-1][r] = "║";
         }
 
-        tiles[maxY - 1][0] = "╚";
+        tiles[0][maxY - 1] = "╚";
         for (int c = 1; c < maxX - 1; c++) {
-            tiles[maxY - 1][c] = "═";
+            tiles[c][maxY - 1] = "═";
         }
 
-        tiles[maxY - 1][maxX - 1] = "╝";
+        tiles[maxX - 1][maxY - 1] = "╝";
 
     }
 
@@ -74,7 +76,7 @@ public class CLIMap {
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
-                System.out.print(tiles[r][c]);
+                System.out.print(tiles[c][r]);
             }
         }
     }

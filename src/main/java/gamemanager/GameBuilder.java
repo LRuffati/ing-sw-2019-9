@@ -105,7 +105,7 @@ public class GameBuilder {
         return scoreboard;
     }
     public List<Actor> getActorList(){
-        return List.copyOf(actorList);
+        return new ArrayList<>(actorList);
     }
 }
 
