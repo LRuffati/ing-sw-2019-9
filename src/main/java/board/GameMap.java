@@ -205,6 +205,16 @@ public class GameMap {
     }
 
     /**
+     * @param tile the Tile requested
+     * @return returns the Coord of a given TileUID
+     */
+    public Coord getCoord(TileUID tile){
+        if(!allTiles().contains(tile))
+            throw new InvalidParameterException("This tile does not exists");
+        return new Coord(position.indexOf(tile) / maxPos.getX() , position.indexOf(tile) % maxPos.getX());
+    }
+
+    /**
      * Returns the neighbors of the cell
      *
      * @param tile    the source tile

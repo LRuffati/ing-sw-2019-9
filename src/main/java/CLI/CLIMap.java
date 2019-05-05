@@ -73,7 +73,7 @@ public class CLIMap {
     /**
      * Print on the command line the map generated with the correct ASCII characters.
      */
-    public void printMap(){
+    void printMap(){
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {

@@ -2,8 +2,6 @@ package CLI;
 
 import grabbables.Weapon;
 import player.Actor;
-import uid.TileUID;
-
 import java.io.FileNotFoundException;
 import java.util.Objects;
 
@@ -22,6 +20,9 @@ public class CLIDemo {
         Objects.requireNonNull(toPrintMap).printMap();
     }
 
+    public CLIDemo(){
+        start();
+    }
 
     /**
      * Leave an ASCII character on the player position.
@@ -29,16 +30,23 @@ public class CLIDemo {
      * @param player that drops the weapon. (Needed also to get the position where to drop the weapon.
      */
     public void dropWeapon(Actor player, Weapon w){
-        //TODO I need to get the coordinates from a TileUID.
-        //toPrintMap.writeOnMap('w',player.getPawn().getMap().);
+        toPrintMap.writeOnMap('w',player.getPawn().getMap().getCoord(player.getPawn().getTile()));
     }
 
     /**
      * This method is needed when there are no more weapons on the spawn point.
-     * @param tile is the weapon spawn point that could be empty.
+     * @param player is the player on the spawn point.
      */
-    public void deleteWeapon(TileUID tile){
-
+    public void deleteWeapon(Actor player){
+        if(player.getGm().getTile(player.getPawn().getTile()).spawnPoint()){
+            toPrintMap.writeOnMap('/', player.getPawn().getMap().getCoord(player.getPawn().getTile()));
+        }
     }
 
+    /**
+     * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
+     */
+    public void getPrintedMap(){
+        toPrintMap.printMap();
+    }
 }
