@@ -16,14 +16,14 @@ public class Coord {
      *
      * @return The x coordinate of the tile
      */
-    protected Integer getX(){
+    public Integer getX(){
         return pos.x;
     }
     /**
      *
      * @return The y coordinate of the tile
      */
-    protected Integer getY(){
+    public Integer getY(){
         return pos.y;
     }
 }

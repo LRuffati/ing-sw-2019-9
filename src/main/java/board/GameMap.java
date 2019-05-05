@@ -465,4 +465,12 @@ public class GameMap {
         }
         return res;
     }
+
+    /**
+     * Needed for the CLI.
+     * @return lenght and width of the map.
+     */
+    public Coord getMaxPos() {
+        return maxPos;
+    }
 }

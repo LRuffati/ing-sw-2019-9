@@ -259,7 +259,7 @@ public class Actor {
     /**
      * Add the attacker who damaged the player on his playerboard.
      * Adds the shooter to the attacked's damagedBy Set
-     * and the shooted to the attacker's damagedPlayer Set.
+     * and the shot to the attacker's damagedPlayer Set.
      * The first element is the first player who attacked "this".
      * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
