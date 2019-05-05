@@ -1,6 +1,7 @@
 package board;
 
 import gamemanager.GameBuilder;
+import gamemanager.ParserConfiguration;
 import grabbables.AmmoCard;
 import grabbables.Deck;
 import grabbables.PowerUp;
@@ -26,9 +27,9 @@ class newGameMapTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String mapPath = "src/resources/map1.txt";
-        String ammoPath = "src/resources/ammoTile.txt";
-        String powerPath = "src/resources/powerUp.txt";
+        String mapPath = ParserConfiguration.parsePath("map1Path");
+        String ammoPath = ParserConfiguration.parsePath("ammoTilePath");
+        String powerPath= ParserConfiguration.parsePath("powerUpPath");
         try {
             builder = new GameBuilder(
                     mapPath, null, powerPath, ammoPath, 3);

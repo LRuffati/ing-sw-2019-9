@@ -20,10 +20,8 @@ public class SandBoxTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String mapPath = "src/resources/map1.txt";
         try {
-            builder = new GameBuilder(
-                    mapPath, null, null, null, 2);
+            builder = new GameBuilder(null, null, null, null, 2);
         }
         catch (FileNotFoundException e){
         }

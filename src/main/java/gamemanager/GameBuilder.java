@@ -47,13 +47,20 @@ public class GameBuilder {
 
         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
 
-        map = GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+        map = parserMap(mapPath, numOfPlayer, decks);
+        //map = GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
 
         actorList = buildActor(map);
 
         scoreboard = new Scoreboard(actorList);
     }
 
+
+    private GameMap parserMap(String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
+        return mapPath==null
+                ? GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path"), numOfPlayer, decks)
+                : GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+    }
 
     private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
         return ammoCardPath==null

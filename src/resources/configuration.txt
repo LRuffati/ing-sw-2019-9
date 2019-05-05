@@ -23,7 +23,7 @@ src/resources/map1.txt
 8
 
 
-#Options of the Player (not implemented)
+#Options of the Player
 -Hp
 10
 
@@ -32,3 +32,11 @@ src/resources/map1.txt
 
 -maxNumOfPowerUp
 3
+
+
+#Constants for Server
+-TimeBeforeStarting
+120
+
+-TimeForMove
+120

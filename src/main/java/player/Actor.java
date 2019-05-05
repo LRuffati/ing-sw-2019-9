@@ -24,8 +24,8 @@ import java.util.List;
 
 public class Actor {
     private static final int HP = ParserConfiguration.parseInt("Hp");
-    private static final int maxWeapon = ParserConfiguration.parseInt("maxNumOfWeapon");
-    private static final int maxPUp = ParserConfiguration.parseInt("maxNumOfPowerUp");
+    private static final int MAXWEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
+    private static final int MAXPUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
@@ -49,7 +49,6 @@ public class Actor {
      * This method keeps track of PowerUp cards possibly being used as ammunition
      * @return the sum of ammoAvailable and all the powerups
      */
-
     private AmmoAmount ammoAvailable(){
         AmmoAmount am = ammoAvailable;
         for(PowerUp pu : powerUps){
@@ -122,7 +121,7 @@ public class Actor {
 
         AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
         ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
-        for(int i=0; i<card.getNumOfPowerUp() && powerUps.size()<3; i++)
+        for(int i=0; i<card.getNumOfPowerUp() && powerUps.size()<MAXPUP; i++)
             powerUps.add(gm.pickUpPowerUp());
         gm.discardAmmoCard(card);
     }
@@ -146,7 +145,7 @@ public class Actor {
         if(!checkAmmo(weapon.getBuyCost(), powerUpToPay))
             throw new AmmoException("Not enough ammo available");
 
-        if((loadedWeapon.size() + unloadedWeapon.size()) >= 3) {
+        if((loadedWeapon.size() + unloadedWeapon.size()) >= MAXWEAPON) {
             if(weaponToDiscard == null)
                 throw new InvalidParameterException("A weapon must be discarded");
             if(!(loadedWeapon.contains(weaponToDiscard) || unloadedWeapon.contains(weaponToDiscard)))
@@ -454,7 +453,7 @@ public class Actor {
         return loadedWeapon;
     }
 
-    public Collection<Weapon> getUnloadedWeaponoadedWeapon() {
+    public Collection<Weapon> getUnloadedWeapon() {
         return unloadedWeapon;
     }
 }

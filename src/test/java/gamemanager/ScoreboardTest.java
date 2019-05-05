@@ -21,11 +21,9 @@ public class ScoreboardTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String tilePath = "src/resources/ammoTile.txt";
-        String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 3);
+                    null, null, null, null, 3);
         }
         catch (FileNotFoundException e){
         }

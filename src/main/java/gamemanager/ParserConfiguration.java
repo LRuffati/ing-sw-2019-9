@@ -25,7 +25,7 @@ public class ParserConfiguration {
         try {
             scanner = new Scanner(new File(configurationFile));
         } catch (FileNotFoundException e) {
-            throw new exception.FileNotFoundExceptionBis("File AmmoTile not found");
+            throw new exception.FileNotFoundExceptionBis("File not found");
         }
 
         while(scanner.hasNextLine()){

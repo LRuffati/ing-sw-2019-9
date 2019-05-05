@@ -20,11 +20,10 @@ public class ParserPowerUpTest {
 
     @BeforeEach
     void setup(){
-        String powerUpPath = "src/resources/powerUp.txt";
-        String mapPath = "src/resources/map1.txt";
+        String powerUpPath = ParserConfiguration.parsePath("powerUpPath");
         try {
             powerUpCollection = ParserPowerUp.parse(powerUpPath);
-            powerUpDeck = new GameBuilder(mapPath, null, powerUpPath, null, 1).getDeckOfPowerUp();
+            powerUpDeck = new GameBuilder(null, null, powerUpPath, null, 1).getDeckOfPowerUp();
         }
         catch (FileNotFoundException e){
         }
@@ -32,10 +31,9 @@ public class ParserPowerUpTest {
 
     private void setup2(){
         String path = "src/test/java/gamemanager/PowerUpTestFile";
-        String mapPath = "src/resources/map1.txt";
         try {
             powerUpCollection = ParserPowerUp.parse(path);
-            powerUpDeck = new GameBuilder(mapPath, null, path, null, 1).getDeckOfPowerUp();
+            powerUpDeck = new GameBuilder(null, null, path, null, 1).getDeckOfPowerUp();
         }
         catch (FileNotFoundException e){
             System.out.println(e.getStackTrace());
