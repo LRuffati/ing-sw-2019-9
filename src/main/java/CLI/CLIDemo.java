@@ -49,4 +49,12 @@ public class CLIDemo {
     public void getPrintedMap(){
         toPrintMap.printMap();
     }
+
+    /**
+     * Method to introduce a new player to the game and show the initial options.
+     */
+    public void greetings(){
+        System.out.println("Hello there, shooter. State your name: \n");
+        System.console().readLine();
+    }
 }
