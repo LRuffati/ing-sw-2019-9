@@ -32,8 +32,8 @@ public class CLIMap {
                     "src/resources/powerUp.txt", 3);
 
         this.mp = builder.getMap();
-        this.maxX = builder.getMap().getMaxPos().getX()*3;
-        this.maxY = builder.getMap().getMaxPos().getY()*3;
+        this.maxX = builder.getMap().getMaxPos().getX()*5;
+        this.maxY = builder.getMap().getMaxPos().getY()*5;
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
@@ -52,16 +52,24 @@ public class CLIMap {
     private void generateMap(GameMap gm){
         for(TileUID t: gm.allTiles()){
 
-            int x = gm.getCoord(t).getY()*3;
-            int y = gm.getCoord(t).getX()*3;
+            int x = gm.getCoord(t).getY()*5;
+            int y = gm.getCoord(t).getX()*5;
             tiles[x][y] = '╔';
             tiles[x+1][y] = '═';
-            tiles[x+2][y]= '╗';
-            tiles[x+2][y+1] = '║';
+            tiles[x+2][y] = '═';
+            tiles[x+3][y] = '═';
+            tiles[x+4][y]= '╗';
+            tiles[x+4][y+1] = '║';
+            tiles[x+4][y+2] = '║';
+            tiles[x+4][y+3] = '║';
             tiles[x][y+1] = '║';
-            tiles[x][y+2] = '╚';
-            tiles[x+1][y+2] = '=';
-            tiles[x+2][y+2] = '╝';
+            tiles[x][y+2] = '║';
+            tiles[x][y+3] = '║';
+            tiles[x][y+4] = '╚';
+            tiles[x+1][y+4] = '=';
+            tiles[x+2][y+4] = '=';
+            tiles[x+3][y+4] = '=';
+            tiles[x+4][y+4] = '╝';
         }
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){
@@ -77,9 +85,10 @@ public class CLIMap {
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
-                Coord cord = new Coord(r/3, c/3);
+                Coord cord = new Coord(r/5, c/5);
                 if(mp.exists(cord))
                     System.out.print(mp.getRoom(mp.room(mp.getPosition(cord))).getAnsi() +  tiles[c][r] + "\u001B[0m");
+                else System.out.print(" ");
             }
         }
     }
