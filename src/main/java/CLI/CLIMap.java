@@ -7,6 +7,7 @@ import grabbables.Weapon;
 import player.Actor;
 import uid.TileUID;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class CLIMap {
     private int maxX;
     private Character[][] tiles;
     private Map<Actor,Character> players;
-
+    private GameMap mp;
 
     //TODO Doesn't work as expected, I think the problem is a bad usage of the GameBuilder constructor.
 
@@ -30,6 +31,7 @@ public class CLIMap {
                     "src/resources/map1.txt", null, "src/resources/ammoTile.txt",
                     "src/resources/powerUp.txt", 3);
 
+        this.mp = builder.getMap();
         this.maxX = builder.getMap().getMaxPos().getX()*3;
         this.maxY = builder.getMap().getMaxPos().getY()*3;
         tiles = new Character[maxX][maxY];
@@ -49,6 +51,7 @@ public class CLIMap {
      */
     private void generateMap(GameMap gm){
         for(TileUID t: gm.allTiles()){
+
             int x = gm.getCoord(t).getY()*3;
             int y = gm.getCoord(t).getX()*3;
             tiles[x][y] = '╔';
@@ -68,13 +71,15 @@ public class CLIMap {
     }
 
     /**
-     * Print on the command line the map generated with the correct ASCII characters.
+     * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
-                System.out.print(tiles[c][r]);
+                Coord cord = new Coord(r/3, c/3);
+                if(mp.exists(cord))
+                    System.out.print(mp.getRoom(mp.room(mp.getPosition(cord))).getAnsi() +  tiles[c][r] + "\u001B[0m");
             }
         }
     }
