@@ -1,9 +1,11 @@
 package CLI;
 
 import board.Coord;
+import board.GameMap;
 import gamemanager.GameBuilder;
 import grabbables.Weapon;
 import player.Actor;
+import uid.TileUID;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -28,8 +30,8 @@ public class CLIMap {
                     "src/resources/map1.txt", null, "src/resources/ammoTile.txt",
                     "src/resources/powerUp.txt", 3);
 
-        this.maxX = builder.getMap().getMaxPos().getX();
-        this.maxY = builder.getMap().getMaxPos().getY();
+        this.maxX = builder.getMap().getMaxPos().getX()*3;
+        this.maxY = builder.getMap().getMaxPos().getY()*3;
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
@@ -39,35 +41,30 @@ public class CLIMap {
             players.put(a,dictionary.charAt(i));
             i++;
         }
-        generateMap();
+        generateMap(builder.getMap());
     }
 
     /**
      * Fill the attribute tiles with the right ASCII characters.
      */
-    private void generateMap(){
-        tiles[0][0] = '╔';
-        for (int c = 1; c < maxX - 1; c++) {
-            tiles[c][0] = '═';
+    private void generateMap(GameMap gm){
+        for(TileUID t: gm.allTiles()){
+            int x = gm.getCoord(t).getY()*3;
+            int y = gm.getCoord(t).getX()*3;
+            tiles[x][y] = '╔';
+            tiles[x+1][y] = '═';
+            tiles[x+2][y]= '╗';
+            tiles[x+2][y+1] = '║';
+            tiles[x][y+1] = '║';
+            tiles[x][y+2] = '╚';
+            tiles[x+1][y+2] = '=';
+            tiles[x+2][y+2] = '╝';
         }
-
-        tiles[maxX - 1][0] = '╗';
-
-        for (int r = 1; r < maxY - 1; r++) {
-            tiles[0][r] = '║';
-            for (int c = 1; c < maxX - 1; c++) {
-                tiles[c][r] = ' ';
+        for(int i = 0; i < tiles[0].length; i++){
+            for(int j = 0; j< tiles.length; j++){
+                if(tiles[j][i]==null) tiles[j][i] = ' ';
             }
-            tiles[maxX-1][r] = '║';
         }
-
-        tiles[0][maxY - 1] = '╚';
-        for (int c = 1; c < maxX - 1; c++) {
-            tiles[c][maxY - 1] = '═';
-        }
-
-        tiles[maxX - 1][maxY - 1] = '╝';
-
     }
 
     /**
