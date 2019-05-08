@@ -47,6 +47,7 @@ public class CLIMap {
             i++;
         }
         setPlayersPos();
+        spawnPlayers();
     }
 
     /**
@@ -104,12 +105,13 @@ public class CLIMap {
     /**
      * Put the current players in the map with the correct ASCII characters.
      * @param player is the player to be put on the map.
-     * @param pos is the position where to place the ASCII character.
+     * @param tile is the tile where the player is to be moved.
      */
-    public void movePlayer(Actor player, Coord pos){
+    public void movePlayer(Actor player, TileUID tile){
         if(searchCharacter(players.get(player)).getX()!=null && searchCharacter(players.get(player)).getY()!=null)
             tiles[searchCharacter(players.get(player)).getX()][searchCharacter(players.get(player)).getY()]= ' ';
-        tiles[pos.getX()*dimTile][pos.getY()*dimTile] = players.get(player);
+        tiles[mp.getCoord(tile).getY()*dimTile + playerPos.get(players.get(player)).getY()][mp.getCoord(tile).getX()*
+                dimTile + playerPos.get(players.get(player)).getX()] = players.get(player);
     }
 
     /**
@@ -128,7 +130,7 @@ public class CLIMap {
      * @param pos where to write the character.
      */
     public void writeOnMap(Character ascii, Coord pos){
-        tiles[pos.getX()][pos.getY()] = ascii;
+        tiles[pos.getY()][pos.getX()] = ascii;
     }
 
     /**
@@ -156,6 +158,19 @@ public class CLIMap {
             playerPos.put(entry.getValue(),new Coord(i,j));
             i++;
             j++;
+        }
+    }
+
+    /**
+     * Spawn the players on the map for the first time in the game.
+     */
+    public void spawnPlayers(){
+        for(Map.Entry<Actor,Character> entry : players.entrySet()){
+            if(entry.getKey().getPawn().getTile()!=mp.getEmptyTile()) {
+                tiles[mp.getCoord(entry.getKey().getPawn().getTile()).getY() * dimTile + playerPos.get(entry.getKey())
+                        .getY()][mp.getCoord(entry.getKey().getPawn().getTile()).getX() * dimTile + playerPos
+                        .get(entry.getKey()).getX()] = entry.getValue();
+            }
         }
     }
 }
