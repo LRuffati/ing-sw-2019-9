@@ -1,5 +1,4 @@
 package board;
-import java.awt.*;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -16,6 +15,8 @@ import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
+import viewclasses.GameMapView;
+import viewclasses.TileView;
 
 /**
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
@@ -494,5 +495,18 @@ public class GameMap {
         catch (NoSuchElementException e){
             return false;
         }
+    }
+
+
+    /**
+     * Generates a copy of the Map for Serialization
+     * @return the GameMapView object
+     */
+    public GameMapView generateView(){
+        GameMapView gameMapView= new GameMapView();
+        for(TileUID tile : position){
+            gameMapView.tiles.put(getCoord(tile), getTile(tile).generateView());
+        }
+        return gameMapView;
     }
 }

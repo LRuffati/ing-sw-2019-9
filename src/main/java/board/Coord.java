@@ -2,11 +2,13 @@ package board;
 
 import genericitems.Tuple;
 
+import java.io.Serializable;
+
 /**
  * The absolute coordinate of a Tile.
  * (0,0) is the top left Tile
  */
-public class Coord {
+public class Coord implements Serializable {
     private Tuple<Integer, Integer> pos;
     public Coord(int down, int left){
          pos = new Tuple<>(down, left);

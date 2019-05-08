@@ -1,7 +1,11 @@
 package board;
 import grabbables.Grabbable;
+import uid.DamageableUID;
+import uid.GrabbableUID;
 import uid.TileUID;
 import uid.RoomUID;
+import viewclasses.ActorView;
+import viewclasses.TileView;
 
 import java.awt.*;
 import java.util.*;
@@ -165,5 +169,39 @@ public class Tile{
      */
     public boolean spawnPoint(){
         return this.spawnPoint;
+    }
+
+
+
+
+    TileView generateView() {
+        TileView tileView = new TileView();
+        //TODO: control this warning
+        Map<Direction, String> mappa = new HashMap<>();
+
+        for(Direction d : Direction.values()){
+            if(getNeighbor(false, d).isPresent()) {
+                if (roomID.equals(map.getTile(getNeighbor(false, d).get()).roomID))
+                    tileView.nearTiles.put(d, "Tile");
+                else
+                    tileView.nearTiles.put(d, "Door");
+            }
+            else
+                tileView.nearTiles.put(d, "Wall");
+        }
+
+        tileView.color = getColor();
+
+        for(DamageableUID pawn : map.containedPawns(tileID))
+            tileView.players.add(map.getPawn(pawn).generateView());
+
+        //TODO: continue
+        /*
+        for(Grabbable grabbable : map.getGrabbable(tileID))
+            tileView.grabbable.add(grabbable.generateView());
+        */
+
+
+        return tileView;
     }
 }

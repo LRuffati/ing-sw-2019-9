@@ -2,9 +2,11 @@ package player;
 import board.GameMap;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.ActorView;
 
 import java.awt.*;
 import java.security.InvalidParameterException;
+import java.util.Collection;
 
 /**
  * This class implements a playable character in the game. Every pawn in the game is bound to a player and every player
@@ -106,4 +108,12 @@ public class Pawn {
     }
 
 
+
+    public ActorView generateView() {
+        //TODO: continue
+        ActorView actorView = new ActorView();
+
+
+        return actorView;
+    }
 }

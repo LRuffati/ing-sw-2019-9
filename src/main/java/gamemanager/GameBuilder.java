@@ -58,6 +58,7 @@ public class GameBuilder {
 
 
     private GameMap parserMap(String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
+        //TODO: with 3 players use map1, with 4 players use map2, with 5 players use map3
         return mapPath==null
                 ? GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path"), numOfPlayer, decks)
                 : GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
