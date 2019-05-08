@@ -19,6 +19,7 @@ public class CLIMap {
     private Character[][] tiles;
     private Map<Actor,Character> players;
     private GameMap mp;
+    private Map<Character,Coord> playerPos;
 
     /**
      * The object will generate an ASCII map to be printed on the command line.
@@ -35,14 +36,17 @@ public class CLIMap {
         this.maxY = builder.getMap().getMaxPos().getY()*dimTile;
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
+        playerPos = new HashMap<>();
         //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
         String dictionary = "abcdefghi";
         int i = 0;
+
+        generateMap(builder.getMap());
         for(Actor a:builder.getActorList()){
             players.put(a,dictionary.charAt(i));
             i++;
         }
-        generateMap(builder.getMap());
+        setPlayersPos();
     }
 
     /**
@@ -70,6 +74,9 @@ public class CLIMap {
             tiles[x+2][y+4] = '=';
             tiles[x+3][y+4] = '=';
             tiles[x+4][y+4] = '╝';
+            if(gm.getTile(t).spawnPoint()){
+                tiles[x+1][y+1] = 's';
+            }
         }
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){
@@ -136,5 +143,19 @@ public class CLIMap {
             }
         }
         return null;
+    }
+
+    /**
+     * Set the static position of every player's ascii character in a tile.
+     */
+    //TODO WARNING: we must be sure that the number of players are less than six.
+    public void setPlayersPos(){
+        int i = 1;
+        int j = 0;
+        for(Map.Entry<Actor,Character> entry : players.entrySet()){
+            playerPos.put(entry.getValue(),new Coord(i,j));
+            i++;
+            j++;
+        }
     }
 }

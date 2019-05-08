@@ -3,6 +3,7 @@ import board.GameMap;
 import uid.DamageableUID;
 import uid.TileUID;
 
+import java.awt.*;
 import java.security.InvalidParameterException;
 
 /**
@@ -16,6 +17,7 @@ public class Pawn {
     private transient Actor actor;
     public final DamageableUID damageableUID;
     private transient GameMap map;
+    private Color color;
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
