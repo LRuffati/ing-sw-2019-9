@@ -87,6 +87,7 @@ public class CLIMap {
             for (int c = 0; c < maxX; c++) {
                 Coord cord = new Coord(r/dimTile, c/dimTile);
                 if(mp.exists(cord))
+                    //TODO add the escape "\0×1B" character in the following to print(s) to maintain the map. Won't work on Intellij.
                     System.out.print(mp.getRoom(mp.room(mp.getPosition(cord))).getAnsi() +  tiles[c][r] + "\u001B[0m");
                 else System.out.print(" ");
             }
