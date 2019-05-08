@@ -27,6 +27,8 @@ public class GameBuilder {
      * Requires the configuration files for all the components.
      * The syntax of the files is not checked, so new files must be written very accurately.
      *
+     * If parameters are null it recovers files from resources repository.
+     *
      * @param mapPath Path of the map file.
      * @param weaponPath Path of the Weapons file.
      * @param powerUpPath Path of the PowerUps file

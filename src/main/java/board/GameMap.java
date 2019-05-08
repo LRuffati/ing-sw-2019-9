@@ -483,4 +483,14 @@ public class GameMap {
     public Coord getMaxPos() {
         return maxPos;
     }
+
+    public boolean exists(Coord coord){
+        try{
+            this.getPosition(coord);
+            return true;
+        }
+        catch (NoSuchElementException e){
+            return false;
+        }
+    }
 }

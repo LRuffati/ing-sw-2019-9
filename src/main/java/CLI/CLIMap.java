@@ -1,22 +1,24 @@
 package CLI;
 
 import board.Coord;
+import board.GameMap;
 import gamemanager.GameBuilder;
 import grabbables.Weapon;
 import player.Actor;
+import uid.TileUID;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CLIMap {
+    private final int dimTile = 5;
     private int maxY;
     private int maxX;
     private Character[][] tiles;
     private Map<Actor,Character> players;
-
-
-    //TODO Doesn't work as expected, I think the problem is a bad usage of the GameBuilder constructor.
+    private GameMap mp;
 
     /**
      * The object will generate an ASCII map to be printed on the command line.
@@ -28,8 +30,9 @@ public class CLIMap {
                     "src/resources/map1.txt", null, "src/resources/ammoTile.txt",
                     "src/resources/powerUp.txt", 3);
 
-        this.maxX = builder.getMap().getMaxPos().getX();
-        this.maxY = builder.getMap().getMaxPos().getY();
+        this.mp = builder.getMap();
+        this.maxX = builder.getMap().getMaxPos().getX()*dimTile;
+        this.maxY = builder.getMap().getMaxPos().getY()*dimTile;
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
@@ -39,45 +42,53 @@ public class CLIMap {
             players.put(a,dictionary.charAt(i));
             i++;
         }
-        generateMap();
+        generateMap(builder.getMap());
     }
 
     /**
      * Fill the attribute tiles with the right ASCII characters.
      */
-    private void generateMap(){
-        tiles[0][0] = '╔';
-        for (int c = 1; c < maxX - 1; c++) {
-            tiles[c][0] = '═';
+    private void generateMap(GameMap gm){
+
+        for(TileUID t: gm.allTiles()){
+            int x = gm.getCoord(t).getY()*dimTile;
+            int y = gm.getCoord(t).getX()*dimTile;
+
+            tiles[x][y] = '╔';
+            tiles[x+1][y] = '═';
+            tiles[x+2][y] = '═';
+            tiles[x+3][y] = '═';
+            tiles[x+4][y]= '╗';
+            tiles[x+4][y+1] = '║';
+            tiles[x+4][y+2] = '║';
+            tiles[x+4][y+3] = '║';
+            tiles[x][y+1] = '║';
+            tiles[x][y+2] = '║';
+            tiles[x][y+3] = '║';
+            tiles[x][y+4] = '╚';
+            tiles[x+1][y+4] = '=';
+            tiles[x+2][y+4] = '=';
+            tiles[x+3][y+4] = '=';
+            tiles[x+4][y+4] = '╝';
         }
-
-        tiles[maxX - 1][0] = '╗';
-
-        for (int r = 1; r < maxY - 1; r++) {
-            tiles[0][r] = '║';
-            for (int c = 1; c < maxX - 1; c++) {
-                tiles[c][r] = ' ';
+        for(int i = 0; i < tiles[0].length; i++){
+            for(int j = 0; j< tiles.length; j++){
+                if(tiles[j][i]==null) tiles[j][i] = ' ';
             }
-            tiles[maxX-1][r] = '║';
         }
-
-        tiles[0][maxY - 1] = '╚';
-        for (int c = 1; c < maxX - 1; c++) {
-            tiles[c][maxY - 1] = '═';
-        }
-
-        tiles[maxX - 1][maxY - 1] = '╝';
-
     }
 
     /**
-     * Print on the command line the map generated with the correct ASCII characters.
+     * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
-                System.out.print(tiles[c][r]);
+                Coord cord = new Coord(r/dimTile, c/dimTile);
+                if(mp.exists(cord))
+                    System.out.print(mp.getRoom(mp.room(mp.getPosition(cord))).getAnsi() +  tiles[c][r] + "\u001B[0m");
+                else System.out.print(" ");
             }
         }
     }
@@ -88,7 +99,9 @@ public class CLIMap {
      * @param pos is the position where to place the ASCII character.
      */
     public void movePlayer(Actor player, Coord pos){
-        tiles[pos.getX()][pos.getY()] = players.get(player);
+        if(searchCharacter(players.get(player)).getX()!=null && searchCharacter(players.get(player)).getY()!=null)
+            tiles[searchCharacter(players.get(player)).getX()][searchCharacter(players.get(player)).getY()]= ' ';
+        tiles[pos.getX()*dimTile][pos.getY()*dimTile] = players.get(player);
     }
 
     /**
@@ -96,10 +109,31 @@ public class CLIMap {
      * @param spawnWeapon
      */
     private void putWeaponsAndAmmotiles(Coord spawnWeapon){
+        Character[][] tile = new Character[dimTile][dimTile];
+        //tile[dimTile][dimTile/2] =
         tiles[spawnWeapon.getX()][spawnWeapon.getY()] = 'w';
     }
 
+    /**
+     *
+     * @param ascii the character to write.
+     * @param pos where to write the character.
+     */
     public void writeOnMap(Character ascii, Coord pos){
         tiles[pos.getX()][pos.getY()] = ascii;
+    }
+
+    /**
+     * Search a character in the map game and returns its coordinates.
+     * @param ascii to search on the map.
+     * @return the physical coordinates of the characters.
+     */
+    public Coord searchCharacter(Character ascii){
+        for(int i = 0; i < tiles[0].length; i++){
+            for(int j = 0; j< tiles.length; j++){
+                if(tiles[i][j]==ascii) return new Coord(i,j);
+            }
+        }
+        return null;
     }
 }
