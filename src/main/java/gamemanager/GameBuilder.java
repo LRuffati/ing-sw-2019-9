@@ -48,7 +48,6 @@ public class GameBuilder {
         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
 
         map = parserMap(mapPath, numOfPlayer, decks);
-        //map = GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
 
         actorList = buildActor(map);
 

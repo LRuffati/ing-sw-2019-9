@@ -26,4 +26,20 @@ public class Coord {
     public Integer getY(){
         return pos.y;
     }
+
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        return this.getX().equals(((Coord)obj).getX())
+                && this.getY().equals(((Coord)obj).getY());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

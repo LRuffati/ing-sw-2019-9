@@ -23,8 +23,6 @@ public class Scoreboard {
     private final List<Integer> pointForDeathFinal
             = Arrays.stream(ParserConfiguration.parse("scoreAfterFrenzy").split(","))
             .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
-    //private final List<Integer> pointForDeath = List.of(8,6,4,2,1,1,1,1);
-    //private final List<Integer> pointForDeathFinal = List.of(2,1,1,1);
 
     /**
      * Constructor for a standard game (8 skulls).
