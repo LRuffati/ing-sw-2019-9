@@ -6,7 +6,7 @@ import viewclasses.ActorView;
 
 import java.awt.*;
 import java.security.InvalidParameterException;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * This class implements a playable character in the game. Every pawn in the game is bound to a player and every player
@@ -110,9 +110,12 @@ public class Pawn {
 
 
     public ActorView generateView() {
-        //TODO: continue
         ActorView actorView = new ActorView();
+        actorView.setColor(color);
 
+        //TODO: setName, setColor
+        //TODO: how to manage cyclic references?????
+        actorView.setDamageTaken(List.of(new ActorView()));
 
         return actorView;
     }

@@ -176,24 +176,29 @@ public class Tile{
 
     TileView generateView() {
         TileView tileView = new TileView();
-        //TODO: control this warning
-        Map<Direction, String> mappa = new HashMap<>();
 
+        Map<Direction, String> nearTiles = new HashMap<>();
         for(Direction d : Direction.values()){
             if(getNeighbor(false, d).isPresent()) {
                 if (roomID.equals(map.getTile(getNeighbor(false, d).get()).roomID))
-                    tileView.nearTiles.put(d, "Tile");
+                    nearTiles.put(d, "Tile");
                 else
-                    tileView.nearTiles.put(d, "Door");
+                    nearTiles.put(d, "Door");
             }
             else
-                tileView.nearTiles.put(d, "Wall");
+                nearTiles.put(d, "Wall");
         }
+        tileView.setNearTiles(nearTiles);
 
-        tileView.color = getColor();
 
+        tileView.setColor(getColor());
+        tileView.setSpawnPoint(spawnPoint);
+
+
+        List<ActorView> players = new ArrayList<>();
         for(DamageableUID pawn : map.containedPawns(tileID))
-            tileView.players.add(map.getPawn(pawn).generateView());
+            players.add(map.getPawn(pawn).generateView());
+        tileView.setPlayers(players);
 
         //TODO: continue
         /*

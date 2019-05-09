@@ -29,6 +29,10 @@ public class Coord implements Serializable {
         return pos.y;
     }
 
+    @Override
+    public String toString() {
+        return "Down: " + pos.x + " - Left: " + pos.y;
+    }
 
     @Override
     public boolean equals(Object obj){

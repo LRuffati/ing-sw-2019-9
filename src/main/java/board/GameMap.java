@@ -212,8 +212,8 @@ public class GameMap {
      * @return returns the Coord of a given TileUID
      */
     public Coord getCoord(TileUID tile){
-        if(!allTiles().contains(tile))
-            throw new InvalidParameterException("This tile does not exists");
+        //if(!allTiles().contains(tile))
+        //    throw new InvalidParameterException("This tile does not exists");
         return new Coord(position.indexOf(tile) / maxPos.getX() , position.indexOf(tile) % maxPos.getX());
     }
 
@@ -503,10 +503,19 @@ public class GameMap {
      * @return the GameMapView object
      */
     public GameMapView generateView(){
-        GameMapView gameMapView= new GameMapView();
+        GameMapView gameMapView = new GameMapView();
+
+        Map<Coord, TileView> tiles = new HashMap<>();
         for(TileUID tile : position){
-            gameMapView.tiles.put(getCoord(tile), getTile(tile).generateView());
+            if(allTiles().contains(tile))
+                tiles.put(getCoord(tile), getTile(tile).generateView());
+            else
+                tiles.put(getCoord(tile), null);
         }
+
+        gameMapView.setTiles(tiles);
+        gameMapView.setMax(maxPos);
+
         return gameMapView;
     }
 }

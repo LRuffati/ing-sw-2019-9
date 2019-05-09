@@ -1,38 +1,39 @@
 package viewclasses;
 
 import board.Coord;
-import board.GameMap;
-import uid.TileUID;
 
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-public class GameMapView {
-    public Map<Coord, TileView> tiles
-}
-
-public class TileView {
-    public Map<Direction, TipoContorno> muri; // dove TipoContorno è un enum {Muro, porta, niente}
-    public Color coloreStanza;
-    // qualcosa per i grabbable che distingue se sono armi o munizioni
-    List<PawnView> pawns
-.....
-}*/
-
 public class GameMapView implements Serializable {
-    //TODO: how to do that?
-    public Map<Coord, TileView> tiles;
+    private Map<Coord, TileView> tiles;
+    private Coord maxPos;
 
     public GameMapView(){
         tiles = new HashMap<>();
     }
 
+    public void setTiles(Map<Coord, TileView> tiles){
+        this.tiles = tiles;
+    }
+
+    public void setMax(Coord maxPos){
+        this.maxPos = maxPos;
+    }
 
 
+    public Coord maxPos(){
+        return maxPos;
+    }
 
     public TileView getPosition(Coord coord){
-        return null;
+        for(Map.Entry entry : tiles.entrySet()){
+            if(entry.getKey().equals(coord)){
+                return (TileView)entry.getValue();
+            }
+        }
+         throw new InvalidParameterException("This coord does not exists");
     }
 }

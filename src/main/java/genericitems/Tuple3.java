@@ -2,6 +2,8 @@ package genericitems;
 
 import actions.ActionInfo;
 
+import java.io.Serializable;
+
 /**
  *
  * Tuple should be immutable or a deep copy should be implemented in
@@ -11,7 +13,7 @@ import actions.ActionInfo;
  * @param <Y>
  * @param <Z>
  */
-public class Tuple3<X, Y, Z> {
+public class Tuple3<X, Y, Z> implements Serializable {
 
     public final X x;
     public final Y y;
