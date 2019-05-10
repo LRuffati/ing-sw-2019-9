@@ -11,10 +11,12 @@ import actions.targeters.targets.TileTarget;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
+import player.Actor;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
+import viewclasses.ActorView;
 import viewclasses.GameMapView;
 import viewclasses.TileView;
 
@@ -502,13 +504,29 @@ public class GameMap {
      * Generates a copy of the Map for Serialization
      * @return the GameMapView object
      */
-    public GameMapView generateView(){
+    public GameMapView generateView(DamageableUID pointOfView){
+
         GameMapView gameMapView = new GameMapView();
 
+        List<ActorView> otherPlayers = new ArrayList<>();
+        ActorView you = new ActorView();
+        for(DamageableUID actor : getDamageable()){
+            if(pointOfView.equals(actor))
+                you = new ActorView(getPawn(actor).getDamageableUID());
+            else
+                otherPlayers.add(new ActorView(getPawn(actor).getDamageableUID()));
+        }
+
+        gameMapView.setYou(you);
+        gameMapView.setOtherPlayers(otherPlayers);
+
+        getDamageable().forEach(x -> getPawn(x).generateView(gameMapView, pointOfView.equals(x)));
+
+        //TODO: tiles.put(getCoord(tile), null) ?? is this correct?
         Map<Coord, TileView> tiles = new HashMap<>();
         for(TileUID tile : position){
             if(allTiles().contains(tile))
-                tiles.put(getCoord(tile), getTile(tile).generateView());
+                tiles.put(getCoord(tile), getTile(tile).generateView(gameMapView));
             else
                 tiles.put(getCoord(tile), null);
         }

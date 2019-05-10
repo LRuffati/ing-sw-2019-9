@@ -1,11 +1,12 @@
 package uid;
 
+import java.io.Serializable;
 import java.rmi.server.UID;
 
 /**
  * This class contains the basic unit used to identify an object
  */
-public abstract class ObjectUID {
+public abstract class ObjectUID implements Serializable {
     /**
      * Identifier used to identify the object applied to
      */

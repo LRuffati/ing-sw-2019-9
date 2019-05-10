@@ -1,7 +1,6 @@
 package grabbables;
 
 import uid.GrabbableUID;
-import viewclasses.ActorView;
 
 /**
  * Generic item that can be picked Up. Identified by a UID.

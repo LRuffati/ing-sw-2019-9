@@ -2,10 +2,12 @@ package actions.utils;
 
 import genericitems.Tuple3;
 
+import java.io.Serializable;
+
 /**
  * This class will be used to represent the colors of available ammunition as well as the spawn points
  */
-public enum AmmoColor {
+public enum AmmoColor implements Serializable {
     BLUE,
     RED,
     YELLOW;
@@ -20,5 +22,3 @@ public enum AmmoColor {
         return new Tuple3<>(0,0,0);
     }
 }
-
-

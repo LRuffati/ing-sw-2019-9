@@ -456,5 +456,9 @@ public class Actor {
     public Collection<Weapon> getUnloadedWeapon() {
         return unloadedWeapon;
     }
+
+    public Collection<PowerUp> getPowerUp() {
+        return powerUps;
+    }
 }
 

@@ -1,6 +1,8 @@
 package grabbables;
 
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoColor;
+import viewclasses.AmmoTileView;
 
 /**
  * Card containing an AmmoCard
@@ -35,11 +37,21 @@ public class AmmoCard extends Grabbable {
         return numOfPowerUp;
     }
 
+
+    public AmmoTileView generateView(){
+        AmmoTileView ammoTileView = new AmmoTileView();
+        ammoTileView.setNumOfBlue(ammoAmount.getAmounts().get(AmmoColor.BLUE));
+        ammoTileView.setNumOfRed(ammoAmount.getAmounts().get(AmmoColor.RED));
+        ammoTileView.setNumOfYellow(ammoAmount.getAmounts().get(AmmoColor.YELLOW));
+        ammoTileView.setNumOfPowerUp(numOfPowerUp);
+        return ammoTileView;
+    }
+
+
     @Override
     public String toString() {
         return ammoAmount.toString() +" POWERUP:"+ numOfPowerUp;
     }
-
 
     @Override
     public boolean equals(Object obj) {

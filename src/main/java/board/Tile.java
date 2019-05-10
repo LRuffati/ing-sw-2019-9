@@ -1,13 +1,14 @@
 package board;
+import grabbables.AmmoCard;
 import grabbables.Grabbable;
+import grabbables.Weapon;
 import uid.DamageableUID;
-import uid.GrabbableUID;
 import uid.TileUID;
 import uid.RoomUID;
-import viewclasses.ActorView;
-import viewclasses.TileView;
+import viewclasses.*;
 
 import java.awt.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 
@@ -69,7 +70,8 @@ public class Tile{
     protected void setMap(GameMap map){
         if (this.map==null)
             this.map = map;
-        //Todo: review this silent fail
+        else
+            throw new InvalidParameterException("Cannot set this weapon, another one has been linked");
     }
 
     /**
@@ -174,10 +176,10 @@ public class Tile{
 
 
 
-    TileView generateView() {
+    TileView generateView(GameMapView gameMapView) {
         TileView tileView = new TileView();
 
-        Map<Direction, String> nearTiles = new HashMap<>();
+        Map<Direction, String> nearTiles = new EnumMap<>(Direction.class);
         for(Direction d : Direction.values()){
             if(getNeighbor(false, d).isPresent()) {
                 if (roomID.equals(map.getTile(getNeighbor(false, d).get()).roomID))
@@ -193,19 +195,31 @@ public class Tile{
 
         tileView.setColor(getColor());
         tileView.setSpawnPoint(spawnPoint);
+        tileView.setUid(tileID);
 
 
         List<ActorView> players = new ArrayList<>();
-        for(DamageableUID pawn : map.containedPawns(tileID))
-            players.add(map.getPawn(pawn).generateView());
+        for(DamageableUID pawn : map.containedPawns(tileID)) {
+            if(gameMapView.you().uid().equals(pawn))
+                players.add(gameMapView.you());
+            else
+                for(ActorView actorView : gameMapView.otherPlayers())
+                    if(actorView.uid().equals(pawn))
+                        players.add(actorView);
+        }
         tileView.setPlayers(players);
 
-        //TODO: continue
-        /*
-        for(Grabbable grabbable : map.getGrabbable(tileID))
-            tileView.grabbable.add(grabbable.generateView());
-        */
 
+        List<WeaponView> weapon = new ArrayList<>();
+        for(Grabbable grabbable : map.getGrabbable(tileID)){
+            if(spawnPoint){
+                weapon.add(((Weapon) grabbable).generateView());
+            }
+            else
+                tileView.setAmmoCard(((AmmoCard) grabbable).generateView());
+        }
+        if(spawnPoint)
+            tileView.setWeapons(weapon);
 
         return tileView;
     }

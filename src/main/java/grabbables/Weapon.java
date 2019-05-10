@@ -5,6 +5,7 @@ import actions.WeaponUse;
 import actions.utils.AmmoAmount;
 import board.GameMap;
 import uid.DamageableUID;
+import viewclasses.WeaponView;
 
 import java.util.Map;
 import java.util.Optional;
@@ -25,12 +26,10 @@ public class Weapon extends Grabbable{
 
 
     public Weapon(String name,
-                  String description,
                   AmmoAmount buyCost,
                   AmmoAmount reloadCost,
                   Map<String, ActionTemplate> actions){
         this.name = name;
-        this.description = description;
         this.buyCost = buyCost;
         this.reloadCost = reloadCost;
 
@@ -39,9 +38,6 @@ public class Weapon extends Grabbable{
         this.weaponID = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
     public String getName() {
         return name;
@@ -103,5 +99,16 @@ public class Weapon extends Grabbable{
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+
+    public WeaponView generateView() {
+        WeaponView weaponView = new WeaponView();
+
+        weaponView.setName(name);
+        weaponView.setBuyCost(buyCost);
+        weaponView.setReloadCost(reloadCost);
+
+        return weaponView;
     }
 }

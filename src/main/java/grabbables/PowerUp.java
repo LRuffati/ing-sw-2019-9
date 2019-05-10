@@ -2,6 +2,7 @@ package grabbables;
 
 import actions.utils.AmmoAmount;
 import actions.utils.PowerUpType;
+import viewclasses.PowerUpView;
 
 public class PowerUp extends Grabbable {
     private final PowerUpType type;
@@ -39,5 +40,13 @@ public class PowerUp extends Grabbable {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+
+    public PowerUpView generateView() {
+        PowerUpView powerUpView = new PowerUpView();
+        powerUpView.setAmmo(ammo);
+        powerUpView.setType(type);
+        return powerUpView;
     }
 }

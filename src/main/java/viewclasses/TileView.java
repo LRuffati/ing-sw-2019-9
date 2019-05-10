@@ -1,27 +1,26 @@
 package viewclasses;
 
 import board.Direction;
-import grabbables.Grabbable;
+import uid.TileUID;
 
 import java.awt.*;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 public class TileView implements Serializable {
 
+    private TileUID uid;
     private Color color;
     private boolean spawnPoint;
     private Map<Direction, String> nearTiles;
-    //TODO: check if this is serialized correctly
     private List<ActorView> players;
-    //TODO: implement grabbable sending
-    //private ArrayList<Grabbable> grabbable;
+    private List<WeaponView> weapons;
+    private AmmoTileView ammoCard;
 
     public TileView(){
         players = new ArrayList<>();
-        //grabbable = new ArrayList<>();
+        nearTiles = new EnumMap<>(Direction.class);
     }
 
     public void setColor(Color color) {
@@ -40,10 +39,17 @@ public class TileView implements Serializable {
         this.players = players;
     }
 
-    /*public void setGrabbable(ArrayList<Grabbable> grabbable) {
-        this.grabbable = grabbable;
-    }*/
+    public void setUid(TileUID uid) {
+        this.uid = uid;
+    }
 
+    public void setAmmoCard(AmmoTileView ammoCard) {
+        this.ammoCard = ammoCard;
+    }
+
+    public void setWeapons(List<WeaponView> weapons) {
+        this.weapons = weapons;
+    }
 
 
     public Color color() {
@@ -62,8 +68,16 @@ public class TileView implements Serializable {
         return players;
     }
 
-    /*public List<Grabbable> grabbable() {
-        return grabbable;
-    }*/
+    public TileUID uid(){
+        return uid;
+    }
+
+    public AmmoTileView ammoCard() {
+        return ammoCard;
+    }
+
+    public List<WeaponView> weapons() {
+        return weapons;
+    }
 }
 
