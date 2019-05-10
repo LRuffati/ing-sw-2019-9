@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class used to read data from configuration File.
@@ -18,24 +20,28 @@ public class ParserConfiguration {
      * @return A string containing the configuration item requested. If not found, "NO RESULT FOUND" is returned
      */
     public static String parse(String configuration) {
+        Logger logger = Logger.getLogger(ParserConfiguration.class.getName());
         Scanner scanner;
         String configurationFile = "src" + File.separator + "resources" + File.separator + "configuration.txt";
         String toSearch = configuration.toLowerCase();
 
         try {
-            scanner = new Scanner(new File(configurationFile));
-        } catch (FileNotFoundException e) {
-            throw new exception.FileNotFoundExceptionBis("File not found");
-        }
 
-        while(scanner.hasNextLine()){
-            if(scanner.nextLine().toLowerCase().startsWith("-" + toSearch)){
-                String ret = scanner.nextLine();
-                scanner.close();
-                return ret;
+            scanner = new Scanner(new File(configurationFile));
+            while(scanner.hasNextLine()){
+                if(scanner.nextLine().toLowerCase().startsWith("-" + toSearch)){
+                    String ret = scanner.nextLine();
+                    scanner.close();
+                    return ret;
+                }
             }
+            scanner.close();
+
+            return "NO RESULT FOUND";
+
+        } catch (FileNotFoundException e) {
+            logger.log(Level.SEVERE, "Configuration not found", e.getStackTrace());
         }
-        scanner.close();
 
         return "NO RESULT FOUND";
     }
@@ -53,7 +59,7 @@ public class ParserConfiguration {
         );
     }
 
-    public static int parseInt(String configuration){
+    public static int parseInt(String configuration) {
         return Integer.parseInt(ParserConfiguration.parse(configuration));
     }
 }

@@ -26,8 +26,6 @@ public class Room{
      */
     private final Color color;
 
-    private String ansiColor;
-
     /**
      * All the TileUID in the same Room.
      */

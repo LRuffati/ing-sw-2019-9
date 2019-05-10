@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class contains the Actor that is used by the view and transmitted from the server to the client
+ */
 public class ActorView implements Serializable {
     private Color color;
     private String name;

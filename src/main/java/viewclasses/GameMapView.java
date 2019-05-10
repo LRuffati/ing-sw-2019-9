@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class contains the GameMap that is used by the view and transmitted from the server to the client
+ */
 public class GameMapView implements Serializable {
     private Map<Coord, TileView> tiles;
     private Coord maxPos;

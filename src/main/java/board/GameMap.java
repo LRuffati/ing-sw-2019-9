@@ -11,7 +11,6 @@ import actions.targeters.targets.TileTarget;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
-import player.Actor;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;

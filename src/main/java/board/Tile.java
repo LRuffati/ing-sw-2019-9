@@ -178,11 +178,13 @@ public class Tile{
 
     TileView generateView(GameMapView gameMapView) {
         TileView tileView = new TileView();
+        Optional<TileUID> opt;
 
         Map<Direction, String> nearTiles = new EnumMap<>(Direction.class);
         for(Direction d : Direction.values()){
-            if(getNeighbor(false, d).isPresent()) {
-                if (roomID.equals(map.getTile(getNeighbor(false, d).get()).roomID))
+            opt = getNeighbor(false, d);
+            if(opt.isPresent()) {
+                if (roomID.equals(map.getTile(opt.get()).roomID))
                     nearTiles.put(d, "Tile");
                 else
                     nearTiles.put(d, "Door");

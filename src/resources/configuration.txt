@@ -11,6 +11,11 @@ src/resources/powerUp.txt
 -map1Path
 src/resources/map1.txt
 
+-map2Path
+src/resources/map1.txt
+
+-map3Path
+src/resources/map1.txt
 
 #Options of the game
 -scoreBeforeFrenzy
@@ -22,6 +27,8 @@ src/resources/map1.txt
 -numOfDeaths
 8
 
+-maximumAmmoPerCard
+3
 
 #Options of the Player
 -Hp

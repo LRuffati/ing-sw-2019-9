@@ -7,6 +7,10 @@ import java.io.Serializable;
 import java.util.Map;
 
 //TODO: the model should not send the Description
+
+/**
+ * This class contains the Weapon card that is used by the view and transmitted from the server to the client
+ */
 public class WeaponView implements Serializable {
     private String name;
     private Map<AmmoColor, Integer> reloadCost;
