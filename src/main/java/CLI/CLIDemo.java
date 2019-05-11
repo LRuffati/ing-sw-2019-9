@@ -2,6 +2,8 @@ package CLI;
 
 import grabbables.Weapon;
 import player.Actor;
+import viewclasses.GameMapView;
+
 import java.io.FileNotFoundException;
 import java.util.Objects;
 
@@ -10,18 +12,17 @@ public class CLIDemo {
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
-    public static void start() {
-
+    public static void start(GameMapView gmv) {
         try {
-            toPrintMap = new CLIMap();
+            toPrintMap = new CLIMap(gmv);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         Objects.requireNonNull(toPrintMap).printMap();
     }
 
-    public CLIDemo(){
-        start();
+    public CLIDemo(GameMapView gmv){
+        start(gmv);
     }
 
     /**
@@ -57,4 +58,6 @@ public class CLIDemo {
         System.out.println("Hello there, shooter. State your name: \n");
         System.console().readLine();
     }
+
+
 }

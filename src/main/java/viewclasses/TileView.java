@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
+import static java.awt.Color.*;
+
 /**
  * This class contains the Tile that is used by the view and transmitted from the server to the client
  */
@@ -81,6 +83,16 @@ public class TileView implements Serializable {
 
     public List<WeaponView> weapons() {
         return weapons;
+    }
+
+    public String getAnsi(){
+        if(color == white) return "\u001B[37m";
+        if(color == black) return "\u001B[30m";
+        if(color == red) return "\u001B[31m";
+        if(color == green) return "\u001B[32m";
+        if(color == yellow) return "\u001B[33m";
+        if(color == blue) return "\u001B[34m";
+        return "\u001B[0m";
     }
 }
 
