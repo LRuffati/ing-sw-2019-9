@@ -17,7 +17,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      * The maximum amount available, this is a global variable
      * TODO: load from configuration file
      */
-    private static Integer maximumAmmo = 3;
+    static Integer maximumAmmo = 3;
 
 
     /**

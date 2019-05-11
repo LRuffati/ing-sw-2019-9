@@ -1,6 +1,7 @@
 package player;
 
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
@@ -77,6 +78,14 @@ public class Actor {
 
     public Actor(){}
 
+    /**
+     *
+     * @return
+     */
+    //TODO: create a function with the total sum of ammo cubes and powerup
+    public AmmoAmountUncapped getTotalAmmo(){
+        return null;
+    }
 
     /**
      * Provide the binding between the Actor and the DamageableUID

@@ -62,10 +62,6 @@ public class Weapon extends Grabbable{
         return Map.copyOf(actions);
     }
 
-    public WeaponUse weaponUse(GameMap map, DamageableUID pawnUid){
-        return new WeaponUse(this, map, pawnUid);
-    }
-
     /**
      * This method checks if this weapon can be reloaded, given the amount of ammo currently available
      * @param ammoAvailable The amount of ammo currently available

@@ -1,20 +1,22 @@
 package actions;
 
-import actions.effects.ActionResult;
+import actions.effects.Effect;
+import actions.utils.NotEnoughTargetsException;
+import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResult;
 import actions.effects.EffectTemplate;
-import actions.effects.EffectType;
-import actions.targeters.ChoiceMaker;
+import actions.utils.ChoiceMaker;
 import actions.targeters.Targeter;
 import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
-import actions.utils.NotEnoughTargetsException;
 import board.Sandbox;
 import genericitems.Tuple;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * This represents the action as it is being executed.
@@ -26,67 +28,185 @@ import java.util.Optional;
 public class Action {
 
     private final Sandbox sandbox;
-    private final Optional<String> master;
-    private final String actionID;
+    private final ActionInfo info;
     private final List<Tuple<String, TargeterTemplate>> targeterTemplates;
-    private final Map<EffectType, Collection<EffectTemplate>> effects;
     private final Map<String, Targetable> previousTargets;
+    private final List<EffectTemplate> unresolvedEffects;
 
-    Action(Sandbox sandbox, Optional<String> master, String actionID,
-           List<Tuple<String, TargeterTemplate>> targeters,
-           Map<EffectType, Collection<EffectTemplate>> effects,
-           Map<String, Targetable> previousTargets){
+    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer;
+
+    Action(Sandbox sandbox,
+           ActionTemplate actionTemplate,
+           Map<String, Targetable> previousTargets,
+           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer){
 
         this.sandbox = sandbox;
-        this.master = master;
-        this.actionID = actionID;
-        this.targeterTemplates = targeters;
-        this.effects = effects;
+        this.info = actionTemplate.getInfo();
+        this.targeterTemplates = actionTemplate.getTargeters();
+        this.unresolvedEffects = actionTemplate.getEffects();
         this.previousTargets = previousTargets;
+        this.finalizer = finalizer;
     }
 
-    /**
-     * This is the interactive version of the method, it will perform calls to the
-     * provided ChoiceMaker to select the various targets
-     * @param choiceMaker the ChoiceMaker which will perform the choices
-     * @return an ActionResult
+    Action(Sandbox sandbox,
+           ActionInfo info,
+           List<Tuple<String, TargeterTemplate>> targeters,
+           List<EffectTemplate> effects,
+           Map<String, Targetable> previousTargets,
+           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer){
+        this.sandbox = sandbox;
+        this.info = info;
+        this.targeterTemplates = targeters;
+        this.unresolvedEffects = effects;
+        this.previousTargets = previousTargets;
+        this.finalizer = finalizer;
+    }
+
+    static Action spawn(Action old, Map<String, Targetable> targetsUpdated,
+                        List<Tuple<String, TargeterTemplate>> remainingTargets){
+        return new Action(old.sandbox, old.info, remainingTargets, old.unresolvedEffects,
+                targetsUpdated, old.finalizer);
+    }
+
+    static Action spawn(Action old, Sandbox newSandbox, List<EffectTemplate> remainingEffects){
+        return new Action(newSandbox, old.info, old.targeterTemplates, remainingEffects,
+                old.previousTargets, old.finalizer);
+    }
+
+    /*
+    Se ha ancora targeter: crea choicemaker, passa la lambda, restituisce il risultato di
+    choicemaker
+
+    Se ha ancora effectTemplate: crea la lambda, return il risultato di effect.apply(..., lambda)
+
+    Se non ho più niente: return la finalLambda.apply(sandbox)
      */
-    public ActionResult runAction(ChoiceMaker choiceMaker) throws NotEnoughTargetsException {
-        for (Tuple<String, TargeterTemplate> i:targeterTemplates){
-            Targeter targeter = new Targeter(sandbox, choiceMaker, previousTargets, i.y, i.x);
-            Optional<Targetable> target = targeter.generateTarget();
-            if (target.isPresent()){
-                previousTargets.put(i.x, target.get());
+    ControllerActionResult iterate(){
+        if (!targeterTemplates.isEmpty()){
+
+            Iterator<Tuple<String, TargeterTemplate>> targetersIter= targeterTemplates.iterator();
+
+            //Questa chiamata mi dice anche che targetersIter ora non ha più il primo elemento
+            Tuple<String, TargeterTemplate> thisTargeter = targetersIter.next();
+
+            // This is the same for both automatic and manual ChoiceMaker
+            Function<Targetable, ControllerActionResult> fun = target -> {
+                // This will create a new Action, same sandbox, same effects, a new target,
+                // less targeters
+                Map<String, Targetable> targetsUpdated = new HashMap<>(previousTargets);
+                if (target!=null) targetsUpdated.put(thisTargeter.x, target);
+
+                List<Tuple<String, TargeterTemplate>> remainingTargets = new LinkedList<>();
+                targetersIter.forEachRemaining(remainingTargets::add);
+
+                Action newAction = Action.spawn(this,targetsUpdated, remainingTargets);
+
+                return newAction.iterate();
+            };
+
+            Predicate<Targetable> isNew = target -> previousTargets.values().contains(target);
+
+            // Choicemaker creation
+            ChoiceMaker choiceMaker;
+            if (thisTargeter.y.automatic){
+                choiceMaker = new ChoiceMaker() {
+                    Function<Integer, Targetable> action;
+                    List<Tuple<Integer, Targetable>> listTargets = new ArrayList<>();
+                    boolean optional;
+
+                    @Override
+                    public void giveTargets(String targetId, List<Targetable> possibilities,
+                                            Function<Integer, Targetable> action) {
+                        this.action = action;
+                        listTargets = IntStream.range(0, possibilities.size())
+                                        .mapToObj(i -> new Tuple<>(i, possibilities.get(i)))
+                                        .collect(Collectors.toList());
+                        optional = thisTargeter.y.optional;
+                    }
+
+                    @Override
+                    public Tuple<Boolean, List<Targetable>> showOptions() {
+                        List<Targetable> listTargetsToShow =
+                                listTargets.stream().map(i->i.y).collect(Collectors.toList());
+                        return new Tuple<>(optional, listTargetsToShow);
+                    }
+
+                    @Override
+                    public ControllerActionResult pick(int choice) {
+                        // Filtra quelli che sono preesistenti (se il target è new (attenzione al
+                        // numero che uso dopo)
+                        // Chiama action con il numero che è primo targetable, -1 se la lista è
+                        // vuota
+                        if (listTargets.isEmpty() && optional){
+                            return fun.apply(action.apply(-1));
+                        } else if (listTargets.isEmpty()){
+                            return new ControllerActionResult(ActionResultType.ROLLBACK);
+                        } else {
+                            return fun.apply(action.apply(listTargets.get(0).x));
+                        }
+                    }
+                };
+            } else {
+                choiceMaker = new ChoiceMaker() {
+                    Function<Integer, Targetable> action;
+                    List<Tuple<Integer, Targetable>> listTargets = new ArrayList<>();
+                    boolean optional;
+
+                    @Override
+                    public void giveTargets(String targetId, List<Targetable> possibilities,
+                                            Function<Integer, Targetable> action) {
+                        this.action = action;
+                        listTargets = IntStream.range(0, possibilities.size())
+                                .mapToObj(i -> new Tuple<>(i, possibilities.get(i)))
+                                .collect(Collectors.toList());
+                        optional = thisTargeter.y.optional;
+                    }
+
+
+                    @Override
+                    public Tuple<Boolean, List<Targetable>> showOptions() {
+                        List<Targetable> listTargetsToShow =
+                                listTargets.stream().map(i->i.y).collect(Collectors.toList());
+                        return new Tuple<>(optional, listTargetsToShow);
+                    }
+
+                    @Override
+                    public ControllerActionResult pick(int choice) {
+                        if (choice>=listTargets.size())
+                            choice = 0;
+
+                        Targetable target = action.apply(listTargets.get(choice).x);
+                        return fun.apply(target);
+                    }
+                };
             }
+
+            Targeter targeter = new Targeter(sandbox, choiceMaker, previousTargets,
+                    thisTargeter.y, thisTargeter.x);
+            try {
+                targeter.giveChoices();
+            } catch (NotEnoughTargetsException e) {
+                return new ControllerActionResult(ActionResultType.ROLLBACK);
+            }
+
+            // available target or no target
+            if (thisTargeter.y.automatic)
+                return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
+            else
+                return new ControllerActionResult(choiceMaker);
+        } else if (!unresolvedEffects.isEmpty()){
+            Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();
+            EffectTemplate nextEffect = unresolvedIter.next();
+
+            Function<Sandbox, ControllerActionResult> fun = sandbox1 -> {
+                List<EffectTemplate> unresolvedList = new ArrayList<>();
+                unresolvedIter.forEachRemaining(unresolvedList::add);
+                Action newAction = Action.spawn(this, sandbox1, unresolvedList);
+                return newAction.iterate();
+            };
+
+            return nextEffect.spawn(previousTargets, sandbox, fun);
         }
-        return new ActionResult(effects, previousTargets);
+        else return finalizer.apply(new Tuple<>(sandbox, previousTargets));
     }
-
-    /**
-     * This version is a verifier, it creates a custom version of ChoiceMaker
-     * @param targets targets already acquired by the previous actions
-     * @return
-     */
-    public ActionResult runAction(Map<String, Targetable> targets) throws NotEnoughTargetsException {
-        ChoiceMaker choiceMaker = new ChoiceMaker (){
-
-            /**
-             * Choose a target amongst many possibilities
-             *
-             * @param targetId the id of the target being selected
-             * @param possibilities an ordered list of which Targets are available. The elements should be copies of the ones on the server and not the actual ones to avoid contamination
-             * @return the number of the chosen target, starting from 0
-             */
-            @Override
-            public int pickTarget(String targetId, List<Targetable> possibilities) {
-                if (!possibilities.contains(targets.get(targetId))){
-                    throw new IllegalArgumentException("Target not available");
-                }
-                return possibilities.indexOf(targets.get(targetId));
-            }
-        };
-        return runAction(choiceMaker);
-    }
-
-
 }

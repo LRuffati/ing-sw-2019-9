@@ -5,12 +5,14 @@ import actions.selectors.Selector;
 import actions.targeters.targets.DirectionTarget;
 import actions.targeters.targets.GroupTarget;
 import actions.targeters.targets.Targetable;
+import actions.utils.ChoiceMaker;
 import actions.utils.NotEnoughTargetsException;
 import board.Sandbox;
 import genericitems.Tuple;
 import uid.TileUID;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -71,11 +73,6 @@ public class Targeter {
     private final boolean newTarg;
 
     /**
-     * {@link TargeterTemplate#automatic}
-     */
-    private final boolean automatic;
-
-    /**
      * The ID of the target
      */
     private final String targetID;
@@ -89,6 +86,8 @@ public class Targeter {
      * {@link TargeterTemplate#optional}
      */
     private final boolean optional;
+
+    private final Predicate<Targetable> isNew;
 
     /**
      * This creates the targeter for an instance of the weapon being used
@@ -108,7 +107,6 @@ public class Targeter {
         this.master = master;
         this.previousTargets = previousTargets;
         this.newTarg = template.newTarg;
-        this.automatic = template.automatic;
         this.targetID = targetID;
         if (template.type.equals(groupString)){
             this.optional = false;
@@ -117,82 +115,62 @@ public class Targeter {
             this.type = template.type;
             this.optional = template.optional;
         }
+        this.isNew = target -> previousTargets.values().contains(target);
     }
 
     /**
      * The main purpose of the Targeter, this class will:
-     * 1. Generate, via {@link Selector#select(Targetable, Function)} a list of viable targets
-     * 2. Filter it using {@link Condition#checkTarget(Targetable, Targetable)}
+     * 1. Generate, via {@link Selector#select(Sandbox, Targetable, Function)} a list of viable
+     * targets
+     * 2. Filter it using {@link Condition#checkTarget(Sandbox, Targetable, Targetable)}
      * 3. Check other conditions:
      *      a. If the target is new
      *      b. If it is optional
      * 4. If the selection is not automatic it then asks the {@link Targeter#master} to pick one
      * of many and returns it
      *
-     * @return a target if picked, an empty Optional if {@link Targeter#optional is True}
      * @throws NotEnoughTargetsException is thrown when the target is mandatory but no target
      * exists which satisfies the conditions
      */
-    public Optional<Targetable> generateTarget() throws NotEnoughTargetsException {
-
-        Function<TileUID, Stream<Targetable>> fun;
-        String funType;
+    public void giveChoices() throws NotEnoughTargetsException {
+        String funType = type;
         if (type.equals(groupString)) {
             funType = "pawn";
-        } else {
-            funType = type;
         }
 
-        fun = targetBuilders.get(funType).apply(sandbox);
+        Function<TileUID, Stream<Targetable>> fun = targetBuilders.get(funType).apply(sandbox);
 
-        Stream<Targetable> targets = selector.y.select(previousTargets.get(selector.x), fun).stream();
+        Stream<Targetable> targets =
+                selector.y.select(sandbox,previousTargets.get(selector.x), fun).stream();
 
         for (Tuple<String, Condition> i: filters){
-            targets = targets.filter(t -> i.y.checkTarget(t, previousTargets.get(i.x)));
+            targets = targets.filter(t -> i.y.checkTarget(sandbox,t, previousTargets.get(i.x)));
         }
 
         List<Targetable> validTargets = new LinkedList<>(targets.collect(Collectors.toList()));
 
-        if (newTarg) {
-            validTargets = validTargets.stream()
-                    .filter(Predicate.not(previousTargets.values()::contains))
-                    //Todo: find a way to check only BasicTargets, not tiletargets or similar
-                    // containing a BasicTarget
-                    .collect(Collectors.toList());
+        if (type.equals(groupString) && !validTargets.isEmpty()) {
+            GroupTarget t = new GroupTarget(validTargets.stream().flatMap(i -> i.getSelectedPawns(sandbox).stream()).collect(Collectors.toList()));
+            validTargets = List.of(t);
         }
 
-        if (type.equals(groupString)) {
-            if (!validTargets.isEmpty()) {
-                GroupTarget t = new GroupTarget(sandbox, validTargets.stream().flatMap(i -> i.getSelectedPawns().stream()).collect(Collectors.toList()));
-                validTargets = List.of(t);
-            }
-        }
+        if (newTarg)
+            validTargets = validTargets.stream().filter(isNew).collect(Collectors.toList());
 
-        if (optional) validTargets.add(new StubTarget(sandbox));
-
-        if (validTargets.isEmpty()){
+        if (!optional && validTargets.isEmpty()){
             throw new NotEnoughTargetsException("0 targets available in non optional targeter");
         }
 
-        if (automatic) {
-            Optional<Targetable> ret;
-            if (validTargets.get(0) instanceof StubTarget ){
-                ret = Optional.empty();
-            } else {
-                ret = Optional.of(validTargets.get(0));
-            }
-            return ret;
-        }
-        else {
-            int picked = this.master.pickTarget(targetID, validTargets);
-            Optional<Targetable> ret;
-            if (validTargets.get(picked) instanceof StubTarget ){
-                ret = Optional.empty();
-            } else {
-                ret = Optional.of(validTargets.get(0));
-            }
-            return ret;
-        }
+        final List<Targetable> passedTargets = new ArrayList<>(validTargets);
+
+        master.giveTargets(targetID, validTargets, integer -> {
+            if (optional && integer<0)
+                return null;
+            else if (integer >= passedTargets.size()){
+                return passedTargets.get(passedTargets.size()-1);
+            } else return passedTargets.get(integer);
+        });
+
     }
 
 }
