@@ -46,6 +46,6 @@ public class Coord implements Serializable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return getX()+getY();
     }
 }

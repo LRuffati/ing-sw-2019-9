@@ -526,8 +526,8 @@ public class GameMap {
         for(TileUID tile : position){
             if(allTiles().contains(tile))
                 tiles.put(getCoord(tile), getTile(tile).generateView(gameMapView));
-            else
-                tiles.put(getCoord(tile), null);
+            //else
+            //    tiles.put(getCoord(tile), null);
         }
 
         gameMapView.setTiles(tiles);

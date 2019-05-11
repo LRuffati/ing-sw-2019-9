@@ -41,6 +41,8 @@ public class CLIMap {
         int i = 0;
 
         generateMap();
+        players.put(gmv.you(), dictionary.charAt(i));
+        i++;
         for(ActorView a : gmv.otherPlayers()){
             players.put(a,dictionary.charAt(i));
             i++;
@@ -89,6 +91,7 @@ public class CLIMap {
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
+        System.out.println(mp.allCoord().contains(new Coord(0,0)));
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {

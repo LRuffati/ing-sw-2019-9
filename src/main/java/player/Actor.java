@@ -449,14 +449,26 @@ public class Actor {
     }
 
 
+    /**
+     *
+     * @return A collection containing all the Loaded Weapons held by the player
+     */
     public Collection<Weapon> getLoadedWeapon() {
         return loadedWeapon;
     }
 
+    /**
+     *
+     * @return A collection containing all the Unoaded Weapons held by the player
+     */
     public Collection<Weapon> getUnloadedWeapon() {
         return unloadedWeapon;
     }
 
+    /**
+     *
+     * @return A collection containing all the PowerUps held by the player
+     */
     public Collection<PowerUp> getPowerUp() {
         return powerUps;
     }
