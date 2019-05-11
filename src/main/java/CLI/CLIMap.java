@@ -107,7 +107,7 @@ public class CLIMap {
      * @param tile is the tile where the player is to be moved.
      */
     //TODO To be carefully tested, probably won't work as expected due to the searcCharacter method.
-    public void movePlayer(Actor player, TileView tile){
+    public void movePlayer(ActorView player, TileView tile){
         if(searchCharacter(players.get(player)).getX()!=null && searchCharacter(players.get(player)).getY()!=null)
             tiles[searchCharacter(players.get(player)).getX()][searchCharacter(players.get(player)).getY()]= ' ';
         tiles[mp.getCoord(tile).getY()*dimTile + playerPos.get(players.get(player)).getY()][mp.getCoord(tile).getX()*
@@ -115,13 +115,21 @@ public class CLIMap {
     }
 
     /**
-     * Put weapons and Ammotiles in the map with correct ASCII characters.
-     * @param spawnWeapon
+     * Put weapons in the map with correct ASCII characters checking where in the map is a spawn point.
+     * It places the character right below the spawn character.
      */
-    private void putWeaponsAndAmmotiles(Coord spawnWeapon){
-        Character[][] tile = new Character[dimTile][dimTile];
-        //tile[dimTile][dimTile/2] =
-        tiles[spawnWeapon.getX()][spawnWeapon.getY()] = 'w';
+    private void putWeapons(){
+        while(searchCharacter('s')!=null){
+            tiles[searchCharacter('s').getY()+1][searchCharacter('s').getX()]='w';
+        }
+    }
+
+    /**
+     * Put weapons in the map with correct ASCII characters checking where in the map is a spawn point.
+     * If there is not spawn point in the tile it places the ammoTile.
+     */
+    private void putAmmoTile(){
+        //TODO think how to better search where there is not spawn point.
     }
 
     /**
@@ -141,8 +149,7 @@ public class CLIMap {
     public Coord searchCharacter(Character ascii){
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){
-                //TODO: replace == with .equals ?
-                if(tiles[i][j]==ascii) return new Coord(i,j);
+                if(tiles[i][j].equals(ascii)) return new Coord(i,j);
             }
         }
         return null;
@@ -174,4 +181,6 @@ public class CLIMap {
             }
         }
     }
+
+
 }
