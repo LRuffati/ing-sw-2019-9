@@ -8,8 +8,6 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.List;
 
-import static java.awt.Color.*;
-
 /**
  * This class contains the Tile that is used by the view and transmitted from the server to the client
  */
@@ -21,7 +19,7 @@ public class TileView implements Serializable {
     private Map<Direction, String> nearTiles;
     private List<ActorView> players;
     private List<WeaponView> weapons;
-    private AmmoTileView ammoCard;
+    private AmmoCardView ammoCard;
 
     public TileView(){
         players = new ArrayList<>();
@@ -48,7 +46,7 @@ public class TileView implements Serializable {
         this.uid = uid;
     }
 
-    public void setAmmoCard(AmmoTileView ammoCard) {
+    public void setAmmoCard(AmmoCardView ammoCard) {
         this.ammoCard = ammoCard;
     }
 
@@ -77,7 +75,7 @@ public class TileView implements Serializable {
         return uid;
     }
 
-    public AmmoTileView ammoCard() {
+    public AmmoCardView ammoCard() {
         return ammoCard;
     }
 
@@ -86,12 +84,12 @@ public class TileView implements Serializable {
     }
 
     public String getAnsi(){
-        if(color == white) return "\u001B[37m";
-        if(color == black) return "\u001B[30m";
-        if(color == red) return "\u001B[31m";
-        if(color == green) return "\u001B[32m";
-        if(color == yellow) return "\u001B[33m";
-        if(color == blue) return "\u001B[34m";
+        if(color == Color.white) return "\u001B[37m";
+        if(color == Color.black) return "\u001B[30m";
+        if(color == Color.red) return "\u001B[31m";
+        if(color == Color.green) return "\u001B[32m";
+        if(color == Color.yellow) return "\u001B[33m";
+        if(color == Color.blue) return "\u001B[34m";
         return "\u001B[0m";
     }
 }

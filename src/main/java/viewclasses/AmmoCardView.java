@@ -7,14 +7,14 @@ import java.io.Serializable;
 /**
  * This class contains the AmmoTile card that is used by the view and transmitted from the server to the client
  */
-public class AmmoTileView implements Serializable {
+public class AmmoCardView implements Serializable {
     private int numOfRed;
     private int numOfBlue;
     private int numOfYellow;
     private int numOfPowerUp;
     private GrabbableUID uid;
 
-    public AmmoTileView(){
+    public AmmoCardView(){
         numOfBlue = 0;
         numOfRed = 0;
         numOfYellow = 0;
