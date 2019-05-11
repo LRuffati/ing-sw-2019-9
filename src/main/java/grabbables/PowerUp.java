@@ -47,6 +47,7 @@ public class PowerUp extends Grabbable {
         PowerUpView powerUpView = new PowerUpView();
         powerUpView.setAmmo(ammo);
         powerUpView.setType(type);
+        powerUpView.setUid(super.getId());
         return powerUpView;
     }
 }

@@ -44,6 +44,8 @@ public class AmmoCard extends Grabbable {
         ammoTileView.setNumOfRed(ammoAmount.getAmounts().get(AmmoColor.RED));
         ammoTileView.setNumOfYellow(ammoAmount.getAmounts().get(AmmoColor.YELLOW));
         ammoTileView.setNumOfPowerUp(numOfPowerUp);
+
+        ammoTileView.setUid(super.getId());
         return ammoTileView;
     }
 

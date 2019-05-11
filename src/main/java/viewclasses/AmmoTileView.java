@@ -1,5 +1,7 @@
 package viewclasses;
 
+import uid.GrabbableUID;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ public class AmmoTileView implements Serializable {
     private int numOfBlue;
     private int numOfYellow;
     private int numOfPowerUp;
+    private GrabbableUID uid;
 
     public AmmoTileView(){
         numOfBlue = 0;
@@ -34,6 +37,10 @@ public class AmmoTileView implements Serializable {
         this.numOfYellow = numOfYellow;
     }
 
+    public void setUid(GrabbableUID uid) {
+        this.uid = uid;
+    }
+
     public int numOfBlue() {
         return numOfBlue;
     }
@@ -48,5 +55,9 @@ public class AmmoTileView implements Serializable {
 
     public int numOfYellow() {
         return numOfYellow;
+    }
+
+    public GrabbableUID uid() {
+        return uid;
     }
 }

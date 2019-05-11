@@ -3,6 +3,7 @@ package viewclasses;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
+import uid.GrabbableUID;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
 public class PowerUpView implements Serializable {
     private AmmoColor ammo;
     private PowerUpType type;
+    private GrabbableUID uid;
 
     public void setAmmo(AmmoAmount ammo) {
         for(Map.Entry entry : ammo.getAmounts().entrySet())
@@ -24,11 +26,19 @@ public class PowerUpView implements Serializable {
         this.type = type;
     }
 
+    public void setUid(GrabbableUID uid) {
+        this.uid = uid;
+    }
+
     public PowerUpType type() {
         return type;
     }
 
     public AmmoColor ammo() {
         return ammo;
+    }
+
+    public GrabbableUID uid() {
+        return uid;
     }
 }

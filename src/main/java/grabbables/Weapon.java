@@ -109,6 +109,8 @@ public class Weapon extends Grabbable{
         weaponView.setBuyCost(buyCost);
         weaponView.setReloadCost(reloadCost);
 
+        weaponView.setUid(super.getId());
+
         return weaponView;
     }
 }

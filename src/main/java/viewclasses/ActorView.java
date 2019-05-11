@@ -40,6 +40,7 @@ public class ActorView implements Serializable {
         this.uid = uid;
     }
 
+
     public void setColor(Color color) {
         this.color = color;
     }
@@ -80,13 +81,10 @@ public class ActorView implements Serializable {
         this.firstPlayer = firstPlayer;
     }
 
-    public void setUid(DamageableUID uid) {
-        this.uid = uid;
-    }
-
     public void setAmmo(AmmoAmount ammo) {
         this.ammo = ammo.getAmounts();
     }
+
 
 
     public Color color() {
