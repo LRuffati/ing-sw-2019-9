@@ -30,10 +30,6 @@ public class CLIMap {
      * every time.
      */
     public CLIMap(GameMapView gmv) throws FileNotFoundException {
-        GameBuilder builder = new GameBuilder(
-                    "src/resources/map1.txt", null, "src/resources/ammoTile.txt",
-                    "src/resources/powerUp.txt", 3);
-
         this.mp = gmv;
         this.maxX = gmv.maxPos().getX()*dimTile;
         this.maxY = gmv.maxPos().getY()*dimTile;
@@ -172,6 +168,7 @@ public class CLIMap {
     public void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
+                //TODO Check if EmptyTile!
                 tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()][mp.getCoord(t).getX()*dimTile
                         +playerPos.get(players.get(a)).getX()] = players.get(a);
             }
