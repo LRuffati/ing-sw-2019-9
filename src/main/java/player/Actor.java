@@ -5,8 +5,9 @@ import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
+import gamemanager.ParserConfiguration;
+import genericitems.Tuple3;
 import grabbables.AmmoCard;
-import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
@@ -16,42 +17,45 @@ import java.awt.*;
 import java.lang.invoke.WrongMethodTypeException;
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.List;
 
 /**
  * The class Actor implements the status of the player in the game.
  */
 
 public class Actor {
-    private final int HP = 10;
+    private static final int HP = ParserConfiguration.parseInt("Hp");
+    private static final int MAXWEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
+    private static final int MAXPUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
     private Map<DamageableUID, Integer> marks;
-    private Collection<Weapon> weapons;
+    private Collection<Weapon> unloadedWeapon;
+    private Collection<Weapon> loadedWeapon;
     private Collection<PowerUp> powerUps;
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
     private Boolean frenzy;
     private Boolean turn;
-    private transient GameMap gm;
+    private final GameMap gm;
 
     private DamageableUID pawnID;
 
+    private Set<Actor> damagedPlayer;
+    //TODO: is this necessary?
+    private Set<Actor> damagedBy;
+
     /**
-     * The constructor assigns null points and deaths counter and bind a new pawn to the player.
-     * It checks if it's the starting player.
+     * This method keeps track of PowerUp cards possibly being used as ammunition
+     * @return the sum of ammoAvailable and all the powerups
      */
-    public Actor(GameMap map){
-        this.points = 0;
-        this.numOfDeaths = 0;
-        this.damageTaken = new ArrayList<>();
-        this.startingPlayerMarker = false;
-        this.weapons = new ArrayList<>();
-        this.powerUps = new ArrayList<>();
-        this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
-        this.frenzy = false;
-        this.marks = new Hashtable<>();
-        this.gm = map;
+    private AmmoAmount ammoAvailable(){
+        AmmoAmount am = ammoAvailable;
+        for(PowerUp pu : powerUps){
+            am.add(pu.getAmmo());
+        }
+        return am;
     }
 
     /**
@@ -66,22 +70,20 @@ public class Actor {
         this.damageTaken = new ArrayList<>();
         this.pawnID = pawnId;
         this.startingPlayerMarker = firstPlayer;
-        this.weapons = new ArrayList<>();
+        this.loadedWeapon = new ArrayList<>();
+        this.unloadedWeapon = new ArrayList<>();
         this.powerUps = new ArrayList<>();
         this.ammoAvailable = new AmmoAmount(Map.of(AmmoColor.RED,1,AmmoColor.BLUE,1,AmmoColor.YELLOW,1));
         this.frenzy = false;
         this.marks = new HashMap<>();
         this.gm = map;
 
+        this.damagedBy = new HashSet<>();
+        this.damagedPlayer = new HashSet<>();
+
         this.turn = false;
     }
 
-    public Actor(){}
-
-    /**
-     *
-     * @return
-     */
     //TODO: create a function with the total sum of ammo cubes and powerup
     public AmmoAmountUncapped getTotalAmmo(){
         return null;
@@ -103,21 +105,6 @@ public class Actor {
     }
 
     /**
-     * This method implements the first phase of a player turn.
-     * Check if the player can move to the selected tile: check direction, actual tile neighbors ecc.
-     * @param t is the Tile id where the player is trying to move to.
-     */
-    public void movePlayer(TileUID t) {
-        if(turn &&
-                (!frenzy && gm.getSurroundings(false, 3, pawn().getTile()).contains(t))
-                ||
-                (frenzy && gm.getSurroundings(false, 4, pawn().getTile()).contains(t))
-        ) {
-            move(t);
-        }
-    }
-
-    /**
      * This method implements the basic action of movement
      * It modifies the tile of the Pawn and move the Player in the GameMap
      * @param tile the tile where the Pawn must be put
@@ -128,49 +115,57 @@ public class Actor {
 
     /**
      * Checks if in the player's tile there is the grabbable item.
-     * Check if the item is weapon, then if weapons' inventory is full.
-     * Checks if the weapon chosen to be discarded is a valid weapon.
-     * Picks up the weapon or the ammotile, add all the necessary ammo and powerUps
-     * @param item is the grabbable element that the player want to pick up
-     * @param wToRemove contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
-     * @throws InvalidParameterException if the parameters aren't valid
-     * @throws WrongMethodTypeException if it's not the player's turn
-     * @throws AmmoException if the player doesn't have enough ammo
+     * Picks up the weapon or the ammoTile, adds all the necessary ammo and powerUps
+     * @param ammoCard is the ammoCard element that the player want to pick up
      */
-    public void pickUp(Grabbable item, Weapon wToRemove) throws AmmoException{
+    public void pickUp(AmmoCard ammoCard){
         TileUID tile = pawn().getTile();
-
         if(!turn)
             throw new WrongMethodTypeException("It's not your turn");
-        if(!gm.getGrabbable(tile).contains(item))
+        if(!gm.getGrabbable(tile).contains(ammoCard))
             throw new InvalidParameterException("There isn't this item here");
 
-        if(gm.getTile(tile).spawnPoint()){
+        AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
+        ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
+        for(int i=0; i<card.getNumOfPowerUp() && powerUps.size()<MAXPUP; i++)
+            powerUps.add(gm.pickUpPowerUp());
+        gm.discardAmmoCard(card);
+    }
 
-            if(!checkAmmo((Weapon) item))
-                throw new AmmoException("Not enough ammo available");
+    /**
+     * Checks if in the player's tile there is the weapon.
+     * Check if weapons' inventory is full.
+     * Checks if the weapon chosen to be discarded is a valid weapon.
+     * Picks up the weapon and discard all the weapon and powerUps
+     * @param weapon is the weapon that the player want to pick up
+     * @param weaponToDiscard contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
+     * @param powerUpToPay the powerUps that the player want to use to pay the weapon
+     * @throws AmmoException if the Ammo amount is not sufficient
+     */
+    public void pickUp(Weapon weapon, Weapon weaponToDiscard, List<PowerUp> powerUpToPay) throws AmmoException{
+        TileUID tile = pawn().getTile();
+        if(!turn)
+            throw new WrongMethodTypeException("It's not your turn");
+        if(!gm.getGrabbable(tile).contains(weapon))
+            throw new InvalidParameterException("There isn't this item here");
+        if(!checkAmmo(weapon.getBuyCost(), powerUpToPay))
+            throw new AmmoException("Not enough ammo available");
 
-            if(weapons.size() >= 3) {
-                if (wToRemove == null)
-                    throw new InvalidParameterException("A weapon must be discarded");
+        if((loadedWeapon.size() + unloadedWeapon.size()) >= MAXWEAPON) {
+            if(weaponToDiscard == null)
+                throw new InvalidParameterException("A weapon must be discarded");
+            if(!(loadedWeapon.contains(weaponToDiscard) || unloadedWeapon.contains(weaponToDiscard)))
+                throw new InvalidParameterException("You haven't this weapon");
 
-                if(!weapons.contains(wToRemove))
-                    throw new InvalidParameterException("You haven't this weapon");
-
-                gm.discardWeapon(tile, wToRemove);
-                weapons.remove(wToRemove);
-            }
-            weapons.add((Weapon)gm.pickUpGrabbable(tile, item));
-            ((Weapon)item).setLoaded();
+            gm.discardWeapon(tile, weaponToDiscard);
+            if (loadedWeapon.contains(weaponToDiscard))
+                loadedWeapon.remove(weaponToDiscard);
+            else
+                unloadedWeapon.remove(weaponToDiscard);
         }
-        else{
-            AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, item);
-            ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
-            for(int i = 0; i<card.getNumOfPowerUp(); i++)
-                if(powerUps.size() < 3)
-                    powerUps.add((PowerUp)gm.pickUpPowerUp());
-            gm.discardAmmoCard(card);
-        }
+
+        loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, weapon));
+        pay(weapon.getBuyCost(), powerUpToPay);
     }
 
     /**
@@ -178,23 +173,44 @@ public class Actor {
      * @param weapon is the weapon to be reloaded.
      * @throws AmmoException if the player doesn't have enough ammo
      */
-    public void reloadWeapon(Weapon weapon) throws AmmoException{
-        if(!weapons.contains(weapon)) throw new InvalidParameterException("This actor has not this weapon");
-        if(!weapon.isLoaded())   throw new InvalidParameterException("This weapon is already loaded");
-        if(checkAmmo(weapon))
-            weapon.setLoaded();
-        else
+    public void reloadWeapon(Weapon weapon, List<PowerUp> powerUpToPay) throws AmmoException{
+        if(!unloadedWeapon.contains(weapon) && !loadedWeapon.contains(weapon))
+            throw new InvalidParameterException("This actor has not this weapon");
+        if(!unloadedWeapon.contains(weapon))
+            throw new InvalidParameterException("This weapon is already loaded");
+        if(!checkAmmo(weapon.getReloadCost(), powerUpToPay))
             throw new AmmoException("Not enough ammo available");
+
+        pay(weapon.getReloadCost(), powerUpToPay);
+        unloadedWeapon.remove(weapon);
+        loadedWeapon.add(weapon);
     }
 
-    private boolean checkAmmo(Weapon weapon){
-        Optional<AmmoAmount> result = weapon.canReload(ammoAvailable);
-        if(result.isPresent()) {
-            ammoAvailable = result.get();
-            return true;
+    /**
+     * This method checks if a certain amount of Ammo can be reached using a list of PowerUps and player's AmmoTile
+     * @param ammoAmount The amount of ammo that has to be reached
+     * @param powerUpToPay the powerUps that the have to be considered in the check
+     * @return True if can be reloaded, false otherwise
+     */
+    public boolean checkAmmo(AmmoAmount ammoAmount, List<PowerUp> powerUpToPay){
+        AmmoAmount amount = new AmmoAmount();
+        for(PowerUp p : powerUpToPay){
+            amount = amount.add(p.getAmmo());
         }
-        else
-            return false;
+        amount.add(ammoAvailable);
+
+        return ammoAmount.compareTo(amount)>0;
+    }
+
+    /**
+     * Consumes all the powerUps, and then reduce the amount of ammoAvailable
+     */
+    private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
+        for(PowerUp p : powerUpToPay){
+            amount = amount.subtract(p.getAmmo());
+            gm.discardPowerUp(p);
+        }
+        ammoAvailable = ammoAvailable.subtract(amount);
     }
 
     /**
@@ -207,7 +223,7 @@ public class Actor {
 
     /**
      *
-     * @return true is the actor turn has started and it's not finished yet.
+     * @return true if the actor turn has started and it's not finished yet.
      */
     public boolean isTurn(){
         return turn;
@@ -223,25 +239,45 @@ public class Actor {
 
     /**
      * Needed to end and start a player turn.
+     * At the end of the turn clear damagedPlayer and damagedBy Sets
      * @param turn true to start the turn, false to end it.
      */
     public void setTurn(Boolean turn) {
+        if(!turn){
+            damagedPlayer.clear();
+            damagedBy.clear();
+        }
         this.turn = turn;
     }
 
     /**
+     * Damage the player
+     * @param shooter the attacker
+     * @param numOfDmg number of damage points
+     */
+    public void addDamage(Actor shooter, int numOfDmg){
+        for(int i=0; i<numOfDmg; i++){
+            getDMG(shooter);
+        }
+    }
+
+    /**
      * Add the attacker who damaged the player on his playerboard.
+     * Adds the shooter to the attacked's damagedBy Set
+     * and the shot to the attacker's damagedPlayer Set.
      * The first element is the first player who attacked "this".
      * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
      */
-    public void getDMG(Actor shooter){
-        damageTaken.add(shooter);
+    private void getDMG(Actor shooter){
+        if(damageTaken.size() <= HP){
+            damagedBy.add(shooter);
+            shooter.damagedPlayer.add(this);
+            damageTaken.add(shooter);
+        }
 
-        //TODO: check if the method correctly checks the "marks" attribute.
         if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
-                System.out.println(marks.get(shooter.pawnID));
                 if (damageTaken.size() <= HP)
                     damageTaken.add(shooter);
             }
@@ -253,7 +289,7 @@ public class Actor {
      * Method needed in the Scoreboard class.
      * @return the damage taken from a single shot.
      */
-    public ArrayList<Actor> getDamageTaken() {
+    public List<Actor> getDamageTaken() {
         return damageTaken;
     }
 
@@ -294,9 +330,10 @@ public class Actor {
      * @return marks owned by the player.
      */
     public Map<DamageableUID, Integer> getMarks() {
-        return marks;
+        return Map.copyOf(marks);
     }
 
+    //TODO: delete this method
     /**
      * Needed for tests.
      * @return the map of the game the player is playing.
@@ -311,6 +348,30 @@ public class Actor {
      */
     public boolean getFirstPlayer(){
         return startingPlayerMarker;
+    }
+
+    /**
+     *
+     * @return the number of damage that an actor can take before the death
+     */
+    public int hp() {
+        return HP;
+    }
+
+    /**
+     *
+     * @return The set containing all the Player that damaged the Player before his turn
+     */
+    public Set<Actor> getDamagedBy() {
+        return new HashSet<>(damagedBy);
+    }
+
+    /**
+     *
+     * @return a Set containing all the Player that have been damaged by this during his turn
+     */
+    public Set<Actor> getDamagedPlayer() {
+        return new HashSet<>(damagedBy);
     }
 
     /**
@@ -331,26 +392,35 @@ public class Actor {
     /**
      * Adds a certain number of marks from pawn to this.
      * If the pawn already assigned 3 marks nothing happens.
-     * @param pawn
+     * @param attackerPawn The attacker
      * @param numOfMarks
      * @return the number of marks successfully applied
      */
-    public int addMark(DamageableUID pawn, int numOfMarks){
-        int totMarks = 0;
-        for(DamageableUID p : gm.getDamageable()){
-            gm.getPawn(p).getActor().getMarks().get(pawn);
-            totMarks++;
-        }
+    //TODO: convert this to addMark(Actor attackerActor, int numOfMarks) ?
+    public int addMark(DamageableUID attackerPawn, int numOfMarks){
+        int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
 
-        if(totMarks > 3)
-            return -1;
-
-        //TODO: carefully test this method
         int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
-        marks.put(pawn, marks.get(pawn) + applied);
+
+        if(marks.containsKey(attackerPawn))
+            marks.put(attackerPawn, marks.get(attackerPawn) + applied);
+        else
+            marks.put(attackerPawn, applied);
         return applied;
     }
 
+    /**
+     *
+     * @return how many marks this Actor applied to other Actors
+     */
+    public int numOfMarksApplied(){
+        int totMarks = 0;
+        for(DamageableUID p : gm.getDamageable()){
+            if(gm.getPawn(p).getActor().getMarks().containsKey(this.pawnID))
+                totMarks += gm.getPawn(p).getActor().getMarks().get(this.pawnID());
+        }
+        return totMarks;
+    }
 
     /**
      * This method initialize the Actor when there is need to respawn.
@@ -359,16 +429,54 @@ public class Actor {
      * @throws InvalidParameterException if the actor is not dead.
      */
     public void respawn(AmmoColor color){
-        if(pawn().getTile() != gm.getEmptyTile() || !isDead())
+        if(pawn().getTile() != gm.getEmptyTile() && !isDead())
             throw new InvalidParameterException("The player is not dead");
 
         for (TileUID t : gm.allTiles()){
             Color colTile = gm.getTile(t).getColor();
-            if(gm.getTile(t).spawnPoint() && colTile.toString().equals(color.toString())){
+            Tuple3<Integer, Integer, Integer> colAmmo = color.toRGB();
+
+            if(gm.getTile(t).spawnPoint() &&
+                    colTile.getRed() == colAmmo.x
+                    && colTile.getGreen() == colAmmo.y
+                    && colTile.getBlue() == colAmmo.z){
                 move(t);
             }
         }
         this.damageTaken.clear();
+    }
+
+    /**
+     *
+     * @return the ID of the pawn associated with the actor
+     */
+    public DamageableUID pawnID() {
+        return pawnID;
+    }
+
+
+    /**
+     *
+     * @return A collection containing all the Loaded Weapons held by the player
+     */
+    public Collection<Weapon> getLoadedWeapon() {
+        return loadedWeapon;
+    }
+
+    /**
+     *
+     * @return A collection containing all the Unoaded Weapons held by the player
+     */
+    public Collection<Weapon> getUnloadedWeapon() {
+        return unloadedWeapon;
+    }
+
+    /**
+     *
+     * @return A collection containing all the PowerUps held by the player
+     */
+    public Collection<PowerUp> getPowerUp() {
+        return powerUps;
     }
 }
 
