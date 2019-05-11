@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class Fire implements EffectTemplate {
 
-    Fire(){
+    public Fire(){
     }
 
     @Override
@@ -35,7 +35,7 @@ public class Fire implements EffectTemplate {
                     return new ControllerActionResult(this);
                 } else {
                     Weapon weapUsed = loadedWeapon.get(choice);
-                    List<Effect> effetti = List.of(new Effect() {
+                    List<Effect> effects = List.of(new Effect() {
                         @Override
                         public Map<Weapon, Boolean> newWeapons(Map<Weapon, Boolean> oldWeapons) {
                             Map<Weapon, Boolean> updated = new HashMap<>(oldWeapons);
@@ -43,7 +43,7 @@ public class Fire implements EffectTemplate {
                             return updated;
                         }
                     });
-                    Sandbox newSandbox = new Sandbox(sandbox, effetti);
+                    Sandbox newSandbox = new Sandbox(sandbox, effects);
 
                     WeaponUse action = new WeaponUse(weapUsed,newSandbox, consumer);
                     return new ControllerActionResult(action);

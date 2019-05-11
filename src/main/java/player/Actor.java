@@ -269,7 +269,7 @@ public class Actor {
      * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
      */
-    private void getDMG(Actor shooter){
+    public void getDMG(Actor shooter){
         if(damageTaken.size() <= HP){
             damagedBy.add(shooter);
             shooter.damagedPlayer.add(this);

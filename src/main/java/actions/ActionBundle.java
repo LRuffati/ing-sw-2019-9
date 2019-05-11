@@ -3,19 +3,14 @@ package actions;
 import actions.effects.Effect;
 import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
-import actions.utils.AmmoAmountUncapped;
 import board.GameMap;
 import board.Sandbox;
 import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 import uid.DamageableUID;
-import uid.TileUID;
-import uid.WeaponUID;
-
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -45,7 +40,7 @@ public class ActionBundle implements ActionPicker {
                 necessary info for the GRAB and PAY effects
              */
             Sandbox sandbox = tup.x;
-            if (!this.finalized) return new ControllerActionResult(ActionResultType.ALREADYTERMINATED);
+            if (this.finalized) return new ControllerActionResult(ActionResultType.ALREADYTERMINATED);
             else {
                 this.finalized = true;
                 this.effects = sandbox.getEffectsHistory();
@@ -67,9 +62,12 @@ public class ActionBundle implements ActionPicker {
         }
         Sandbox sandbox = map.createSandbox(pov);
         ActionTemplate chosen = actionsPossible.get(choice);
-        Action action = new Action(sandbox, chosen.getInfo(), chosen.getTargeters(),
-                chosen.getEffects(),
-                Map.of("self", sandbox.getBasic(pov)), finalizer);
+        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(pov)), finalizer);
         return action.iterate();
+    }
+
+
+    public List<Effect> getEffects() {
+        return new ArrayList<>(effects);
     }
 }

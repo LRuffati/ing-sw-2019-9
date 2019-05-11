@@ -6,9 +6,11 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
+import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class ActionTemplate {
 
@@ -124,5 +126,11 @@ public class ActionTemplate {
 
     public List<EffectTemplate> getEffects() {
         return new ArrayList<>(effects);
+    }
+
+    public Action generate(Sandbox sandbox, Map<String, Targetable> prevTargs,
+                           Function<Tuple<Sandbox, Map<String, Targetable>>,
+                                   ControllerActionResult> finalizer){
+        return new Action(sandbox, this, prevTargs, finalizer);
     }
 }
