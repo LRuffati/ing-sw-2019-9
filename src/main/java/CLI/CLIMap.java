@@ -6,6 +6,9 @@ import gamemanager.GameBuilder;
 import grabbables.Weapon;
 import player.Actor;
 import uid.TileUID;
+import viewclasses.ActorView;
+import viewclasses.GameMapView;
+import viewclasses.TileView;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -17,8 +20,8 @@ public class CLIMap {
     private int maxY;
     private int maxX;
     private Character[][] tiles;
-    private Map<Actor,Character> players;
-    private GameMap mp;
+    private Map<ActorView,Character> players;
+    private GameMapView mp;
     private Map<Character,Coord> playerPos;
 
     /**
@@ -26,14 +29,14 @@ public class CLIMap {
      * @throws FileNotFoundException will probably be deleted, the map to be taken won't be to be generated
      * every time.
      */
-    public CLIMap() throws FileNotFoundException {
+    public CLIMap(GameMapView gmv) throws FileNotFoundException {
         GameBuilder builder = new GameBuilder(
                     "src/resources/map1.txt", null, "src/resources/ammoTile.txt",
                     "src/resources/powerUp.txt", 3);
 
-        this.mp = builder.getMap();
-        this.maxX = builder.getMap().getMaxPos().getX()*dimTile;
-        this.maxY = builder.getMap().getMaxPos().getY()*dimTile;
+        this.mp = gmv;
+        this.maxX = gmv.maxPos().getX()*dimTile;
+        this.maxY = gmv.maxPos().getY()*dimTile;
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         playerPos = new HashMap<>();
@@ -41,8 +44,8 @@ public class CLIMap {
         String dictionary = "abcdefghi";
         int i = 0;
 
-        generateMap(builder.getMap());
-        for(Actor a:builder.getActorList()){
+        generateMap();
+        for(ActorView a : gmv.otherPlayers()){
             players.put(a,dictionary.charAt(i));
             i++;
         }
@@ -53,11 +56,11 @@ public class CLIMap {
     /**
      * Fill the attribute tiles with the right ASCII characters.
      */
-    private void generateMap(GameMap gm){
+    private void generateMap(){
 
-        for(TileUID t: gm.allTiles()){
-            int x = gm.getCoord(t).getY()*dimTile;
-            int y = gm.getCoord(t).getX()*dimTile;
+        for(TileView t: mp.allTiles()){
+            int x = mp.getCoord(t).getY()*dimTile;
+            int y = mp.getCoord(t).getX()*dimTile;
 
             tiles[x][y] = '╔';
             tiles[x+1][y] = '═';
@@ -75,7 +78,7 @@ public class CLIMap {
             tiles[x+2][y+4] = '=';
             tiles[x+3][y+4] = '=';
             tiles[x+4][y+4] = '╝';
-            if(gm.getTile(t).spawnPoint()){
+            if(t.spawnPoint()){
                 tiles[x+1][y+1] = 's';
             }
         }
@@ -94,9 +97,9 @@ public class CLIMap {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
                 Coord cord = new Coord(r/dimTile, c/dimTile);
-                if(mp.exists(cord))
+                if(mp.allCoord().contains(cord))
                     //TODO add the escape "\0×1B" character in the following to print(s) to maintain the map. Won't work on Intellij.
-                    System.out.print(mp.getRoom(mp.room(mp.getPosition(cord))).getAnsi() +  tiles[c][r] + "\u001B[0m");
+                    System.out.print(mp.getPosition(cord).getAnsi() +  tiles[c][r] + "\u001B[0m");
                 else System.out.print(" ");
             }
         }
@@ -107,7 +110,8 @@ public class CLIMap {
      * @param player is the player to be put on the map.
      * @param tile is the tile where the player is to be moved.
      */
-    public void movePlayer(Actor player, TileUID tile){
+    //TODO To be carefully tested, probably won't work as expected due to the searcCharacter method.
+    public void movePlayer(Actor player, TileView tile){
         if(searchCharacter(players.get(player)).getX()!=null && searchCharacter(players.get(player)).getY()!=null)
             tiles[searchCharacter(players.get(player)).getX()][searchCharacter(players.get(player)).getY()]= ' ';
         tiles[mp.getCoord(tile).getY()*dimTile + playerPos.get(players.get(player)).getY()][mp.getCoord(tile).getX()*
@@ -155,7 +159,7 @@ public class CLIMap {
     public void setPlayersPos(){
         int i = 1;
         int j = 0;
-        for(Map.Entry<Actor,Character> entry : players.entrySet()){
+        for(Map.Entry<ActorView,Character> entry : players.entrySet()){
             playerPos.put(entry.getValue(),new Coord(i,j));
             i++;
             j++;
@@ -166,11 +170,10 @@ public class CLIMap {
      * Spawn the players on the map for the first time in the game.
      */
     public void spawnPlayers(){
-        for(Map.Entry<Actor,Character> entry : players.entrySet()){
-            if(entry.getKey().getPawn().getTile()!=mp.getEmptyTile()) {
-                tiles[mp.getCoord(entry.getKey().getPawn().getTile()).getY() * dimTile + playerPos.get(entry.getKey())
-                        .getY()][mp.getCoord(entry.getKey().getPawn().getTile()).getX() * dimTile + playerPos
-                        .get(entry.getKey()).getX()] = entry.getValue();
+        for(TileView t : mp.allTiles()){
+            for(ActorView a: t.players()){
+                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()][mp.getCoord(t).getX()*dimTile
+                        +playerPos.get(players.get(a)).getX()] = players.get(a);
             }
         }
     }

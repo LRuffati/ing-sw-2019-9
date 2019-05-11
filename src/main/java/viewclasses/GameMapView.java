@@ -4,10 +4,7 @@ import board.Coord;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class contains the GameMap that is used by the view and transmitted from the server to the client
@@ -29,6 +26,10 @@ public class GameMapView implements Serializable {
 
     public Collection<TileView> allTiles(){
         return tiles.values();
+    }
+
+    public Set<Coord> allCoord(){
+        return tiles.keySet();
     }
 
     public Coord getCoord(TileView tile){
