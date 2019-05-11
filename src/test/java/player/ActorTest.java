@@ -77,11 +77,11 @@ class ActorTest {
         Actor Pietro = actorList.get(0);
         Pietro.setTurn(true);
         Pietro.move(map.getPosition(new Coord(1,1)));
-        Pietro.movePlayer(map.getPosition(new Coord(1, 2)));
+        Pietro.move(map.getPosition(new Coord(1, 2)));
         assertEquals(map.getPosition(new Coord(1,2)), Pietro.getPawn().getTile());
         Pietro.setFrenzy();
         Coord c = new Coord(2,3);
-        Pietro.movePlayer(map.getPosition(c));
+        Pietro.move(map.getPosition(c));
         assertEquals(map.getPosition(c), Pietro.getPawn().getTile());
     }
 

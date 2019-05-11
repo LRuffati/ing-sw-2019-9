@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 
 public class ScoreboardTest {
@@ -35,7 +36,7 @@ public class ScoreboardTest {
 
     @Test
     void fullConstructor(){
-        Actor pietro = new Actor();
+        Actor pietro = mock(Actor.class);
         listaAttori = new ArrayList<>();
         listaAttori.add(pietro);
         Scoreboard sb = new Scoreboard(listaAttori, 5);
@@ -47,7 +48,7 @@ public class ScoreboardTest {
 
     @Test
     void stdConstructor(){
-        Actor pietro = new Actor();
+        Actor pietro = mock(Actor.class);
         listaAttori = new ArrayList<>();
         listaAttori.add(pietro);
         Scoreboard sb = new Scoreboard(listaAttori);
