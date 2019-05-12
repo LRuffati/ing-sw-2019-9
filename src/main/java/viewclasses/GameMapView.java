@@ -13,7 +13,7 @@ public class GameMapView implements Serializable {
     private Map<Coord, TileView> tiles;
     private Coord maxPos;
     private ActorView you;
-    private List<ActorView> otherPlayers;
+    private List<ActorView> players;
 
 
     public GameMapView(){
@@ -49,8 +49,8 @@ public class GameMapView implements Serializable {
         throw new InvalidParameterException("This coord does not exists");
     }
 
-    public List<ActorView> otherPlayers() {
-        return otherPlayers;
+    public List<ActorView> players() {
+        return players;
     }
 
     public ActorView you() {
@@ -70,7 +70,7 @@ public class GameMapView implements Serializable {
         this.you = you;
     }
 
-    public void setOtherPlayers(List<ActorView> otherPlayers) {
-        this.otherPlayers = otherPlayers;
+    public void setPlayers(List<ActorView> players) {
+        this.players = players;
     }
 }

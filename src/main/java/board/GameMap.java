@@ -507,17 +507,16 @@ public class GameMap {
 
         GameMapView gameMapView = new GameMapView();
 
-        List<ActorView> otherPlayers = new ArrayList<>();
+        List<ActorView> players = new ArrayList<>();
         ActorView you = new ActorView();
         for(DamageableUID actor : getDamageable()){
             if(pointOfView.equals(actor))
                 you = new ActorView(getPawn(actor).getDamageableUID());
-            else
-                otherPlayers.add(new ActorView(getPawn(actor).getDamageableUID()));
+            players.add(new ActorView(getPawn(actor).getDamageableUID()));
         }
 
         gameMapView.setYou(you);
-        gameMapView.setOtherPlayers(otherPlayers);
+        gameMapView.setPlayers(players);
 
         getDamageable().forEach(x -> getPawn(x).generateView(gameMapView, pointOfView.equals(x)));
 

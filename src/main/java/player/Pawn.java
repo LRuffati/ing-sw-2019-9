@@ -121,12 +121,9 @@ public class Pawn {
     public ActorView generateView(GameMapView gameMapView, boolean pointOfView) {
 
         ActorView actorView = new ActorView();
-        if(pointOfView)
-            actorView = gameMapView.you();
-        else
-            for(ActorView a : gameMapView.otherPlayers())
-                if(a.uid().equals(damageableUID))
-                    actorView = a;
+        for(ActorView a : gameMapView.players())
+            if(a.uid().equals(damageableUID))
+                actorView = a;
 
 
         List<ActorView> damageTaken = new ArrayList<>();
@@ -169,10 +166,7 @@ public class Pawn {
         return getActorView(gameMapView, map.getPawn(pawn).getActor());
     }
     private ActorView getActorView(GameMapView gameMapView, Actor actor){
-        if(actor.pawnID().equals(gameMapView.you().uid()))
-            return gameMapView.you();
-
-        for(ActorView actorView : gameMapView.otherPlayers()) {
+        for(ActorView actorView : gameMapView.players()) {
             if (actor.pawnID().equals(actorView.uid())) {
                 return actorView;
             }

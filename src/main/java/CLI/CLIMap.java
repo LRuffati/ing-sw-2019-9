@@ -41,11 +41,8 @@ public class CLIMap {
         int i = 0;
 
         generateMap();
-        players.put(gmv.you(), dictionary.charAt(i));
-        i++;
-        for(ActorView a : gmv.otherPlayers()){
-            players.put(a,dictionary.charAt(i));
-            i++;
+        for(ActorView a : gmv.players()){
+            players.put(a,dictionary.charAt(i++));
         }
         setPlayersPos();
         spawnPlayers();
