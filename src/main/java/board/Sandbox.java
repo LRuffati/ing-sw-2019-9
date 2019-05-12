@@ -39,6 +39,11 @@ public class Sandbox {
     private final List<Effect> effectsHistory;
     private final Map<DamageableUID, TileUID> updatedLocations;
     private final Map<Weapon, Boolean> updatedWeapons;
+
+    public AmmoAmountUncapped getUpdatedAmmoAvailable() {
+        return updatedAmmoAvailable;
+    }
+
     public final AmmoAmountUncapped updatedAmmoAvailable;
 
     public final DamageableUID pov;
