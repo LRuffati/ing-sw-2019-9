@@ -30,11 +30,11 @@ public class Fire implements EffectTemplate {
             }
 
             @Override
-            public ControllerActionResult pick(int choice){
-                if (choice < 0 || choice >= loadedWeapon.size()){
+            public ControllerActionResult pick(int[] choice){
+                if (choice[0] < 0 || choice[0] >= loadedWeapon.size()){
                     return new ControllerActionResult(this);
                 } else {
-                    Weapon weapUsed = loadedWeapon.get(choice);
+                    Weapon weapUsed = loadedWeapon.get(choice[0]);
                     List<Effect> effects = List.of(new Effect() {
                         @Override
                         public Map<Weapon, Boolean> newWeapons(Map<Weapon, Boolean> oldWeapons) {

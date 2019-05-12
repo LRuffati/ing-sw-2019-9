@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface WeaponChooser {
     public List<Weapon> showOptions();
-    public ControllerActionResult pick(int choice);
+    public ControllerActionResult pick(int[] choice);
 }

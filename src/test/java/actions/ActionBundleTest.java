@@ -61,7 +61,7 @@ class ActionBundleTest{
 
         mockeff = mock(Effect.class);
         when(sandboxOriginal.getEffectsHistory()).thenReturn(List.of(mockeff));
-
+        when(newSandbox.getEffectsHistory()).thenReturn(List.of(mockeff,mockeff));
 
         EffectTemplate fireEff = new Fire();
         temp = new ActionTemplate(info, List.of(), List.of(fireEff));
@@ -117,5 +117,23 @@ class ActionBundleTest{
         ActionBundle testTarget = new ActionBundle(map, List.of(temp), pov);
         testTarget.pickAction(0);
         assertEquals(testTarget.getEffects().get(0), mockeff);
+    }
+
+    @Test
+    void testApplyEffectFinalize(){ // Test that the sandbox in the finalizer is the newly
+        // created one
+        ActionInfo info = mock(ActionInfo.class);
+        EffectTemplate eff = new EffectTemplate() {
+            @Override
+            public ControllerActionResult spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResult> consumer) {
+                return consumer.apply(newSandbox);
+            }
+        };
+        ActionTemplate template = new ActionTemplate(info, List.of(), List.of(eff));
+        ActionBundle test = new ActionBundle(map, List.of(template), pov);
+        test.pickAction(0);
+        assertEquals(test.getEffects(), List.of(mockeff,mockeff)); // The sandbox has been
+                                                                    // substituted correctly
+
     }
 }
