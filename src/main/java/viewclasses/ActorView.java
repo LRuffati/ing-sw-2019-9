@@ -134,4 +134,13 @@ public class ActorView implements Serializable {
     public List<PowerUpView> powerUp() {
         return powerUp;
     }
+
+    public String getAnsi(){
+        if(color == Color.white) return "\u001B[37m";
+        if(color == Color.magenta) return "\u001B[35m";
+        if(color == Color.green) return "\u001B[32m";
+        if(color == Color.yellow) return "\u001B[33m";
+        if(color == Color.blue) return "\u001B[34m";
+        return "\u001B[0m";
+    }
 }
