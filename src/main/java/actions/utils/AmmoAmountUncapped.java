@@ -17,7 +17,7 @@ public class AmmoAmountUncapped extends AmmoAmount {
         amounts=temp;
     }
 
-    AmmoAmountUncapped(AmmoAmount capped){
+    public AmmoAmountUncapped(AmmoAmount capped){
         this.amounts = capped.getAmounts();
     }
 

@@ -18,6 +18,7 @@ public class ContainedSelector implements Selector {
 
 
     public ContainedSelector(){
+        // All information is passed through method calls
     }
 
     /**

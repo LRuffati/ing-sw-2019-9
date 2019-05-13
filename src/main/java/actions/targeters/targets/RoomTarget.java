@@ -39,7 +39,7 @@ public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTi
      */
     @Override
     public Set<DamageableUID> getSelectedPawns(Sandbox sandbox) {
-        assert sandbox != null;
+        if (sandbox == null) throw new NullPointerException();
         Set<DamageableUID> retVal = new HashSet<>();
         for (TileUID i: sandbox.tilesInRoom(roomid)){
             retVal.addAll(sandbox.containedPawns(i));
@@ -54,7 +54,7 @@ public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTi
      */
     @Override
     public Set<TileUID> getSelectedTiles(Sandbox sandbox) {
-        assert sandbox != null;
+        if (sandbox == null) throw new NullPointerException();
         return new HashSet<>(sandbox.tilesInRoom(roomid));
     }
 

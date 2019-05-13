@@ -1,18 +1,14 @@
 package controllerresults;
 
-import actions.Action;
-import actions.effects.Effect;
 import actions.utils.ActionPicker;
 import actions.utils.WeaponChooser;
 import actions.utils.ChoiceMaker;
 
-import java.util.List;
-
 public class ControllerActionResult {
-    public ActionResultType type;
-    public ChoiceMaker choiceMaker;
-    public WeaponChooser weaponChooser;
-    public ActionPicker actionPicker;
+    public final ActionResultType type;
+    public final ChoiceMaker choiceMaker;
+    public final WeaponChooser weaponChooser;
+    public final ActionPicker actionPicker;
 
     public ControllerActionResult(ChoiceMaker choiceMaker){
         this.choiceMaker = choiceMaker;

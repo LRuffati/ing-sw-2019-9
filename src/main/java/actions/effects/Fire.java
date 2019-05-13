@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 public class Fire implements EffectTemplate {
 
     public Fire(){
+        // All the information needed is passed through function parameters
     }
 
     @Override

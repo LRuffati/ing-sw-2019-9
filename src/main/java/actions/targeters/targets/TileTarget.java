@@ -76,7 +76,7 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      */
     @Override
     public Set<TileUID> tilesSeen(Sandbox sandbox) {
-        assert sandbox != null;
+        if (sandbox == null) throw new NullPointerException();
         return sandbox.tilesSeen(location(sandbox));
     }
 
@@ -87,7 +87,7 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      */
     @Override
     public Set<DamageableUID> reachedSelector(Sandbox sandbox, int radius) {
-        assert sandbox != null;
+        if (sandbox == null) throw new NullPointerException();
         return distanceSelector(sandbox, radius, true).stream() // All the TileUID within range
                 .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
                 .filter(i->sandbox.getBasic(i).reachableSelector(sandbox, radius).contains(this.location(sandbox))) // Only the BasicTargets which can reach "this"
@@ -102,7 +102,7 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
      */
     @Override
     public Set<TileUID> distanceSelector(Sandbox sandbox, int radius, boolean logical) {
-        assert sandbox != null;
+        if (sandbox == null) throw new NullPointerException();
         return sandbox.circle(location(sandbox),radius,logical);
     }
 

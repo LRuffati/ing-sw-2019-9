@@ -58,6 +58,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      */
     @NotNull
     @Contract("_ -> new")
+    // TODO: test this, implement visitor pattern if needed
     public static BasicTarget basicFactory(@NotNull DominationPoint target){
         return new DominationPointTarget(target.damageableUID);
     }
@@ -203,7 +204,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      * @return all the tiles in the same sandbox as the BasicTarget
      */
     public Set<TileUID> coexistingTiles(Sandbox sandbox){
-        assert sandbox != null;
+        if (sandbox == null) throw new NullPointerException();
         return sandbox.allTiles();
     }
 }

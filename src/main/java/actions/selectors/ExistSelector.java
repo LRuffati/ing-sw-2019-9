@@ -21,7 +21,9 @@ import java.util.stream.Stream;
 public class ExistSelector implements Selector{
 
     @Contract(pure = true)
-    public ExistSelector(){}
+    public ExistSelector(){
+        // All information is provided by method arguments
+    }
 
     /**
      *
