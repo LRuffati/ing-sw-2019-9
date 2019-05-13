@@ -3,13 +3,11 @@ package actions;
 import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
 import actions.utils.AmmoAmount;
-import board.GameMap;
 import board.Sandbox;
 import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 import grabbables.Weapon;
-import uid.DamageableUID;
 
 import java.util.*;
 import java.util.function.Function;

@@ -15,13 +15,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-/**
- * This represents the action as it is being executed.
- *
- * It will have to contain references to the Sandbox, to the Entity performing choices for the
- * targeter, to the targeters themselves, the previously acquired targets and a method which
- * returns an ActionResult
- */
 public class Action {
 
     private final Sandbox sandbox;
@@ -222,4 +215,5 @@ public class Action {
         }
         else return finalizer.apply(new Tuple<>(sandbox, previousTargets));
     }
+
 }

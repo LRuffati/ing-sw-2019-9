@@ -19,7 +19,7 @@ public class PowerUp {
 
     }
 
-    public void useTeleporter(Actor actor, TileUID tile) throws NoSuchFieldException {
+    public void useTeleporter(Actor actor, TileUID tile) {
         if (actor.isTurn())
             actor.move(tile);
     }
