@@ -470,25 +470,6 @@ public class GameMap {
     }
 
     /**
-     * Needed for the CLI.
-     * @return lenght and width of the map.
-     */
-    public Coord getMaxPos() {
-        return maxPos;
-    }
-
-    public boolean exists(Coord coord){
-        try{
-            this.getPosition(coord);
-            return true;
-        }
-        catch (NoSuchElementException e){
-            return false;
-        }
-    }
-
-
-    /**
      * Generates a copy of the Map for Serialization
      * @return the GameMapView object
      */
@@ -497,6 +478,7 @@ public class GameMap {
         GameMapView gameMapView = new GameMapView();
 
         List<ActorView> players = new ArrayList<>();
+        List<ActorView> players2 = new ArrayList<>();
         ActorView you = new ActorView();
         for(DamageableUID actor : getDamageable()){
             if(pointOfView.equals(actor))
@@ -507,7 +489,11 @@ public class GameMap {
         gameMapView.setYou(you);
         gameMapView.setPlayers(players);
 
-        getDamageable().forEach(x -> getPawn(x).generateView(gameMapView, pointOfView.equals(x)));
+        you = getPawn(you.uid()).generateView(gameMapView, true);
+        for(DamageableUID uid : getDamageable())
+            players2.add(getPawn(uid).generateView(gameMapView, false));
+        gameMapView.setYou(you);
+        gameMapView.setPlayers(players2);
 
         //TODO: tiles.put(getCoord(tile), null) ?? is this correct?
         Map<Coord, TileView> tiles = new HashMap<>();

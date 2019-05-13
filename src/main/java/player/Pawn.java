@@ -121,6 +121,7 @@ public class Pawn {
         this.color = color;
     }
 
+
     /**
      * This method sets the name of the Pawn
      * @param username the name
