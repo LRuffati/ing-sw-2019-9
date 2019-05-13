@@ -28,6 +28,7 @@ public class Pawn {
     private transient GameMap map;
     //TODO: addColor
     private Color color = new Color(0,0,0);
+    private String username = "";
 
     /**
      * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
@@ -111,12 +112,22 @@ public class Pawn {
         return map;
     }
 
-    //TODO: delete this method
-    public void setNullMap(){
-        map = null;
+
+    /**
+     * This method sets the color of the Pawn
+     * @param color the color
+     */
+    public void setColor(Color color) {
+        this.color = color;
     }
 
-
+    /**
+     * This method sets the name of the Pawn
+     * @param username the name
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     public ActorView generateView(GameMapView gameMapView, boolean pointOfView) {
 

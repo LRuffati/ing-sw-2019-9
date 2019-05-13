@@ -25,8 +25,8 @@ import java.util.List;
 
 public class Actor {
     private static final int HP = ParserConfiguration.parseInt("Hp");
-    private static final int MAXWEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
-    private static final int MAXPUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
+    private static final int MAX_WEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
+    private static final int MAX_PUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
@@ -110,7 +110,7 @@ public class Actor {
 
         AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
         ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
-        for(int i=0; i<card.getNumOfPowerUp() && powerUps.size()<MAXPUP; i++)
+        for(int i = 0; i<card.getNumOfPowerUp() && powerUps.size()< MAX_PUP; i++)
             powerUps.add(gm.pickUpPowerUp());
         gm.discardAmmoCard(card);
     }
@@ -134,7 +134,7 @@ public class Actor {
         if(!checkAmmo(weapon.getBuyCost(), powerUpToPay))
             throw new AmmoException("Not enough ammo available");
 
-        if((loadedWeapon.size() + unloadedWeapon.size()) >= MAXWEAPON) {
+        if((loadedWeapon.size() + unloadedWeapon.size()) >= MAX_WEAPON) {
             if(weaponToDiscard == null)
                 throw new InvalidParameterException("A weapon must be discarded");
             if(!(loadedWeapon.contains(weaponToDiscard) || unloadedWeapon.contains(weaponToDiscard)))

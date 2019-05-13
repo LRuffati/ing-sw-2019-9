@@ -69,7 +69,7 @@ public class GameMap {
     /**
      * Private constructor, to build a map gameMapFactory must be used
      */
-    GameMap(Map<RoomUID, Room> roomUIDMap,
+    private GameMap(Map<RoomUID, Room> roomUIDMap,
             Map<TileUID, Tile> tileUIDMap,
             List<TileUID> position,
             Coord maxPos,

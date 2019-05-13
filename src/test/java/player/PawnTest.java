@@ -73,10 +73,6 @@ class PawnTest {
             if(!t.equals(tomove))
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tomove).contains(pietro.getDamageableUID()));
-        pietro.setNullMap();
-        assertThrows(InvalidParameterException.class, ()->{
-            pietro.move(finalTomove);
-        });
     }
 
     @Test
