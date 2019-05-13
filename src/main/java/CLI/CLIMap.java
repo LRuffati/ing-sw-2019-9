@@ -53,7 +53,10 @@ public class CLIMap {
     }
 
     /**
-     * Fill the attribute tiles with the right ASCII characters.
+     * Fill the attribute tiles with the right ASCII characters:
+     * First it places every wall for every tile;
+     * Then it places spawn points and AmmoTiles;
+     * Finally it places the doors.
      */
     private void generateMap(){
 
@@ -79,6 +82,8 @@ public class CLIMap {
             tiles[x+4][y+4] = '╝';
             if(t.spawnPoint()){
                 tiles[x+1][y+1] = 's';
+            } else {
+                tiles[x+1][y+1] = 't';
             }
             for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
                 if(entry.getValue().equals("Door")){
@@ -150,14 +155,6 @@ public class CLIMap {
     }
 
     /**
-     * Put weapons in the map with correct ASCII characters checking where in the map is a spawn point.
-     * If there is not spawn point in the tile it places the ammoTile.
-     */
-    private void putAmmoTile(){
-        //TODO think how to better search where there is not spawn point.
-    }
-
-    /**
      *
      * @param ascii the character to write.
      * @param pos where to write the character.
@@ -200,12 +197,9 @@ public class CLIMap {
     public void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
-                //TODO Check if EmptyTile!
                 tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()][mp.getCoord(t).getX()*dimTile
                         +playerPos.get(players.get(a)).getX()] = players.get(a);
             }
         }
     }
-
-
 }
