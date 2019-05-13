@@ -79,7 +79,7 @@ class DeckTest {
     void checkTakeSubset() {
         ArrayList<Integer> integerArrayList = generateList();
         Deck<Integer> integerDeck = new Deck<>(integerArrayList);
-        int n = (new Random()).nextInt(integerArrayList.size());
+        int n = (new Random()).nextInt(integerArrayList.size()-1);
         Collection<Integer> taken = integerDeck.take(n);
         assertEquals(n, taken.size());
     }

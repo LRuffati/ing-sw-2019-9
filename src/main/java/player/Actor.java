@@ -72,11 +72,6 @@ public class Actor {
         this.turn = false;
     }
 
-    //TODO: create a function with the total sum of ammo cubes and powerup
-    public AmmoAmountUncapped getTotalAmmo(){
-        return null;
-    }
-
     /**
      * Provide the binding between the Actor and the DamageableUID
      */
@@ -194,7 +189,7 @@ public class Actor {
      * This method keeps track of PowerUp cards possibly being used as ammunition
      * @return the sum of ammoAvailable and all the powerups
      */
-    private AmmoAmount getTotalAmmo(){
+    public AmmoAmountUncapped getTotalAmmo(){
         AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable);
         for(PowerUp pu : powerUps){
             am.add(pu.getAmmo());

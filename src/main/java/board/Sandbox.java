@@ -10,7 +10,6 @@ import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
-import uid.WeaponUID;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -167,13 +166,12 @@ public class Sandbox {
         return map.room(tile(pawn));
     }
 
-    /**
-     * @param pawn
-     * @return the room containing the pawn
-     */
     public TileUID tile(DamageableUID pawn){
-        //TODO: make effects dependent
-        return pawnsTargeted.get(pawn).location(this);
+        if (updatedLocations.containsKey(pawn))
+            return updatedLocations.get(pawn);
+        else {
+            return map.tile(pawn);
+        }
     }
 
     /**
