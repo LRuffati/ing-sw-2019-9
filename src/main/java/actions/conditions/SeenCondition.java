@@ -8,7 +8,7 @@ import board.Sandbox;
 /**
  * target (... &amp; seen checker)
  */
-public class SeenCondition extends Condition {
+public class SeenCondition implements Condition {
     /**
      * Whether I'm looking at a positive or negative condition
      */

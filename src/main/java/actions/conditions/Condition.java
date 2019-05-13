@@ -3,7 +3,7 @@ package actions.conditions;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 
-public abstract class Condition {
+public interface Condition {
     /**
      *
      * @param target the target being filtered

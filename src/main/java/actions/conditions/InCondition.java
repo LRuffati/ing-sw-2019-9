@@ -8,7 +8,7 @@ import board.Sandbox;
 /**
  * Pointlike (in SuperTile)
  */
-public class InCondition extends Condition {
+public class InCondition implements Condition {
     /**
      * True if I'm interested in targets not contained
      */

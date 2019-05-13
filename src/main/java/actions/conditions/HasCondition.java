@@ -8,7 +8,7 @@ import board.Sandbox;
 /**
  * SuperTile (has PointLike)
  */
-public class HasCondition extends Condition {
+public class HasCondition implements Condition {
     /**
      * If I'm looking for Supertiles not containing the target
      */

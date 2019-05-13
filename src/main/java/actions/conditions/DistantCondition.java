@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 /**
  * Checked for the condition target (distant () pointlike)
  */
-public class DistantCondition extends Condition {
+public class DistantCondition implements Condition {
     /**
      * the minimum (included) number of steps
      */

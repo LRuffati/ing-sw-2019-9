@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * target (... &amp; reaches selector)
  */
-public class ReachesCondition extends Condition {
+public class ReachesCondition implements Condition {
     /**
      * the minimum (included) number of steps
      */
