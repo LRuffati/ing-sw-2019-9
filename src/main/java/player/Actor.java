@@ -47,18 +47,6 @@ public class Actor {
     private Set<Actor> damagedBy;
 
     /**
-     * This method keeps track of PowerUp cards possibly being used as ammunition
-     * @return the sum of ammoAvailable and all the powerups
-     */
-    private AmmoAmount ammoAvailable(){
-        AmmoAmount am = ammoAvailable;
-        for(PowerUp pu : powerUps){
-            am.add(pu.getAmmo());
-        }
-        return am;
-    }
-
-    /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
      * @param map GameMap
      * @param pawnId the Pawn identifier that has to be associated with this Actor
@@ -203,6 +191,18 @@ public class Actor {
     }
 
     /**
+     * This method keeps track of PowerUp cards possibly being used as ammunition
+     * @return the sum of ammoAvailable and all the powerups
+     */
+    private AmmoAmount getTotalAmmo(){
+        AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable);
+        for(PowerUp pu : powerUps){
+            am.add(pu.getAmmo());
+        }
+        return am;
+    }
+
+    /**
      * Consumes all the powerUps, and then reduce the amount of ammoAvailable
      */
     private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
@@ -269,7 +269,7 @@ public class Actor {
      * Also converts all the marks of the shooter into damage.
      * @param shooter is the attacker.
      */
-    public void getDMG(Actor shooter){
+    private void getDMG(Actor shooter){
         if(damageTaken.size() <= HP){
             damagedBy.add(shooter);
             shooter.damagedPlayer.add(this);

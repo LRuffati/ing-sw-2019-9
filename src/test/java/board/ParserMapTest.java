@@ -1,5 +1,6 @@
 package board;
 
+import gamemanager.ParserConfiguration;
 import genericitems.Tuple3;
 import org.junit.jupiter.api.*;
 import uid.TileUID;
@@ -14,7 +15,7 @@ public class ParserMapTest {
     void map1Test(){
         GameMap map = null;
         try {
-            map =  GameMap.gameMapFactory("src/resources/map1.txt"
+            map =  GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path")
                     , 0, new Tuple3<>(null,null,null));
             //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }

@@ -5,6 +5,7 @@ import actions.WeaponUse;
 import actions.utils.AmmoAmount;
 import board.GameMap;
 import uid.DamageableUID;
+import viewclasses.WeaponView;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ import java.util.Optional;
 public class Weapon extends Grabbable{
     private AmmoAmount buyCost;
     private AmmoAmount reloadCost;
-    private boolean isLoaded;
     private String name;
     private String weaponID;
     private String description;
@@ -28,12 +28,10 @@ public class Weapon extends Grabbable{
 
 
     public Weapon(String name,
-                  String description,
                   AmmoAmount buyCost,
                   AmmoAmount reloadCost,
                   Collection<ActionTemplate> actions){
         this.name = name;
-        this.description = description;
         this.buyCost = buyCost;
         this.reloadCost = reloadCost;
 
@@ -43,13 +41,8 @@ public class Weapon extends Grabbable{
         }
 
         this.weaponID = name;
-
-        this.isLoaded = true;
     }
 
-    public String getDescription() {
-        return description;
-    }
 
     public String getName() {
         return name;
@@ -99,23 +92,6 @@ public class Weapon extends Grabbable{
         return ret;
     }
 
-    /**
-     * Silly method to set the weapon from the Actor class.
-     */
-    public void setLoaded(){
-        this.isLoaded = true;
-    }
-
-    /**
-     *
-     * @return true if the weapon is loaded and ready to be used.
-     */
-    public boolean isLoaded() {
-        return isLoaded;
-    }
-
-
-
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
@@ -125,5 +101,17 @@ public class Weapon extends Grabbable{
     public int hashCode() {
         return super.hashCode();
     }
-}
 
+
+    public WeaponView generateView() {
+        WeaponView weaponView = new WeaponView();
+
+        weaponView.setName(name);
+        weaponView.setBuyCost(buyCost);
+        weaponView.setReloadCost(reloadCost);
+
+        weaponView.setUid(super.getId());
+
+        return weaponView;
+    }
+}

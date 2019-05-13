@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Builds a GameMap from a file
  */
-public class ParserMap {
+class ParserMap {
 
     private static int length;
     private static int width;
@@ -22,7 +22,7 @@ public class ParserMap {
     private static List<RoomUID> roomOfTile;
     private static List<Room> room = new ArrayList<>();
     private static List<Integer> excluded = new ArrayList<>();
-    private static List<Map<Direction, NeightTile>> allNeight;
+    private static List<Map<Direction, NeighTile>> allNeight;
     private static List<Integer> spawnPoint;
 
     private ParserMap(){}
@@ -30,14 +30,14 @@ public class ParserMap {
     /**
      * @param path The Path of the Map file
      * @return a GameMap built upon the path file
-     * @throws FileNotFoundException If path is not found, throws an Exception
+     * @throws FileNotFoundException If path is not found, throws an exception
      */
-    public static Tuple4 parseMap(String path) throws FileNotFoundException{
+    static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> parseMap(String path) throws FileNotFoundException{
 
         String str;
         Scanner scanner;
         try{
-             scanner = new Scanner(new File(path));
+            scanner = new Scanner(new File(path));
         }
         catch (FileNotFoundException e){
             throw new FileNotFoundException("File not found");
@@ -114,7 +114,7 @@ public class ParserMap {
         allNeight = new ArrayList<>();
 
         for(int i=0; i<length*width; i++){
-            Map<Direction, NeightTile> neight = new EnumMap<>(Direction.class);
+            Map<Direction, NeighTile> neight = new EnumMap<>(Direction.class);
 
             addElem(neight, i, -length, Direction.UP);
             addElem(neight, i, -1, Direction.LEFT);
@@ -136,13 +136,13 @@ public class ParserMap {
             str = scanner.nextLine();
 
 
-            Map<Direction, NeightTile> m;
+            Map<Direction, NeighTile> m;
             m = allNeight.get(index(co[0],co[1]));
-            m.put(getDirection(co[0],co[1],co[2],co[3]), new NeightTile(tile.get(index(co[2],co[3])),true));
+            m.put(getDirection(co[0],co[1],co[2],co[3]), new NeighTile(tile.get(index(co[2],co[3])),true));
             allNeight.set(index(co[0],co[1]), m);
 
             m = allNeight.get(index(co[2],co[3]));
-            m.put(getDirection(co[2],co[3],co[0],co[1]), new NeightTile(tile.get(index(co[0],co[1])),true));
+            m.put(getDirection(co[2],co[3],co[0],co[1]), new NeighTile(tile.get(index(co[0],co[1])),true));
             allNeight.set(index(co[2],co[3]), m);
         }
     }
@@ -161,14 +161,14 @@ public class ParserMap {
 
 
 
-    private static void addElem(Map<Direction, NeightTile> neight, int index, int diff, Direction d){
+    private static void addElem(Map<Direction, NeighTile> neight, int index, int diff, Direction d){
         int val = index+diff;
         if(val>=0 && val<length*width && !excluded.contains(val) && !excluded.contains(index)) {
             if (roomOfTile.get(index) == roomOfTile.get(val)) {
-                neight.put(d, new NeightTile(tile.get(val), true));
+                neight.put(d, new NeighTile(tile.get(val), true));
             }
             else{
-                neight.put(d, new NeightTile(tile.get(val), false));
+                neight.put(d, new NeighTile(tile.get(val), false));
             }
         }
     }
@@ -187,13 +187,13 @@ public class ParserMap {
     }
 
 
-    private static Tuple4 buildMap(){
+    private static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> buildMap(){
         List<Tile> tileObj = new ArrayList<>();
 
         boolean isSpawn;
-        for(int i=0; i<tile.size(); i++){
+        for(int i=0; i<tile.size(); i++) {
             isSpawn = spawnPoint.contains(i);
-            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn ));
+            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn));
         }
 
 
@@ -203,9 +203,10 @@ public class ParserMap {
             roomUIDMap.put(r.getRoomID(), r);
         }
         for(int i=0; i<tile.size(); i++){
-            tileUIDMap.put(tile.get(i) , tileObj.get(i));
+            if(!excluded.contains(i))
+                tileUIDMap.put(tile.get(i) , tileObj.get(i));
         }
 
-        return new Tuple4(roomUIDMap, tileUIDMap, tile, new Coord(length,width));
+        return new Tuple4<>(roomUIDMap, tileUIDMap, tile, new Coord(length,width));
     }
 }

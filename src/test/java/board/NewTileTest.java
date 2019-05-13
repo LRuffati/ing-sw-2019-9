@@ -1,5 +1,6 @@
 package board;
 
+import gamemanager.ParserConfiguration;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.Grabbable;
@@ -23,7 +24,7 @@ class NewTileTest {
     void setup(){
         map = null;
         try {
-            map = GameMap.gameMapFactory("src/resources/map1.txt"
+            map = GameMap.gameMapFactory( ParserConfiguration.parsePath("map1Path")
                     ,0, new Tuple3<>(null,null,null));
             //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
@@ -84,9 +85,15 @@ class NewTileTest {
 
     @Test
     void testSpawn(){
-        assertFalse(map.getTile(map.getPosition(new Coord(0,0))).spawnPoint());
-        assertFalse(map.getTile(map.getPosition(new Coord(0,3))).spawnPoint());
-        assertTrue(map.getTile(map.getPosition(new Coord(0,2))).spawnPoint());
+        for(TileUID t : map.allTiles()){
+            if(t.equals(map.getPosition(new Coord(0,2)))
+                        || t.equals(map.getPosition(new Coord(1,0)))
+                        || t.equals(map.getPosition(new Coord(2,3)))
+                )
+                assertTrue(map.getTile(t).spawnPoint());
+            else
+                assertFalse(map.getTile(t).spawnPoint());
+        }
     }
 
 
@@ -111,26 +118,4 @@ class NewTileTest {
         assertTrue(tile.getGrabbable().isEmpty());
         assertEquals(new HashSet<>() , tile.getGrabbable());
     }
-
-    @Test
-    void testDamageable(){
-        Tile tile = map.getTile(map.getPosition(new Coord(1,1)));
-        //TODO: check
-        Set<DamageableUID> g;
-        DamageableUID g1 = new DamageableUID();
-        g = (HashSet) tile.getDamageable();
-        assertTrue(g.isEmpty());
-        g.add(g1);
-        assertNotEquals(g, tile.getDamageable());
-        assertThrows(NoSuchElementException.class , () -> tile.removeDamageable(g1));
-
-        tile.addDamageable(g1);
-        g = (HashSet) tile.getDamageable();
-        assertFalse(g.isEmpty());
-        assertEquals(g, tile.getDamageable());
-        tile.removeDamageable(g1);
-        assertTrue(tile.getDamageable().isEmpty());
-        assertEquals(new HashSet<>() , tile.getDamageable());
-    }
-
 }

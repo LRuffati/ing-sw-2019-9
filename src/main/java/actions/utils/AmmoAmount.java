@@ -1,5 +1,6 @@
 package actions.utils;
 
+import gamemanager.ParserConfiguration;
 import org.jetbrains.annotations.*;
 
 import java.util.EnumMap;
@@ -15,10 +16,8 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
 
     /**
      * The maximum amount available, this is a global variable
-     * TODO: load from configuration file
      */
-    static Integer maximumAmmo = 3;
-
+    private static Integer maximumAmmo = ParserConfiguration.parseInt("maximumAmmoPerCard");
 
     /**
      * The amount represented by the class

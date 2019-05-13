@@ -4,19 +4,15 @@ import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Direction;
 import player.Actor;
-import uid.PowerUpUID;
 import uid.TileUID;
 
 public class PowerUp {
     private PowerUpType type;
-    private PowerUpUID powerUpUID;
     private AmmoColor ammo;
 
     public PowerUp(PowerUpType t, AmmoColor c){
         this.type = t;
         this.ammo = c;
-        this.powerUpUID = new PowerUpUID();
-
     }
 
     public void useTeleporter(Actor actor, TileUID tile) {
