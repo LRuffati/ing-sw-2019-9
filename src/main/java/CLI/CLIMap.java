@@ -1,6 +1,7 @@
 package CLI;
 
 import board.Coord;
+import board.Direction;
 import board.GameMap;
 import gamemanager.GameBuilder;
 import grabbables.Weapon;
@@ -78,6 +79,27 @@ public class CLIMap {
             tiles[x+4][y+4] = '╝';
             if(t.spawnPoint()){
                 tiles[x+1][y+1] = 's';
+            }
+            for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
+                if(entry.getValue().equals("Door")){
+                    switch (entry.getKey()){
+                        case UP:
+                            tiles[x+2][y] = ' ';
+                            break;
+
+                        case DOWN:
+                            tiles[x+2][y+4] = ' ';
+                            break;
+
+                        case LEFT:
+                            tiles[x][y+2] = ' ';
+                            break;
+
+                        case RIGHT:
+                            tiles[x+4][y+2] = ' ';
+                            break;
+                    }
+                }
             }
         }
         for(int i = 0; i < tiles[0].length; i++){
