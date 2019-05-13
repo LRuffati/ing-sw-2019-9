@@ -1,5 +1,6 @@
 package board;
 
+import gamemanager.ParserConfiguration;
 import genericitems.Tuple3;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class RoomTest {
     void setup(){
         map = null;
         try {
-            map = GameMap.gameMapFactory("src/resources/map1.txt"
+            map = GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path")
                     , 0, new Tuple3<>(null,null,null));
             //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
@@ -44,7 +45,7 @@ class RoomTest {
         r = map.getRoom(map.room(map.getPosition(new Coord(0,0))));
         assertTrue(r.getTiles().contains(map.getPosition(new Coord(0,2))));
         r = map.getRoom(map.room(map.getPosition(new Coord(2,2))));
-        assertFalse(r.getTiles().contains(map.getPosition(new Coord(0,3))));
+        assertFalse(r.getTiles().contains(map.getPosition(new Coord(2,3))));
 
         assertThrows(NoSuchElementException.class , () -> map.getRoom(new RoomUID()).getTiles());
 

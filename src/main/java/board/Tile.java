@@ -1,10 +1,14 @@
 package board;
+import grabbables.AmmoCard;
 import grabbables.Grabbable;
+import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
+import viewclasses.*;
 
 import java.awt.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 
@@ -20,14 +24,13 @@ public class Tile{
      * @param roomID The identifier of the room
      * @param neighbors The neighbors of the tile
      */
-    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction,NeightTile> neighbors, boolean spawnPoint) {
+    public Tile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction, NeighTile> neighbors, boolean spawnPoint) {
         this.map = map;
         this.roomID = roomID;
         this.tileID = tileID;
         this.neighbors = neighbors;
         this.spawnPoint = spawnPoint;
 
-        damageable = new HashSet<>();
         grabbableSet = new HashSet<>();
     }
 
@@ -46,7 +49,7 @@ public class Tile{
      *
      * Handle this via an appropriate getter
      */
-    private final Map<Direction , NeightTile> neighbors;
+    private final Map<Direction , NeighTile> neighbors;
 
     /**
      * The UID of the cell
@@ -59,18 +62,16 @@ public class Tile{
     private Set<Grabbable> grabbableSet;
 
     /**
-     * List of Damageable units in the Tile
-     */
-    private Set<DamageableUID> damageable;
-
-    /**
      * Reference of the global map
      */
     private transient GameMap map;
 
 
     protected void setMap(GameMap map){
-        this.map = map;
+        if (this.map==null)
+            this.map = map;
+        else
+            throw new InvalidParameterException("Cannot set this weapon, another one has been linked");
     }
 
     /**
@@ -149,41 +150,12 @@ public class Tile{
         return roomID;
     }
 
-
-    /**
-     * Returns a collection with all the DamageableUID contained in the tile
-     * @return A collections containing the DamageableUID in the tile
-     */
-    protected Collection<DamageableUID> getDamageable(){
-        return new HashSet<>(damageable);
-    }
-
-    /**
-     * Adds a Damageable element in the tile
-     * @param damageableUID The Damageable element that has to be added
-     */
-    protected void addDamageable(DamageableUID damageableUID){
-        damageable.add(damageableUID);
-    }
-
-    /**
-     * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
-     * @param damageableID The identifier of the damageable item
-     * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
-     */
-    protected void removeDamageable(DamageableUID damageableID) {
-        if(damageable.contains(damageableID))
-            damageable.remove(damageableID);
-        else
-            throw new NoSuchElementException("This GrabbableID is not in this Tile");
-    }
-
     /**
      * Returns a Map containing surrounding Tiles. If there is no Tile, the corresponding direction is not present in the Map
      * @param physical true to check through walls, false otherwise
      * @return A Map containing surrounding Tiles
      */
-    protected Map<Direction, TileUID> getMapOfNeighbor(Boolean physical){
+    protected Map<Direction, TileUID> getMapOfNeighbor(boolean physical){
         Map<Direction, TileUID> ret = new EnumMap<>(Direction.class);
         Optional<TileUID> t;
         for( Direction d : neighbors.keySet()){
@@ -199,5 +171,58 @@ public class Tile{
      */
     public boolean spawnPoint(){
         return this.spawnPoint;
+    }
+
+
+
+
+    TileView generateView(GameMapView gameMapView) {
+        TileView tileView = new TileView();
+        Optional<TileUID> opt;
+
+        Map<Direction, String> nearTiles = new EnumMap<>(Direction.class);
+        for(Direction d : Direction.values()){
+            opt = getNeighbor(false, d);
+            if(opt.isPresent()) {
+                if (roomID.equals(map.getTile(opt.get()).roomID))
+                    nearTiles.put(d, "Tile");
+                else
+                    nearTiles.put(d, "Door");
+            }
+            else
+                nearTiles.put(d, "Wall");
+        }
+        tileView.setNearTiles(nearTiles);
+
+
+        tileView.setColor(getColor());
+        tileView.setSpawnPoint(spawnPoint);
+        tileView.setUid(tileID);
+
+
+        List<ActorView> players = new ArrayList<>();
+        for(DamageableUID pawn : map.containedPawns(tileID)) {
+            if(gameMapView.you().uid().equals(pawn))
+                players.add(gameMapView.you());
+            else
+                for(ActorView actorView : gameMapView.otherPlayers())
+                    if(actorView.uid().equals(pawn))
+                        players.add(actorView);
+        }
+        tileView.setPlayers(players);
+
+
+        List<WeaponView> weapon = new ArrayList<>();
+        for(Grabbable grabbable : map.getGrabbable(tileID)){
+            if(spawnPoint){
+                weapon.add(((Weapon) grabbable).generateView());
+            }
+            else
+                tileView.setAmmoCard(((AmmoCard) grabbable).generateView());
+        }
+        if(spawnPoint)
+            tileView.setWeapons(weapon);
+
+        return tileView;
     }
 }

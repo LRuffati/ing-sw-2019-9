@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.awt.Color.*;
+
 /**
  * The logical representation of a room in the map.
  * When visualized all cells in the room should have the same color, unique for each room.
@@ -61,4 +63,5 @@ public class Room{
     public Collection<TileUID> getTiles(){
         return new HashSet<>(tiles);
     }
+
 }

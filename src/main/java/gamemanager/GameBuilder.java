@@ -27,6 +27,8 @@ public class GameBuilder {
      * Requires the configuration files for all the components.
      * The syntax of the files is not checked, so new files must be written very accurately.
      *
+     * If parameters are null it recovers files from resources repository.
+     *
      * @param mapPath Path of the map file.
      * @param weaponPath Path of the Weapons file.
      * @param powerUpPath Path of the PowerUps file
@@ -41,13 +43,13 @@ public class GameBuilder {
                        int numOfPlayer)
             throws FileNotFoundException{
 
-        if(weaponPath!=null) deckOfWeapon = parserWeapon(weaponPath);
-        if(powerUpPath!=null) deckOfPowerUp = parserPowerUp(powerUpPath);
-        if(ammoCardPath!=null) deckOfAmmoCard = parserAmmoTile(ammoCardPath);
+        deckOfWeapon = parserWeapon(weaponPath);
+        deckOfPowerUp = parserPowerUp(powerUpPath);
+        deckOfAmmoCard = parserAmmoTile(ammoCardPath);
 
         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
 
-        map = GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+        map = parserMap(mapPath, numOfPlayer, decks);
 
         actorList = buildActor(map);
 
@@ -55,16 +57,38 @@ public class GameBuilder {
     }
 
 
+    private GameMap parserMap(String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
+        if(mapPath != null) return GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+
+        if(numOfPlayer == 3)
+            return GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path"), numOfPlayer, decks);
+        if(numOfPlayer == 4)
+            return GameMap.gameMapFactory(ParserConfiguration.parsePath("map2Path"), numOfPlayer, decks);
+        if(numOfPlayer == 5)
+            return GameMap.gameMapFactory(ParserConfiguration.parsePath("map3Path"), numOfPlayer, decks);
+
+        return GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path"), numOfPlayer, decks);
+    }
+
     private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
-        return new Deck<>(ParserAmmoTile.parse(ammoCardPath));
+        return ammoCardPath==null
+                ? new Deck<>(ParserAmmoTile.parse(ParserConfiguration.parsePath("ammoTilePath")))
+                : new Deck<>(ParserAmmoTile.parse(ammoCardPath));
     }
 
     private Deck<PowerUp> parserPowerUp(String powerUpPath) throws FileNotFoundException {
-        return new Deck<>(ParserPowerUp.parse(powerUpPath));
+        return powerUpPath==null
+                ? new Deck<>(ParserPowerUp.parse(ParserConfiguration.parsePath("powerUpPath")))
+                : new Deck<>(ParserPowerUp.parse(powerUpPath));
     }
 
     private Deck<Weapon> parserWeapon(String weaponPath) {
         return null;
+        /*
+        return weaponPath==null
+                ? new Deck<>(ParserWeapon.parse(ParserConfiguration.parsePath("weaponPath")))
+                : new Deck<>(ParserWeapon.parse(weaponPath));
+        */
     }
 
     private List<Actor> buildActor(GameMap map) {
@@ -96,7 +120,7 @@ public class GameBuilder {
         return scoreboard;
     }
     public List<Actor> getActorList(){
-        return List.copyOf(actorList);
+        return new ArrayList<>(actorList);
     }
 }
 

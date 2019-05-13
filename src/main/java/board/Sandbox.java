@@ -141,7 +141,6 @@ public class Sandbox {
      * @return
      */
     public Collection<DamageableUID> containedPawns(TileUID tile){
-
         return map.getDamageable().stream().filter(i -> tile(i).equals(tile)).collect(Collectors.toCollection(ArrayList::new));
     }
 

@@ -1,11 +1,13 @@
 package board;
 
 import gamemanager.GameBuilder;
+import gamemanager.ParserConfiguration;
 import grabbables.AmmoCard;
 import grabbables.Deck;
 import grabbables.PowerUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import player.Pawn;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
@@ -25,9 +27,9 @@ class newGameMapTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String mapPath = "src/resources/map1.txt";
-        String ammoPath = "src/resources/ammoTile.txt";
-        String powerPath = "src/resources/powerUp.txt";
+        String mapPath = ParserConfiguration.parsePath("map1Path");
+        String ammoPath = ParserConfiguration.parsePath("ammoTilePath");
+        String powerPath= ParserConfiguration.parsePath("powerUpPath");
         try {
             builder = new GameBuilder(
                     mapPath, null, powerPath, ammoPath, 3);
@@ -40,11 +42,21 @@ class newGameMapTest {
     }
 
     @Test
+    void nullTileTest(){
+        assertThrows(NoSuchElementException.class , () -> map.getPosition(new Coord(0,3)));
+        assertThrows(NoSuchElementException.class , () -> map.getPosition(new Coord(2,0)));
+    }
+
+    @Test
+    void allTileTest(){
+        assertEquals(12-2 , map.allTiles().size());
+    }
+
+    @Test
     void neighborTest(){
         helperTest(map.getPosition(new Coord(0,0)),true);
         helperTest(map.getPosition(new Coord(0,0)),false);
         helperTest(map.getPosition(new Coord(1,1)),true);
-        assertTrue(map.neighbors(map.getPosition(new Coord(0,3)),false).isEmpty());
     }
     private void helperTest(TileUID t, boolean logical){
         Map<Direction, TileUID> m;
@@ -66,22 +78,26 @@ class newGameMapTest {
         DamageableUID[] listD = new DamageableUID[map.getDamageable().size()];
         map.getDamageable().toArray(listD);
 
-        map.addDamageable(map.getPosition(new Coord(0,0)) , listD[0]);
-        assertEquals(map.getPosition(new Coord(0,0)) ,  map.tile(listD[0]));
-        assertEquals(Set.of(listD[0]) ,  map.containedPawns(map.getPosition(new Coord(0,0))));
+        Pawn pawn = map.getPawn(listD[0]);
+        Pawn pawn1 = map.getPawn(listD[1]);
+        Pawn pawn2 = map.getPawn(listD[2]);
 
-        map.removeDamageable(map.getPosition(new Coord(0,0)) , listD[0]);
+
+        pawn.move(map.getPosition(new Coord(0,0)));
+        assertEquals(map.getPosition(new Coord(0,0)) ,  map.tile(listD[0]));
+        assertEquals(new ArrayList<>(Set.of(listD[0])) ,  map.containedPawns(map.getPosition(new Coord(0,0))));
+
+        pawn.move(map.getPosition(new Coord(1,1)));
         assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
-        assertThrows(NoSuchElementException.class , () -> map.removeDamageable(map.getPosition(new Coord(1,1)), listD[0]));
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,0))).isEmpty());
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,2))).isEmpty());
-        assertTrue(map.containedPawns(map.getPosition(new Coord(0,3))).isEmpty());
 
 
-        map.addDamageable(map.getPosition(new Coord(2,2)) , listD[1]);
-        map.addDamageable(map.getPosition(new Coord(2,2)) , listD[2]);
+        pawn1.move(map.getPosition(new Coord(2,2)));
+        pawn2.move(map.getPosition(new Coord(2,2)));
         assertEquals(2 , map.getDamageable(map.getPosition(new Coord(2,2))).size());
-        assertTrue(map.getDamageable(map.getPosition(new Coord(2,2))).containsAll(Set.of(listD[1],listD[2])));
+        assertTrue(map.getDamageable(map.getPosition(new Coord(2,2)))
+                .containsAll(Set.of(listD[1],listD[2])));
 
         assertTrue(map.containedPawns(map.getPosition(new Coord(2,2))).contains(listD[1]));
         assertFalse(map.containedPawns(map.getPosition(new Coord(1,2))).contains(listD[1]));
@@ -114,10 +130,6 @@ class newGameMapTest {
                 map.neighbors(map.getPosition(new Coord(2,3)), true));
         assertEquals(map.getTile(map.getPosition(new Coord(2,3))).getMapOfNeighbor(false) ,
                 map.neighbors(map.getPosition(new Coord(2,3)), true));
-        assertEquals(map.getTile(map.getPosition(new Coord(0,3))).getMapOfNeighbor(true) ,
-                map.neighbors(map.getPosition(new Coord(0,3)), true));
-
-        assertTrue(map.neighbors(map.getPosition(new Coord(0,3)), true).isEmpty());
 
         assertEquals(2, map.neighbors(map.getPosition(new Coord(2,3)), true).size());
     }
@@ -228,5 +240,23 @@ class newGameMapTest {
         final AmmoCard ammo1 = card;
         ammoCardDeck.discard(ammo1);
         assertThrows(InvalidParameterException.class, () -> map.discardAmmoCard(ammo1));
+    }
+
+    @Test
+    void testEmptyWeaponDeckWithoutWeapon(){
+        Deck<Integer> deck= new Deck<>(Set.of(1,2,3,4,5));
+        assertFalse(emptyWeaponDeck(deck));
+        deck.take(7);
+        assertTrue(emptyWeaponDeck(deck));
+    }
+
+    private boolean emptyWeaponDeck(Deck deck){
+        try{
+            deck.next();
+        }
+        catch (NoSuchElementException e){
+            return true;
+        }
+        return false;
     }
 }

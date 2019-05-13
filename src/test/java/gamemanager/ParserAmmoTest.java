@@ -18,11 +18,10 @@ class ParserAmmoTest {
 
     @BeforeEach
     void setup(){
-        String tilePath = "src/resources/ammoTile.txt";
-        String mapPath = "src/resources/map1.txt";
+        String tilePath = ParserConfiguration.parsePath("ammoTilePath");
         try {
             ammoCardCollection = ParserAmmoTile.parse(tilePath);
-            ammoCardDeck = new GameBuilder(mapPath, null, null, tilePath, 1).getDeckOfAmmoCard();
+            ammoCardDeck = new GameBuilder(null, null, null, null, 1).getDeckOfAmmoCard();
         }
         catch (FileNotFoundException e){
         }
@@ -30,10 +29,9 @@ class ParserAmmoTest {
 
     void setup2(){
         String path = "src/test/java/gamemanager/TileTest";
-        String mapPath = "src/resources/map1.txt";
         try {
             ammoCardCollection = ParserAmmoTile.parse(path);
-            ammoCardDeck = new GameBuilder(mapPath, null, null, path, 1).getDeckOfAmmoCard();
+            ammoCardDeck = new GameBuilder(null, null, null, path, 1).getDeckOfAmmoCard();
         }
         catch (FileNotFoundException e){
             System.out.println(e.getStackTrace());

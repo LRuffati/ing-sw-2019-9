@@ -2,6 +2,7 @@ package board;
 import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import actions.targeters.targets.BasicTarget;
@@ -14,58 +15,18 @@ import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
+import viewclasses.ActorView;
+import viewclasses.GameMapView;
+import viewclasses.TileView;
 
 /**
  * The logical container of all elements of the map, room, tile, pawns, munition cards and grabbable weapons cards
  */
 public class GameMap {
-    /**
-     * Private constructor, to build a map gameMapFactory must be used
+
+    /*
+    Attributes
      */
-    GameMap(Map<RoomUID, Room> roomUIDMap,
-            Map<TileUID, Tile> tileUIDMap,
-            List<TileUID> position,
-            Coord maxPos,
-            int numOfPlayer,
-            Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards) {
-        this.roomUIDMap = roomUIDMap;
-        this.tileUIDMap = tileUIDMap;
-        this.position = position;
-        this.maxPos = maxPos;
-
-        this.deckOfWeapon = cards.x;
-        this.deckOfAmmoCard = cards.y;
-        this.deckOfPowerUp = cards.z;
-
-        this.emptyTile = new TileUID();
-        tileUIDMap.values().forEach(x -> x.setMap(this));
-
-        //TODO: create weapon cards
-        // refill();
-
-        this.damageableUIDMap = buildPawn(this, numOfPlayer);
-
-    }
-
-
-    public static GameMap gameMapFactory(String path,
-                                         int numOfPlayer,
-                                         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
-            throws FileNotFoundException {
-
-        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
-        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
-    }
-
-
-    /**
-     * Creates a sandbox used to test the validity of any action
-     * @return the Sandbox
-     */
-    public Sandbox createSandbox(DamageableUID pov) {
-        return new Sandbox(this, pov);
-    }
-
     /**
      * Holds the length and width of the Map
      */
@@ -101,6 +62,66 @@ public class GameMap {
     private final Deck<AmmoCard> deckOfAmmoCard;
     private final Deck<grabbables.PowerUp> deckOfPowerUp;
 
+    /*
+    Constructors
+     */
+
+    /**
+     * Private constructor, to build a map gameMapFactory must be used
+     */
+    GameMap(Map<RoomUID, Room> roomUIDMap,
+            Map<TileUID, Tile> tileUIDMap,
+            List<TileUID> position,
+            Coord maxPos,
+            int numOfPlayer,
+            Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards) {
+        this.roomUIDMap = roomUIDMap;
+        this.tileUIDMap = tileUIDMap;
+        this.position = position;
+        this.maxPos = maxPos;
+
+        this.deckOfWeapon = cards.x;
+        this.deckOfAmmoCard = cards.y;
+        this.deckOfPowerUp = cards.z;
+
+        this.emptyTile = new TileUID();
+        tileUIDMap.values().forEach(x -> x.setMap(this));
+
+        //TODO: create weapon cards
+        // refill();
+
+        this.damageableUIDMap = buildPawn(this, numOfPlayer);
+
+    }
+
+    /**
+     * Constructor of the GameMap object
+     * @param path path of the map file
+     * @param numOfPlayer the number of player that join the game
+     * @param cards a Tuple containing the Decks: deck of Weapon, deck of Ammo and deck of PowerUp
+     * @return the GameMap object
+     * @throws FileNotFoundException if the path is not correct
+     */
+    public static GameMap gameMapFactory(String path,
+                                         int numOfPlayer,
+                                         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
+            throws FileNotFoundException {
+
+        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
+        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
+    }
+
+    /*
+    Methods called from outside
+     */
+
+    /**
+     * Creates a sandbox used to test the validity of any action
+     * @return the Sandbox
+     */
+    public Sandbox createSandbox(DamageableUID pov) {
+        return new Sandbox(this, pov);
+    }
 
     /**
      * Returns the Tile Object given a TileUID
@@ -110,7 +131,7 @@ public class GameMap {
      * @throws NoSuchElementException If no Tile is found, an exception is returned
      */
     public Tile getTile(TileUID tileID) {
-        if (tileUIDMap.containsKey(tileID))
+        if (tileUIDMap.containsKey(tileID) && tileUIDMap.get(tileID) != null)
             return tileUIDMap.get(tileID);
         else
             throw new NoSuchElementException("This TileUID does not exists");
@@ -154,23 +175,37 @@ public class GameMap {
     public TileUID getPosition(Coord coord) {
         int pos = coord.getX() * maxPos.getX() + coord.getY();
         if (pos < maxPos.getX() * maxPos.getY()
-                && position.get(pos) != null
                 && coord.getX() <= maxPos.getX()
-                && coord.getY() <= maxPos.getY())
+                && coord.getY() <= maxPos.getY()
+                && allTiles().contains(position.get(pos))
+        )
             return position.get(pos);
         else
             throw new NoSuchElementException("This Coord does not exists");
     }
-
 
     /**
      *
      * @return A Set containing all the Tiles in the map
      */
     public Set<TileUID> allTiles(){
-        return new HashSet<>(tileUIDMap.keySet());
+        HashSet<TileUID> ret = new HashSet<>();
+        for(Map.Entry t : tileUIDMap.entrySet()){
+            if(t.getValue() != null)
+                ret.add((TileUID)t.getKey());
+        }
+        return ret;
     }
 
+    /**
+     * @param tile the Tile requested
+     * @return returns the Coord of a given TileUID
+     */
+    public Coord getCoord(TileUID tile){
+        //if(!allTiles().contains(tile))
+        //    throw new InvalidParameterException("This tile does not exists");
+        return new Coord(position.indexOf(tile) / maxPos.getX() , position.indexOf(tile) % maxPos.getX());
+    }
 
     /**
      * Returns the neighbors of the cell
@@ -190,7 +225,10 @@ public class GameMap {
      * @return a Collection containing all the Damageable unit in the tile
      */
     public Collection<DamageableUID> containedPawns(TileUID tile) {
-        return getTile(tile).getDamageable();
+        return damageableUIDMap.entrySet()
+                .stream().filter(i -> i.getValue().getTile().equals(tile))
+                .map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
+
     }
 
     /**
@@ -211,7 +249,7 @@ public class GameMap {
      */
     public TileUID tile(DamageableUID pawn) {
         for (TileUID t : tileUIDMap.keySet()) {
-            if (getTile(t).getDamageable().contains(pawn))
+            if (containedPawns(t).contains(pawn))
                 return t;
         }
         throw new NoSuchElementException("The pawn is not in the map");
@@ -240,7 +278,7 @@ public class GameMap {
      *                 <p>
      *                 If range is 0 the correct behaviour is to return this.tileID
      *                 If less than 0 return an empty set
-     * @param tile
+     * @param tile  Tile identifier
      * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
      */
     public Set<TileUID> getSurroundings(Boolean physical, Integer range, TileUID tile) {
@@ -264,7 +302,7 @@ public class GameMap {
     /**
      * Finds all the Tiles that are visible from itself
      *
-     * @param tile
+     * @param tile Tile identifier
      * @return A Collection containing all the visible Tiles
      */
     public Collection<TileUID> getVisible(TileUID tile) {
@@ -282,7 +320,7 @@ public class GameMap {
      */
     public void refill(){
         //TODO: test this method, needs also weapon management
-        for(TileUID tile : tileUIDMap.keySet()){
+        for(TileUID tile : allTiles()){
             if(getTile(tile).spawnPoint())
                 deckOfWeapon.take(3 - getGrabbable(tile).size())
                     .forEach(x -> addGrabbable(tile, x));
@@ -365,8 +403,13 @@ public class GameMap {
             throw new InvalidParameterException("This AmmoCard cannot be discarded");
     }
 
+    /**
+     * Allow the player to discard a Weapon. Needed if the stash is empty
+     * @param tile the Tile where the weapon must be put
+     * @param grabbable The weapon that has to be discarded
+     */
     public void discardWeapon(TileUID tile, Weapon grabbable){
-        if(getGrabbable(tile).size() == 3)
+        if(getGrabbable(tile).size() == 3 || !emptyWeaponDeck())
             throw new InvalidParameterException("A weapon cannot be discarded here");
         if(deckOfWeapon.isPicked(grabbable)){
             addGrabbable(tile, grabbable);
@@ -381,28 +424,8 @@ public class GameMap {
      * @return A collections containing the DamageableUID in the tile
      */
     public Collection<DamageableUID> getDamageable(TileUID tile) {
-        return getTile(tile).getDamageable();
+        return containedPawns(tile);
     }
-
-    /**
-     * Adds a Damageable element in the tile
-     *
-     * @param damageableUID The Damageable element that has to be added
-     */
-    public void addDamageable(TileUID tile, DamageableUID damageableUID) {
-        getTile(tile).addDamageable(damageableUID);
-    }
-
-    /**
-     * Removes the element from the Damageable Set. If there is not this element, throws a NoSuchElementException
-     *
-     * @param damageableID The identifier of the damageable item
-     * @throws NoSuchElementException If this DamageableUID is not found, an exception is returned
-     */
-    public void removeDamageable(TileUID tile, DamageableUID damageableID) {
-        getTile(tile).removeDamageable(damageableID);
-    }
-
 
     /**
      * Returns all the Damageable Objects (Pawns and Domination points) in the map
@@ -420,7 +443,20 @@ public class GameMap {
     }
 
 
-
+    /**
+     *
+     * @return True iif the Deck of weapon is empty
+     */
+    public boolean emptyWeaponDeck(){
+        try{
+            deckOfWeapon.next();
+        }
+        catch (NoSuchElementException e){
+            return true;
+        }
+        return false;
+    }
+    
     private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){
         Map<DamageableUID, Pawn> res = new HashMap<>();
         Pawn p;
@@ -431,5 +467,61 @@ public class GameMap {
             res.put(uid, p);
         }
         return res;
+    }
+
+    /**
+     * Needed for the CLI.
+     * @return lenght and width of the map.
+     */
+    public Coord getMaxPos() {
+        return maxPos;
+    }
+
+    public boolean exists(Coord coord){
+        try{
+            this.getPosition(coord);
+            return true;
+        }
+        catch (NoSuchElementException e){
+            return false;
+        }
+    }
+
+
+    /**
+     * Generates a copy of the Map for Serialization
+     * @return the GameMapView object
+     */
+    public GameMapView generateView(DamageableUID pointOfView){
+
+        GameMapView gameMapView = new GameMapView();
+
+        List<ActorView> otherPlayers = new ArrayList<>();
+        ActorView you = new ActorView();
+        for(DamageableUID actor : getDamageable()){
+            if(pointOfView.equals(actor))
+                you = new ActorView(getPawn(actor).getDamageableUID());
+            else
+                otherPlayers.add(new ActorView(getPawn(actor).getDamageableUID()));
+        }
+
+        gameMapView.setYou(you);
+        gameMapView.setOtherPlayers(otherPlayers);
+
+        getDamageable().forEach(x -> getPawn(x).generateView(gameMapView, pointOfView.equals(x)));
+
+        //TODO: tiles.put(getCoord(tile), null) ?? is this correct?
+        Map<Coord, TileView> tiles = new HashMap<>();
+        for(TileUID tile : position){
+            if(allTiles().contains(tile))
+                tiles.put(getCoord(tile), getTile(tile).generateView(gameMapView));
+            //else
+            //    tiles.put(getCoord(tile), null);
+        }
+
+        gameMapView.setTiles(tiles);
+        gameMapView.setMax(maxPos);
+
+        return gameMapView;
     }
 }

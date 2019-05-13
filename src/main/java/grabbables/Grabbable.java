@@ -28,6 +28,7 @@ public abstract class Grabbable {
 
     @Override
     public int hashCode() {
-        return super.hashCode();
+        return uid.hashCode();
     }
+
 }

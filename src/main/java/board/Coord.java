@@ -2,28 +2,50 @@ package board;
 
 import genericitems.Tuple;
 
+import java.io.Serializable;
+
 /**
  * The absolute coordinate of a Tile.
  * (0,0) is the top left Tile
  */
-public class Coord {
+public class Coord implements Serializable {
     private Tuple<Integer, Integer> pos;
-    public Coord(int x, int y){
-         pos = new Tuple<>(x,y);
+    public Coord(int down, int left){
+         pos = new Tuple<>(down, left);
     }
 
     /**
      *
      * @return The x coordinate of the tile
      */
-    protected Integer getX(){
+    public Integer getX(){
         return pos.x;
     }
     /**
      *
      * @return The y coordinate of the tile
      */
-    protected Integer getY(){
+    public Integer getY(){
         return pos.y;
+    }
+
+    @Override
+    public String toString() {
+        return "Down: " + pos.x + " - Left: " + pos.y;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        return this.getX().equals(((Coord)obj).getX())
+                && this.getY().equals(((Coord)obj).getY());
+    }
+
+    @Override
+    public int hashCode() {
+        return getX()+getY();
     }
 }
