@@ -118,15 +118,23 @@ public class CLIMap {
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
-        System.out.println(mp.allCoord().contains(new Coord(0,0)));
+        //System.out.println(mp.allCoord().contains(new Coord(0,0)));
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
                 Coord cord = new Coord(r/dimTile, c/dimTile);
-                if(mp.allCoord().contains(cord))
+                boolean flag = true;
+                if(mp.allCoord().contains(cord)) {
                     //TODO add the escape "\0×1B" character in the following to print(s) to maintain the map. Won't work on Intellij.
-                    System.out.print(mp.getPosition(cord).getAnsi() +  tiles[c][r] + "\u001B[0m");
-                else System.out.print(" ");
+                    for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
+                        if(tiles[c][r].equals(entry.getValue())){
+                            System.out.print(entry.getKey().getAnsi() + tiles[c][r] + "\u001B[0m");
+                            flag = false;
+                            break;
+                        }
+                    }
+                    if(flag) System.out.print(mp.getPosition(cord).getAnsi() + tiles[c][r] + "\u001B[0m");
+                } else System.out.print(" ");
             }
         }
     }
@@ -148,6 +156,7 @@ public class CLIMap {
      * Put weapons in the map with correct ASCII characters checking where in the map is a spawn point.
      * It places the character right below the spawn character.
      */
+    //TODO To be fixed but now it's not the moment nor the place.
     private void putWeapons(){
         while(searchCharacter('s')!=null){
             tiles[searchCharacter('s').getY()+1][searchCharacter('s').getX()]='w';
