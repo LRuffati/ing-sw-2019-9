@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class ActorView implements Serializable {
     private Color color;
-    private String name;
+    private String username;
 
     private DamageableUID uid;
     private int numOfDeaths;
@@ -45,8 +45,8 @@ public class ActorView implements Serializable {
         this.color = color;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsername(String name) {
+        this.username = name;
     }
 
     public void setDamageTaken(List<ActorView> damageTaken) {
@@ -91,8 +91,8 @@ public class ActorView implements Serializable {
         return color;
     }
 
-    public String name() {
-        return name;
+    public String username() {
+        return username;
     }
 
     public List<ActorView> damageTaken() {

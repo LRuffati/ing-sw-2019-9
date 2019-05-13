@@ -149,9 +149,8 @@ public class Pawn {
         }
         actorView.setMarks(marks);
 
-
         actorView.setColor(color);
-        //TODO: setName, setColor
+        actorView.setUsername(username);
 
         actorView.setNumOfDeaths(getActor().getNumOfDeaths());
         actorView.setAmmo(getActor().getAmmo());
