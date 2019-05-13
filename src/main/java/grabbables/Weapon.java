@@ -6,6 +6,8 @@ import actions.utils.AmmoAmount;
 import board.GameMap;
 import uid.DamageableUID;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,13 +31,16 @@ public class Weapon extends Grabbable{
                   String description,
                   AmmoAmount buyCost,
                   AmmoAmount reloadCost,
-                  Map<String, ActionTemplate> actions){
+                  Collection<ActionTemplate> actions){
         this.name = name;
         this.description = description;
         this.buyCost = buyCost;
         this.reloadCost = reloadCost;
 
-        this.actions = actions;
+        this.actions = new HashMap<>();
+        for (ActionTemplate i: actions){
+            this.actions.put(i.getInfo().getActionId(), i);
+        }
 
         this.weaponID = name;
 
