@@ -17,6 +17,10 @@ src/resources/map1.txt
 -map3Path
 src/resources/map1.txt
 
+-map4Path
+src/resources/map1.txt
+
+
 #Options of the game
 -scoreBeforeFrenzy
 8,6,4,2,1,1,1,1
@@ -29,6 +33,7 @@ src/resources/map1.txt
 
 -maximumAmmoPerCard
 3
+
 
 #Options of the Player
 -Hp
@@ -47,3 +52,9 @@ src/resources/map1.txt
 
 -TimeForMove
 120
+
+-minNumOfPlayers
+1
+
+-maxNumOfPlayers
+2
