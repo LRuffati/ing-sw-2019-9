@@ -132,7 +132,7 @@ public class Targeter {
      * @throws NotEnoughTargetsException is thrown when the target is mandatory but no target
      * exists which satisfies the conditions
      */
-    public void giveChoices() throws NotEnoughTargetsException {
+    public boolean giveChoices() {
         String funType = type;
         if (type.equals(groupString)) {
             funType = "pawn";
@@ -158,7 +158,7 @@ public class Targeter {
             validTargets = validTargets.stream().filter(isNew).collect(Collectors.toList());
 
         if (!optional && validTargets.isEmpty()){
-            throw new NotEnoughTargetsException("0 targets available in non optional targeter");
+            return false;
         }
 
         final List<Targetable> passedTargets = new ArrayList<>(validTargets);
@@ -170,7 +170,7 @@ public class Targeter {
                 return passedTargets.get(passedTargets.size()-1);
             } else return passedTargets.get(integer);
         });
-
+        return true;
     }
 
 }
