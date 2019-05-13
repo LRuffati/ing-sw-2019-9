@@ -46,18 +46,6 @@ public class Actor {
     private Set<Actor> damagedBy;
 
     /**
-     * This method keeps track of PowerUp cards possibly being used as ammunition
-     * @return the sum of ammoAvailable and all the powerups
-     */
-    private AmmoAmount ammoAvailable(){
-        AmmoAmount am = ammoAvailable;
-        for(PowerUp pu : powerUps){
-            am.add(pu.getAmmo());
-        }
-        return am;
-    }
-
-    /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
      * @param map GameMap
      * @param pawnId the Pawn identifier that has to be associated with this Actor
@@ -194,6 +182,18 @@ public class Actor {
         amount.add(ammoAvailable);
 
         return ammoAmount.compareTo(amount)>0;
+    }
+
+    /**
+     * This method keeps track of PowerUp cards possibly being used as ammunition
+     * @return the sum of ammoAvailable and all the powerups
+     */
+    private AmmoAmount getTotalAmmo(){
+        AmmoAmount am = ammoAvailable;
+        for(PowerUp pu : powerUps){
+            am.add(pu.getAmmo());
+        }
+        return am;
     }
 
     /**
