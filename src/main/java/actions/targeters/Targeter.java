@@ -6,13 +6,11 @@ import actions.targeters.targets.DirectionTarget;
 import actions.targeters.targets.GroupTarget;
 import actions.targeters.targets.Targetable;
 import actions.utils.ChoiceMaker;
-import actions.utils.NotEnoughTargetsException;
 import board.Sandbox;
 import genericitems.Tuple;
 import uid.TileUID;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -108,14 +106,11 @@ public class Targeter {
         this.previousTargets = previousTargets;
         this.newTarg = template.newTarg;
         this.targetID = targetID;
-        if (template.type.equals(groupString)){
-            this.optional = false;
-            this.type = "pawn";
-        } else {
-            this.type = template.type;
-            this.optional = template.optional;
-        }
-        this.isNew = target -> previousTargets.values().contains(target);
+        this.optional = template.optional;
+        this.type = template.type;
+        this.isNew =
+                target -> previousTargets.values().stream().noneMatch(o-> target.equals(o,sandbox));
+
     }
 
     /**
@@ -129,25 +124,34 @@ public class Targeter {
      * 4. If the selection is not automatic it then asks the {@link Targeter#master} to pick one
      * of many and returns it
      *
-     * @throws NotEnoughTargetsException is thrown when the target is mandatory but no target
      * exists which satisfies the conditions
      */
     public boolean giveChoices() {
         String funType = type;
+
         if (type.equals(groupString)) {
             funType = "pawn";
         }
 
         Function<TileUID, Stream<Targetable>> fun = targetBuilders.get(funType).apply(sandbox);
 
-        Stream<Targetable> targets =
-                selector.y.select(sandbox,previousTargets.get(selector.x), fun).stream();
-
-        for (Tuple<String, Condition> i: filters){
-            targets = targets.filter(t -> i.y.checkTarget(sandbox,t, previousTargets.get(i.x)));
+        Stream<Targetable> targets;
+        if (!previousTargets.containsKey(selector.x)){
+            throw new IllegalStateException("The selector requires an unavailable target");
+        } else {
+            targets = selector.y.select(sandbox,previousTargets.get(selector.x), fun).stream();
         }
 
-        List<Targetable> validTargets = new LinkedList<>(targets.collect(Collectors.toList()));
+        for (Tuple<String, Condition> i: filters){
+            // If a target hasn't been acquired I don't apply the connected filters
+            if (!previousTargets.containsKey(i.x)) {
+                continue;
+            }
+            targets = targets.filter(t -> i.y.checkTarget(sandbox,t, previousTargets.get(i.x)));
+
+        }
+
+        List<Targetable> validTargets = targets.collect(Collectors.toCollection(LinkedList::new));
 
         if (type.equals(groupString) && !validTargets.isEmpty()) {
             GroupTarget t = new GroupTarget(validTargets.stream().flatMap(i -> i.getSelectedPawns(sandbox).stream()).collect(Collectors.toList()));
