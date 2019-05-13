@@ -2,13 +2,14 @@ package actions.conditions;
 
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 import java.util.stream.Collectors;
 
 /**
  * Checked for the condition target (distant () pointlike)
  */
-public class DistantCondition extends Condition {
+public class DistantCondition implements Condition {
     /**
      * the minimum (included) number of steps
      */
@@ -51,10 +52,10 @@ public class DistantCondition extends Condition {
      * @return the result of the check
      */
     @Override
-    public boolean checkTarget(Targetable target, Targetable checker) {
+    public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {
         if (checker instanceof PointLike) {
-            return negated ^ ((PointLike) checker).distanceSelector(min,max,logical)
-                    .parallelStream().map(i -> target.getSelectedTiles().contains(i))
+            return negated ^ ((PointLike) checker).distanceSelector(sandbox,min,max,logical)
+                    .parallelStream().map(i -> target.getSelectedTiles(sandbox).contains(i))
                     .collect(Collectors.toSet()).contains(Boolean.TRUE);
         }
         else {

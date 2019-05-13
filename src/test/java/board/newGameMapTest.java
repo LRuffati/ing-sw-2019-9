@@ -108,7 +108,7 @@ class newGameMapTest {
 
     @Test
     void sandboxTest(){
-        Sandbox s = map.createSandbox();
+        Sandbox s = map.createSandbox(map.getDamageable().iterator().next());
         assertNotNull(s);
     }
 

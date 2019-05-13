@@ -1,6 +1,7 @@
 package actions.targeters.interfaces;
 
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 /**
  * This interface will be used when I have to filter some pre-existing targets based on their visibility from a given point
@@ -14,5 +15,5 @@ public interface Visible extends Targetable {
      * @param negation whether this is a positive or negative condition
      * @return negation XOR whether the source can se the target
      */
-    boolean seen(PointLike source, boolean negation);
+    boolean seen(Sandbox sandbox, PointLike source, boolean negation);
 }

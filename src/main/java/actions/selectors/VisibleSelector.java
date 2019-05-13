@@ -2,7 +2,7 @@ package actions.selectors;
 
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
-import org.jetbrains.annotations.NotNull;
+import board.Sandbox;
 import uid.TileUID;
 
 import java.security.InvalidParameterException;
@@ -17,7 +17,9 @@ import java.util.stream.Stream;
  */
 public class VisibleSelector implements Selector {
 
-    public VisibleSelector(){}
+    public VisibleSelector(){
+        // All information is provided by method arguments
+    }
 
     /**
      *
@@ -25,11 +27,11 @@ public class VisibleSelector implements Selector {
      * @param function the conversion function from [TileUID] to [Targetable]
      * @return all the targets seen by the source
      */
-    public Collection<Targetable> select(Targetable source,
+    public Collection<Targetable> select(Sandbox sandbox, Targetable source,
                                          Function<TileUID, Stream<Targetable>> function) {
         if (source instanceof PointLike){
             var castedContainer = (PointLike) source;
-            return castedContainer.tilesSeen().stream()
+            return castedContainer.tilesSeen(sandbox).stream()
                     .flatMap(function).collect(Collectors.toSet());
 
         } else {

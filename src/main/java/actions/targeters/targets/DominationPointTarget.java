@@ -16,12 +16,8 @@ import java.util.HashSet;
  */
 public class DominationPointTarget extends BasicTarget {
 
-    DominationPointTarget(DamageableUID target, TileUID initialPosition) {
-        super(target, initialPosition);
-    }
-
-    DominationPointTarget(Sandbox sandbox, BasicTarget template) {
-        super(sandbox, template);
+    DominationPointTarget(DamageableUID target) {
+        super(target);
     }
 
     /**
@@ -29,7 +25,7 @@ public class DominationPointTarget extends BasicTarget {
      * @return the empty set
      */
     @Override
-    public HashSet<TileUID> tilesSeen() {
+    public HashSet<TileUID> tilesSeen(Sandbox sandbox) {
         return new HashSet<>();
     }
 
@@ -41,10 +37,10 @@ public class DominationPointTarget extends BasicTarget {
      * @return empty set if radius less than 0 and a single element set with the location otherwise
      */
     @Override
-    public HashSet<TileUID> reachableSelector(int radius) {
+    public HashSet<TileUID> reachableSelector(Sandbox sandbox, int radius) {
         HashSet<TileUID> ret = new HashSet<>();
         if (radius<0) return ret;
-        ret.add(location());
+        ret.add(location(sandbox));
         return ret;
     }
 }

@@ -119,19 +119,8 @@ public class GameMap {
      * Creates a sandbox used to test the validity of any action
      * @return the Sandbox
      */
-    public Sandbox createSandbox() {
-        Map<RoomUID, RoomTarget> targetRooms = roomUIDMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new RoomTarget(e.getKey())));
-
-        Map<TileUID, TileTarget> targetTiles = tileUIDMap.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> new TileTarget(e.getKey())));
-
-        Map<DamageableUID, BasicTarget> targetPawns = damageableUIDMap.entrySet()
-                .stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> BasicTarget.basicFactory(e.getValue())));
-
-        return new Sandbox(targetRooms, targetTiles, targetPawns, this);
+    public Sandbox createSandbox(DamageableUID pov) {
+        return new Sandbox(this, pov);
     }
 
     /**

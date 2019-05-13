@@ -7,6 +7,8 @@ import board.GameMap;
 import uid.DamageableUID;
 import viewclasses.WeaponView;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,12 +30,15 @@ public class Weapon extends Grabbable{
     public Weapon(String name,
                   AmmoAmount buyCost,
                   AmmoAmount reloadCost,
-                  Map<String, ActionTemplate> actions){
+                  Collection<ActionTemplate> actions){
         this.name = name;
         this.buyCost = buyCost;
         this.reloadCost = reloadCost;
 
-        this.actions = actions;
+        this.actions = new HashMap<>();
+        for (ActionTemplate i: actions){
+            this.actions.put(i.getInfo().getActionId(), i);
+        }
 
         this.weaponID = name;
     }
@@ -53,10 +58,6 @@ public class Weapon extends Grabbable{
 
     public Map<String, ActionTemplate> getActions(){
         return Map.copyOf(actions);
-    }
-
-    public WeaponUse weaponUse(GameMap map, DamageableUID pawnUid){
-        return new WeaponUse(this, map, pawnUid);
     }
 
     /**

@@ -36,21 +36,21 @@ public class TargeterTemplate {
      * Some targets may not be acquired, for instance in cases where a weapon targets multiple
      * elements but only a limited number is available
      */
-    final boolean optional;
+    public final boolean optional;
 
     /**
      * Some actions require a target to be different from any other target effected by the WeaponUse
      */
-    final boolean newTarg;
+    public final boolean newTarg;
 
     /**
      * Some targets may be acquired automatically without the need for user input, for instance
      * the Pawns occupying a tile where the user selects the tile and all characters inside are
      * affected
      */
-    final boolean automatic;
+    public final boolean automatic;
 
-    TargeterTemplate(Tuple<String, Selector> selector,
+    public TargeterTemplate(Tuple<String, Selector> selector,
                      List<Tuple<String, Condition>> filters,
                      String type,
                      boolean optional, boolean newTarg, boolean automatic) {

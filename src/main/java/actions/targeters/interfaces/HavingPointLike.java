@@ -1,6 +1,7 @@
 package actions.targeters.interfaces;
 
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 /**
  * This interface models the condition:
@@ -14,5 +15,5 @@ public interface HavingPointLike extends Targetable {
      * @param negation if I'm looking for a positive or negative check
      * @return negation xor (target is contained in the Object)
      */
-    boolean filteringHas(PointLike target, boolean negation);
+    boolean filteringHas(Sandbox sandbox, PointLike target, boolean negation);
 }

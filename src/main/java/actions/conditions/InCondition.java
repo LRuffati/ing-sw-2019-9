@@ -3,11 +3,12 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 /**
  * Pointlike (in SuperTile)
  */
-public class InCondition extends Condition {
+public class InCondition implements Condition {
     /**
      * True if I'm interested in targets not contained
      */
@@ -28,13 +29,13 @@ public class InCondition extends Condition {
      * @return the result of the check
      */
     @Override
-    public boolean checkTarget(Targetable target, Targetable checker) {
+    public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {
         if (!(target instanceof PointLike)){
             throw new IllegalArgumentException("Expecting a PointLike target");
         }
         if (!(checker instanceof SuperTile)){
             throw new IllegalArgumentException("Expecting a SuperTile checker");
         }
-        return negated ^ ((SuperTile)checker).containedTiles().contains(((PointLike)target).location());
+        return negated ^ ((SuperTile)checker).containedTiles(sandbox).contains(((PointLike)target).location(sandbox));
     }
 }

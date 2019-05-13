@@ -3,6 +3,7 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.*;
+import board.Sandbox;
 import genericitems.Tuple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,8 +17,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class HasConditionTest {
 
@@ -29,12 +29,14 @@ class HasConditionTest {
         TileUID tile1 = new TileUID();
         TileUID tile2 = new TileUID();
 
-        when(((SuperTile)target).containedTiles()).thenReturn(Set.of(tile1,tile2));
-        when(((PointLike)checker).location()).thenReturn(tile1);
+        Sandbox sandbox = mock(Sandbox.class);
+
+        when(((SuperTile)target).containedTiles(sandbox)).thenReturn(Set.of(tile1,tile2));
+        when(((PointLike)checker).location(sandbox)).thenReturn(tile1);
 
         Condition cond = new HasCondition(negated);
         //The condition is made so it's always true, I'm testing the negation and the type checking
-        assertEquals(!negated, cond.checkTarget(target,checker));
+        assertEquals(!negated, cond.checkTarget(sandbox ,target,checker));
     }
 
     static Stream<Tuple<Targetable,Targetable>> generator(){
@@ -59,6 +61,9 @@ class HasConditionTest {
         Targetable checker = tup.y;
         Targetable target = tup.x;
         Condition cond = new HasCondition(true);
-        assertThrows(IllegalArgumentException.class, ()->cond.checkTarget(target,checker));
+
+        Sandbox sandbox = mock(Sandbox.class);
+
+        assertThrows(IllegalArgumentException.class, ()->cond.checkTarget(sandbox, target,checker));
     }
 }
