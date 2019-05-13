@@ -3,11 +3,12 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.Visible;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 
 /**
  * target (... &amp; seen checker)
  */
-public class SeenCondition extends Condition {
+public class SeenCondition implements Condition {
     /**
      * Whether I'm looking at a positive or negative condition
      */
@@ -28,7 +29,7 @@ public class SeenCondition extends Condition {
      * @return the result of the check
      */
     @Override
-    public boolean checkTarget(Targetable target, Targetable checker) {
+    public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {
         if (!(target instanceof Visible)){
             throw new IllegalArgumentException("Expecting a Visible target");
         }
@@ -36,6 +37,6 @@ public class SeenCondition extends Condition {
             throw new IllegalArgumentException("Expecting a PointLike checker");
         }
 
-        return ((Visible) target).seen((PointLike) checker, negate);
+        return ((Visible) target).seen(sandbox, (PointLike) checker, negate);
     }
 }

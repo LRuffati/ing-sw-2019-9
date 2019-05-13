@@ -1,6 +1,7 @@
 package actions.targeters.interfaces;
 
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -12,13 +13,13 @@ public interface PointLike extends Targetable {
      *
      * @return the current location of the PointLike target
      */
-    TileUID location();
+    TileUID location(Sandbox sandbox);
 
     /**
      * This is a selector, it generates a list of tiles the current PointLike target can see
      * @return a Collection of TileUIDs without duplicates
      */
-    Set<TileUID> tilesSeen();
+    Set<TileUID> tilesSeen(Sandbox sandbox);
 
     /**
      * The method used for the "reached [by] this" selector
@@ -27,8 +28,8 @@ public interface PointLike extends Targetable {
      * @return a list of reachableSelector points in the given amount of steps or less
      */
     //Todo: test con radius <=0 and verify that it returns location() and only location()
-    default Set<TileUID> reachableSelector(int radius){
-        return distanceSelector(radius, true);
+    default Set<TileUID> reachableSelector(Sandbox sandbox, int radius){
+        return distanceSelector(sandbox, radius, true);
     }
 
     /**
@@ -37,9 +38,9 @@ public interface PointLike extends Targetable {
      * @param max the maximum distance included
      * @return the set of cells satisfying the condition
      */
-    default Set<TileUID> reachableSelector(int min, int max){
-        Set<TileUID> a = reachableSelector(max);
-        a.removeAll(reachableSelector(min - 1));
+    default Set<TileUID> reachableSelector(Sandbox sandbox, int min, int max){
+        Set<TileUID> a = reachableSelector(sandbox, max);
+        a.removeAll(reachableSelector(sandbox, min - 1));
         return a;
     }
 
@@ -54,17 +55,19 @@ public interface PointLike extends Targetable {
      * @param radius the amount of maximum allowed steps
      * @return the set of all cells able to reach this target in at most radius steps
      */
-    Set<DamageableUID> reachedSelector(int radius);
+    Set<DamageableUID> reachedSelector(Sandbox sandbox, int radius);
 
     /**
-     * @see PointLike#reachedSelector(int)
+     * @see PointLike#reachedSelector(Sandbox, int)
      * @param min the minimum (included) number of steps
      * @param max the maximum (included) number of steps
      * @return the cells reachable in at least min and at most max steps
      */
-    default Set<DamageableUID> reachedSelector(int min, int max){
-        HashSet<DamageableUID> ret = new HashSet<>(reachedSelector(max)); //All the BasicTargets which can reach this point in <= max
-        ret.removeAll(reachedSelector(min-1)); // remove all BasicTargets which can reach this point in < min
+    default Set<DamageableUID> reachedSelector(Sandbox sandbox, int min, int max){
+        HashSet<DamageableUID> ret = new HashSet<>(reachedSelector(sandbox, max)); //All the
+        // BasicTargets which can reach this point in <= max
+        ret.removeAll(reachedSelector(sandbox, min-1)); // remove all BasicTargets which can reach
+        // this point in < min
         return ret;
     }
 
@@ -75,7 +78,7 @@ public interface PointLike extends Targetable {
      * @return a list of reachable points in the given amount of steps or less
      */
     //Todo: test con radius <=0 and verify that it returns location() and only location()
-    Set<TileUID> distanceSelector(int radius, boolean logical);
+    Set<TileUID> distanceSelector(Sandbox sandbox, int radius, boolean logical);
 
     /**
      * Similar to distanceSelector(radius) but works in a range
@@ -84,9 +87,9 @@ public interface PointLike extends Targetable {
      * @param logical if true don't cross walls
      * @return the set of cells satisfying the condition
      */
-    default Set<TileUID> distanceSelector(int min, int max, boolean logical){
-        Set<TileUID> a = distanceSelector(max,logical);
-        a.removeAll(distanceSelector(min-1, logical));
+    default Set<TileUID> distanceSelector(Sandbox sandbox, int min, int max, boolean logical){
+        Set<TileUID> a = distanceSelector(sandbox, max,logical);
+        a.removeAll(distanceSelector(sandbox,min-1, logical));
         return a;
     }
 }

@@ -2,7 +2,7 @@ package actions.selectors;
 
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
-import org.jetbrains.annotations.NotNull;
+import board.Sandbox;
 import uid.TileUID;
 
 import java.security.InvalidParameterException;
@@ -44,11 +44,11 @@ public class ReachableSelector implements Selector {
      */
     //TODO: test with a DominationPoint as source
     @Override
-    public Collection<Targetable> select(Targetable source,
+    public Collection<Targetable> select(Sandbox sandbox, Targetable source,
                                          Function<TileUID, Stream<Targetable>> function) {
         if (source instanceof PointLike){
             var castedContainer = (PointLike) source;
-            return castedContainer.reachableSelector(min, max).stream()
+            return castedContainer.reachableSelector(sandbox,min, max).stream()
                     .flatMap(function)
                     .collect(Collectors.toSet());
 

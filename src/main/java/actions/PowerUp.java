@@ -15,7 +15,7 @@ public class PowerUp {
         this.ammo = c;
     }
 
-    public void useTeleporter(Actor actor, TileUID tile) throws NoSuchFieldException {
+    public void useTeleporter(Actor actor, TileUID tile) {
         if (actor.isTurn())
             actor.move(tile);
     }

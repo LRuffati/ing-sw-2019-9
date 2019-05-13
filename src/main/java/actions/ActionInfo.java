@@ -72,7 +72,7 @@ public class ActionInfo {
      */
     private final Optional<String> masterAction;
 
-    ActionInfo (String name, String actionId, AmmoAmount cost,
+    public ActionInfo (String name, String actionId, AmmoAmount cost,
                 Collection<Tuple<Boolean, String>> actionRequirements,
                 Collection<Tuple<Boolean, String>> targetRequirements,
                 Optional<String> masterAction, boolean show){

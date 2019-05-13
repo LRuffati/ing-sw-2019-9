@@ -26,7 +26,7 @@ public class SandBoxTest {
         catch (FileNotFoundException e){
         }
         map = builder.getMap();
-        sandbox = map.createSandbox();
+        sandbox = map.createSandbox(map.getDamageable().iterator().next());
     }
 
     @Test
@@ -73,12 +73,13 @@ public class SandBoxTest {
 
     @Test
     void testGetter(){
-        assertTrue(sandbox.getRoom(map.room(map.getPosition(new Coord(0,0)))).containedTiles()
+        assertTrue(sandbox.getRoom(map.room(map.getPosition(new Coord(0,0)))).containedTiles(sandbox)
                 .containsAll(map.tilesInRoom(map.room(map.getPosition(new Coord(0,0))))));
         assertTrue(map.tilesInRoom(map.room(map.getPosition(new Coord(0,0))))
-                .containsAll(sandbox.getRoom(map.room(map.getPosition(new Coord(0,0)))).containedTiles()));
+                .containsAll(sandbox.getRoom(map.room(map.getPosition(new Coord(0,0)))).containedTiles(sandbox)));
 
-        assertEquals(map.getPosition(new Coord(1,1)) , sandbox.getTile(map.getPosition(new Coord(1,1))).location());
+        assertEquals(map.getPosition(new Coord(1,1)) ,
+                sandbox.getTile(map.getPosition(new Coord(1,1))).location(sandbox));
     }
 
     @Test
@@ -104,9 +105,8 @@ public class SandBoxTest {
     }
 
     private void allControls(Pawn pawn1, TileUID thisTile){
-        sandbox = map.createSandbox();
-
-        assertEquals(thisTile , sandbox.getBasic(pawn1.getDamageableUID()).location());
+        sandbox = map.createSandbox(pawn1.getDamageableUID());
+        assertEquals(thisTile , sandbox.getBasic(pawn1.getDamageableUID()).location(sandbox));
 
         assertEquals(map.room(pawn1.getTile()) , sandbox.room(pawn1.getDamageableUID()));
         assertEquals(thisTile , sandbox.tile(pawn1.getDamageableUID()));

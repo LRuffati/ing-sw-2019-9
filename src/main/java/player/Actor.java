@@ -1,6 +1,7 @@
 package player;
 
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
@@ -188,8 +189,8 @@ public class Actor {
      * This method keeps track of PowerUp cards possibly being used as ammunition
      * @return the sum of ammoAvailable and all the powerups
      */
-    private AmmoAmount getTotalAmmo(){
-        AmmoAmount am = ammoAvailable;
+    public AmmoAmountUncapped getTotalAmmo(){
+        AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable);
         for(PowerUp pu : powerUps){
             am.add(pu.getAmmo());
         }

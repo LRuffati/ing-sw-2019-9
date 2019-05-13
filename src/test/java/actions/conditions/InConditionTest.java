@@ -3,6 +3,7 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.*;
+import board.Sandbox;
 import genericitems.Tuple;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,13 +29,14 @@ class InConditionTest {
         Targetable target = mock(PointLike.class);
         TileUID tile1 = new TileUID();
         TileUID tile2 = new TileUID();
+        Sandbox sandbox = mock(Sandbox.class);
 
-        when(((SuperTile)checker).containedTiles()).thenReturn(Set.of(tile1,tile2));
-        when(((PointLike)target).location()).thenReturn(tile1);
+        when(((SuperTile)checker).containedTiles(sandbox)).thenReturn(Set.of(tile1,tile2));
+        when(((PointLike)target).location(sandbox)).thenReturn(tile1);
 
         Condition cond = new InCondition(negated);
         //The condition is made so it's always true, I'm testing the negation and the type checking
-        assertEquals(!negated, cond.checkTarget(target,checker));
+        assertEquals(!negated, cond.checkTarget(sandbox, target,checker));
     }
 
     static Stream<Tuple<Targetable,Targetable>> generator(){
@@ -58,7 +60,9 @@ class InConditionTest {
     void checkTargetInvalid(Tuple<Targetable, Targetable> tup){
         Targetable checker = tup.y;
         Targetable target = tup.x;
+        Sandbox sandbox = mock(Sandbox.class);
+
         Condition cond = new InCondition(true);
-        assertThrows(IllegalArgumentException.class, ()->cond.checkTarget(target,checker));
+        assertThrows(IllegalArgumentException.class, ()->cond.checkTarget(sandbox, target,checker));
     }
 }

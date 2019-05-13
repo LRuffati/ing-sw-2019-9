@@ -1,39 +1,98 @@
 package board;
 
+import actions.effects.Effect;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.RoomTarget;
 import actions.targeters.targets.TileTarget;
+import actions.utils.AmmoAmountUncapped;
+import genericitems.Tuple;
+import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Sandbox {
+    /*
+    Todo:
+    Make the sandbox more functional.
+    Changes:
+        + At creation nothing is a target, the sandbox is just a proxy for the GameMap
+        + Method
+     */
+    private final Sandbox father;
 
-    private final Map<RoomUID, RoomTarget> rooms;
-    private final Map<TileUID, TileTarget> tiles;
-    private final Map<DamageableUID, BasicTarget> pawns;
+    private final Map<RoomUID, RoomTarget> roomsTargeted;
+    private final Map<TileUID, TileTarget> tilesTargeted;
+    private final Map<DamageableUID, BasicTarget> pawnsTargeted;
+
+    /*
+        Manage changes, relevant effects:
+         + move: DamageableUID, TileUID
+         + reload and fire: Weapon, boolean
+         +
+         */
+    private final List<Effect> effectsHistory;
+    private final Map<DamageableUID, TileUID> updatedLocations;
+    private final Map<Weapon, Boolean> updatedWeapons;
+
+    public AmmoAmountUncapped getUpdatedAmmoAvailable() {
+        return updatedAmmoAvailable;
+    }
+
+    public final AmmoAmountUncapped updatedAmmoAvailable;
+
+    public final DamageableUID pov;
     private final GameMap map;
 
-    Sandbox(Map<RoomUID, RoomTarget> rooms, Map<TileUID, TileTarget> tiles, Map<DamageableUID, BasicTarget> pawns, GameMap map){
+    public Sandbox(GameMap map, DamageableUID pov){
 
-        this.rooms = rooms.entrySet()
-                .stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> new RoomTarget(this, e.getValue())));
+        this.roomsTargeted = new HashMap<>();
+        this.tilesTargeted = new HashMap<>();
+        this.pawnsTargeted = new HashMap<>();
 
-        this.tiles = tiles.entrySet()
-                .stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> new TileTarget(this, e.getValue())));
+        this.effectsHistory = new ArrayList<>();
+        this.updatedLocations = new HashMap<>();
+        this.updatedWeapons = new HashMap<>();
 
-        this.pawns = pawns.entrySet()
-                .stream().collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> BasicTarget.basicFactory(this, e.getValue())));
         this.map = map;
+        this.pov = pov;
+        this.updatedAmmoAvailable = map.getPawn(pov).getActor().getTotalAmmo();
+
+        this.father = null;
+    }
+
+    public Sandbox(Sandbox parent, List<Effect> effects){
+        this.roomsTargeted = new HashMap<>(parent.roomsTargeted);
+        this.tilesTargeted = new HashMap<>(parent.tilesTargeted);
+        this.pawnsTargeted = new HashMap<>(parent.pawnsTargeted);
+
+        this.pov = parent.pov;
+        this.map = parent.map;
+
+        Map<Weapon, Boolean> weaponsTemp = new HashMap<>(parent.updatedWeapons);
+        Map<DamageableUID, TileUID> tempLocs = new HashMap<>(parent.updatedLocations);
+        AmmoAmountUncapped ammoTemp = parent.updatedAmmoAvailable;
+        for (Effect i: effects){
+            weaponsTemp = i.newWeapons(weaponsTemp);
+            tempLocs = i.newLocations(tempLocs);
+            ammoTemp = i.newAmmoAvailable(ammoTemp);
+        }
+        this.updatedWeapons = weaponsTemp;
+        this.updatedLocations = tempLocs;
+        this.updatedAmmoAvailable = ammoTemp;
+
+        this.father = parent;
+        this.effectsHistory = new ArrayList<>(father.effectsHistory);
+        effectsHistory.addAll(effects);
+    }
+
+
+    public List<Effect> getEffectsHistory() {
+        return new ArrayList<>(effectsHistory);
     }
 
     /**
@@ -86,9 +145,7 @@ public class Sandbox {
      * @return
      */
     public Collection<DamageableUID> containedPawns(TileUID tile){
-        return pawns.entrySet()
-                .stream().filter(i -> i.getValue().location().equals(tile))
-                .map(Map.Entry::getKey).collect(Collectors.toCollection(ArrayList::new));
+        return map.getDamageable().stream().filter(i -> tile(i).equals(tile)).collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
@@ -106,20 +163,18 @@ public class Sandbox {
      * @return
      */
     public RoomUID room(DamageableUID pawn){
-        return map.room(pawns.get(pawn).location());
+        return map.room(tile(pawn));
     }
 
-    /**
-     * @param pawn
-     * @return the room containing the pawn
-     */
     public TileUID tile(DamageableUID pawn){
-        return pawns.get(pawn).location();
+        if (updatedLocations.containsKey(pawn))
+            return updatedLocations.get(pawn);
+        else {
+            return map.tile(pawn);
+        }
     }
 
     /**
-     *
-     * @param room
      * @return All the tiles in the room
      */
     public Collection<TileUID> tilesInRoom(RoomUID room){
@@ -144,14 +199,46 @@ public class Sandbox {
     }
 
     public Set<TileUID> allTiles(){
-        return new HashSet<>(tiles.keySet());
+        return map.allTiles();
     }
 
     public RoomTarget getRoom(RoomUID roomUID) {
-        return rooms.get(roomUID);
+        if (roomsTargeted.containsKey(roomUID)) return roomsTargeted.get(roomUID);
+        else {
+            RoomTarget targ =  new RoomTarget(roomUID);
+            roomsTargeted.put(roomUID, targ);
+            return roomsTargeted.get(roomUID);
+        }
     }
 
-    public TileTarget getTile(TileUID tileUID) { return  tiles.get(tileUID);}
+    public TileTarget getTile(TileUID tileUID) {
+        if (tilesTargeted.containsKey(tileUID)) return  tilesTargeted.get(tileUID);
+        else {
+            TileTarget targ = new TileTarget(tileUID);
+            tilesTargeted.put(tileUID, targ);
+            return tilesTargeted.get(tileUID);
+        }
+    }
 
-    public BasicTarget getBasic(DamageableUID targetUID){ return pawns.get(targetUID);}
+    public BasicTarget getBasic(DamageableUID targetUID){
+        if (pawnsTargeted.containsKey(targetUID)) return pawnsTargeted.get(targetUID);
+        else {
+            BasicTarget targ = BasicTarget.basicFactory(map.getPawn(targetUID));
+            pawnsTargeted.put(targetUID, targ);
+            return pawnsTargeted.get(targetUID);
+        }
+    }
+
+    public List<Tuple<Boolean,Weapon>> getArsenal(){
+        List<Tuple<Boolean, Weapon>> ret = new ArrayList<>();
+        for (Weapon i: map.getPawn(pov).getActor().getLoadedWeapon()){
+            Boolean status = updatedWeapons.getOrDefault(i, Boolean.TRUE);
+            ret.add(new Tuple<>(status, i));
+        }
+        for (Weapon i: map.getPawn(pov).getActor().getUnloadedWeapon()){
+            Boolean status = updatedWeapons.getOrDefault(i, Boolean.FALSE);
+            ret.add(new Tuple<>(status, i));
+        }
+        return ret;
+    }
 }

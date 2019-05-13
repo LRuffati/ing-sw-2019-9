@@ -2,6 +2,7 @@ package actions.selectors;
 
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
+import board.Sandbox;
 import org.jetbrains.annotations.Contract;
 import uid.TileUID;
 
@@ -20,7 +21,9 @@ import java.util.stream.Stream;
 public class ExistSelector implements Selector{
 
     @Contract(pure = true)
-    public ExistSelector(){}
+    public ExistSelector(){
+        // All information is provided by method arguments
+    }
 
     /**
      *
@@ -29,11 +32,11 @@ public class ExistSelector implements Selector{
      * @return all targets in the sandbox
      */
     @Override
-    public Collection<Targetable> select(Targetable self,
+    public Collection<Targetable> select(Sandbox sandbox, Targetable self,
                                          Function<TileUID, Stream<Targetable>> function) {
         if (self instanceof BasicTarget){
             var castedContainer = (BasicTarget) self;
-            return castedContainer.coexistingTiles().stream()
+            return castedContainer.coexistingTiles(sandbox).stream()
                     .flatMap(function).collect(Collectors.toSet());
 
         } else {

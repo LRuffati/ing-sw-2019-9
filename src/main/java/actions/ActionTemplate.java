@@ -6,38 +6,19 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
+import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class ActionTemplate {
 
-    /**
-     * The name to display, this and {@link #show} might be substituted by an ad-hoc
-     * object depending on the view being used
-     */
-    private final String name;
-
-    /**
-     * Whether the action should be displayed or not.
-     * Use case: when an action described as an unitary entity in natural language actually
-     * represents two distinct actions in the formal specification, e.g. Mitragliatrice
-     */
-    private final boolean show;
-
-    /**
-     * A machine friendly code to distinguish actions
-     */
-    private final String actionId;
-
-    /**
-     * The cost to be paid for an action to be performed
-     */
-    private final AmmoAmount cost;
+    private final ActionInfo info;
 
     /**
      * Each element of the Collection is a couple:
-     * Second element: The {@link #actionId} of another action in the same weapon
+     * Second element: The {@link #info#actionId} of another action in the same weapon
      * First element: {@link Boolean#TRUE} if this action must follow the one with ID above
      *                {@link Boolean#FALSE} if it can't follow the action
      */
@@ -56,19 +37,6 @@ public class ActionTemplate {
     private final Collection<Tuple<Boolean, String>> targetRequirements;
 
     /**
-     * For contemporaneous actions an action will be identified as master (the first one) and all
-     * others will reference it in this variable.<br/>
-     * The constructor for the class should make sure the tuple {X = TRUE, Y=masterAction}
-     * appears in {@link #actionRequirements}<br/>
-     * After the master action will have been performed the user will be presented with all
-     * contemporaneous actions as the next option and if he doesn't choose any will be shown
-     * other actions normally.<br/>
-     * <br/>
-     * These actions will merge their effects by applying a single move, mark and damage order
-     */
-    private final Optional<String> masterAction;
-
-    /**
      * The list shows in order which targets will be acquired.
      * The first element of the Tuple is the identifier of the Target
      * The second element is the Template of the Targeter to be used
@@ -78,30 +46,30 @@ public class ActionTemplate {
     /**
      * The effects to be applied, EffectType will be used
      */
-    private final Map<EffectType, Collection<EffectTemplate>> effects;
+    private final List<EffectTemplate> effects;
 
     public ActionTemplate(ActionInfo info,
                    List<Tuple<String, TargeterTemplate>> targeters, //Order is important
-                   Map<EffectType, Collection<EffectTemplate>> effects){
+                   List<EffectTemplate> effects){
 
-        name = info.getName();
-        show = info.isShow();
-        actionId = info.getActionId();
-        cost = info.getCost();
+        this.info = info;
+
         actionRequirements = new ArrayList<>(info.getActionRequirements());
         targetRequirements = new ArrayList<>(info.getTargetRequirements());
-        masterAction = info.getMasterAction();
-
 
         this.targeters = targeters;
         this.effects = effects;
     }
 
+    public ActionInfo getInfo(){
+        return this.info;
+    }
+
     /**
-     * This function is provided a list of previously taken {@link #actionId} and checks the
+     * This function is provided a list of previously taken {@link #info#actionId} and checks the
      * action represented by the class can be taken
      *
-     * @param previousActions A list of string, representing the {@link #actionId} of other
+     * @param previousActions A list of string, representing the {@link #info#actionId} of other
      *                        actions in the weapon
      * @return true if the action can be taken, false otherwise
      */
@@ -110,6 +78,7 @@ public class ActionTemplate {
         for (Tuple<Boolean, String> i: actionRequirements){
             //TODO: test that contains checks equality, not just reference
             result &= i.x.equals(previousActions.contains(i.y));
+            result &= !(i.y.equals(this.info.getActionId())); //Every action just once
         }
         return result;
     }
@@ -134,7 +103,7 @@ public class ActionTemplate {
      * @return true if the given amount is enough to pay
      */
     private boolean verifyCost(AmmoAmount available){
-        return available.compareTo(cost)>=0;
+        return available.compareTo(info.getCost())>=0;
     }
 
     /**
@@ -144,32 +113,24 @@ public class ActionTemplate {
      * @param ammoAvailable the ammo available to the player
      * @return true if the action can be executed, false otherwise
      */
-    private boolean actionAvailable(Map<String, Targetable> existingTargets,
+    public boolean actionAvailable(Map<String, Targetable> existingTargets,
                                    List<String> previousActions, AmmoAmount ammoAvailable){
         return verifyCost(ammoAvailable) &
                 verifyActions(previousActions) &
                 verifyTargets(existingTargets.keySet());
     }
 
-    /**
-     * This is the creator for the concrete Action, it is the point of contact for the creation
-     * of the Action
-     * @param gameStatus the sandbox connected to the weapon use
-     * @param existingTargets the targets previously selected
-     * @param previousActions the actions previously executed
-     * @param ammoAvailable the ammo available to the player
-     * @return an empty optional if the action can't be executed, a pair containing the Ammo left
-     * after the execution and the concrete action if it can be executed
-     */
-    public Optional<Tuple<AmmoAmount, Action>> spawn(Sandbox gameStatus,
-                                         Map<String, Targetable> existingTargets,
-                                                     List<String> previousActions,
-                                                     AmmoAmount ammoAvailable){
-        if (actionAvailable(existingTargets, previousActions, ammoAvailable)) {
-            Action action = new Action(gameStatus, this.masterAction, actionId, targeters,
-                    effects, existingTargets);
-            AmmoAmount newAmount = ammoAvailable.subtract(cost);
-            return Optional.of( new Tuple<>(newAmount, action));
-        } else return Optional.empty();
+    public List<Tuple<String, TargeterTemplate>> getTargeters() {
+        return new ArrayList<>(targeters);
+    }
+
+    public List<EffectTemplate> getEffects() {
+        return new ArrayList<>(effects);
+    }
+
+    public Action generate(Sandbox sandbox, Map<String, Targetable> prevTargs,
+                           Function<Tuple<Sandbox, Map<String, Targetable>>,
+                                   ControllerActionResult> finalizer){
+        return new Action(sandbox, this, prevTargs, finalizer);
     }
 }

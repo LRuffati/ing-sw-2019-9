@@ -19,7 +19,6 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      */
     private static Integer maximumAmmo = ParserConfiguration.parseInt("maximumAmmoPerCard");
 
-
     /**
      * The amount represented by the class
      */
