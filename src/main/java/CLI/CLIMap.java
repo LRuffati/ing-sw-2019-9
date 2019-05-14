@@ -227,7 +227,7 @@ public class CLIMap {
     public Coord searchCharacter(Character ascii){
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){
-                if(tiles[i][j].equals(ascii)) return new Coord(i,j);
+                if(tiles[j][i].equals(ascii)) return new Coord(j,i);
             }
         }
         return null;

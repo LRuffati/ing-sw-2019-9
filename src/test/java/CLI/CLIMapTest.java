@@ -45,4 +45,12 @@ class CLIMapTest {
         CLIMap map = new CLIMap(gmv);
         map.printMap();
     }
+
+    @Test
+    void searchTest(){
+        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        CLIMap map = new CLIMap(gmv);
+        assert(map.searchCharacter('s').getX()==11);
+        assert(map.searchCharacter('s').getY()==1);
+    }
 }
