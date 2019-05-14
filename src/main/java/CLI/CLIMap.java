@@ -8,6 +8,7 @@ import grabbables.Weapon;
 import player.Actor;
 import uid.TileUID;
 import viewclasses.ActorView;
+import viewclasses.AmmoCardView;
 import viewclasses.GameMapView;
 import viewclasses.TileView;
 
@@ -83,6 +84,7 @@ public class CLIMap {
             if(t.spawnPoint()){
                 tiles[x+1][y+1] = 's';
             } else {
+
                 tiles[x+1][y+1] = 't';
             }
             for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
@@ -138,6 +140,24 @@ public class CLIMap {
             }
         }
     }
+
+    public void addAmmo(TileView tile){
+        int x = mp.getCoord(tile).getX()*dimTile;
+        int y = mp.getCoord(tile).getY()*dimTile;
+        AmmoCardView ammo = tile.ammoCard();
+        tiles[y][x] = Character.forDigit(ammo.numOfBlue(),10);
+        tiles[y+1][x] = Character.forDigit(ammo.numOfRed(),10);
+        tiles[y+2][x] = Character.forDigit(ammo.numOfYellow(),10);
+
+        if(ammo.numOfPowerUp() != 0)
+            if(ammo.numOfBlue() == 0)
+                tiles[y][x] = 'P';
+            if(ammo.numOfRed() == 0)
+                tiles[y+1][x] = 'P';
+            if(ammo.numOfYellow() == 0)
+                tiles[y+2][x] = 'P';
+    }
+
 
     /**
      * Put the current players in the map with the correct ASCII characters.
@@ -206,8 +226,9 @@ public class CLIMap {
     public void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
-                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()][mp.getCoord(t).getX()*dimTile
-                        +playerPos.get(players.get(a)).getX()] = players.get(a);
+                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()]
+                        [mp.getCoord(t).getX()*dimTile+playerPos.get(players.get(a)).getX()]
+                        = players.get(a);
             }
         }
     }
