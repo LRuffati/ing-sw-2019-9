@@ -107,7 +107,36 @@ public class CLIMap {
                             break;
                     }
                 }
+                if(entry.getValue().equals("Tile")){
+                    switch (entry.getKey()){
+                        case UP:
+                            tiles[x+1][y] = ' ';
+                            tiles[x+2][y] = ' ';
+                            tiles[x+3][y] = ' ';
+                            break;
+
+                        case DOWN:
+                            tiles[x+1][y+4] = ' ';
+                            tiles[x+2][y+4] = ' ';
+                            tiles[x+3][y+4] = ' ';
+                            break;
+
+                        case LEFT:
+                            tiles[x][y+1] = ' ';
+                            tiles[x][y+2] = ' ';
+                            tiles[x][y+3] = ' ';
+                            break;
+
+                        case RIGHT:
+                            tiles[x+4][y+1] = ' ';
+                            tiles[x+4][y+2] = ' ';
+                            tiles[x+4][y+3] = ' ';
+                            break;
+                    }
+                }
             }
+
+
         }
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){
