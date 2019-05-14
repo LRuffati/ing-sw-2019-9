@@ -107,4 +107,10 @@ public class CLIDemo {
             System.out.println(a.getAnsi() + "Player " + a.name() + " gained score is " + a.score() + ".");
         }
     }
+
+    public void addKill(ActorView killer, ActorView victim){
+        System.out.println(killer.getAnsi() + "Player " + killer.name() + " frag player " + victim.name() + ".");
+    }
+
+
 }
