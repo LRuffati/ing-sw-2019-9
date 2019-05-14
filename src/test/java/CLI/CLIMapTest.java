@@ -35,7 +35,7 @@ class CLIMapTest {
     }
 
     @Test
-    void printTest() throws FileNotFoundException {
+    void printTest(){
         /*
         Iterator iterator = map.allTiles().iterator();
         TileUID t = (TileUID) iterator.next();

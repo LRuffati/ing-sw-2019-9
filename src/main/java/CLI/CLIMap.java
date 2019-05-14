@@ -31,7 +31,7 @@ public class CLIMap {
      * @throws FileNotFoundException will probably be deleted, the map to be taken won't be to be generated
      * every time.
      */
-    public CLIMap(GameMapView gmv) throws FileNotFoundException {
+    public CLIMap(GameMapView gmv){
         this.mp = gmv;
         this.maxX = gmv.maxPos().getX()*dimTile;
         this.maxY = gmv.maxPos().getY()*dimTile;
@@ -135,8 +135,6 @@ public class CLIMap {
                     }
                 }
             }
-
-
         }
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){

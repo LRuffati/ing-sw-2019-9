@@ -7,6 +7,7 @@ import viewclasses.GameMapView;
 import viewclasses.PowerUpView;
 
 import java.io.FileNotFoundException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -17,11 +18,7 @@ public class CLIDemo {
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
     public static void start(GameMapView gmv) {
-        try {
-            toPrintMap = new CLIMap(gmv);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        toPrintMap = new CLIMap(gmv);
         Objects.requireNonNull(toPrintMap).printMap();
     }
 
@@ -98,8 +95,8 @@ public class CLIDemo {
         System.out.println(a.getAnsi() + "Player " + a.name() + " has reconnected === to the game. Run!");
     }
 
-    public void displayTimeLeft(){
-
+    public void displayTimeLeft(Duration timeLeft){
+        System.out.println(timeLeft.toString() + " is the time left.");
     }
 
     public void displayScoreAll(List<ActorView> players){
