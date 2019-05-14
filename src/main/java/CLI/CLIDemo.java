@@ -80,22 +80,22 @@ public class CLIDemo {
     //TODO Check if passing a Map object is the better way.
     public void addDmg(ActorView attacker, Map<ActorView,Integer> actorDamaged){
         for(Map.Entry<ActorView,Integer> entry: actorDamaged.entrySet())
-            System.out.println(attacker.getAnsi() + "Player " + attacker.name() + " shot player " + entry.getKey()
+            System.out.println(attacker.getAnsi() + "Player " + attacker.name() + " shot ⌐╦╦═─ player " + entry.getKey()
                     .name() + " for a damage of " + entry.getValue().toString() + ".");
     }
 
     public void addMark(ActorView marker, Map<ActorView,Integer> marked){
         for(Map.Entry<ActorView,Integer> entry: marked.entrySet())
-            System.out.println(marker.getAnsi() + "Player " + marker.name() + " marked player " + entry.getKey()
+            System.out.println(marker.getAnsi() + "Player " + marker.name() + " marked ❌ player " + entry.getKey()
                     .name() + " for a number of marks of " + entry.getValue().toString() + ".");
     }
 
     public void disconnectedPlayer(ActorView a){
-        System.out.println(a.getAnsi() + "Player " + a.name() + " has disconnected from the game. Abuse him!");
+        System.out.println(a.getAnsi() + "Player " + a.name() + " has disconnected =║= from the game. Abuse him!");
     }
 
     public void reconnectedPlayer(ActorView a){
-        System.out.println(a.getAnsi() + "Player " + a.name() + " has reconnected to the game. Run!");
+        System.out.println(a.getAnsi() + "Player " + a.name() + " has reconnected === to the game. Run!");
     }
 
     public void displayTimeLeft(){
@@ -104,13 +104,12 @@ public class CLIDemo {
 
     public void displayScoreAll(List<ActorView> players){
         for(ActorView a:players){
-            System.out.println(a.getAnsi() + "Player " + a.name() + " gained score is " + a.score() + ".");
+            System.out.println(a.getAnsi() + "Player " + a.name() + " gained score ✺(^O^)✺ is " + a.score() + ".");
         }
     }
 
     public void addKill(ActorView killer, ActorView victim){
-        System.out.println(killer.getAnsi() + "Player " + killer.name() + " frag player " + victim.name() + ".");
+        System.out.println(killer.getAnsi() + "Player " + killer.name() + " frag \uD83D\uDC80 player " + victim.name() + ".");
     }
-
 
 }
