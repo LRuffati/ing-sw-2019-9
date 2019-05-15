@@ -92,7 +92,7 @@ public class ActorView implements Serializable {
         return color;
     }
 
-    public String username() {
+    public String name() {
         return username;
     }
 
