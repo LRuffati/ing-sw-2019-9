@@ -2,6 +2,7 @@ package viewclasses;
 
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
+import player.Actor;
 import uid.DamageableUID;
 
 import java.awt.*;
@@ -143,4 +144,5 @@ public class ActorView implements Serializable {
         if(color == Color.blue) return "\u001B[34m";
         return "\u001B[0m";
     }
+
 }

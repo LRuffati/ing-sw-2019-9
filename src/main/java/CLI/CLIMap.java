@@ -8,6 +8,7 @@ import grabbables.Weapon;
 import player.Actor;
 import uid.TileUID;
 import viewclasses.ActorView;
+import viewclasses.AmmoCardView;
 import viewclasses.GameMapView;
 import viewclasses.TileView;
 
@@ -30,7 +31,7 @@ public class CLIMap {
      * @throws FileNotFoundException will probably be deleted, the map to be taken won't be to be generated
      * every time.
      */
-    public CLIMap(GameMapView gmv) throws FileNotFoundException {
+    public CLIMap(GameMapView gmv){
         this.mp = gmv;
         this.maxX = gmv.maxPos().getX()*dimTile;
         this.maxY = gmv.maxPos().getY()*dimTile;
@@ -80,6 +81,7 @@ public class CLIMap {
             if(t.spawnPoint()){
                 tiles[x+1][y+1] = 's';
             } else {
+
                 tiles[x+1][y+1] = 't';
             }
             for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
@@ -99,6 +101,33 @@ public class CLIMap {
 
                         case RIGHT:
                             tiles[x+4][y+2] = ' ';
+                            break;
+                    }
+                }
+                if(entry.getValue().equals("Tile")){
+                    switch (entry.getKey()){
+                        case UP:
+                            tiles[x+1][y] = ' ';
+                            tiles[x+2][y] = ' ';
+                            tiles[x+3][y] = ' ';
+                            break;
+
+                        case DOWN:
+                            tiles[x+1][y+4] = ' ';
+                            tiles[x+2][y+4] = ' ';
+                            tiles[x+3][y+4] = ' ';
+                            break;
+
+                        case LEFT:
+                            tiles[x][y+1] = ' ';
+                            tiles[x][y+2] = ' ';
+                            tiles[x][y+3] = ' ';
+                            break;
+
+                        case RIGHT:
+                            tiles[x+4][y+1] = ' ';
+                            tiles[x+4][y+2] = ' ';
+                            tiles[x+4][y+3] = ' ';
                             break;
                     }
                 }
@@ -135,6 +164,24 @@ public class CLIMap {
             }
         }
     }
+
+    public void addAmmo(TileView tile){
+        int x = mp.getCoord(tile).getX()*dimTile;
+        int y = mp.getCoord(tile).getY()*dimTile;
+        AmmoCardView ammo = tile.ammoCard();
+        tiles[y][x] = Character.forDigit(ammo.numOfBlue(),10);
+        tiles[y+1][x] = Character.forDigit(ammo.numOfRed(),10);
+        tiles[y+2][x] = Character.forDigit(ammo.numOfYellow(),10);
+
+        if(ammo.numOfPowerUp() != 0)
+            if(ammo.numOfBlue() == 0)
+                tiles[y][x] = 'P';
+            if(ammo.numOfRed() == 0)
+                tiles[y+1][x] = 'P';
+            if(ammo.numOfYellow() == 0)
+                tiles[y+2][x] = 'P';
+    }
+
 
     /**
      * Put the current players in the map with the correct ASCII characters.
@@ -177,7 +224,7 @@ public class CLIMap {
     public Coord searchCharacter(Character ascii){
         for(int i = 0; i < tiles[0].length; i++){
             for(int j = 0; j< tiles.length; j++){
-                if(tiles[i][j].equals(ascii)) return new Coord(i,j);
+                if(tiles[j][i].equals(ascii)) return new Coord(j,i);
             }
         }
         return null;
@@ -203,8 +250,9 @@ public class CLIMap {
     public void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
-                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()][mp.getCoord(t).getX()*dimTile
-                        +playerPos.get(players.get(a)).getX()] = players.get(a);
+                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()]
+                        [mp.getCoord(t).getX()*dimTile+playerPos.get(players.get(a)).getX()]
+                        = players.get(a);
             }
         }
     }

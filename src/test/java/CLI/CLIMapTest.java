@@ -35,7 +35,7 @@ class CLIMapTest {
     }
 
     @Test
-    void printTest() throws FileNotFoundException {
+    void printTest(){
         /*
         Iterator iterator = map.allTiles().iterator();
         TileUID t = (TileUID) iterator.next();
@@ -44,5 +44,13 @@ class CLIMapTest {
         gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
         CLIMap map = new CLIMap(gmv);
         map.printMap();
+    }
+
+    @Test
+    void searchTest(){
+        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        CLIMap map = new CLIMap(gmv);
+        assert(map.searchCharacter('s').getX()==11);
+        assert(map.searchCharacter('s').getY()==1);
     }
 }
