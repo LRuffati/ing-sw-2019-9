@@ -26,6 +26,8 @@ public class ParserWeapon {
         while(scanner.hasNextLine()){
             String name = null;
             String description;
+            AmmoAmount buyWeapon = null;
+            AmmoAmount reloadWeapon = null;
             Collection<ActionTemplate> actions = new ArrayList<>();
             sLine = new Scanner(scanner.nextLine());
             sLine.useDelimiter(" ");
@@ -37,7 +39,7 @@ public class ParserWeapon {
                 name = sLine.next();
                 String ammoColour = sLine.next();
                 for(int i = 0; i < ammoColour.length()-1; i++){
-                    switch(ammoColour.charAt(0)){
+                    switch(ammoColour.charAt(i)){
                         case 'B':
                             B+=1;
                             break;
@@ -52,14 +54,39 @@ public class ParserWeapon {
                 amountGiven.put(AmmoColor.BLUE,B);
                 amountGiven.put(AmmoColor.RED,R);
                 amountGiven.put(AmmoColor.YELLOW,Y);
+                buyWeapon = new AmmoAmount(amountGiven);
+                switch(ammoColour.charAt(0)){
+                    case 'B':
+                        amountGiven.remove(AmmoColor.BLUE);
+                        break;
+                    case 'R':
+                        amountGiven.remove(AmmoColor.RED);
+                        break;
+                    case 'Y':
+                        amountGiven.remove(AmmoColor.YELLOW);
+                        break;
+                }
+                reloadWeapon = new AmmoAmount(amountGiven);
             }
-            AmmoAmount buyWeapon = new AmmoAmount(amountGiven);
+
             if(sLine.next().equals("nome:")) name = sLine.next();
             if(sLine.next().equals("description:")) description = sLine.next();
-            if(sLine.next().equals("action")){
+            while(!sLine.next().equals("weapon")){
+                if(sLine.next().equals("action")){
+                    String actionId = sLine.next();
+                    String actionName = null;
+                    String actionDescription = null;
+                    actionId = actionId.substring(0, actionId.length() - 1);
+                    if (sLine.next().equals("nome:")) actionName = sLine.nextLine();
+                    if (sLine.next().equals("descrizione:")) actionDescription = sLine.nextLine();
+                    while(!sLine.next().equals("action")){
+                        if(sLine.next().equals("target")){
 
+                        }
+                    }
+                }
             }
-            weaponCollection.add(new Weapon(name,buyWeapon,buyWeapon,actions));
+            weaponCollection.add(new Weapon(name,buyWeapon,reloadWeapon,actions));
             sLine.close();
         }
 
