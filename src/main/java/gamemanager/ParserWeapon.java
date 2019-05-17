@@ -57,13 +57,13 @@ public class ParserWeapon {
                 buyWeapon = new AmmoAmount(amountGiven);
                 switch(ammoColour.charAt(0)){
                     case 'B':
-                        amountGiven.remove(AmmoColor.BLUE);
+                        amountGiven.replace(AmmoColor.BLUE, B-1);
                         break;
                     case 'R':
-                        amountGiven.remove(AmmoColor.RED);
+                        amountGiven.replace(AmmoColor.RED, R-1);
                         break;
                     case 'Y':
-                        amountGiven.remove(AmmoColor.YELLOW);
+                        amountGiven.replace(AmmoColor.YELLOW, Y-1);
                         break;
                 }
                 reloadWeapon = new AmmoAmount(amountGiven);
