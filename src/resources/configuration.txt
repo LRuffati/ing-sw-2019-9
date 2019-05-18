@@ -47,6 +47,12 @@ src/resources/map1.txt
 
 
 #Constants for Server
+-RMIPort
+1099
+
+-SocketPort
+8000
+
 -TimeBeforeStarting
 120
 
@@ -54,7 +60,7 @@ src/resources/map1.txt
 120
 
 -minNumOfPlayers
-1
+2
 
 -maxNumOfPlayers
-2
+3
