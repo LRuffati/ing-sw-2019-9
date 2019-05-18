@@ -7,7 +7,7 @@ import network.rmi.server.ServerRMIInterface;
 import network.socket.SocketServerLauncher;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
-import rmi.exceptions.InvalidLoginException;
+import network.exception.InvalidLoginException;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;

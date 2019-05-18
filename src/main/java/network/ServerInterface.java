@@ -1,18 +1,6 @@
 package network;
 
-import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
-import controllerresults.ControllerActionResult;
-import genericitems.Tuple;
-import rmi.exceptions.InvalidLoginException;
-import rmi.view.RemoteBaseView;
-import viewclasses.GameMapView;
-import viewclasses.WeaponView;
-
-import java.awt.*;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
 
 /**
  * Methods called from outside the package from the server-side.

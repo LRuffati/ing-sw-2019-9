@@ -1,7 +1,7 @@
 package network;
 
 
-import rmi.exceptions.InvalidLoginException;
+import network.exception.InvalidLoginException;
 
 import java.rmi.RemoteException;
 

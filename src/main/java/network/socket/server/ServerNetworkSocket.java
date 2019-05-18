@@ -4,7 +4,7 @@ import network.Database;
 import network.Player;
 import network.ServerInterface;
 import network.socket.messages.*;
-import rmi.exceptions.InvalidLoginException;
+import network.exception.InvalidLoginException;
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)

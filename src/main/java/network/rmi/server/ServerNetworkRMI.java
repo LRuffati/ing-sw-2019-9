@@ -3,7 +3,7 @@ package network.rmi.server;
 import network.Database;
 import network.ServerInterface;
 import network.rmi.client.ClientNetworkRMIInterface;
-import rmi.exceptions.InvalidLoginException;
+import network.exception.InvalidLoginException;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

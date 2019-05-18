@@ -1,6 +1,6 @@
 package network.socket.client;
 
-import network.socket.exception.NextResponseException;
+import network.exception.NextResponseException;
 import network.socket.messages.Request;
 import network.socket.messages.Response;
 
@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  * Class used to send data to the Server via socket
  */
 public class Client {
-    private Logger logger = Logger.getLogger(socket.client.Client.class.getName());
+    private Logger logger = Logger.getLogger(Client.class.getName());
 
     private final String host;
     private final int port;
