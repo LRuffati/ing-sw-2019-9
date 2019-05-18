@@ -3,13 +3,20 @@ package gamemanager;
 import actions.Action;
 import actions.ActionInfo;
 import actions.ActionTemplate;
+import actions.conditions.Condition;
+import actions.effects.EffectTemplate;
+import actions.selectors.*;
+import actions.targeters.TargeterTemplate;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
+import genericitems.Tuple;
 import grabbables.Weapon;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ParserWeapon {
     ParserWeapon(){}
@@ -29,6 +36,7 @@ public class ParserWeapon {
             String weaponId = null;
             String name = null;
             String description;
+            String mainAction = null;
             AmmoAmount buyWeapon = null;
             AmmoAmount reloadWeapon = null;
             Collection<ActionTemplate> actions = new ArrayList<>();
@@ -123,33 +131,90 @@ public class ParserWeapon {
                     boolean ifNew = false;
                     boolean ifAutomatic = false;
                     boolean ifOptional = false;
+                    Collection<Tuple<Boolean, String>> actionRequirements = new ArrayList<>();
+                    Collection<Tuple<Boolean, String>> targetRequirements = new ArrayList<>();
                     actionId = actionId.substring(0, actionId.length() - 1);
-                    if (sLine.next().equals("follows")||maybeCost.equals("follows")) listaFollow = sLine.next();
-                    if (sLine.next().equals("exist")||maybeCost.equals("exist")) listaTarget = sLine.next();
+                    if (sLine.next().equals("follows")||maybeCost.equals("follows")){
+                        listaFollow = sLine.next();
+                        String substring = listaFollow
+                                .substring(2, listaFollow.length() - 2);
+                        if(listaFollow.charAt(1)=='!') {
+                            actionRequirements.add(new Tuple<>(false, substring));
+                        } else {
+                            actionRequirements.add(new Tuple<>(true, substring));
+                        }
+
+                    } else actionRequirements = null;
+                    if (sLine.next().equals("exist")||maybeCost.equals("exist")) {
+                        listaTarget = sLine.next();
+                        String substring = listaTarget
+                                .substring(2, listaTarget.length() - 2);
+                        if(listaTarget.charAt(1)=='!') {
+                            targetRequirements.add(new Tuple<>(false, substring));
+                        } else {
+                            targetRequirements.add(new Tuple<>(true, substring));
+                        }
+                    } else targetRequirements = null;
                     if (sLine.next().equals("xor")||maybeCost.equals("xor")) listaAZ = sLine.next();
-                    if (sLine.next().equals("contemp")||maybeCost.equals("contemp")) idAction = sLine.next();
+                    if (sLine.next().equals("contemp")||maybeCost.equals("contemp")) {
+                        idAction = sLine.next();
+                        if(mainAction==null)
+                            mainAction = idAction.substring(0,idAction.length()-2);
+                    }
                     if (sLine.next().equals("nome:")||maybeCost.equals("nome:")) actionName = sLine.nextLine();
                     if (sLine.next().equals("descrizione:")) actionDescription = sLine.nextLine();
+                    List<Tuple<String, TargeterTemplate>> targeters = new ArrayList<>();
+                    List<EffectTemplate> effects = new ArrayList<>();
                     while(!sLine.next().equals("action")&&!sLine.next().equals("effect")){
                         if(sLine.next().equals("target")){
                             targetId = sLine.next();
                             targetType = sLine.next();
+                            List<Tuple<String, Condition>> filters = new ArrayList<>();
                             selector = sLine.next().substring(1);
+                            Selector toSelector = null;
+                            int min;
+                            int max;
+                            Pattern p;
+                            Matcher m;
                             switch(selector.toLowerCase()){
 
                                 case "reached":
+                                    range = sLine.next();
+                                    p = Pattern.compile("\\d+");
+                                    m = p.matcher(range);
+                                    min = Integer.parseInt(m.group());
+                                    max = Integer.parseInt(m.group());
+                                    toSelector = new ReachableSelector(min,max);
+                                    toTargetId = sLine.next();
+                                    break;
 
                                 case "distant":
                                     range = sLine.next();
+                                    p = Pattern.compile("\\d+");
+                                    m = p.matcher(range);
+                                    min = Integer.parseInt(m.group());
+                                    max = Integer.parseInt(m.group());
+                                    toSelector = new DistanceSelector(min,max,true);
                                     toTargetId = sLine.next();
                                     break;
 
                                 case "in":
+                                    toSelector = new ContainedSelector();
+                                    toTargetId = sLine.next();
+                                    break;
 
                                 case "has":
+                                    toSelector = new HasSelector();
+                                    toTargetId = sLine.next();
+                                    break;
 
                                 case "seen":
+                                    toSelector = new VisibleSelector();
                                     toTargetId = sLine.next();
+                                    break;
+
+                                case "exists":
+                                    toSelector = new ExistSelector();
                                     break;
 
                                 default:
@@ -159,9 +224,13 @@ public class ParserWeapon {
                             if(sLine.next().equals("new")) ifNew = true;
                             if(sLine.next().equals("automatic")) ifAutomatic = true;
                             if(sLine.next().equals("optional")) ifOptional = true;
+
+                            targeters.add(new Tuple<>(targetId,new TargeterTemplate(new Tuple<>(selector,toSelector),
+                                    filters,targetType,ifOptional,ifNew,ifAutomatic)));
                         }
                     }
-                    //actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,)));
+                    actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
+                            targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
                 }
             }
             weaponCollection.add(new Weapon(name,buyWeapon,reloadWeapon,actions));
