@@ -1,17 +1,12 @@
 package network.socket.messages;
 
-import network.socket.client.ClientNetworkSocket;
-
 import java.rmi.RemoteException;
 
 public class RegisterRequest implements Request {
-    //public final ClientNetworkSocket client;
     public final String username;
     public final String color;
 
-    public RegisterRequest(ClientNetworkSocket client, String username, String color){
-        //TODO: delete ClientNetworkSocket??
-        //this.client = client;
+    public RegisterRequest(String username, String color){
         this.username = username;
         this.color = color;
     }

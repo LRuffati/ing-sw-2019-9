@@ -1,9 +1,5 @@
 package network.exception;
 
-//TODO: why can't do that?
-import java.rmi.RemoteException;
-//public class InvalidLoginException extends Exception {
-
 public class InvalidLoginException extends Exception {
     public final boolean wrongUsername;
     public final boolean wrongColor;

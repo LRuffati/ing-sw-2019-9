@@ -22,6 +22,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
     }
@@ -70,7 +71,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void register(){
-        client.request(new RegisterRequest(this, "a", "blue"));
+        client.request(new RegisterRequest("a", "blue"));
         sync();
         ClientContext.get().getToken();
     }
