@@ -12,6 +12,7 @@ import java.rmi.RemoteException;
  */
 public interface ServerRMIInterface extends Remote {
     int mirror(int n) throws RemoteException;
-    int close(ClientNetworkRMIInterface client) throws RemoteException;
+    int close(String token) throws RemoteException;
     String register(ServerInterface user, String username, String color) throws RemoteException, InvalidLoginException;
+    boolean reconnect(ServerInterface user, String token) throws RemoteException;
 }

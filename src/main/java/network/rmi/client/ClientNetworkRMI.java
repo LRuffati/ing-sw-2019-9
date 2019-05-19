@@ -12,19 +12,32 @@ import java.rmi.server.UnicastRemoteObject;
 public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetworkRMIInterface {
 
     private transient ServerRMIInterface controller;
+    private transient String token;
 
     public ClientNetworkRMI(ServerRMIInterface controller) throws RemoteException {
         this.controller = controller;
     }
+
+    //ServerInterface methods
 
     @Override
     public void sendUpdate(String str) {
         System.out.println("Update:\t" + str);
     }
 
+
+    //ClientInterface methods
+
     @Override
-    public int close(int num) throws RemoteException {
-        controller.close(this);
+    public void register() throws RemoteException, InvalidLoginException {
+        String token = controller.register(this, "me", "blue");
+        this.token = token;
+        System.out.println("Il mio token\t" + token);
+    }
+
+    @Override
+    public int close() throws RemoteException {
+        controller.close(token);
         System.out.println("Permesso di uscita");
         return 0;
     }
@@ -37,12 +50,18 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
 
     @Override
-    public void register() throws RemoteException, InvalidLoginException {
-        String token = controller.register(this, "me", "blue");
+    public boolean reconnect(String token) throws RemoteException {
+        return controller.reconnect(this, token);
     }
 
     public void run() throws RemoteException, InvalidLoginException {
-        register();
+        run(true, null);
+    }
+    public void run(boolean newConnection, String token) throws RemoteException, InvalidLoginException {
+        if(newConnection)
+            register();
+        else
+            System.out.println(reconnect(token));
     }
 
 

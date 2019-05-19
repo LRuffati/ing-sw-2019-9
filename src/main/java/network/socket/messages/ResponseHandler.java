@@ -9,6 +9,7 @@ public interface ResponseHandler {
     void handle(MirrorResponse response);
 
     void handle(RegisterResponse response);
+    void handle(ReconnectResponse response);
 
     void handle(TextResponse response);
 }

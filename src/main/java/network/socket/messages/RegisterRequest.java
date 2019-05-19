@@ -1,7 +1,5 @@
 package network.socket.messages;
 
-import java.rmi.RemoteException;
-
 public class RegisterRequest implements Request {
     public final String username;
     public final String color;
@@ -12,7 +10,7 @@ public class RegisterRequest implements Request {
     }
 
     @Override
-    public Response handle(RequestHandler handler) throws RemoteException {
+    public Response handle(RequestHandler handler) {
         return handler.handle(this);
     }
 }

@@ -1,10 +1,9 @@
 package network.socket.messages;
 
-public class CloseRequest implements Request {
-
+public class ReconnectRequest implements Request {
     public final String token;
 
-    public CloseRequest(String token){
+    public ReconnectRequest(String token){
         this.token = token;
     }
 

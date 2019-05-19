@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 public interface ClientInterface {
     //List<Events> getEvent();
     int mirror(int num) throws RemoteException;
-    int close(int num) throws RemoteException;
+    int close() throws RemoteException;
     void register() throws RemoteException, InvalidLoginException;
+    boolean reconnect(String token) throws RemoteException;
 }

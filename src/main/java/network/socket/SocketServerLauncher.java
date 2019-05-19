@@ -27,7 +27,7 @@ public class SocketServerLauncher {
 
     public void run() throws IOException, RemoteException {
         System.in.read();
-        for(String token : Database.get().getTokens())
+        for(String token : Database.get().getConnectedTokens())
             Database.get().getNetworkByToken(token).sendUpdate("ciao");
     }
 

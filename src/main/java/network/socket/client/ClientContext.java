@@ -41,4 +41,13 @@ public class ClientContext {
     public String getTextMessage() {
         return message;
     }
+
+
+    private boolean reconnected;
+    public void setReconnected(boolean reconnected) {
+        this.reconnected = reconnected;
+    }
+    public boolean getReconnected() {
+        return reconnected;
+    }
 }

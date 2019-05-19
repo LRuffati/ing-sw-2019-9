@@ -37,11 +37,11 @@ public class RMIClientLauncher {
             Scanner scanner = new Scanner(System.in);
             num = scanner.nextInt();
             if(num >= 0) {
-                int n = controller.mirror(num);
+                int n = client.mirror(num);
                 System.out.println("Mirrored\t" + n);
             }
             else {
-                controller.close(client);
+                client.close();
                 System.out.println("Permesso di uscita");
             }
         }

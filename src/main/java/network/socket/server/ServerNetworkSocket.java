@@ -6,6 +6,9 @@ import network.ServerInterface;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
 
+import javax.xml.crypto.Data;
+import java.awt.image.DataBuffer;
+
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
  * and the Requests called by the clients (implemented in RequestHandler)
@@ -44,8 +47,16 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     }
 
     @Override
+    public Response handle(ReconnectRequest request) {
+        if(request.token == null)
+            return new ReconnectResponse(false);
+        String tokenFromDb = Database.get().login(this, request.token);
+        return new ReconnectResponse(tokenFromDb.equals(request.token));
+    }
+
+    @Override
     public Response handle(CloseRequest request) {
-        System.out.println("Richiesta di uscita\t" + request.value);
+        System.out.println("Richiesta di uscita\t" + Database.get().getUserByToken(request.token).getUsername());
         Database.get().logout(this);
         clientHandler.stop();
         return new CloseResponse();

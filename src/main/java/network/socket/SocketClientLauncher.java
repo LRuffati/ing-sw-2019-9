@@ -1,6 +1,7 @@
 package network.socket;
 
 import network.socket.client.Client;
+import network.socket.client.ClientContext;
 import network.socket.client.ClientNetworkSocket;
 
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class SocketClientLauncher {
                 System.out.println("Uscito il num\t" + controller.mirror(num));
             }
             else {
-                System.out.println("END!!\t" + controller.close(num));
+                System.out.println("END!!\t" + controller.close());
 
             }
         }

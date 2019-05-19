@@ -34,7 +34,8 @@ public class Main {
         while(i < 100){
             i++;
             scanner.nextInt();
-            List<ServerInterface> interfaces = Database.get().getTokens().stream().map(x -> Database.get().getNetworkByToken(x)).collect(Collectors.toList());
+            System.out.println("Numero di utenti\t" + Database.get().getConnectedTokens().size());
+            List<ServerInterface> interfaces = Database.get().getConnectedTokens().stream().map(x -> Database.get().getNetworkByToken(x)).collect(Collectors.toList());
             for(ServerInterface net : interfaces){
                 net.sendUpdate("ciao");
             }
@@ -71,6 +72,40 @@ public class Main {
         run(client);
     }
 
+
+    private static void runSocketReconnect() throws IOException{
+        System.out.println("\nClient Socket Reconnect\n");
+        Client client = new Client("localhost", ParserConfiguration.parseInt("SocketPort"));
+        client.init();
+        ClientNetworkSocket controller = new ClientNetworkSocket(client);
+
+        System.out.println("Insert Token");
+        controller.run(false, new Scanner(System.in).next());
+
+        run(controller);
+
+        client.close();
+    }
+
+    private static void runRMIReconnect() throws RemoteException, InvalidLoginException, NotBoundException {
+        System.out.println("\nClient RMI Reconnect\n");
+        Registry registry = LocateRegistry.getRegistry();
+
+        for (String name : registry.list()) {
+            System.out.println("Registry bindings: " + name);
+        }
+        System.out.println("\n");
+        String host = "localhost";
+        String lookup = String.format("//%s:%d/controller", host, ParserConfiguration.parseInt("RMIPort"));
+        ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
+
+        ClientNetworkRMI client = new ClientNetworkRMI(controller);
+        System.out.println("Insert Token");
+        client.run(false, new Scanner(System.in).next());
+
+        run(client);
+    }
+
     public static void run(ClientInterface clientInterface) throws RemoteException{
         int num = 10;
         while(num>=0) {
@@ -78,9 +113,13 @@ public class Main {
             num = scanner.nextInt();
             if(num >= 0) {
                 System.out.println("Uscito il num\t" + clientInterface.mirror(num));
+                if(num == 0) {
+                    clientInterface.close();
+                }
+
             }
             else {
-                System.out.println("END!!\t" + clientInterface.close(num));
+                System.out.println("END!!\t" + clientInterface.close());
 
             }
         }
@@ -98,5 +137,9 @@ public class Main {
             runSocket();
         if(n == 2)
             runRMI();
+        if(n == 11)
+            runSocketReconnect();
+        if(n == 22)
+            runRMIReconnect();
     }
 }

@@ -16,11 +16,14 @@ public class Player implements Serializable {
     private DamageableUID uid;
     private String token;
 
+    private boolean onLine;
+
     public Player(String username, String color, boolean gameMaster, String token) {
         this.username = username;
         this.color = color;
         this.gameMaster = gameMaster;
         this.token = token;
+        this.onLine = true;
     }
 
     public void setActor(Actor actor) {
@@ -53,5 +56,14 @@ public class Player implements Serializable {
 
     public String getToken() {
         return token;
+    }
+
+
+    public void setOnLine(boolean onLine) {
+        this.onLine = onLine;
+    }
+
+    public boolean isOnLine() {
+        return onLine;
     }
 }

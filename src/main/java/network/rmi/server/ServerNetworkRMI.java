@@ -31,12 +31,18 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
     @Override
-    public int close(ClientNetworkRMIInterface client) {
-        Database.get().logout(client);
+    public int close(String token) {
+        Database.get().logout(token);
         System.out.println("Richiesta di uscita");
-        //TODO: how to close a rmi connection?
-        //clientHandler.stop();
         return 0;
+    }
+
+    @Override
+    public boolean reconnect(ServerInterface client, String token) throws RemoteException {
+        if(token == null)
+            return false;
+        String tokenFromDb = Database.get().login(client, token);
+        return tokenFromDb.equals(token);
     }
 
 

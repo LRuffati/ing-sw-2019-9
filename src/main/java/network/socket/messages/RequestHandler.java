@@ -9,4 +9,5 @@ public interface RequestHandler {
     Response handle(MirrorRequest request);
 
     Response handle(RegisterRequest request);
+    Response handle(ReconnectRequest request);
 }
