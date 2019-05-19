@@ -3,8 +3,11 @@ package gamemanager;
 import actions.Action;
 import actions.ActionInfo;
 import actions.ActionTemplate;
-import actions.conditions.Condition;
+import actions.conditions.*;
+import actions.effects.DamageEffect;
+import actions.effects.DamageTemplate;
 import actions.effects.EffectTemplate;
+import actions.effects.Fire;
 import actions.selectors.*;
 import actions.targeters.TargeterTemplate;
 import actions.utils.AmmoAmount;
@@ -215,18 +218,92 @@ public class ParserWeapon {
 
                                 case "exists":
                                     toSelector = new ExistSelector();
+                                    toTargetId = "self";
                                     break;
 
                                 default:
                                     break;
                             }
 
+                            if(sLine.next().equals("&")){
+                                String condition = sLine.next();
+                                Condition toCondition = null;
+                                String idTarg;
+                                boolean not = false;
+                                if(condition.equals("not")){
+                                    not = true;
+                                    condition = sLine.next();
+                                }
+
+                                switch(condition.toLowerCase()){
+                                    case "distant":
+                                        range = sLine.next();
+                                        p = Pattern.compile("\\d+");
+                                        m = p.matcher(range);
+                                        min = Integer.parseInt(m.group());
+                                        max = Integer.parseInt(m.group());
+                                        idTarg = sLine.next();
+                                        toCondition = new DistantCondition(min,max,true, not);
+                                        break;
+
+                                    case "in":
+                                        idTarg = sLine.next();
+                                        toCondition = new InCondition(not);
+                                        break;
+
+                                    case "has":
+                                        idTarg = sLine.next();
+                                        toCondition = new HasCondition(not);
+                                        break;
+
+                                    case "reaches":
+                                        range = sLine.next();
+                                        p = Pattern.compile("\\d+");
+                                        m = p.matcher(range);
+                                        min = Integer.parseInt(m.group());
+                                        max = Integer.parseInt(m.group());
+                                        idTarg = sLine.next();
+                                        toCondition = new ReachesCondition(min, max, not);
+                                        break;
+
+                                    case "seen":
+                                        idTarg = sLine.next();
+                                        toCondition = new SeenCondition(not);
+                                        break;
+
+                                    default:
+                                        break;
+                                }
+                            }
+
                             if(sLine.next().equals("new")) ifNew = true;
                             if(sLine.next().equals("automatic")) ifAutomatic = true;
                             if(sLine.next().equals("optional")) ifOptional = true;
 
-                            targeters.add(new Tuple<>(targetId,new TargeterTemplate(new Tuple<>(selector,toSelector),
+                            targeters.add(new Tuple<>(targetId,new TargeterTemplate(new Tuple<>(toTargetId,toSelector),
                                     filters,targetType,ifOptional,ifNew,ifAutomatic)));
+                        }
+                    }
+                    while(!sLine.next().equals("action")){
+                        if(sLine.next().equals("effect")){
+                            String effect = sLine.next();
+                            EffectTemplate toEffect = null;
+
+                            switch(effect.toLowerCase()){
+                                case "fire":
+                                    toEffect = new Fire();
+                                    break;
+
+                                case "damage":
+                                    int amount = Integer.parseInt(sLine.next());
+                                    String targId = sLine.next();
+                                    toEffect = new DamageTemplate(targId,amount);
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                            effects.add(toEffect);
                         }
                     }
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
