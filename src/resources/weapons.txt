@@ -1,0 +1,98 @@
+weapon distruttore BB:
+	nome: Distruttore
+	description:
+	action main:
+		nome: Effetto base
+		descrizione: Dai 2 danni e un marchio a un bersaglio che puoi vedere
+		target targ1 pawn (SEEN self) new
+		effect DAMAGE 2 targ1
+		effect MARK 1 targ1
+	action secondo R follows [main]:
+		target targ2 pawn (SEEN self) new
+		effect MARK 1 targ2
+
+weapon mitragliatrice BR:
+	action main:
+		target targ1 pawn (SEEN self) new
+		target targ2 pawn (SEEN self) new optional
+		effect DAMAGE 1 targ1
+		effect DAMAGE 1 targ2
+	action focalizzato Y follows [main]:
+		effect DAMAGE 1 targ1
+	action tripode1 B follows [main] exist [targ2]:
+		nome: Tripode di supporto
+		target targ3 pawn (SEEN self) new optional
+		effect DAMAGE 1 targ2
+		effect DAMAGE 1 targ3
+	action tripode2 B follows [main] exist [!targ2] xor [focalizzato, tripode1]:
+		nome: Tripode di supporto
+		descrizione: Dai un danno aggiuntivo al target 1 pagando blu
+		effect DAMAGE 1 targ1
+
+weapon torpedine BR:
+	action main:
+		target targ1 pawn (seen SELF) new
+		effect DAMAGE 2 targ1
+	action reazione B follows [main]:
+		target targ2 pawn (seen targ1) new
+		effect DAMAGE 1 targ2
+	action tensione B follows [reazione]:
+		target targ3 pawn (seen targ2) new
+		effect damage 2 targ3
+
+weapon plasma BY:
+	action main:
+		target targ1 pawn (seen SELF) new
+		effect damage 2 targ1
+	action slitta:
+		target tile1 tile (distance (1,2) self)
+		effect move self to tile1
+	action sovracc B follows [main]:
+		effect damage 1 targ1
+
+weapon precisione BBY:
+	action main:
+		target targ1 pawn (SEEN GFself & not DISTANT (0,1) self)
+		effect damage 3 targ1
+		effect mark 1 targ1
+
+weapon falce B:
+	action main:
+		target tile1 tile (HAS self) automatic
+		effect damage 1 tile1
+	action reaper BR xor [main]:
+		target tile1 tile (HAS self) automatic
+		effect damage 2 tile1
+
+weapon raggio B:
+	action main:
+		target targ1 pawn (EXISTS) new
+		target tiled tile (REACHED (0,2) targ1 & SEEN self)
+		effect move targ1 to tiled
+		effect damage  1 targ1
+	action punisher BR xor [main]:
+		target tiles tile (HAS self) automatic
+		target targ1 pawn (EXISTS & REACHES (0,2) tiles) new
+		effect move targ1 to tiles
+		effect damage 3 targ1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

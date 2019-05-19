@@ -225,10 +225,10 @@ public class ParserWeapon {
                                     break;
                             }
 
-                            if(sLine.next().equals("&")){
+                            while(sLine.next().equals("&")){
                                 String condition = sLine.next();
                                 Condition toCondition = null;
-                                String idTarg;
+                                String idTarg = null;
                                 boolean not = false;
                                 if(condition.equals("not")){
                                     not = true;
@@ -274,6 +274,7 @@ public class ParserWeapon {
                                     default:
                                         break;
                                 }
+                                filters.add(new Tuple<>(idTarg,toCondition));
                             }
 
                             if(sLine.next().equals("new")) ifNew = true;
@@ -284,7 +285,8 @@ public class ParserWeapon {
                                     filters,targetType,ifOptional,ifNew,ifAutomatic)));
                         }
                     }
-                    while(!sLine.next().equals("action")){
+                    String controlla = sLine.next();
+                    while(!controlla.equals("action") && !controlla.equals("weapon")){
                         if(sLine.next().equals("effect")){
                             String effect = sLine.next();
                             EffectTemplate toEffect = null;
