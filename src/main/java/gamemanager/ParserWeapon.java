@@ -28,6 +28,12 @@ public class ParserWeapon {
         Collection<Weapon> weaponCollection = new ArrayList<>();
         Scanner scanner;
         Scanner sLine;
+        String name = null;
+        AmmoAmount buyWeapon = null;
+        AmmoAmount reloadWeapon = null;
+        Collection<ActionTemplate> actions = new ArrayList<>();
+        String mainAction = null;
+
 
         try{
             scanner = new Scanner(new File(path));
@@ -37,12 +43,7 @@ public class ParserWeapon {
 
         while(scanner.hasNextLine()){
             String weaponId = null;
-            String name = null;
             String description;
-            String mainAction = null;
-            AmmoAmount buyWeapon = null;
-            AmmoAmount reloadWeapon = null;
-            Collection<ActionTemplate> actions = new ArrayList<>();
             String scannerString = scanner.nextLine();
             sLine = new Scanner(scannerString);
             sLine.useDelimiter(" ");
@@ -92,37 +93,42 @@ public class ParserWeapon {
                     break;
 
                 case "nome:":
-                    name = scannerString.substring(scannerString.indexOf(':'), scannerString.length()-1);
+                    name = scannerString.substring(scannerString.indexOf(':'));
                     break;
 
                 case "description:":
-                    description = scannerString.substring(scannerString.indexOf(':'), scannerString.length()-1);
+                    description = scannerString.substring(scannerString.indexOf(':'));
                     break;
 
                 case "action":
                     amountGiven = new HashMap<>();
                     AmmoAmount actionPrice = null;
                     String actionId = sLine.next();
-                    String maybeCost = sLine.next();
-                    if(maybeCost.matches("^[RBY]+$")){
-                        for(int i = 0; i < maybeCost.length()-1; i++){
-                            switch(maybeCost.charAt(i)){
+                    String maybeCost = null;
+                    boolean mNotNull = false;
+                    if(sLine.hasNext()) {
+                        maybeCost = sLine.next();
+                        mNotNull = true;
+                    }
+                    if (mNotNull && maybeCost.matches("^[RBY]+$")) {
+                        for (int i = 0; i < maybeCost.length() - 1; i++) {
+                            switch (maybeCost.charAt(i)) {
                                 case 'B':
-                                    B+=1;
+                                    B += 1;
                                     break;
                                 case 'R':
-                                    R+=1;
+                                    R += 1;
                                     break;
                                 case 'Y':
-                                    Y+=1;
+                                    Y += 1;
                                     break;
                                 default:
                                     break;
                             }
                         }
-                        amountGiven.put(AmmoColor.BLUE,B);
-                        amountGiven.put(AmmoColor.RED,R);
-                        amountGiven.put(AmmoColor.YELLOW,Y);
+                        amountGiven.put(AmmoColor.BLUE, B);
+                        amountGiven.put(AmmoColor.RED, R);
+                        amountGiven.put(AmmoColor.YELLOW, Y);
                         actionPrice = new AmmoAmount(amountGiven);
                     }
 
@@ -144,7 +150,7 @@ public class ParserWeapon {
                     Collection<Tuple<Boolean, String>> actionRequirements = new ArrayList<>();
                     Collection<Tuple<Boolean, String>> targetRequirements = new ArrayList<>();
                     actionId = actionId.substring(0, actionId.length() - 1);
-                    if (sLine.next().equals("follows")||maybeCost.equals("follows")){
+                    if (mNotNull && (sLine.next().equals("follows")||maybeCost.equals("follows"))){
                         listaFollow = sLine.next();
                         String substring = listaFollow
                                 .substring(2, listaFollow.length() - 2);
@@ -155,7 +161,7 @@ public class ParserWeapon {
                         }
 
                     } else actionRequirements = null;
-                    if (sLine.next().equals("exist")||maybeCost.equals("exist")) {
+                    if (mNotNull && (sLine.next().equals("exist")|| maybeCost.equals("exist"))) {
                         listaTarget = sLine.next();
                         String substring = listaTarget
                                 .substring(2, listaTarget.length() - 2);
@@ -165,8 +171,8 @@ public class ParserWeapon {
                             targetRequirements.add(new Tuple<>(true, substring));
                         }
                     } else targetRequirements = null;
-                    if (sLine.next().equals("xor")||maybeCost.equals("xor")) listaAZ = sLine.next();
-                    if (sLine.next().equals("contemp")||maybeCost.equals("contemp")) {
+                    if (mNotNull && (sLine.next().equals("xor")||maybeCost.equals("xor"))) listaAZ = sLine.next();
+                    if (mNotNull && (sLine.next().equals("contemp")|| maybeCost.equals("contemp"))) {
                         idAction = sLine.next();
                         if(mainAction==null)
                             mainAction = idAction.substring(0,idAction.length()-2);
@@ -299,26 +305,28 @@ public class ParserWeapon {
                                 filters,targetType,ifOptional,ifNew,ifAutomatic)));
 
                     }
-                    while(scanner.nextLine().contains("effect")){
-                        sLine.next();
-                        String effect = sLine.next();
-                        EffectTemplate toEffect = null;
+                    if(mNotNull){
+                        while (scanner.nextLine().contains("effect")) {
+                            sLine.next();
+                            String effect = sLine.next();
+                            EffectTemplate toEffect = null;
 
-                        switch(effect.toLowerCase()){
-                            case "fire":
-                                toEffect = new Fire();
-                                break;
+                            switch (effect.toLowerCase()) {
+                                case "fire":
+                                    toEffect = new Fire();
+                                    break;
 
-                            case "damage":
-                                int amount = Integer.parseInt(sLine.next());
-                                String targId = sLine.next();
-                                toEffect = new DamageTemplate(targId,amount);
-                                break;
+                                case "damage":
+                                    int amount = Integer.parseInt(sLine.next());
+                                    String targId = sLine.next();
+                                    toEffect = new DamageTemplate(targId, amount);
+                                    break;
 
-                            default:
-                                break;
+                                default:
+                                    break;
+                            }
+                            effects.add(toEffect);
                         }
-                        effects.add(toEffect);
                     }
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
                             targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
@@ -327,11 +335,9 @@ public class ParserWeapon {
                 default:
                     break;
             }
-
-            weaponCollection.add(new Weapon(name,buyWeapon,reloadWeapon,actions));
             sLine.close();
         }
-
+        weaponCollection.add(new Weapon(name,buyWeapon,reloadWeapon,actions));
         scanner.close();
         return weaponCollection;
     }

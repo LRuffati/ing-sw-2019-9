@@ -1,4 +1,6 @@
 weapon precisione BB:
-	action main:
-		target targ1 pawn (SEEN GFself & not DISTANT (0,1) self)
-		effect damage 3 targ1
+nome: precisione
+description: asd
+action main:
+target targ1 pawn (SEEN GFself & not DISTANT (0,1) self)
+effect damage 3 targ1

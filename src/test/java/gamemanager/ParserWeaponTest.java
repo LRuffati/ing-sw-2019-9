@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
 import java.util.Collection;
+import java.util.Iterator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ParserWeaponTest {
@@ -31,6 +33,7 @@ public class ParserWeaponTest {
 
     @Test
     void simpleWeaponTest(){
-
+        for (Weapon weapon : weaponCollection) System.out.print(weapon.getName());
+        assertEquals(weaponCollection.size(),1);
     }
 }
