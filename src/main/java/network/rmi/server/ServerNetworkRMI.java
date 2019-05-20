@@ -1,12 +1,18 @@
 package network.rmi.server;
 
+import actions.ActionTemplate;
+import actions.targeters.targets.Targetable;
+import controllerresults.ActionResultType;
+import genericitems.Tuple;
 import network.Database;
+import network.ObjectMap;
 import network.ServerInterface;
-import network.rmi.client.ClientNetworkRMIInterface;
 import network.exception.InvalidLoginException;
+import viewclasses.WeaponView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 /**
  * Contains all the method defined in ServerRMIInterfaces.
@@ -46,6 +52,35 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
 
+    @Override
+    public Tuple<ActionResultType, String> pickTarget(String choiceMakerId, int choice) {
+        return ObjectMap.get().pickTarg(choiceMakerId, choice);
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) {
+        return ObjectMap.get().pickWeapon(weaponChooserId, choice);
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) {
+        return ObjectMap.get().pickAction(actionChooserId, choice);
+    }
+
+    @Override
+    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) {
+        return ObjectMap.get().showOptionsTarget(choiceMakerId);
+    }
+
+    @Override
+    public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
+        return ObjectMap.get().showOptionsWeapon(weaponChooserId);
+    }
+
+    @Override
+    public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) {
+        return ObjectMap.get().showOptionsAction(actionPickerId);
+    }
 
 
     @Override

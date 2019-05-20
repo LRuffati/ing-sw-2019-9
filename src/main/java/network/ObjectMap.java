@@ -18,15 +18,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ObjectMap {
-    private Map<String, ChoiceMaker> choiceMakerMap;
-    private Map<String, WeaponChooser> weaponChooserMap;
-    private Map<String, ActionPicker> actionPickerMap;
 
-    public ObjectMap(){
+    private static ObjectMap ourInstance = new ObjectMap();
+    public static ObjectMap get() {
+        return ourInstance;
+    }
+
+    private ObjectMap() {
         choiceMakerMap = new HashMap<>();
         weaponChooserMap = new HashMap<>();
         actionPickerMap = new HashMap<>();
     }
+
+    private Map<String, ChoiceMaker> choiceMakerMap;
+    private Map<String, WeaponChooser> weaponChooserMap;
+    private Map<String, ActionPicker> actionPickerMap;
 
     private String newID(){
         return new UID().toString();
@@ -44,24 +50,34 @@ public class ObjectMap {
             actionPickerMap.put(id, res.actionPicker);
 
         if(res.type == ActionResultType.TERMINATED) {
-            //ret =
-            //TODO:
+            ret = new Tuple<>(res.type, "");
         }
         if(res.type == ActionResultType.ROLLBACK){
-            //ret =
-            //TODO:
+            ret = new Tuple<>(res.type, "");
         }
 
         return ret;
     }
 
     public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) {
+        if(!choiceMakerMap.containsKey(choiceMakerId)) {
+            //todo: return ??
+        }
         return handle(choiceMakerMap.get(choiceMakerId).pick(choice));
     }
+    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, int[] choice) {
+        if(!weaponChooserMap.containsKey(weaponChooserId)){
+            //todo: return ?
+        }
+        return handle(weaponChooserMap.get(weaponChooserId).pick(choice));
+    }
     public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) {
-        return handle(weaponChooserMap.get(weaponChooserId).pick(choice.stream().mapToInt(Integer::intValue).toArray()));
+        return pickWeapon(weaponChooserId, choice.stream().mapToInt(Integer::intValue).toArray());
     }
     public Tuple<ActionResultType, String> pickAction(String actionPickerId, int choice) {
+        if(!actionPickerMap.containsKey(actionPickerId)){
+            //todo: return ?
+        }
         return handle(actionPickerMap.get(actionPickerId).pickAction(choice));
     }
 

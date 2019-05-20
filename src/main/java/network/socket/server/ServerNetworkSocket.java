@@ -1,6 +1,7 @@
 package network.socket.server;
 
 import network.Database;
+import network.ObjectMap;
 import network.Player;
 import network.ServerInterface;
 import network.socket.messages.*;
@@ -66,5 +67,44 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     public Response handle(MirrorRequest request) {
         System.out.println("Request di mirror\t" + request.num);
         return new MirrorResponse(request.num);
+    }
+
+
+    @Override
+    public Response handle(PickRequest request) {
+        String choosedId = request.chooserId;
+        int[] choice = request.choice;
+        if(choice.length < 1) {
+            //todo: return error
+        }
+        switch (request.type){
+            case 0:
+                return new PickResponse(0, ObjectMap.get().pickTarg(choosedId, choice[0]));
+            case 1:
+                return new PickResponse(1, ObjectMap.get().pickWeapon(choosedId, choice));
+            case 2:
+                return new PickResponse(2, ObjectMap.get().pickAction(choosedId, choice[0]));
+
+                default:
+                    //todo: return error
+        }
+        return new PickResponse(-1, null);
+    }
+
+    @Override
+    public Response handle(ShowOptionsRequest request) {
+        String choosedId = request.chooserId;
+        switch (request.type){
+            case 0:
+                return new ShowOptionsResponse(0, ObjectMap.get().showOptionsTarget(choosedId), null, null);
+            case 1:
+                return new ShowOptionsResponse(1, null, ObjectMap.get().showOptionsWeapon(choosedId), null);
+            case 2:
+                return new ShowOptionsResponse(2, null, null, ObjectMap.get().showOptionsAction(choosedId));
+
+                default:
+                    //todo: return error
+        }
+        return new ShowOptionsResponse(-1,null,null,null);
     }
 }

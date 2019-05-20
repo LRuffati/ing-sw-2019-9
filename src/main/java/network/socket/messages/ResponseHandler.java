@@ -12,4 +12,7 @@ public interface ResponseHandler {
     void handle(ReconnectResponse response);
 
     void handle(TextResponse response);
+
+    void handle(PickResponse response);
+    void handle(ShowOptionsResponse response);
 }

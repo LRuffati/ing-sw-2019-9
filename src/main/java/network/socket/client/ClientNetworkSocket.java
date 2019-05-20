@@ -1,9 +1,15 @@
 package network.socket.client;
 
+import actions.ActionTemplate;
+import actions.targeters.targets.Targetable;
+import controllerresults.ActionResultType;
+import genericitems.Tuple;
 import network.ClientInterface;
 import network.socket.messages.*;
+import viewclasses.WeaponView;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  * This class handles all the methods called by the client (implemented in ClientInterface)
@@ -95,6 +101,54 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         return ClientContext.get().getReconnected();
     }
 
+    /**
+     * @param type 0 for pickTarg, 1 for pickWeapon, 2 for pickAction
+     * @param chooserId Id of the chosen container
+     * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
+     */
+    private Tuple<ActionResultType, String> pick(int type, String chooserId, List<Integer> choice){
+        client.request(new PickRequest(type, chooserId, choice));
+        sync();
+        return ClientContext.get().getPickElement();
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) {
+        return pick(0, choiceMakerId, List.of(choice));
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) {
+        return pick(1, weaponChooserId, choice);
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) {
+        return pick(2, actionChooserId, List.of(choice));
+    }
+
+    private void showOptions(int type, String chooserId){
+        client.request(new ShowOptionsRequest(type, chooserId));
+        sync();
+    }
+
+    @Override
+    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) {
+        showOptions(0, choiceMakerId);
+        return ClientContext.get().getShowOptionsTarget();
+    }
+
+    @Override
+    public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
+        showOptions(1, weaponChooserId);
+        return ClientContext.get().getShowOptionsWeapon();
+    }
+
+    @Override
+        public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) {
+        showOptions(2, actionPickerId);
+        return ClientContext.get().getShowOptionsAction();
+    }
 
 
     //ClientHandler methods
@@ -129,5 +183,19 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     public void handle(MirrorResponse response) {
         ClientContext.get().setMirror(response.num);
         desync();
+    }
+
+
+    @Override
+    public void handle(PickResponse response) {
+        ClientContext.get().setPickElement(response.result);
+        desync();
+    }
+
+    @Override
+    public void handle(ShowOptionsResponse response) {
+        int type = response.type;
+        if(type == 0)
+            ClientContext.get().setShowOptions(response.result);
     }
 }

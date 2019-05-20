@@ -10,4 +10,7 @@ public interface RequestHandler {
 
     Response handle(RegisterRequest request);
     Response handle(ReconnectRequest request);
+
+    Response handle(PickRequest request);
+    Response handle(ShowOptionsRequest request);
 }

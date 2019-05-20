@@ -4,7 +4,6 @@ import network.exception.InvalidLoginException;
 
 import java.rmi.server.UID;
 import java.util.*;
-import java.util.stream.StreamSupport;
 
 /**
  * This class holds all the necessary information to link Players, colors, tokens and Networks.

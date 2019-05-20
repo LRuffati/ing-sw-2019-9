@@ -1,10 +1,16 @@
 package network.rmi.client;
 
+import actions.ActionTemplate;
+import actions.targeters.targets.Targetable;
+import controllerresults.ActionResultType;
+import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
+import viewclasses.WeaponView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 /**
  *  Contains all the method defined in ServerInterface and ClientInterface.
@@ -52,6 +58,37 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     @Override
     public boolean reconnect(String token) throws RemoteException {
         return controller.reconnect(this, token);
+    }
+
+
+    @Override
+    public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) throws RemoteException {
+        return controller.pickTarget(choiceMakerId, choice);
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException {
+        return controller.pickWeapon(weaponChooserId, choice);
+    }
+
+    @Override
+    public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) throws RemoteException {
+        return controller.pickAction(actionChooserId, choice);
+    }
+
+    @Override
+    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) throws RemoteException {
+        return controller.showOptionsTarget(choiceMakerId);
+    }
+
+    @Override
+    public List<WeaponView> showOptionsWeapon(String weaponChooserId) throws RemoteException {
+        return controller.showOptionsWeapon(weaponChooserId);
+    }
+
+    @Override
+    public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) throws RemoteException {
+        return controller.showOptionsAction(actionPickerId);
     }
 
     public void run() throws RemoteException, InvalidLoginException {
