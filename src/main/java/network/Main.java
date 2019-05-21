@@ -109,6 +109,7 @@ public class Main {
     public static void run(ClientInterface clientInterface) throws RemoteException{
         int num = 10;
         while(num>=0) {
+            System.out.print("Next int:\t");
             Scanner scanner = new Scanner(System.in);
             num = scanner.nextInt();
             if(num >= 0) {

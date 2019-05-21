@@ -75,7 +75,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public int mirror(int num) {
-        client.request(new MirrorRequest(num));
+        client.request(new MirrorRequest(ClientContext.get().getToken(), num));
         sync();
         return ClientContext.get().getMirror();
     }
@@ -97,7 +97,6 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     public boolean reconnect(String token) throws RemoteException {
         client.request(new ReconnectRequest(token));
         sync();
-        System.out.println(ClientContext.get().getReconnected());
         return ClientContext.get().getReconnected();
     }
 
@@ -107,7 +106,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
      * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
      */
     private Tuple<ActionResultType, String> pick(int type, String chooserId, List<Integer> choice){
-        client.request(new PickRequest(type, chooserId, choice));
+        client.request(new PickRequest(ClientContext.get().getToken(), type, chooserId, choice));
         sync();
         return ClientContext.get().getPickElement();
     }
@@ -128,7 +127,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     private void showOptions(int type, String chooserId){
-        client.request(new ShowOptionsRequest(type, chooserId));
+        client.request(new ShowOptionsRequest(ClientContext.get().getToken(), type, chooserId));
         sync();
     }
 
@@ -170,6 +169,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     @Override
     public void handle(ReconnectResponse response) {
         ClientContext.get().setReconnected(response.result);
+        ClientContext.get().setToken(response.token);
         desync();
     }
 
@@ -197,5 +197,12 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         int type = response.type;
         if(type == 0)
             ClientContext.get().setShowOptions(response.result);
+    }
+
+    @Override
+    public void handle(ExceptionResponse response) {
+        //TODO: restituire il messaggio al controller
+        //TODO: throw error message
+        System.out.println(response.exception.getMessage());
     }
 }

@@ -4,6 +4,7 @@ package network.socket.messages;
  * This interface contains all the Response that the Client can receive
  */
 public interface ResponseHandler {
+    void handle(ExceptionResponse response);
     void handle(CloseResponse response);
 
     void handle(MirrorResponse response);

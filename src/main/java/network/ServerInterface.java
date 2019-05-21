@@ -9,6 +9,8 @@ public interface ServerInterface {
 
     void sendUpdate(String str) throws RemoteException;
 
+    void sendException(Exception exception) throws RemoteException;
+
 
 
     /**

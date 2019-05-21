@@ -3,8 +3,10 @@ package network.socket.messages;
 public class MirrorRequest implements Request{
 
     public final int num;
+    public final String token;
 
-    public MirrorRequest(int n){
+    public MirrorRequest(String token, int n){
+        this.token = token;
         this.num = n;
     }
 

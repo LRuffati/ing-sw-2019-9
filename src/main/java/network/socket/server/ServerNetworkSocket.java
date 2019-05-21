@@ -4,11 +4,9 @@ import network.Database;
 import network.ObjectMap;
 import network.Player;
 import network.ServerInterface;
+import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
-
-import javax.xml.crypto.Data;
-import java.awt.image.DataBuffer;
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -26,6 +24,11 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     }
 
 
+    private boolean checkConnection(String token) {
+        return Database.get().getConnectedTokens().contains(token);
+    }
+
+
     //ServerInterface methods
 
     @Override
@@ -33,6 +36,10 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         clientHandler.respond(new TextResponse(str));
     }
 
+    @Override
+    public void sendException(Exception exception) {
+        clientHandler.respond(new ExceptionResponse(exception));
+    }
 
     //RequestHandler methods
 
@@ -42,7 +49,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
             String token = Database.get().login(this, request.username, request.color);
             player = Database.get().getUserByToken(token);
         } catch (InvalidLoginException e) {
-            return new TextResponse("ERROR: " + e.getMessage());
+            return new ExceptionResponse(e);
         }
         return new RegisterResponse(player.getToken());
     }
@@ -50,14 +57,16 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     @Override
     public Response handle(ReconnectRequest request) {
         if(request.token == null)
-            return new ReconnectResponse(false);
+            return new ReconnectResponse(false, "");
         String tokenFromDb = Database.get().login(this, request.token);
-        return new ReconnectResponse(tokenFromDb.equals(request.token));
+        return new ReconnectResponse(tokenFromDb.equals(request.token), tokenFromDb);
     }
 
     @Override
     public Response handle(CloseRequest request) {
         System.out.println("Richiesta di uscita\t" + Database.get().getUserByToken(request.token).getUsername());
+        if(!checkConnection(request.token))
+            return new ExceptionResponse(new InvalidTokenException());
         Database.get().logout(this);
         clientHandler.stop();
         return new CloseResponse();
@@ -66,12 +75,17 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     @Override
     public Response handle(MirrorRequest request) {
         System.out.println("Request di mirror\t" + request.num);
+        System.out.println(checkConnection(request.token));
+        if(!checkConnection(request.token))
+            return new ExceptionResponse(new InvalidTokenException());
         return new MirrorResponse(request.num);
     }
 
 
     @Override
     public Response handle(PickRequest request) {
+        if(!checkConnection(request.token))
+            return new ExceptionResponse(new InvalidTokenException());
         String choosedId = request.chooserId;
         int[] choice = request.choice;
         if(choice.length < 1) {
@@ -93,6 +107,8 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(ShowOptionsRequest request) {
+        if(!checkConnection(request.token))
+            return new ExceptionResponse(new InvalidTokenException());
         String choosedId = request.chooserId;
         switch (request.type){
             case 0:

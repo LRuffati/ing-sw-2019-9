@@ -31,6 +31,12 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         System.out.println("Update:\t" + str);
     }
 
+    @Override
+    public void sendException(Exception exception) {
+        //TODO: restituire il messaggio al controller ??
+        //TODO: throw error message
+        System.out.println(exception.getMessage());
+    }
 
     //ClientInterface methods
 
