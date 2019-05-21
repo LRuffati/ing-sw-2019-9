@@ -50,6 +50,6 @@ public class ParserWeaponTest {
 
 
         assertEquals("targ1", weaponToTest.getActions().get("main").getTargeters().iterator().next().x);
-        assertEquals("pawn", weaponToTest.getActions().get("main").get);
+        //assertTrue(weaponToTest.getActions().get("main").actionAvailable());
     }
 }
