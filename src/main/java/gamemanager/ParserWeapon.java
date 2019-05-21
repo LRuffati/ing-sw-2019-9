@@ -192,11 +192,9 @@ public class ParserWeapon {
                     List<EffectTemplate> effects = new ArrayList<>();
                     sLine = new Scanner(scanner.nextLine());
 
-                    //TODO FIX
                     if(sLine.next().equals("target")){
                         targetId = sLine.next();
                         targetType = sLine.next();
-                        System.out.print("\n" + targetId + "\n" + targetType);
                         List<Tuple<String, Condition>> filters = new ArrayList<>();
                         selector = sLine.next().substring(1);
                         Selector toSelector = null;
@@ -311,29 +309,31 @@ public class ParserWeapon {
                                 filters,targetType,ifOptional,ifNew,ifAutomatic)));
 
                     }
-                    if(mNotNull){
-                        while (scanner.nextLine().contains("effect")) {
-                            sLine.next();
-                            String effect = sLine.next();
-                            EffectTemplate toEffect = null;
 
-                            switch (effect.toLowerCase()) {
-                                case "fire":
-                                    toEffect = new Fire();
-                                    break;
+                    String effectIf = scanner.nextLine();
+                    sLine = new Scanner(effectIf);
+                    if (effectIf.contains("effect")) {
+                        sLine.next();
+                        String effect = sLine.next();
+                        EffectTemplate toEffect = null;
 
-                                case "damage":
-                                    int amount = Integer.parseInt(sLine.next());
-                                    String targId = sLine.next();
-                                    toEffect = new DamageTemplate(targId, amount);
-                                    break;
+                        switch (effect.toLowerCase()) {
+                            case "fire":
+                                toEffect = new Fire();
+                                break;
 
-                                default:
-                                    break;
-                            }
-                            effects.add(toEffect);
+                            case "damage":
+                                int amount = Integer.parseInt(sLine.next());
+                                String targId = sLine.next();
+                                toEffect = new DamageTemplate(targId, amount);
+                                break;
+
+                            default:
+                                break;
                         }
+                        effects.add(toEffect);
                     }
+
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
                             targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
                     break;

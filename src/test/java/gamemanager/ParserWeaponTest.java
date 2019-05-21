@@ -49,6 +49,7 @@ public class ParserWeaponTest {
         assertTrue(actions.containsKey("main"));
 
 
-        //assertEquals("targ1", weaponToTest.getActions().get("main").getTargeters().);
+        assertEquals("targ1", weaponToTest.getActions().get("main").getTargeters().iterator().next().x);
+        assertEquals("pawn", weaponToTest.getActions().get("main").get);
     }
 }
