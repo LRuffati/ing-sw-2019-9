@@ -1,5 +1,6 @@
 package network.socket.server;
 
+import network.Database;
 import network.socket.messages.Request;
 import network.socket.messages.Response;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +58,10 @@ public class ClientHandler implements Runnable{
                     respond(response);
                 }
             } while (!stop);
+        } catch (SocketException e) {
+            //TODO: notify controller too?
+            Database.get().logout(controller);
+            logger.log(Level.SEVERE, e.getClass().getSimpleName() + " - " + e.getMessage());
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getClass().getSimpleName() + " - " + e.getMessage());
         }

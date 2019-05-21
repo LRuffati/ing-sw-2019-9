@@ -35,7 +35,7 @@ public class SocketServerLauncher {
         serverSocket.close();
     }
 
-    public void receiveConnections(SocketServerLauncher socketServerLauncher) {
+    private void receiveConnections(SocketServerLauncher socketServerLauncher) {
         // start a receiver thread
         conn = new Thread(
                 () -> {

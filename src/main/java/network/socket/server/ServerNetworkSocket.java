@@ -8,6 +8,8 @@ import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
 
+import java.rmi.RemoteException;
+
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
  * and the Requests called by the clients (implemented in RequestHandler)
@@ -40,6 +42,9 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     public void sendException(Exception exception) {
         clientHandler.respond(new ExceptionResponse(exception));
     }
+
+    @Override
+    public void ping() {}
 
     //RequestHandler methods
 

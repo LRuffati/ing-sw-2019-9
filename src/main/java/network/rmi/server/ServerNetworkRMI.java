@@ -10,9 +10,11 @@ import network.ServerInterface;
 import network.exception.InvalidLoginException;
 import viewclasses.WeaponView;
 
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Contains all the method defined in ServerRMIInterfaces.
@@ -22,6 +24,19 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
     public ServerNetworkRMI() throws RemoteException{
         super();
+    }
+
+    public void sendPing() throws RemoteException {
+        Database d = Database.get();
+        for(ServerInterface client :  d.getConnectedTokens().stream().map(d::getNetworkByToken).collect(Collectors.toList())){
+            try {
+                client.ping();
+            }
+            catch (ConnectException e) {
+                //TODO: notify controller too?
+                d.logout(client);
+            }
+        }
     }
 
     @Override

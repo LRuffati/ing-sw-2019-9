@@ -11,7 +11,7 @@ public interface ServerInterface {
 
     void sendException(Exception exception) throws RemoteException;
 
-
+    void ping() throws RemoteException;
 
     /**
      * Used to start a game when minNumber of players are reached

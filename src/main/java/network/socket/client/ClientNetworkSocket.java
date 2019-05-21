@@ -8,6 +8,7 @@ import network.ClientInterface;
 import network.socket.messages.*;
 import viewclasses.WeaponView;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
 
@@ -161,9 +162,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     @Override
     public void handle(RegisterResponse response) {
         ClientContext.get().setToken(response.token);
-        System.out.println("response");
         desync();
-        System.out.println("desync");
     }
 
     @Override
@@ -176,6 +175,12 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     @Override
     public void handle(CloseResponse response) {
         System.out.println("Permesso di uscita");
+        try {
+            client.close();
+        }
+        catch (IOException e){
+            e.printStackTrace();
+        }
         receiver.interrupt();
     }
 
@@ -194,9 +199,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(ShowOptionsResponse response) {
-        int type = response.type;
-        if(type == 0)
-            ClientContext.get().setShowOptions(response.result);
+        ClientContext.get().setShowOptions(response.result);
     }
 
     @Override

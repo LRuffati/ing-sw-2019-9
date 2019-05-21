@@ -4,6 +4,7 @@ import network.ClientInterface;
 import network.ServerInterface;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  * Methods called by ServerNetworkRMI.

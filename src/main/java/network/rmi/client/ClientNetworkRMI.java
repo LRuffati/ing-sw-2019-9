@@ -24,11 +24,17 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         this.controller = controller;
     }
 
-    //ServerInterface methods
 
     @Override
     public void sendUpdate(String str) {
         System.out.println("Update:\t" + str);
+    }
+
+
+    //ServerInterface methods
+    @Override
+    public void ping() {
+        return;
     }
 
     @Override
@@ -37,6 +43,7 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         //TODO: throw error message
         System.out.println(exception.getMessage());
     }
+
 
     //ClientInterface methods
 

@@ -28,6 +28,10 @@ public class Database {
     private Set<String> connectedToken = new HashSet<>();
 
 
+    /**
+     * @return Returns the Player bound to the player
+     * @throws  IllegalArgumentException If the token does not exists, an Exception is thrown
+     */
     public synchronized Player getUserByToken(String token){
         Player user = usersByToken.get(token);
         if(user == null)
@@ -35,6 +39,10 @@ public class Database {
         return user;
     }
 
+    /**
+     * @return Returns the NetworkInterface bound to the player
+     * @throws  IllegalArgumentException If the token does not exists, an Exception is thrown
+     */
     public synchronized ServerInterface getNetworkByToken(String token){
         ServerInterface network = networkByToken.get(token);
         if(network == null)
@@ -42,6 +50,16 @@ public class Database {
         return network;
     }
 
+    /**
+     * This method associates the connection with the player.
+     * If the username and the color are not used by other players it generates an unique token and a new user.
+     * @param network The Interface that must be used to send messages to the Client
+     * @param username The name whom he wants to be called
+     * @param color The color whom he wants to be associated with
+     * @return The token associated with the user
+     * @throws InvalidLoginException If username and/or color are already used, this Exception is thrown
+     */
+    //TODO: return user?
     public synchronized String login(ServerInterface network, String username, String color) throws InvalidLoginException {
         boolean wrongUsername = false;
         boolean wrongColor = false;
@@ -76,6 +94,12 @@ public class Database {
         return token;
     }
 
+    /**
+     * This method is used to reconnect a player that left before
+     * @param network The Interface that must be used to send messages to the Client
+     * @param token The token used by the client before the disconnection. This value does not change.
+     * @return The same token if the procedure terminates correctly, an empty string otherwise
+     */
     public synchronized String login(ServerInterface network, String token){
         if(!disconnectedToken.contains(token))
             return "";
@@ -86,15 +110,35 @@ public class Database {
         return token;
     }
 
+    /**
+     * This method is used to allow a Client to permanently quit the game.
+     * It frees the Username and Color, so the Client can not reconnect later
+     * @param token The token of the caller.
+     */
+    public synchronized void quit(String token) {
+        colors.add(getUserByToken(token).getColor());
+        usersByToken.remove(token);
+        networkByToken.remove(token);
+        //TODO: check validity of connectedToken and disconnectedToken
+        if(connectedToken.contains(token)) connectedToken.remove(token);
+        if(disconnectedToken.contains(token)) disconnectedToken.remove(token);
+    }
 
-    //TODO: does this allow reconnection ?
+    /**
+     * This method logs the client out.
+     * It does not free Username and Color, so the Client can reconnect later using the same token.
+     * @param token The token of the caller.
+     */
     public synchronized void logout(String token){
-        //colors.add(getUserByToken(token).getColor());
-        //usersByToken.remove(token);
         networkByToken.remove(token);
         connectedToken.remove(token);
         disconnectedToken.add(token);
     }
+
+    /**
+     * Same as {@link #logout(String) logout(String)}
+     * @param serverInterface The interface of the caller
+     */
     public synchronized void logout(ServerInterface serverInterface){
         for(Map.Entry entry : networkByToken.entrySet()){
             if(serverInterface.equals(entry.getValue())) {
