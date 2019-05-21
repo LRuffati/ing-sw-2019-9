@@ -7,5 +7,6 @@ public enum EffectType {
     FIRE,
     RELOAD,
 
+    PAY,
     GRAB
 }

@@ -99,7 +99,7 @@ public class Action {
                         listTargets ->
                                 choice -> {
                                     if (choice>=listTargets.size()) choice = 0;
-
+                                    //TODO: manage optionals
                                     Targetable target = action.apply(listTargets.get(choice).x);
                                     return fun.apply(target);
                                 };

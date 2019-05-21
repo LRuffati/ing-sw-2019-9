@@ -6,5 +6,6 @@ public enum ActionResultType {
     PICKWEAPON,
     ROLLBACK,
     TERMINATED,
-    ALREADYTERMINATED
+    ALREADYTERMINATED,
+    REDO
 }
