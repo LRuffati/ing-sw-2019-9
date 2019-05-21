@@ -57,7 +57,7 @@ public class ParserWeapon {
 
                     weaponId = sLine.next();
                     String ammoColour = sLine.next();
-                    for(int i = 0; i < ammoColour.length()-2; i++){
+                    for(int i = 0; i < ammoColour.length()-1; i++){
                         switch(ammoColour.charAt(i)){
                             case 'B':
                                 B+=1;
@@ -179,24 +179,29 @@ public class ParserWeapon {
                     }
 
                     String toIf = scanner.nextLine();
+
                     if (toIf.contains("nomeAction:")) {
-                        actionName = toIf.substring(toIf.indexOf(':'), toIf.length()-1);
+                        actionName = toIf.substring(toIf.indexOf(':')+1).trim();
                         toIf = scanner.nextLine();
                     }
                     if (toIf.equals("descrizione:")) {
-                        actionDescription = toIf.substring(toIf.indexOf(':'), toIf.length()-1);
+                        actionDescription = toIf.substring(toIf.indexOf(':')+1).trim();
                     }
+
                     List<Tuple<String, TargeterTemplate>> targeters = new ArrayList<>();
                     List<EffectTemplate> effects = new ArrayList<>();
-                    while(scanner.nextLine().contains("target")){
-                        sLine.next();
+                    sLine = new Scanner(scanner.nextLine());
+
+                    //TODO FIX
+                    if(sLine.next().equals("target")){
                         targetId = sLine.next();
                         targetType = sLine.next();
+                        System.out.print("\n" + targetId + "\n" + targetType);
                         List<Tuple<String, Condition>> filters = new ArrayList<>();
                         selector = sLine.next().substring(1);
                         Selector toSelector = null;
-                        int min;
-                        int max;
+                        int min = 123123123;
+                        int max = 321321321;
                         Pattern p;
                         Matcher m;
                         switch(selector.toLowerCase()){
@@ -205,8 +210,8 @@ public class ParserWeapon {
                                 range = sLine.next();
                                 p = Pattern.compile("\\d+");
                                 m = p.matcher(range);
-                                min = Integer.parseInt(m.group());
-                                max = Integer.parseInt(m.group());
+                                if(m.find()) min = Integer.parseInt(m.group());
+                                if(m.find()) max = Integer.parseInt(m.group());
                                 toSelector = new ReachableSelector(min,max);
                                 toTargetId = sLine.next();
                                 break;
@@ -215,8 +220,8 @@ public class ParserWeapon {
                                 range = sLine.next();
                                 p = Pattern.compile("\\d+");
                                 m = p.matcher(range);
-                                min = Integer.parseInt(m.group());
-                                max = Integer.parseInt(m.group());
+                                if(m.find()) min = Integer.parseInt(m.group());
+                                if(m.find()) max = Integer.parseInt(m.group());
                                 toSelector = new DistanceSelector(min,max,true);
                                 toTargetId = sLine.next();
                                 break;
@@ -245,7 +250,7 @@ public class ParserWeapon {
                                 break;
                         }
 
-                        while(sLine.next().equals("&")){
+                        while(sLine.hasNext() && sLine.next().equals("&")){
                             String condition = sLine.next();
                             Condition toCondition = null;
                             String idTarg = null;
@@ -260,8 +265,9 @@ public class ParserWeapon {
                                     range = sLine.next();
                                     p = Pattern.compile("\\d+");
                                     m = p.matcher(range);
-                                    min = Integer.parseInt(m.group());
-                                    max = Integer.parseInt(m.group());
+                                    if(m.find()) min = Integer.parseInt(m.group());
+                                    if(m.find()) max = Integer.parseInt(m.group());
+
                                     idTarg = sLine.next();
                                     toCondition = new DistantCondition(min,max,true, not);
                                     break;
@@ -280,8 +286,8 @@ public class ParserWeapon {
                                     range = sLine.next();
                                     p = Pattern.compile("\\d+");
                                     m = p.matcher(range);
-                                    min = Integer.parseInt(m.group());
-                                    max = Integer.parseInt(m.group());
+                                    if(m.find()) min = Integer.parseInt(m.group());
+                                    if(m.find()) max = Integer.parseInt(m.group());
                                     idTarg = sLine.next();
                                     toCondition = new ReachesCondition(min, max, not);
                                     break;
@@ -297,9 +303,9 @@ public class ParserWeapon {
                             filters.add(new Tuple<>(idTarg,toCondition));
                         }
 
-                        if(sLine.next().equals("new")) ifNew = true;
-                        if(sLine.next().equals("automatic")) ifAutomatic = true;
-                        if(sLine.next().equals("optional")) ifOptional = true;
+                        if(sLine.hasNext() && sLine.next().equals("new")) ifNew = true;
+                        if(sLine.hasNext() && sLine.next().equals("automatic")) ifAutomatic = true;
+                        if(sLine.hasNext() && sLine.next().equals("optional")) ifOptional = true;
 
                         targeters.add(new Tuple<>(targetId,new TargeterTemplate(new Tuple<>(toTargetId,toSelector),
                                 filters,targetType,ifOptional,ifNew,ifAutomatic)));
