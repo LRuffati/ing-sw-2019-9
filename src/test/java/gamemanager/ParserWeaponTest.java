@@ -8,8 +8,7 @@ import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserWeaponTest {
     private Collection<Weapon> weaponCollection;
@@ -33,7 +32,10 @@ public class ParserWeaponTest {
 
     @Test
     void simpleWeaponTest(){
-        for (Weapon weapon : weaponCollection) System.out.print(weapon.getName());
+        Weapon weaponToTest = weaponCollection.iterator().next();
         assertEquals(weaponCollection.size(),1);
+        assertEquals("precisione asd",weaponToTest.getName());
+        assertTrue(weaponToTest.getActions().containsKey("main"));
+
     }
 }

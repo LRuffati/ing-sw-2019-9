@@ -1,5 +1,5 @@
 weapon precisione BB:
-nome: precisione
+nome: precisione asd
 description: asd
 action main:
 target targ1 pawn (SEEN GFself & not DISTANT (0,1) self)

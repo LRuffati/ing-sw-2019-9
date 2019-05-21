@@ -93,7 +93,7 @@ public class ParserWeapon {
                     break;
 
                 case "nome:":
-                    name = scannerString.substring(scannerString.indexOf(':'));
+                    name = scannerString.substring(scannerString.indexOf(':')+1).trim();
                     break;
 
                 case "description:":
@@ -160,7 +160,7 @@ public class ParserWeapon {
                             actionRequirements.add(new Tuple<>(true, substring));
                         }
 
-                    } else actionRequirements = null;
+                    }
                     if (mNotNull && (sLine.next().equals("exist")|| maybeCost.equals("exist"))) {
                         listaTarget = sLine.next();
                         String substring = listaTarget
@@ -170,7 +170,7 @@ public class ParserWeapon {
                         } else {
                             targetRequirements.add(new Tuple<>(true, substring));
                         }
-                    } else targetRequirements = null;
+                    }
                     if (mNotNull && (sLine.next().equals("xor")||maybeCost.equals("xor"))) listaAZ = sLine.next();
                     if (mNotNull && (sLine.next().equals("contemp")|| maybeCost.equals("contemp"))) {
                         idAction = sLine.next();
