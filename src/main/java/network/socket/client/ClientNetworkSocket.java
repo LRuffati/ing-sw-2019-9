@@ -7,6 +7,7 @@ import genericitems.Tuple;
 import network.ClientInterface;
 import network.Database;
 import network.socket.messages.*;
+import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import javax.xml.crypto.Data;
@@ -137,7 +138,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) {
+    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) {
         showOptions(0, choiceMakerId);
         return ClientContext.get().getShowOptionsTarget();
     }
@@ -206,6 +207,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     @Override
     public void handle(ShowOptionsResponse response) {
         ClientContext.get().setShowOptions(response.result);
+        desync();
     }
 
     @Override

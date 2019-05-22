@@ -9,6 +9,7 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 import genericitems.Tuple;
+import viewclasses.TargetView;
 
 import java.util.*;
 import java.util.function.Function;
@@ -71,7 +72,7 @@ public class Action {
         Function<
                 Function<Integer, Targetable>, // Bind the variable provided by Targeter
                 Function<
-                        List<Tuple<Integer, Targetable>>, // Bind target list
+                        List<Tuple<Integer, TargetView>>, // Bind target list
                         Function<Integer, ControllerActionResult>
                         >
                 > functionAutomatic =
@@ -90,7 +91,7 @@ public class Action {
         Function<
                 Function<Integer, Targetable>, // Bind the variable provided by Targeter
                 Function<
-                        List<Tuple<Integer, Targetable>>, // Bind target list
+                        List<Tuple<Integer, TargetView>>, // Bind target list
                         Function<Integer, ControllerActionResult>
                         >
                 > functionManual =
@@ -104,7 +105,7 @@ public class Action {
                                     return fun.apply(target);
                                 };
 
-        Function<Function<Integer, Targetable>, Function<List<Tuple<Integer, Targetable>>,
+        Function<Function<Integer, Targetable>, Function<List<Tuple<Integer, TargetView>>,
                 Function<Integer, ControllerActionResult>>> pickFunction;
 
         if (automatic) pickFunction = functionAutomatic;
@@ -113,12 +114,12 @@ public class Action {
         return new ChoiceMaker() {
 
             Function<Integer, Targetable> action;
-            List<Tuple<Integer, Targetable>> listTargets = new ArrayList<>();
+            List<Tuple<Integer, TargetView>> listTargets = new ArrayList<>();
             boolean optional = optionalTarg;
 
 
             @Override
-            public void giveTargets(String targetId, List<Targetable> possibilities, Function<Integer, Targetable> action) {
+            public void giveTargets(String targetId, List<TargetView> possibilities, Function<Integer, Targetable> action) {
                 this.action = action;
                 listTargets = IntStream.range(0, possibilities.size())
                         .mapToObj(i -> new Tuple<>(i, possibilities.get(i)))
@@ -127,8 +128,8 @@ public class Action {
             }
 
             @Override
-            public Tuple<Boolean, List<Targetable>> showOptions() {
-                List<Targetable> listTargetsToShow =
+            public Tuple<Boolean, List<TargetView>> showOptions() {
+                List<TargetView> listTargetsToShow =
                         listTargets.stream().map(i->i.y).collect(Collectors.toList());
                 return new Tuple<>(optional, listTargetsToShow);
             }

@@ -3,6 +3,7 @@ package actions.targeters.targets;
 import board.Sandbox;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.TargetView;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -43,4 +44,9 @@ public class GroupTarget implements Targetable {
         return ret;
     }
 
+
+    @Override
+    public TargetView generateView(Sandbox sandbox) {
+        return sandbox.generateDamageableListView(targets);
+    }
 }

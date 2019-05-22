@@ -5,6 +5,7 @@ import actions.targeters.targets.Targetable;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import genericitems.Tuple3;
+import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.util.List;
@@ -73,18 +74,18 @@ public class ClientContext {
 
 
     private Tuple3<
-            Tuple<Boolean, List<Targetable>>,
+            Tuple<Boolean, List<TargetView>>,
             List<WeaponView>,
             Tuple<Boolean, List<ActionTemplate>>
             > showOptions;
     public void setShowOptions(Tuple3<
-            Tuple<Boolean, List<Targetable>>,
+            Tuple<Boolean, List<TargetView>>,
             List<WeaponView>,
             Tuple<Boolean, List<ActionTemplate>>
             > showOptions) {
         this.showOptions = showOptions;
     }
-    public Tuple<Boolean, List<Targetable>> getShowOptionsTarget(){
+    public Tuple<Boolean, List<TargetView>> getShowOptionsTarget(){
         return showOptions.x;
     }
     public List<WeaponView> getShowOptionsWeapon(){

@@ -5,9 +5,6 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import actions.targeters.targets.BasicTarget;
-import actions.targeters.targets.RoomTarget;
-import actions.targeters.targets.TileTarget;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;

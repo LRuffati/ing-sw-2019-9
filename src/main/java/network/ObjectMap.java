@@ -9,6 +9,7 @@ import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.rmi.server.UID;
@@ -82,8 +83,7 @@ public class ObjectMap {
     }
 
 
-    //TODO: List<TargetableView>
-    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) {
+    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) {
         return choiceMakerMap.get(choiceMakerId).showOptions();
     }
     public List<WeaponView> showOptionsWeapon(String weaponChooserId) {

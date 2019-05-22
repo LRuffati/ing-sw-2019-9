@@ -10,6 +10,7 @@ import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
+import viewclasses.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -240,5 +241,29 @@ public class Sandbox {
             ret.add(new Tuple<>(status, i));
         }
         return ret;
+    }
+
+
+
+    private TargetView generateTileView(TileUID tileUID, GameMapView gameMapView){
+        return map.getTile(tileUID).generateView(gameMapView);
+    }
+    public TargetView generateTileView(TileUID tileUID) {
+        return generateTileView(tileUID, map.generateView(pov));
+    }
+    public TargetView generateTileListView(Collection<TileUID> tiles) {
+        GameMapView gameMapView = map.generateView(pov);
+        return new TileListView(tiles.stream().map(x -> (TileView)generateTileView(x, gameMapView)).collect(Collectors.toList()));
+    }
+
+    private TargetView generateActorView(DamageableUID damageableUID, GameMapView gameMapView){
+        return map.getPawn(damageableUID).generateView(gameMapView, false);
+    }
+    public TargetView generateActorView(DamageableUID damageableUID) {
+        return generateActorView(damageableUID, map.generateView(pov));
+    }
+    public TargetView generateDamageableListView(Set<DamageableUID> targets) {
+        GameMapView gameMapView = map.generateView(pov);
+        return new ActorListView(targets.stream().map(x -> (ActorView)generateActorView(x, gameMapView)).collect(Collectors.toList()));
     }
 }

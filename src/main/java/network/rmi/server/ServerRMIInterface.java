@@ -6,7 +6,7 @@ import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
-import network.exception.InvalidTokenException;
+import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.rmi.Remote;
@@ -26,8 +26,7 @@ public interface ServerRMIInterface extends Remote {
     Tuple<ActionResultType, String> pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException;
     Tuple<ActionResultType, String> pickAction(String token, String actionChooserId, int choice) throws RemoteException;
 
-    //TODO: TargetbleView?
-    Tuple<Boolean, List<Targetable>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException;
+    Tuple<Boolean, List<TargetView>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException;
     List<WeaponView> showOptionsWeapon(String token, String weaponChooserId) throws RemoteException;
     //TODO: ActionTemplateView?
     Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String token, String actionPickerId) throws RemoteException;

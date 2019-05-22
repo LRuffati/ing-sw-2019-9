@@ -1,20 +1,16 @@
 package network.rmi.server;
 
 import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
-import network.exception.InvalidTokenException;
-import network.rmi.client.ClientNetworkRMI;
+import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
-import javax.xml.crypto.Data;
 import java.rmi.ConnectException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -97,7 +93,7 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
     @Override
-    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException {
+    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException {
         checkConnection(token);
         return ObjectMap.get().showOptionsTarget(choiceMakerId);
     }

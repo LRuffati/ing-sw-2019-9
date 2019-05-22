@@ -6,6 +6,7 @@ import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
+import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.rmi.RemoteException;
@@ -92,7 +93,7 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
 
     @Override
-    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) throws RemoteException {
+    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) throws RemoteException {
         return controller.showOptionsTarget(token, choiceMakerId);
     }
 

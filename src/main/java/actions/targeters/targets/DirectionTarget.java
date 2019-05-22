@@ -8,6 +8,7 @@ import board.Sandbox;
 import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.TargetView;
 
 import java.util.*;
 
@@ -74,5 +75,11 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
     @Override
     public boolean filteringHas(Sandbox sandbox, @NotNull PointLike target, boolean negation) {
         return negation ^ tiles.contains(target.location(sandbox));
+    }
+
+
+    @Override
+    public TargetView generateView(Sandbox sandbox) {
+        return sandbox.generateTileListView(tiles);
     }
 }
