@@ -2,7 +2,6 @@ package viewclasses;
 
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
-import player.Actor;
 import uid.DamageableUID;
 
 import java.awt.*;
@@ -14,7 +13,7 @@ import java.util.Map;
 /**
  * This class contains the Actor that is used by the view and transmitted from the server to the client
  */
-public class ActorView implements Serializable {
+public class ActorView implements TargetView, Serializable {
     private Color color;
     private String username;
 
