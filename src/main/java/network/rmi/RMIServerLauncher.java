@@ -1,5 +1,6 @@
 package network.rmi;
 
+import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerNetworkRMI;
 import network.socket.server.ServerNetworkSocket;
 
@@ -58,6 +59,7 @@ public class RMIServerLauncher {
             @Override
             public void run() {
                 try {
+                    if(controller instanceof ServerNetworkRMI)
                     controller.sendPing();
                 }
                 catch (RemoteException e){
@@ -68,7 +70,6 @@ public class RMIServerLauncher {
 
         Timer timer  = new Timer("pingTimer");
         timer.scheduleAtFixedRate(repeatedTask, 0, 100);
-
     }
 
     public static void main(String[] args) {

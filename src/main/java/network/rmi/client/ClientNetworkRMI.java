@@ -63,45 +63,47 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
     @Override
     public int mirror(int num) throws RemoteException{
-        int n = controller.mirror(num);
+        int n = controller.mirror(token, num);
         System.out.println("Mirrored\t" + n);
         return n;
     }
 
     @Override
     public boolean reconnect(String token) throws RemoteException {
-        return controller.reconnect(this, token);
+        boolean res = controller.reconnect(this, token);
+        this.token = res ? token : null;
+        return res;
     }
 
 
     @Override
     public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) throws RemoteException {
-        return controller.pickTarget(choiceMakerId, choice);
+        return controller.pickTarget(token, choiceMakerId, choice);
     }
 
     @Override
     public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException {
-        return controller.pickWeapon(weaponChooserId, choice);
+        return controller.pickWeapon(token, weaponChooserId, choice);
     }
 
     @Override
     public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) throws RemoteException {
-        return controller.pickAction(actionChooserId, choice);
+        return controller.pickAction(token, actionChooserId, choice);
     }
 
     @Override
     public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) throws RemoteException {
-        return controller.showOptionsTarget(choiceMakerId);
+        return controller.showOptionsTarget(token, choiceMakerId);
     }
 
     @Override
     public List<WeaponView> showOptionsWeapon(String weaponChooserId) throws RemoteException {
-        return controller.showOptionsWeapon(weaponChooserId);
+        return controller.showOptionsWeapon(token, weaponChooserId);
     }
 
     @Override
     public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) throws RemoteException {
-        return controller.showOptionsAction(actionPickerId);
+        return controller.showOptionsAction(token, actionPickerId);
     }
 
     public void run() throws RemoteException, InvalidLoginException {

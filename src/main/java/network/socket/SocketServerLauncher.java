@@ -22,7 +22,6 @@ public class SocketServerLauncher {
         pool = Executors.newCachedThreadPool();
         System.out.println( ">>> Listening on " + port);
         receiveConnections(this);
-        //run();
     }
 
     public void run() throws IOException, RemoteException {

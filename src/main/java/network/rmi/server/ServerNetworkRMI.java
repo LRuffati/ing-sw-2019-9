@@ -8,9 +8,13 @@ import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
+import network.exception.InvalidTokenException;
+import network.rmi.client.ClientNetworkRMI;
 import viewclasses.WeaponView;
 
+import javax.xml.crypto.Data;
 import java.rmi.ConnectException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -24,6 +28,12 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
     public ServerNetworkRMI() throws RemoteException{
         super();
+    }
+
+    private boolean checkConnection(String token) throws RemoteException {
+        if(!Database.get().getConnectedTokens().contains(token))
+            throw new RemoteException("Invalid Token");
+        return Database.get().getConnectedTokens().contains(token);
     }
 
     public void sendPing() throws RemoteException {
@@ -46,7 +56,8 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
     @Override
-    public int mirror(int num) {
+    public int mirror(String token, int num) throws RemoteException {
+        checkConnection(token);
         System.out.println("Request di mirror\t" + num);
         return num;
     }
@@ -68,32 +79,38 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
 
     @Override
-    public Tuple<ActionResultType, String> pickTarget(String choiceMakerId, int choice) {
+    public Tuple<ActionResultType, String> pickTarget(String token, String choiceMakerId, int choice) throws RemoteException{
+        checkConnection(token);
         return ObjectMap.get().pickTarg(choiceMakerId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) {
+    public Tuple<ActionResultType, String> pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException{
+        checkConnection(token);
         return ObjectMap.get().pickWeapon(weaponChooserId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) {
+    public Tuple<ActionResultType, String> pickAction(String token, String actionChooserId, int choice) throws RemoteException{
+        checkConnection(token);
         return ObjectMap.get().pickAction(actionChooserId, choice);
     }
 
     @Override
-    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String choiceMakerId) {
+    public Tuple<Boolean, List<Targetable>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException {
+        checkConnection(token);
         return ObjectMap.get().showOptionsTarget(choiceMakerId);
     }
 
     @Override
-    public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
+    public List<WeaponView> showOptionsWeapon(String token, String weaponChooserId) throws RemoteException {
+        checkConnection(token);
         return ObjectMap.get().showOptionsWeapon(weaponChooserId);
     }
 
     @Override
-    public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) {
+    public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String token, String actionPickerId) throws RemoteException {
+        checkConnection(token);
         return ObjectMap.get().showOptionsAction(actionPickerId);
     }
 

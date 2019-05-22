@@ -8,7 +8,6 @@ import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
 
-import java.rmi.RemoteException;
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -22,7 +21,6 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     public ServerNetworkSocket(ClientHandler clientHandler){
         this.clientHandler = clientHandler;
         //TODO: stop command
-        // clientHandler.stop();
     }
 
 
@@ -72,17 +70,33 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         System.out.println("Richiesta di uscita\t" + Database.get().getUserByToken(request.token).getUsername());
         if(!checkConnection(request.token))
             return new ExceptionResponse(new InvalidTokenException());
+        //TODO: notify controller
         Database.get().logout(this);
+
+
         clientHandler.stop();
+
+        /*new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        System.out.println("5 sec");
+                        clientHandler.stop();
+                    }
+                },
+                5000
+        );*/
+
         return new CloseResponse();
     }
 
     @Override
     public Response handle(MirrorRequest request) {
-        System.out.println("Request di mirror\t" + request.num);
-        System.out.println(checkConnection(request.token));
-        if(!checkConnection(request.token))
+        if(!checkConnection(request.token)) {
             return new ExceptionResponse(new InvalidTokenException());
+        }
+        System.out.println("Request di mirror\t" + request.num);
+
         return new MirrorResponse(request.num);
     }
 

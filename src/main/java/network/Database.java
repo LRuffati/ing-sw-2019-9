@@ -86,9 +86,9 @@ public class Database {
         if(user == null) {
             user = new Player(username, color, isFirst, token);
             usersByUsername.put(token, user);
+            networkByToken.put(token, network);
+            usersByToken.put(token, user);
         }
-        networkByToken.put(token, network);
-        usersByToken.put(token, user);
         connectedToken.add(token);
 
         return token;

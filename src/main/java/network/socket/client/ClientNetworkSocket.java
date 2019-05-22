@@ -5,9 +5,12 @@ import actions.targeters.targets.Targetable;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.ClientInterface;
+import network.Database;
 import network.socket.messages.*;
 import viewclasses.WeaponView;
 
+import javax.xml.crypto.Data;
+import java.awt.image.DataBuffer;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -27,6 +30,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private void sync(){
         synchronized (client) {
             try {
+                //TODO: add while loop
                 client.wait();
             }
             catch (InterruptedException e) {
@@ -177,15 +181,17 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         System.out.println("Permesso di uscita");
         try {
             client.close();
+            receiver.interrupt();
         }
         catch (IOException e){
             e.printStackTrace();
         }
-        receiver.interrupt();
+        System.out.println("Finita la chiusura");
     }
 
     @Override
     public void handle(MirrorResponse response) {
+        System.out.println(response.num);
         ClientContext.get().setMirror(response.num);
         desync();
     }

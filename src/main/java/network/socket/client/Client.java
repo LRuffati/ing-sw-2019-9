@@ -23,6 +23,7 @@ public class Client {
     private ObjectInputStream in;
     private ObjectOutputStream out;
 
+
     public Client(String host, int port) {
         this.host = host;
         this.port = port;
@@ -55,9 +56,7 @@ public class Client {
     public void request(Request request) {
         try {
             out.writeObject(request);
-            //TODO: giusto farlo qui?
-            out.flush();
-            //out.reset();
+            out.reset();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
         }

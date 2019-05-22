@@ -51,7 +51,7 @@ public class Main {
 
         run(controller);
 
-        client.close();
+        //client.close();
     }
 
     public static void runRMI() throws RemoteException, InvalidLoginException, NotBoundException {
@@ -84,7 +84,7 @@ public class Main {
 
         run(controller);
 
-        client.close();
+        //client.close();
     }
 
     private static void runRMIReconnect() throws RemoteException, InvalidLoginException, NotBoundException {
