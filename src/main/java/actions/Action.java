@@ -9,6 +9,7 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 import genericitems.Tuple;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 
 import java.util.*;
@@ -217,4 +218,8 @@ public class Action {
         else return finalizer.apply(new Tuple<>(sandbox, previousTargets));
     }
 
+
+    public ActionView generateView() {
+        return new ActionView(info.getName(), info.getActionId(), info.getCost());
+    }
 }

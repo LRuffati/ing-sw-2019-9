@@ -1,4 +1,31 @@
 package viewclasses;
 
-public class ActionView {
+import actions.utils.AmmoAmount;
+import actions.utils.AmmoColor;
+
+import java.io.Serializable;
+import java.util.Map;
+
+public class ActionView implements Serializable {
+    private String name;
+    private String actionId;
+    private Map<AmmoColor, Integer> cost;
+
+    public ActionView(String name, String actionId, AmmoAmount cost){
+        this.name = name;
+        this.actionId = actionId;
+        this.cost = cost.getAmounts();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getActionId() {
+        return actionId;
+    }
+
+    public Map<AmmoColor, Integer> getCost() {
+        return cost;
+    }
 }
