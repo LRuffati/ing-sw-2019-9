@@ -1,17 +1,13 @@
 package network.socket.client;
 
-import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.ClientInterface;
-import network.Database;
 import network.socket.messages.*;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
-import javax.xml.crypto.Data;
-import java.awt.image.DataBuffer;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -150,7 +146,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-        public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) {
+        public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
         showOptions(2, actionPickerId);
         return ClientContext.get().getShowOptionsAction();
     }

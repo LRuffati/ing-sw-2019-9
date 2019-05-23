@@ -1,10 +1,9 @@
 package network.socket.client;
 
-import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import genericitems.Tuple3;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -76,12 +75,12 @@ public class ClientContext {
     private Tuple3<
             Tuple<Boolean, List<TargetView>>,
             List<WeaponView>,
-            Tuple<Boolean, List<ActionTemplate>>
+            Tuple<Boolean, List<ActionView>>
             > showOptions;
     public void setShowOptions(Tuple3<
             Tuple<Boolean, List<TargetView>>,
             List<WeaponView>,
-            Tuple<Boolean, List<ActionTemplate>>
+            Tuple<Boolean, List<ActionView>>
             > showOptions) {
         this.showOptions = showOptions;
     }
@@ -91,7 +90,7 @@ public class ClientContext {
     public List<WeaponView> getShowOptionsWeapon(){
         return showOptions.y;
     }
-    public Tuple<Boolean, List<ActionTemplate>> getShowOptionsAction() {
+    public Tuple<Boolean, List<ActionView>> getShowOptionsAction() {
         return showOptions.z;
     }
 

@@ -8,6 +8,7 @@ import actions.utils.AmmoAmount;
 import board.Sandbox;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
+import viewclasses.ActionView;
 
 import java.util.*;
 import java.util.function.Function;
@@ -132,5 +133,11 @@ public class ActionTemplate {
                            Function<Tuple<Sandbox, Map<String, Targetable>>,
                                    ControllerActionResult> finalizer){
         return new Action(sandbox, this, prevTargs, finalizer);
+    }
+
+
+
+    public ActionView generateView() {
+        return new ActionView(info.getName(), info.getActionId(), info.getCost());
     }
 }

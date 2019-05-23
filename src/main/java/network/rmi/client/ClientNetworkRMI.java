@@ -1,11 +1,10 @@
 package network.rmi.client;
 
-import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -103,7 +102,7 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
 
     @Override
-    public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) throws RemoteException {
+    public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) throws RemoteException {
         return controller.showOptionsAction(token, actionPickerId);
     }
 

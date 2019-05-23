@@ -1,9 +1,8 @@
 package network.socket.messages;
 
-import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
 import genericitems.Tuple;
 import genericitems.Tuple3;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -16,14 +15,13 @@ public class ShowOptionsResponse implements Response {
     public final Tuple3<
             Tuple<Boolean, List<TargetView>>,
             List<WeaponView>,
-            Tuple<Boolean, List<ActionTemplate>>
+            Tuple<Boolean, List<ActionView>>
             > result;
-    //todo: ActionTemplateView?
 
     public ShowOptionsResponse(int type,
                                Tuple<Boolean,List<TargetView>> target,
                                List<WeaponView> weapon,
-                               Tuple<Boolean,List<ActionTemplate>> action){
+                               Tuple<Boolean,List<ActionView>> action){
         result = new Tuple3<>(target, weapon, action);
         this.type = type;
     }

@@ -9,11 +9,13 @@ import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 import uid.DamageableUID;
+import viewclasses.ActionView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ActionBundle implements ActionPicker {
     private final DamageableUID pov;
@@ -51,8 +53,8 @@ public class ActionBundle implements ActionPicker {
 
 
     @Override
-    public Tuple<Boolean, List<ActionTemplate>> showActionsAvailable() {
-        return new Tuple<>(false, new ArrayList<>(actionsPossible));
+    public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
+        return new Tuple<>(false, actionsPossible.stream().map(ActionTemplate::generateView).collect(Collectors.toList()));
     }
 
     @Override

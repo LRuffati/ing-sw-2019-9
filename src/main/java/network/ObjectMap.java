@@ -9,6 +9,7 @@ import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -89,8 +90,8 @@ public class ObjectMap {
     public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
         return weaponChooserMap.get(weaponChooserId).showOptions().stream().map(Weapon::generateView).collect(Collectors.toList());
     }
-    //TODO: List<ActionTemplateView>?
-    public Tuple<Boolean, List<ActionTemplate>> showOptionsAction(String actionPickerId) {
+    //TODO: List<ActionView>?
+    public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
         return actionPickerMap.get(actionPickerId).showActionsAvailable();
     }
 }

@@ -217,9 +217,4 @@ public class Action {
         }
         else return finalizer.apply(new Tuple<>(sandbox, previousTargets));
     }
-
-
-    public ActionView generateView() {
-        return new ActionView(info.getName(), info.getActionId(), info.getCost());
-    }
 }

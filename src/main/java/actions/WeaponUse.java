@@ -8,6 +8,7 @@ import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResult;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import viewclasses.ActionView;
 
 import java.util.*;
 import java.util.function.Function;
@@ -65,11 +66,11 @@ public class WeaponUse implements ActionPicker {
     }
 
     @Override
-    public Tuple<Boolean, List<ActionTemplate>> showActionsAvailable() {
+    public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
         // I can stop only if I can't choose the main action anymore (already taken/took
         // alternative)
-        List<ActionTemplate> actionTemplates =
-                availableActions.stream().map(i->i.y).collect(Collectors.toList());
+        List<ActionView> actionTemplates =
+                availableActions.stream().map(i->i.y.generateView()).collect(Collectors.toList());
         return new Tuple<>(canStop,actionTemplates);
     }
 
