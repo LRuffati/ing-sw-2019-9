@@ -5,6 +5,7 @@ import genericitems.Tuple;
 import network.ClientInterface;
 import network.socket.messages.*;
 import viewclasses.ActionView;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -151,6 +152,13 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         return ClientContext.get().getShowOptionsAction();
     }
 
+    @Override
+    public GameMapView getMap() {
+        client.request(new GetMapRequest());
+        sync();
+        return ClientContext.get().getGameMapView();
+    }
+
 
     //ClientHandler methods
 
@@ -211,5 +219,11 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         //TODO: restituire il messaggio al controller
         //TODO: throw error message
         System.out.println(response.exception.getMessage());
+    }
+
+    @Override
+    public void handle(GetMapResponse response) {
+        ClientContext.get().setGameMapView(response.gameMapView);
+        desync();
     }
 }

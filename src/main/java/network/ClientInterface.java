@@ -5,6 +5,7 @@ import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import network.exception.InvalidLoginException;
 import viewclasses.ActionView;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -29,4 +30,6 @@ public interface ClientInterface {
     Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) throws RemoteException;
     List<WeaponView> showOptionsWeapon(String weaponChooserId) throws RemoteException;
     Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) throws RemoteException;
+
+    GameMapView getMap() throws RemoteException;
 }

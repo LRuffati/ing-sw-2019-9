@@ -5,6 +5,7 @@ import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
 import viewclasses.ActionView;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -24,14 +25,13 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         this.controller = controller;
     }
 
+    //ServerInterface methods
 
     @Override
     public void sendUpdate(String str) {
         System.out.println("Update:\t" + str);
     }
 
-
-    //ServerInterface methods
     @Override
     public void ping() {
         return;
@@ -106,6 +106,13 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         return controller.showOptionsAction(token, actionPickerId);
     }
 
+    @Override
+    public GameMapView getMap() throws RemoteException{
+        return controller.getMap(token);
+    }
+
+
+
     public void run() throws RemoteException, InvalidLoginException {
         run(true, null);
     }
@@ -115,7 +122,6 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         else
             System.out.println(reconnect(token));
     }
-
 
 
     @Override

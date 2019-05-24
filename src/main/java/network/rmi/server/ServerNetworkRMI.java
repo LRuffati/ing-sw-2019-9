@@ -7,6 +7,7 @@ import network.ObjectMap;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
 import viewclasses.ActionView;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -110,6 +111,12 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         return ObjectMap.get().showOptionsAction(actionPickerId);
     }
 
+    @Override
+    public GameMapView getMap(String token) throws RemoteException {
+        checkConnection(token);
+        //TODO: how to generate a SandBoxView?
+        return new GameMapView();
+    }
 
     @Override
     public boolean equals(Object obj) {

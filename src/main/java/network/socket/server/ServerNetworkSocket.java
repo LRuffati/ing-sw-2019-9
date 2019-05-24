@@ -7,6 +7,7 @@ import network.ServerInterface;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
+import viewclasses.GameMapView;
 
 
 /**
@@ -141,5 +142,12 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
                     //todo: return error
         }
         return new ShowOptionsResponse(-1,null,null,null);
+    }
+
+
+    @Override
+    public Response handle(GetMapRequest request) {
+        //TODO: how to generate a SandBoxView?
+        return new GetMapResponse(new GameMapView());
     }
 }

@@ -1,9 +1,11 @@
 package network.socket.client;
 
+import board.GameMap;
 import controllerresults.ActionResultType;
 import genericitems.Tuple;
 import genericitems.Tuple3;
 import viewclasses.ActionView;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -94,4 +96,13 @@ public class ClientContext {
         return showOptions.z;
     }
 
+
+    private GameMapView gameMapView;
+    public void setGameMapView(GameMapView gameMap){
+        this.gameMapView = gameMap;
+    }
+
+    public GameMapView getGameMapView() {
+        return gameMapView;
+    }
 }
