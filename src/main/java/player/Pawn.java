@@ -150,6 +150,8 @@ public class Pawn {
         }
         actorView.setMarks(marks);
 
+        actorView.setPosition(gameMapView.getPosition(map.getCoord(tile)));
+
         actorView.setColor(color);
         actorView.setUsername(username);
 

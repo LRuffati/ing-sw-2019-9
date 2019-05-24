@@ -61,6 +61,9 @@ public class GameMapView implements Serializable {
     public void setTiles(Map<Coord, TileView> tiles){
         this.tiles = tiles;
     }
+    public void setTile(Coord coord, TileView tile){
+        tiles.put(coord, tile);
+    }
 
     public void setMax(Coord maxPos){
         this.maxPos = maxPos;

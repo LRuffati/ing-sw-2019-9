@@ -18,6 +18,7 @@ public class ActorView implements TargetView, Serializable {
     private String username;
 
     private DamageableUID uid;
+    private TileView position;
     private int numOfDeaths;
     private int score;
     private boolean firstPlayer;
@@ -47,6 +48,10 @@ public class ActorView implements TargetView, Serializable {
 
     public void setUsername(String name) {
         this.username = name;
+    }
+
+    public void setPosition(TileView position) {
+        this.position = position;
     }
 
     public void setDamageTaken(List<ActorView> damageTaken) {
@@ -93,6 +98,10 @@ public class ActorView implements TargetView, Serializable {
 
     public String name() {
         return username;
+    }
+
+    public TileView position() {
+        return position;
     }
 
     public List<ActorView> damageTaken() {
@@ -144,4 +153,19 @@ public class ActorView implements TargetView, Serializable {
         return "\u001B[0m";
     }
 
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this.getClass() != obj.getClass())
+            return false;
+        return uid.equals(((ActorView) obj).uid());
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }
