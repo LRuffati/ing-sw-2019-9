@@ -1,6 +1,7 @@
 package network.rmi.server;
 
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.Database;
 import network.ObjectMap;
@@ -76,19 +77,19 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
 
     @Override
-    public Tuple<ActionResultType, String> pickTarget(String token, String choiceMakerId, int choice) throws RemoteException{
+    public ControllerActionResultClient pickTarget(String token, String choiceMakerId, int choice) throws RemoteException{
         checkConnection(token);
         return ObjectMap.get().pickTarg(choiceMakerId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException{
+    public ControllerActionResultClient pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException{
         checkConnection(token);
         return ObjectMap.get().pickWeapon(weaponChooserId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickAction(String token, String actionChooserId, int choice) throws RemoteException{
+    public ControllerActionResultClient pickAction(String token, String actionChooserId, int choice) throws RemoteException{
         checkConnection(token);
         return ObjectMap.get().pickAction(actionChooserId, choice);
     }

@@ -1,6 +1,7 @@
 package network.rmi.client;
 
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
@@ -77,17 +78,17 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
 
     @Override
-    public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) throws RemoteException {
+    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) throws RemoteException {
         return controller.pickTarget(token, choiceMakerId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException {
+    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException {
         return controller.pickWeapon(token, weaponChooserId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) throws RemoteException {
+    public ControllerActionResultClient pickAction(String actionChooserId, int choice) throws RemoteException {
         return controller.pickAction(token, actionChooserId, choice);
     }
 

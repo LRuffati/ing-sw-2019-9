@@ -1,6 +1,7 @@
 package network.socket.client;
 
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
 import network.socket.messages.*;
@@ -108,24 +109,24 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
      * @param chooserId Id of the chosen container
      * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
      */
-    private Tuple<ActionResultType, String> pick(int type, String chooserId, List<Integer> choice){
-        client.request(new PickRequest(ClientContext.get().getToken(), type, chooserId, choice));
+    private ControllerActionResultClient pick(int type, String chooserId, List<Integer> choice){
+        client.request(new PickRequest(type, chooserId, choice));
         sync();
         return ClientContext.get().getPickElement();
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) {
+    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) {
         return pick(0, choiceMakerId, List.of(choice));
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) {
+    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) {
         return pick(1, weaponChooserId, choice);
     }
 
     @Override
-    public Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) {
+    public ControllerActionResultClient pickAction(String actionChooserId, int choice) {
         return pick(2, actionChooserId, List.of(choice));
     }
 

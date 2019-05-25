@@ -104,8 +104,6 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(PickRequest request) {
-        if(!checkConnection(request.token))
-            return new ExceptionResponse(new InvalidTokenException());
         String choosedId = request.chooserId;
         int[] choice = request.choice;
         if(choice.length < 1) {

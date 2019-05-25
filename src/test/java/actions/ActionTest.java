@@ -49,7 +49,7 @@ class ActionTest {
         actorList = builder.getActorList();
         newsandbox = mock(Sandbox.class);
         finalizer = sandboxMapTuple -> {
-            return new ControllerActionResultServer(ActionResultType.TERMINATED);
+            return new ControllerActionResultServer(ActionResultType.TERMINATED, "", newsandbox);
                 };
         mockInfo = mock(ActionInfo.class);
     }

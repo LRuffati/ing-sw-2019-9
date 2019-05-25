@@ -2,6 +2,7 @@ package network;
 
 
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.exception.InvalidLoginException;
 import viewclasses.ActionView;
@@ -23,9 +24,9 @@ public interface ClientInterface {
     void register() throws RemoteException, InvalidLoginException;
     boolean reconnect(String token) throws RemoteException;
 
-    Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) throws RemoteException;
-    Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException;
-    Tuple<ActionResultType, String> pickAction(String actionChooserId, int choice) throws RemoteException;
+    ControllerActionResultClient pickTarg(String choiceMakerId, int choice) throws RemoteException;
+    ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException;
+    ControllerActionResultClient pickAction(String actionChooserId, int choice) throws RemoteException;
 
     Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) throws RemoteException;
     List<WeaponView> showOptionsWeapon(String weaponChooserId) throws RemoteException;

@@ -256,22 +256,18 @@ public class Sandbox {
     public TargetView generateTargetView(TileUID tileUID) {
         return new TargetView(uid, null, List.of(tileUID));
     }
-
     /**
      * This method generates a TargetView (TileListView) given a Collection of TileUid
      */
     public TargetView generateTargetView(Collection<TileUID> tiles) {
         return new TargetView(uid, null, tiles);
     }
-
-
     /**
      * This method generates a TargetView (ActorView) given a DamageableUID
      */
     public TargetView generateTargetView(DamageableUID damageableUID) {
         return new TargetView(uid, List.of(damageableUID), null);
     }
-
     /**
      * This method generates a TargetView (ActorListView) given a Collection of DamageableUID
      */
@@ -279,6 +275,7 @@ public class Sandbox {
         return new TargetView(uid, targets, null);
     }
 
+    
 
     /**
      * This method generates a GameMapView of the current Sandbox.

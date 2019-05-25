@@ -1,5 +1,6 @@
 package viewclasses;
 
+import board.Sandbox;
 import uid.DamageableUID;
 import uid.SandboxUID;
 import uid.TileUID;
@@ -28,5 +29,10 @@ public class TargetView implements Serializable {
 
     public Collection<TileUID> getTileUIDList() {
         return tileUIDList;
+    }
+
+    //TODO: this method
+    public GameMapView apply(Sandbox sandbox){
+        return sandbox;
     }
 }

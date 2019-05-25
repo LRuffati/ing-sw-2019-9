@@ -2,6 +2,7 @@ package network.socket.client;
 
 import board.GameMap;
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import genericitems.Tuple3;
 import viewclasses.ActionView;
@@ -65,11 +66,11 @@ public class ClientContext {
     }
 
 
-    private Tuple<ActionResultType, String> pickElem;
-    public void setPickElement(Tuple<ActionResultType, String> result) {
+    private ControllerActionResultClient pickElem;
+    public void setPickElement(ControllerActionResultClient result) {
         this.pickElem = result;
     }
-    public Tuple<ActionResultType, String> getPickElement() {
+    public ControllerActionResultClient getPickElement() {
         return pickElem;
     }
 

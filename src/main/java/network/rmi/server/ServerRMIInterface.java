@@ -1,6 +1,7 @@
 package network.rmi.server;
 
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
@@ -22,9 +23,9 @@ public interface ServerRMIInterface extends Remote {
     String register(ServerInterface user, String username, String color) throws RemoteException, InvalidLoginException;
     boolean reconnect(ServerInterface user, String token) throws RemoteException;
 
-    Tuple<ActionResultType, String> pickTarget(String token, String choiceMakerId, int choice) throws RemoteException;
-    Tuple<ActionResultType, String> pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException;
-    Tuple<ActionResultType, String> pickAction(String token, String actionChooserId, int choice) throws RemoteException;
+    ControllerActionResultClient pickTarget(String token, String choiceMakerId, int choice) throws RemoteException;
+    ControllerActionResultClient pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException;
+    ControllerActionResultClient pickAction(String token, String actionChooserId, int choice) throws RemoteException;
 
     Tuple<Boolean, List<TargetView>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException;
     List<WeaponView> showOptionsWeapon(String token, String weaponChooserId) throws RemoteException;

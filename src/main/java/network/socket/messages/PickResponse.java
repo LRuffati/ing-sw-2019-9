@@ -1,14 +1,13 @@
 package network.socket.messages;
 
-import controllerresults.ActionResultType;
-import genericitems.Tuple;
+import controllerresults.ControllerActionResultClient;
 
 public class PickResponse implements Response {
 
     public final int type;
-    public final Tuple<ActionResultType, String> result;
+    public final ControllerActionResultClient result;
 
-    public PickResponse(int type, Tuple<ActionResultType, String> result){
+    public PickResponse(int type, ControllerActionResultClient result){
         this.type = type;
         this.result = result;
     }

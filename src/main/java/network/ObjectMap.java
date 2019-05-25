@@ -3,11 +3,14 @@ package network;
 import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
 import actions.utils.WeaponChooser;
+import board.Sandbox;
 import controllerresults.ActionResultType;
+import controllerresults.ControllerActionResultClient;
 import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import viewclasses.ActionView;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -28,57 +31,58 @@ public class ObjectMap {
         choiceMakerMap = new HashMap<>();
         weaponChooserMap = new HashMap<>();
         actionPickerMap = new HashMap<>();
+        sandboxMap = new HashMap<>();
     }
 
     private Map<String, ChoiceMaker> choiceMakerMap;
     private Map<String, WeaponChooser> weaponChooserMap;
     private Map<String, ActionPicker> actionPickerMap;
+    private Map<String, Sandbox> sandboxMap;
 
     private String newID(){
         return new UID().toString();
     }
 
-    private Tuple<ActionResultType, String> handle(ControllerActionResultServer res){
-        String id = newID();
-        Tuple<ActionResultType, String> ret;
-        ret = new Tuple<>(res.type, id);
-        if(res.type == ActionResultType.PICKTARGET)
-            choiceMakerMap.put(id, res.choiceMaker);
-        if(res.type == ActionResultType.PICKWEAPON)
-            weaponChooserMap.put(id, res.weaponChooser);
-        if(res.type == ActionResultType.PICKACTION)
-            actionPickerMap.put(id, res.actionPicker);
+    private ControllerActionResultClient handlePick(ControllerActionResultServer controllerActionResultServer){
 
-        if(res.type == ActionResultType.TERMINATED) {
-            ret = new Tuple<>(res.type, "");
-        }
-        if(res.type == ActionResultType.ROLLBACK){
-            ret = new Tuple<>(res.type, "");
-        }
+        String id = newID();
+
+        ControllerActionResultClient ret = new ControllerActionResultClient(controllerActionResultServer, id);
+
+        sandboxMap.put(newID(), controllerActionResultServer.sandbox);
+
+        if(controllerActionResultServer.type == ActionResultType.PICKTARGET)
+            choiceMakerMap.put(id, controllerActionResultServer.choiceMaker);
+        if(controllerActionResultServer.type == ActionResultType.PICKWEAPON)
+            weaponChooserMap.put(id, controllerActionResultServer.weaponChooser);
+        if(controllerActionResultServer.type == ActionResultType.PICKACTION)
+            actionPickerMap.put(id, controllerActionResultServer.actionPicker);
+
+        //TODO: TERMINATED/ROLLBACK ??
 
         return ret;
     }
 
-    public Tuple<ActionResultType, String> pickTarg(String choiceMakerId, int choice) {
+    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) {
         if(!choiceMakerMap.containsKey(choiceMakerId)) {
             //todo: return ??
         }
-        return handle(choiceMakerMap.get(choiceMakerId).pick(choice));
+        return handlePick(choiceMakerMap.get(choiceMakerId).pick(choice));
     }
-    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, int[] choice) {
+    public ControllerActionResultClient pickWeapon(String weaponChooserId, int[] choice) {
         if(!weaponChooserMap.containsKey(weaponChooserId)){
             //todo: return ?
         }
-        return handle(weaponChooserMap.get(weaponChooserId).pick(choice));
+        return handlePick(weaponChooserMap.get(weaponChooserId).pick(choice));
     }
-    public Tuple<ActionResultType, String> pickWeapon(String weaponChooserId, List<Integer> choice) {
+    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) {
         return pickWeapon(weaponChooserId, choice.stream().mapToInt(Integer::intValue).toArray());
     }
-    public Tuple<ActionResultType, String> pickAction(String actionPickerId, int choice) {
+    public ControllerActionResultClient pickAction(String actionPickerId, int choice) {
         if(!actionPickerMap.containsKey(actionPickerId)){
             //todo: return ?
         }
-        return handle(actionPickerMap.get(actionPickerId).pickAction(choice));
+        return handlePick(actionPickerMap.get(actionPickerId).pickAction(choice));
     }
 
 
@@ -90,5 +94,9 @@ public class ObjectMap {
     }
     public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
         return actionPickerMap.get(actionPickerId).showActionsAvailable();
+    }
+
+    public GameMapView showGameMap(String gameMapId) {
+        return sandboxMap.get(gameMapId).generateView();
     }
 }

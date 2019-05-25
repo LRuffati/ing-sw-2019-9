@@ -22,6 +22,7 @@ public class ActionBundle implements ActionPicker {
     private boolean finalized;
     private final List<ActionTemplate> actionsPossible;
     private final GameMap map;
+    private final Sandbox sandboxFromMap;
 
     private List<Effect> effects;
 
@@ -32,6 +33,7 @@ public class ActionBundle implements ActionPicker {
         finalized = false;
         this.map = map;
         this.pov = caller;
+        this.sandboxFromMap = map.createSandbox(pov);
         finalizer = tup -> { // This will be called once the action is complete
             /*
             Objective:
@@ -60,7 +62,7 @@ public class ActionBundle implements ActionPicker {
     @Override
     public ControllerActionResultServer pickAction(int choice) {
         if (choice<0 || choice>=actionsPossible.size()){
-            return new ControllerActionResultServer(this);
+            return new ControllerActionResultServer(this, "", sandboxFromMap);
         }
         Sandbox sandbox = map.createSandbox(pov);
         ActionTemplate chosen = actionsPossible.get(choice);
