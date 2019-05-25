@@ -32,5 +32,5 @@ public interface ClientInterface {
     List<WeaponView> showOptionsWeapon(String weaponChooserId) throws RemoteException;
     Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) throws RemoteException;
 
-    GameMapView getMap() throws RemoteException;
+    GameMapView getMap(String gameMapId) throws RemoteException;
 }

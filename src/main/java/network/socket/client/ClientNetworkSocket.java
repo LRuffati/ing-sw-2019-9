@@ -154,8 +154,8 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public GameMapView getMap() {
-        client.request(new GetMapRequest());
+    public GameMapView getMap(String gameMapId) {
+        client.request(new GetMapRequest(gameMapId));
         sync();
         return ClientContext.get().getGameMapView();
     }

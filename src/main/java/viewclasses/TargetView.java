@@ -33,6 +33,6 @@ public class TargetView implements Serializable {
 
     //TODO: this method
     public GameMapView apply(Sandbox sandbox){
-        return sandbox;
+        return sandbox.generateView();
     }
 }
