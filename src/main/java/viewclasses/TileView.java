@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * This class contains the Tile that is used by the view and transmitted from the server to the client
  */
-public class TileView implements TargetView, Serializable {
+public class TileView implements Serializable {
 
     private TileUID uid;
     private Color color;

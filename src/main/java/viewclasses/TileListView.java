@@ -3,7 +3,7 @@ package viewclasses;
 import java.io.Serializable;
 import java.util.List;
 
-public class TileListView implements TargetView, Serializable {
+public class TileListView implements Serializable {
 
     private List<TileView> tileList;
 

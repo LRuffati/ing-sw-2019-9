@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * This class contains the Actor that is used by the view and transmitted from the server to the client
  */
-public class ActorView implements TargetView, Serializable {
+public class ActorView implements Serializable {
     private Color color;
     private String username;
 

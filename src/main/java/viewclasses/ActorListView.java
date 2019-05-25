@@ -3,7 +3,7 @@ package viewclasses;
 import java.io.Serializable;
 import java.util.List;
 
-public class ActorListView implements TargetView, Serializable {
+public class ActorListView implements Serializable {
 
     private List<ActorView> actorView;
 
