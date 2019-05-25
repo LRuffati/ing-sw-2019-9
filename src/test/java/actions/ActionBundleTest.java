@@ -8,25 +8,20 @@ import actions.effects.EffectTemplate;
 import actions.effects.Fire;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
-import actions.utils.ActionPicker;
-import actions.utils.AmmoAmount;
 import board.GameMap;
 import board.Sandbox;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import uid.DamageableUID;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -72,7 +67,7 @@ class ActionBundleTest{
     @ValueSource(ints = {-1, 1})
     void testOutOfBound(int choice){
         ActionBundle testTarget = new ActionBundle(map, List.of(temp), pov);
-        ControllerActionResult res = testTarget.pickAction(choice);
+        ControllerActionResultServer res = testTarget.pickAction(choice);
 
         assertEquals(res.actionPicker, testTarget);
     }
@@ -80,14 +75,14 @@ class ActionBundleTest{
     @Test
     void testFireType(){
         ActionBundle testTarget = new ActionBundle(map, List.of(temp), pov);
-        ControllerActionResult res = testTarget.pickAction(0);
+        ControllerActionResultServer res = testTarget.pickAction(0);
         assertEquals(res.type, ActionResultType.PICKWEAPON);
     }
 
     @Test
     void testFireOptions(){
         ActionBundle testTarget = new ActionBundle(map, List.of(temp), pov);
-        ControllerActionResult res = testTarget.pickAction(0);
+        ControllerActionResultServer res = testTarget.pickAction(0);
         assertEquals(res.weaponChooser.showOptions(), List.of(weapon2));
     }
 
@@ -125,7 +120,7 @@ class ActionBundleTest{
         ActionInfo info = mock(ActionInfo.class);
         EffectTemplate eff = new EffectTemplate() {
             @Override
-            public ControllerActionResult spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResult> consumer) {
+            public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResultServer> consumer) {
                 return consumer.apply(newSandbox);
             }
         };

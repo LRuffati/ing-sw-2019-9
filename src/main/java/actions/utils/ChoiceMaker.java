@@ -1,6 +1,6 @@
 package actions.utils;
 
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import actions.targeters.targets.Targetable;
 import genericitems.Tuple;
 import viewclasses.TargetView;
@@ -27,5 +27,5 @@ public interface ChoiceMaker {
     /**
      *
      */
-    ControllerActionResult pick(int choice);
+    ControllerActionResultServer pick(int choice);
 }

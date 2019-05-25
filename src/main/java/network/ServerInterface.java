@@ -42,10 +42,10 @@ public interface ServerInterface {
     List<WeaponView> showWeapon(String id);
 
 
-    ControllerActionResult pickAction(String id, int choice);
+    ControllerActionResultServer pickAction(String id, int choice);
 
-    ControllerActionResult pickTarget(String id, int choice);
+    ControllerActionResultServer pickTarget(String id, int choice);
 
-    ControllerActionResult pickWeapon(String id, int[] choice);
+    ControllerActionResultServer pickWeapon(String id, int[] choice);
     */
 }

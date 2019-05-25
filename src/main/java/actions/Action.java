@@ -1,7 +1,7 @@
 package actions;
 
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import actions.effects.EffectTemplate;
 import actions.utils.ChoiceMaker;
 import actions.targeters.Targeter;
@@ -9,7 +9,6 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 import genericitems.Tuple;
-import viewclasses.ActionView;
 import viewclasses.TargetView;
 
 import java.util.*;
@@ -25,12 +24,12 @@ public class Action {
     private final Map<String, Targetable> previousTargets;
     private final List<EffectTemplate> unresolvedEffects;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer;
+    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
 
     Action(Sandbox sandbox,
            ActionTemplate actionTemplate,
            Map<String, Targetable> previousTargets,
-           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer){
+           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer){
 
         this.sandbox = sandbox;
         this.info = actionTemplate.getInfo();
@@ -45,7 +44,7 @@ public class Action {
            List<Tuple<String, TargeterTemplate>> targeters,
            List<EffectTemplate> effects,
            Map<String, Targetable> previousTargets,
-           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer){
+           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer){
         this.sandbox = sandbox;
         this.info = info;
         this.targeterTemplates = targeters;
@@ -68,13 +67,13 @@ public class Action {
 
     private ChoiceMaker giveChoiceMaker(boolean automatic, boolean optionalTarg,
                                         Function<Targetable,
-            ControllerActionResult> fun) {
+                                                ControllerActionResultServer> fun) {
 
         Function<
                 Function<Integer, Targetable>, // Bind the variable provided by Targeter
                 Function<
                         List<Tuple<Integer, TargetView>>, // Bind target list
-                        Function<Integer, ControllerActionResult>
+                        Function<Integer, ControllerActionResultServer>
                         >
                 > functionAutomatic =
                 action ->
@@ -83,7 +82,7 @@ public class Action {
                                 if (listTargets.isEmpty() && optionalTarg) {
                                     return fun.apply(action.apply(-1));
                                 } else if (listTargets.isEmpty()) {
-                                    return new ControllerActionResult(ActionResultType.ROLLBACK);
+                                    return new ControllerActionResultServer(ActionResultType.ROLLBACK, "", sandbox);
                                 } else {
                                     return fun.apply(action.apply(listTargets.get(0).x));
                                 }
@@ -93,7 +92,7 @@ public class Action {
                 Function<Integer, Targetable>, // Bind the variable provided by Targeter
                 Function<
                         List<Tuple<Integer, TargetView>>, // Bind target list
-                        Function<Integer, ControllerActionResult>
+                        Function<Integer, ControllerActionResultServer>
                         >
                 > functionManual =
 
@@ -107,7 +106,7 @@ public class Action {
                                 };
 
         Function<Function<Integer, Targetable>, Function<List<Tuple<Integer, TargetView>>,
-                Function<Integer, ControllerActionResult>>> pickFunction;
+                Function<Integer, ControllerActionResultServer>>> pickFunction;
 
         if (automatic) pickFunction = functionAutomatic;
         else pickFunction = functionManual;
@@ -136,7 +135,7 @@ public class Action {
             }
 
             @Override
-            public ControllerActionResult pick(int choice) {
+            public ControllerActionResultServer pick(int choice) {
                 return pickFunction.apply(action).apply(listTargets).apply(choice);
             }
         };
@@ -150,7 +149,7 @@ public class Action {
 
     Se non ho più niente: return la finalLambda.apply(sandbox)
      */
-    ControllerActionResult iterate(){
+    ControllerActionResultServer iterate(){
         if (!targeterTemplates.isEmpty()){
 
             Iterator<Tuple<String, TargeterTemplate>> targetersIter= targeterTemplates.iterator();
@@ -159,7 +158,7 @@ public class Action {
             Tuple<String, TargeterTemplate> thisTargeter = targetersIter.next();
 
             // This is the same for both automatic and manual ChoiceMaker
-            Function<Targetable, ControllerActionResult> fun = target -> {
+            Function<Targetable, ControllerActionResultServer> fun = target -> {
                 // This will create a new Action, same sandbox, same effects, a new target,
                 // less targeters
                 Map<String, Targetable> targetsUpdated = new HashMap<>(previousTargets);
@@ -190,14 +189,14 @@ public class Action {
                             thisTargeter.x);
 
             if (!targeter.giveChoices()) {
-                return new ControllerActionResult(ActionResultType.ROLLBACK);
+                return new ControllerActionResultServer(ActionResultType.ROLLBACK, "", sandbox);
             }
 
             // available target or no target
             if (thisTargeter.y.automatic)
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
-                return new ControllerActionResult(choiceMaker);
+                return new ControllerActionResultServer(choiceMaker, "", sandbox);
         } else if (!unresolvedEffects.isEmpty()){
 
             Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();
@@ -205,7 +204,7 @@ public class Action {
             // Retrieve first element and remove it from unresolvediter
             EffectTemplate nextEffect = unresolvedIter.next();
 
-            Function<Sandbox, ControllerActionResult> fun = sandbox1 -> {
+            Function<Sandbox, ControllerActionResultServer> fun = sandbox1 -> {
                 List<EffectTemplate> unresolvedList = new ArrayList<>();
                 unresolvedIter.forEachRemaining(unresolvedList::add); // Add all effects except
                 // the first one to the list

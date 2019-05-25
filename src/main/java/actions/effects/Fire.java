@@ -4,7 +4,7 @@ import actions.WeaponUse;
 import actions.targeters.targets.Targetable;
 import actions.utils.WeaponChooser;
 import board.Sandbox;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
@@ -19,7 +19,7 @@ public class Fire implements EffectTemplate {
     }
 
     @Override
-    public ControllerActionResult spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResult> consumer) {
+    public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResultServer> consumer) {
         List<Tuple<Boolean, Weapon>> allWeap = sandbox.getArsenal();
         List<Weapon> loadedWeapon =
                 allWeap.stream().filter(i->i.x).map(i->i.y).collect(Collectors.toList());
@@ -31,9 +31,9 @@ public class Fire implements EffectTemplate {
             }
 
             @Override
-            public ControllerActionResult pick(int[] choice){
+            public ControllerActionResultServer pick(int[] choice){
                 if (choice[0] < 0 || choice[0] >= loadedWeapon.size()){
-                    return new ControllerActionResult(this);
+                    return new ControllerActionResultServer(this,"", sandbox);
                 } else {
                     Weapon weapUsed = loadedWeapon.get(choice[0]);
                     List<Effect> effects = List.of(new Effect() {
@@ -47,10 +47,10 @@ public class Fire implements EffectTemplate {
                     Sandbox newSandbox = new Sandbox(sandbox, effects);
 
                     WeaponUse action = new WeaponUse(weapUsed,newSandbox, consumer);
-                    return new ControllerActionResult(action);
+                    return new ControllerActionResultServer(action,"", sandbox);
                 }
             }
         };
-        return new ControllerActionResult(chooser);
+        return new ControllerActionResultServer(chooser,"", sandbox);
     }
 }

@@ -1,12 +1,10 @@
 package network;
 
-import actions.ActionTemplate;
-import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
 import actions.utils.WeaponChooser;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import viewclasses.ActionView;
@@ -40,7 +38,7 @@ public class ObjectMap {
         return new UID().toString();
     }
 
-    private Tuple<ActionResultType, String> handle(ControllerActionResult res){
+    private Tuple<ActionResultType, String> handle(ControllerActionResultServer res){
         String id = newID();
         Tuple<ActionResultType, String> ret;
         ret = new Tuple<>(res.type, id);
@@ -90,7 +88,6 @@ public class ObjectMap {
     public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
         return weaponChooserMap.get(weaponChooserId).showOptions().stream().map(Weapon::generateView).collect(Collectors.toList());
     }
-    //TODO: List<ActionView>?
     public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
         return actionPickerMap.get(actionPickerId).showActionsAvailable();
     }

@@ -9,6 +9,7 @@ import genericitems.Tuple;
 import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
+import uid.SandboxUID;
 import uid.TileUID;
 import viewclasses.*;
 
@@ -48,6 +49,8 @@ public class Sandbox {
     public final DamageableUID pov;
     private final GameMap map;
 
+    public final SandboxUID uid;
+
     public Sandbox(GameMap map, DamageableUID pov){
 
         this.roomsTargeted = new HashMap<>();
@@ -63,6 +66,7 @@ public class Sandbox {
         this.updatedAmmoAvailable = map.getPawn(pov).getActor().getTotalAmmo();
 
         this.father = null;
+        this.uid = new SandboxUID();
     }
 
     public Sandbox(Sandbox parent, List<Effect> effects){
@@ -88,6 +92,8 @@ public class Sandbox {
         this.father = parent;
         this.effectsHistory = new ArrayList<>(father.effectsHistory);
         effectsHistory.addAll(effects);
+
+        this.uid = new SandboxUID();
     }
 
 
@@ -244,42 +250,33 @@ public class Sandbox {
 
 
 
-    private TargetView generateTileView(TileUID tileUID, GameMapView gameMapView){
-        return map.getTile(tileUID).generateView(gameMapView);
-    }
-
     /**
      * This method generates a TargetView (TileView) given a TileUID
      */
-    public TargetView generateTileView(TileUID tileUID) {
-        return generateTileView(tileUID, map.generateView(pov));
+    public TargetView generateTargetView(TileUID tileUID) {
+        return new TargetView(uid, null, List.of(tileUID));
     }
 
     /**
      * This method generates a TargetView (TileListView) given a Collection of TileUid
      */
-    public TargetView generateTileListView(Collection<TileUID> tiles) {
-        GameMapView gameMapView = map.generateView(pov);
-        return new TileListView(tiles.stream().map(x -> (TileView)generateTileView(x, gameMapView)).collect(Collectors.toList()));
+    public TargetView generateTargetView(Collection<TileUID> tiles) {
+        return new TargetView(uid, null, tiles);
     }
 
-    private TargetView generateActorView(DamageableUID damageableUID, GameMapView gameMapView){
-        return map.getPawn(damageableUID).generateView(gameMapView, false);
-    }
 
     /**
      * This method generates a TargetView (ActorView) given a DamageableUID
      */
-    public TargetView generateActorView(DamageableUID damageableUID) {
-        return generateActorView(damageableUID, map.generateView(pov));
+    public TargetView generateTargetView(DamageableUID damageableUID) {
+        return new TargetView(uid, List.of(damageableUID), null);
     }
 
     /**
      * This method generates a TargetView (ActorListView) given a Collection of DamageableUID
      */
-    public TargetView generateDamageableListView(Set<DamageableUID> targets) {
-        GameMapView gameMapView = map.generateView(pov);
-        return new ActorListView(targets.stream().map(x -> (ActorView)generateActorView(x, gameMapView)).collect(Collectors.toList()));
+    public TargetView generateTargetView(Set<DamageableUID> targets) {
+        return new TargetView(uid, targets, null);
     }
 
 
@@ -293,18 +290,18 @@ public class Sandbox {
         for(Map.Entry entry : updatedLocations.entrySet()) {
 
             TileView tileView = gameMapView.getPosition(map.getCoord((TileUID)entry.getValue()));
+            List<ActorView> players = tileView.players();
 
             for(ActorView actor: gameMapView.players()) {
                 if(actor.uid().equals(entry.getKey())) {
                     actor.position().setPlayers(tileView.players().stream().filter(x -> !x.equals(actor)).collect(Collectors.toList()));
                     actor.setPosition(tileView);
+
+                    players.add(actor);
                 }
             }
 
-            List<ActorView> players = tileView.players();
-            players.add((ActorView)generateActorView((DamageableUID)entry.getKey()));
             tileView.setPlayers(players);
-
         }
 
         gameMapView.you().setAmmo(updatedAmmoAvailable);
@@ -318,7 +315,6 @@ public class Sandbox {
                 .map(i -> i.y.generateView())
                 .collect(Collectors.toList()));
 
-        //TODO: continue        roomsTargeted;  tilesTargeted;  pawnsTargeted;  effectsHistory;
         return gameMapView;
     }
 }

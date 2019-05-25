@@ -5,7 +5,7 @@ import actions.utils.ActionPicker;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import viewclasses.ActionView;
@@ -18,7 +18,7 @@ public class WeaponUse implements ActionPicker {
     private Weapon weapon;
     private Sandbox sandbox;
 
-    private final Function<Sandbox, ControllerActionResult> finalizer;
+    private final Function<Sandbox, ControllerActionResultServer> finalizer;
 
     Map<String, Targetable> existingTargets;
     List<String> previousActions;
@@ -27,7 +27,7 @@ public class WeaponUse implements ActionPicker {
     private final boolean canStop;
 
     public WeaponUse(Weapon weapon, Sandbox sandbox,
-                     Function<Sandbox, ControllerActionResult> finalizer){
+                     Function<Sandbox, ControllerActionResultServer> finalizer){
         this.weapon = weapon;
         this.sandbox = sandbox;
         this.finalizer = finalizer;
@@ -75,21 +75,21 @@ public class WeaponUse implements ActionPicker {
     }
 
     @Override
-    public ControllerActionResult pickAction(int choice) {
+    public ControllerActionResultServer pickAction(int choice) {
         Tuple<String, ActionTemplate> action;
         if (choice<0 && canStop){
             return finalizer.apply(sandbox);
         } else if (0<=choice && choice<availableActions.size()){
             action = availableActions.get(choice);
-        } else return new ControllerActionResult(ActionResultType.ROLLBACK);
+        } else return new ControllerActionResultServer(ActionResultType.ROLLBACK,"", sandbox);
 
         final List<String> updatedActions = new LinkedList<>(previousActions);
         updatedActions.add(action.x);
-        Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> fun =
+        Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> fun =
                 tup -> {
                     WeaponUse weaponUseNew= new WeaponUse(WeaponUse.this, tup.x, tup.y,
                             updatedActions);
-                    return new ControllerActionResult(weaponUseNew);
+                    return new ControllerActionResultServer(weaponUseNew,"", sandbox);
                 };
         Action nextAction = new Action(sandbox, action.y, existingTargets, fun);
         return nextAction.iterate();

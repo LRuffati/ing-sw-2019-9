@@ -6,7 +6,7 @@ import actions.utils.ActionPicker;
 import board.GameMap;
 import board.Sandbox;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import uid.DamageableUID;
 import viewclasses.ActionView;
@@ -25,7 +25,7 @@ public class ActionBundle implements ActionPicker {
 
     private List<Effect> effects;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer;
+    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
 
     ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
         this.actionsPossible = actions;
@@ -42,11 +42,11 @@ public class ActionBundle implements ActionPicker {
                 necessary info for the GRAB and PAY effects
              */
             Sandbox sandbox = tup.x;
-            if (this.finalized) return new ControllerActionResult(ActionResultType.ALREADYTERMINATED);
+            if (this.finalized) return new ControllerActionResultServer(ActionResultType.ALREADYTERMINATED,"", sandbox);
             else {
                 this.finalized = true;
                 this.effects = sandbox.getEffectsHistory();
-                return new ControllerActionResult(ActionResultType.TERMINATED);
+                return new ControllerActionResultServer(ActionResultType.TERMINATED,"", sandbox);
             }
         };
     }
@@ -58,9 +58,9 @@ public class ActionBundle implements ActionPicker {
     }
 
     @Override
-    public ControllerActionResult pickAction(int choice) {
+    public ControllerActionResultServer pickAction(int choice) {
         if (choice<0 || choice>=actionsPossible.size()){
-            return new ControllerActionResult(this);
+            return new ControllerActionResultServer(this);
         }
         Sandbox sandbox = map.createSandbox(pov);
         ActionTemplate chosen = actionsPossible.get(choice);

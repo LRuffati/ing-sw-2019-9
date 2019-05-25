@@ -2,7 +2,7 @@ package actions.effects;
 
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ public class DamageTemplate implements EffectTemplate {
     }
 
     @Override
-    public ControllerActionResult spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResult> consumer) {
+    public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResultServer> consumer) {
         if (!targets.containsKey(targetId))
             return consumer.apply(sandbox);
 

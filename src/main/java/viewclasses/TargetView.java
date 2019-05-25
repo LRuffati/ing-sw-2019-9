@@ -5,14 +5,14 @@ import uid.SandboxUID;
 import uid.TileUID;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Collection;
 
 public class TargetView implements Serializable {
     private SandboxUID uid;
-    private List<DamageableUID> damageableUIDList;
-    private List<TileUID> tileUIDList;
+    private Collection<DamageableUID> damageableUIDList;
+    private Collection<TileUID> tileUIDList;
 
-    public TargetView(SandboxUID sandboxUID, List<DamageableUID> damageableUIDList, List<TileUID> tileUIDList) {
+    public TargetView(SandboxUID sandboxUID, Collection<DamageableUID> damageableUIDList, Collection<TileUID> tileUIDList) {
         this.uid = sandboxUID;
         this.damageableUIDList = damageableUIDList;
         this.tileUIDList = tileUIDList;
@@ -22,11 +22,11 @@ public class TargetView implements Serializable {
         return uid;
     }
 
-    public List<DamageableUID> getDamageableUIDList() {
+    public Collection<DamageableUID> getDamageableUIDList() {
         return damageableUIDList;
     }
 
-    public List<TileUID> getTileUIDList() {
+    public Collection<TileUID> getTileUIDList() {
         return tileUIDList;
     }
 }
