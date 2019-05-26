@@ -1,19 +1,17 @@
 package controllerresults;
 
-import uid.SandboxUID;
-
 import java.io.Serializable;
 
 public class ControllerActionResultClient implements Serializable {
     public final ActionResultType type;
-    public final String nextId;
-    public final SandboxUID sandboxUID;
+    public final String actionId;
+    public final String sandboxUID;
     public final String message;
 
-    public ControllerActionResultClient(ControllerActionResultServer controllerActionResultServer, String nextId){
+    public ControllerActionResultClient(ControllerActionResultServer controllerActionResultServer, String actionId){
         this.type = controllerActionResultServer.type;
         this.message = controllerActionResultServer.message;
-        this.nextId = nextId;
+        this.actionId = actionId;
         this.sandboxUID = controllerActionResultServer.sandbox.uid;
     }
 

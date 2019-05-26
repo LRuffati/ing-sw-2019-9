@@ -1,6 +1,5 @@
 package network.socket.client;
 
-import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
@@ -22,8 +21,13 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private final Client client;
     private Thread receiver;
 
+    private final Object NULLVALUE;
+    private final int NULLINT;
+
     public ClientNetworkSocket(Client client){
         this.client = client;
+        this.NULLVALUE = ClientContext.NULLVALUE;
+        this.NULLINT = ClientContext.NULLINT;
     }
 
     private void sync(){

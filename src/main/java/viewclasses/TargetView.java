@@ -1,26 +1,24 @@
 package viewclasses;
 
-import board.Sandbox;
 import uid.DamageableUID;
-import uid.SandboxUID;
 import uid.TileUID;
 
 import java.io.Serializable;
 import java.util.Collection;
 
 public class TargetView implements Serializable {
-    private SandboxUID uid;
+    private String gameMapViewId;
     private Collection<DamageableUID> damageableUIDList;
     private Collection<TileUID> tileUIDList;
 
-    public TargetView(SandboxUID sandboxUID, Collection<DamageableUID> damageableUIDList, Collection<TileUID> tileUIDList) {
-        this.uid = sandboxUID;
+    public TargetView(String sandboxUID, Collection<DamageableUID> damageableUIDList, Collection<TileUID> tileUIDList) {
+        this.gameMapViewId = sandboxUID;
         this.damageableUIDList = damageableUIDList;
         this.tileUIDList = tileUIDList;
     }
 
-    public SandboxUID getUid() {
-        return uid;
+    public String getGameMapViewId() {
+        return gameMapViewId;
     }
 
     public Collection<DamageableUID> getDamageableUIDList() {
@@ -29,10 +27,5 @@ public class TargetView implements Serializable {
 
     public Collection<TileUID> getTileUIDList() {
         return tileUIDList;
-    }
-
-    //TODO: this method
-    public GameMapView apply(Sandbox sandbox){
-        return sandbox.generateView();
     }
 }

@@ -9,10 +9,10 @@ import genericitems.Tuple;
 import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
-import uid.SandboxUID;
 import uid.TileUID;
 import viewclasses.*;
 
+import java.rmi.server.UID;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,7 +49,7 @@ public class Sandbox {
     public final DamageableUID pov;
     private final GameMap map;
 
-    public final SandboxUID uid;
+    public final String uid;
 
     public Sandbox(GameMap map, DamageableUID pov){
 
@@ -66,7 +66,7 @@ public class Sandbox {
         this.updatedAmmoAvailable = map.getPawn(pov).getActor().getTotalAmmo();
 
         this.father = null;
-        this.uid = new SandboxUID();
+        this.uid = new UID().toString();
     }
 
     public Sandbox(Sandbox parent, List<Effect> effects){
@@ -93,7 +93,7 @@ public class Sandbox {
         this.effectsHistory = new ArrayList<>(father.effectsHistory);
         effectsHistory.addAll(effects);
 
-        this.uid = new SandboxUID();
+        this.uid = new UID().toString();
     }
 
 
