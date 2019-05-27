@@ -1,14 +1,16 @@
 weapon distruttore BB:
-nomeWeapon: Distruttore
-action main:
-nomeAction: Effetto base
-descrizioneAction: Dai 2 danni e un marchio a un bersaglio che puoi vedere
-target targ1 pawn (SEEN self) new
-effect DAMAGE 2 targ1
-effect MARK 1 targ1
-action secondo R follows [main]:
-target targ2 pawn (SEEN self) new
-effect MARK 1 targ2
+    nomeWeapon: Distruttore
+    action main:
+        nomeAction: Effetto base
+        descrizioneAction: Dai 2 danni e un marchio a un bersaglio che puoi vedere
+        target targ1 pawn (SEEN self) new
+        effect DAMAGE 2 targ1
+        effect MARK 1 targ1
+    action secondo R follows [main]:
+        nomeAction: Secondo aggancio
+        descrizioneAction: Dai 1 marchio a un altro bersaglio che puoi vedere
+        target targ2 pawn (SEEN self) new
+        effect MARK 1 targ2
 
 weapon mitragliatrice BR:
 	nomeWeapon: Mitragliatrice
@@ -39,7 +41,7 @@ weapon torpedine BR:
 	action main:
 		nomeAction: Effetto base
 		descrizioneAction: Dai 2 danni a 1 bersaglio che puoi vedere
-		target targ1 pawn (seen SELF) new
+		target targ1 pawn (SEEN self) new
 		effect DAMAGE 2 targ1
 	action reazione B follows [main]:
 		nomeAction: Reazione a catena
@@ -57,12 +59,12 @@ weapon plasma BY:
 	action main:
 		nomeAction: Effetto base
 		descrizioneAction: Dai 2 danni ad un bersaglio che puoi vedere
-		target targ1 pawn (seen SELF) new
+		target targ1 pawn (SEEN self) new
 		effect damage 2 targ1
 	action slitta:
 		nomeAction: Slittamento di fase
 		descrizioneAction: Muovi di 1 o 2 quadrati. Questo effetto può essere usato prima o dopo l'effetto base
-		target tile1 tile (distance (1,2) self)
+		target tile1 tile (DISTANT (1,2) self)
 		effect move self to tile1
 	action sovracc B follows [main]:
 		nomeAction: Colpo sovraccaricato
@@ -354,7 +356,7 @@ weapon sledgehammer Y:
 		effect damage 2 targ1
 	action pulverize R xor [main]:
 		nomeAction: Modalità polverizzare
-		descrizionaAction: Dai 3 danni a 1 bersaglio nel quadrato in cui ti trovi, poi muovi quel bersaglio di 0, 1 o 2 quadrati in una direzione
+		descrizioneAction: Dai 3 danni a 1 bersaglio nel quadrato in cui ti trovi, poi muovi quel bersaglio di 0, 1 o 2 quadrati in una direzione
 		target targ2 pawn (DISTANT (0,0) self) new
 		target tile1 tile (HAS self)
 		target dire1 direction (EXISTS) optional
