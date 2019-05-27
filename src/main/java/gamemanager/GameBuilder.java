@@ -15,6 +15,22 @@ import java.util.List;
  * Everything is built in the constructor, attributes have to be accessed through methods.
  */
 public class GameBuilder {
+
+    private static GameBuilder instance;
+
+    public static void newGame(String mapPath,
+                              String weaponPath,
+                              String powerUpPath,
+                              String ammoCardPath,
+                              int numOfPlayer)
+            throws FileNotFoundException{
+        instance = new GameBuilder(mapPath, weaponPath, powerUpPath, ammoCardPath, numOfPlayer);
+    }
+
+    public static GameBuilder get(){
+        return instance;
+    }
+
     private Deck<Weapon> deckOfWeapon;
     private Deck<PowerUp> deckOfPowerUp;
     private Deck<AmmoCard> deckOfAmmoCard;

@@ -5,6 +5,8 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import gamemanager.GameBuilder;
+import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
@@ -503,6 +505,9 @@ public class GameMap {
 
         gameMapView.setTiles(tiles);
         gameMapView.setMax(maxPos);
+
+        if(GameBuilder.get() != null)
+            gameMapView.setSkullBox(GameBuilder.get().getScoreboard().getSkullBox());
 
         return gameMapView;
     }
