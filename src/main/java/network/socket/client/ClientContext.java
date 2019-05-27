@@ -1,7 +1,5 @@
 package network.socket.client;
 
-import board.GameMap;
-import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import genericitems.Tuple3;
@@ -19,6 +17,8 @@ import java.util.List;
  */
 public class ClientContext {
     private static ClientContext instance;
+    public static final Object NULLVALUE = null;
+    public static final int NULLINT = -100;
 
     private ClientContext() {}
 

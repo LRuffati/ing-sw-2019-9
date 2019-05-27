@@ -12,6 +12,7 @@ import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
+import java.io.ObjectInputStream;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -113,10 +114,9 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
     @Override
-    public GameMapView getMap(String token) throws RemoteException {
+    public GameMapView getMap(String token, String gameMapId) throws RemoteException {
         checkConnection(token);
-        //TODO: how to generate a SandBoxView?
-        return new GameMapView();
+        return ObjectMap.get().showGameMap(gameMapId);
     }
 
     @Override

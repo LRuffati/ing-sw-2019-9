@@ -27,6 +27,11 @@ public class ObjectMap {
         return ourInstance;
     }
 
+    private Map<String, ChoiceMaker> choiceMakerMap;
+    private Map<String, WeaponChooser> weaponChooserMap;
+    private Map<String, ActionPicker> actionPickerMap;
+    private Map<String, Sandbox> sandboxMap;
+
     private ObjectMap() {
         choiceMakerMap = new HashMap<>();
         weaponChooserMap = new HashMap<>();
@@ -34,10 +39,12 @@ public class ObjectMap {
         sandboxMap = new HashMap<>();
     }
 
-    private Map<String, ChoiceMaker> choiceMakerMap;
-    private Map<String, WeaponChooser> weaponChooserMap;
-    private Map<String, ActionPicker> actionPickerMap;
-    private Map<String, Sandbox> sandboxMap;
+    public void clearChache(){
+        choiceMakerMap.clear();
+        actionPickerMap.clear();
+        weaponChooserMap.clear();
+        sandboxMap.clear();
+    }
 
     private String newID(){
         return new UID().toString();
@@ -99,4 +106,5 @@ public class ObjectMap {
     public GameMapView showGameMap(String gameMapId) {
         return sandboxMap.get(gameMapId).generateView();
     }
+
 }

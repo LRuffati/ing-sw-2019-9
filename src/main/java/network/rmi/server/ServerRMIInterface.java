@@ -1,6 +1,5 @@
 package network.rmi.server;
 
-import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ServerInterface;
@@ -31,5 +30,5 @@ public interface ServerRMIInterface extends Remote {
     List<WeaponView> showOptionsWeapon(String token, String weaponChooserId) throws RemoteException;
     Tuple<Boolean, List<ActionView>> showOptionsAction(String token, String actionPickerId) throws RemoteException;
 
-    GameMapView getMap(String token) throws RemoteException;
+    GameMapView getMap(String token, String gameMapId) throws RemoteException;
 }

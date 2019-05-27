@@ -145,7 +145,6 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(GetMapRequest request) {
-        //TODO: how to generate a SandBoxView?
-        return new GetMapResponse(new GameMapView());
+        return new GetMapResponse(ObjectMap.get().showGameMap(request.gameMapId));
     }
 }
