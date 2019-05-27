@@ -234,7 +234,7 @@ public class CLIMap {
      * Set the static position of every player's ascii character in a tile.
      */
     //TODO WARNING: we must be sure that the number of players are less than six.
-    public void setPlayersPos(){
+    private void setPlayersPos(){
         int i = 1;
         int j = 0;
         for(Map.Entry<ActorView,Character> entry : players.entrySet()){
@@ -247,7 +247,7 @@ public class CLIMap {
     /**
      * Spawn the players on the map for the first time in the game.
      */
-    public void spawnPlayers(){
+    private void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
                 tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()]

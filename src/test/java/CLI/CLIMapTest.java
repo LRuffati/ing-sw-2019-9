@@ -34,21 +34,13 @@ class CLIMapTest {
         }
         map = builder.getMap();
         actorList = builder.getActorList();
+        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
     }
 
     @Test
-    void printTest(){
-        /*
-        Iterator iterator = map.allTiles().iterator();
-        TileUID t = (TileUID) iterator.next();
-        actorList.get(0).move(t);
-        */
-        for(DamageableUID damageableUID : map.getDamageable()){
-            map.getPawn(damageableUID).getActor().move(map.getPosition(new Coord(1,2)));
-        }
-        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
-        CLIMap map = new CLIMap(gmv);
-        map.printMap();
+    void printVoidMapTest(){
+        CLIDemo demo = new CLIDemo(gmv);
+        demo.getPrintedMap();
     }
 
     @Test
@@ -57,5 +49,11 @@ class CLIMapTest {
         CLIMap map = new CLIMap(gmv);
         assert(map.searchCharacter('s').getX()==11);
         assert(map.searchCharacter('s').getY()==1);
+    }
+
+    @Test
+    void greetingsTest(){
+        CLIDemo demo = new CLIDemo(gmv);
+        demo.greetings();
     }
 }

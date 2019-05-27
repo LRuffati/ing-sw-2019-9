@@ -52,4 +52,14 @@ public class ParserWeaponTest {
         assertEquals("targ1", weaponToTest.getActions().get("main").getTargeters().iterator().next().x);
         //assertTrue(weaponToTest.getActions().get("main").actionAvailable());
     }
+
+    @Test
+    void realFile(){
+        String path = "src/resources/weapons.txt";
+        try{
+            weaponCollection = ParserWeapon.parse(path);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }
