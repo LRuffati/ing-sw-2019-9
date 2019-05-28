@@ -34,8 +34,11 @@ public class CLIDemo {
 
     /**
      * Method to introduce a new player to the game and show the initial options.
+     * It initially clear the whole command line, then it shows the title of the game.
      */
     public void greetings(){
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
         System.out.print("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
                 " /$$__  $$| $$__  $$| $$__  $$| $$_____/| $$$ | $$ /$$__  $$| $$      |_  $$_/| $$$ | $$| $$_____/\n" +
                 "| $$  \\ $$| $$  \\ $$| $$  \\ $$| $$      | $$$$| $$| $$  \\ $$| $$        | $$  | $$$$| $$| $$      \n" +
@@ -44,6 +47,8 @@ public class CLIDemo {
                 "| $$  | $$| $$  | $$| $$  \\ $$| $$      | $$\\  $$$| $$  | $$| $$        | $$  | $$\\  $$$| $$      \n" +
                 "| $$  | $$| $$$$$$$/| $$  | $$| $$$$$$$$| $$ \\  $$| $$  | $$| $$$$$$$$ /$$$$$$| $$ \\  $$| $$$$$$$$\n" +
                 "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
+
+
 
         //TODO write option to join a game, create a game whenever I got methods from network.
         //System.console().readLine();
@@ -102,5 +107,7 @@ public class CLIDemo {
         toPrintMap.applyTarget(targetViewList);
 
     }
+
+
 
 }
