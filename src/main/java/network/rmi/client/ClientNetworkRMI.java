@@ -1,6 +1,5 @@
 package network.rmi.client;
 
-import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
@@ -49,10 +48,18 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     //ClientInterface methods
 
     @Override
-    public void register() throws RemoteException, InvalidLoginException {
-        String token = controller.register(this, "me", "blue");
+    public boolean register(String username, String password, String color) throws RemoteException, InvalidLoginException {
+        String t = controller.register(this, username, password, color);
+        this.token = t;
+        System.out.println("Il mio token\t" + t);
+        return !t.equals("");
+    }
+
+    @Override
+    public boolean reconnect(String username, String password) throws RemoteException, InvalidLoginException {
+        String token = controller.reconnect(this, username, password);
         this.token = token;
-        System.out.println("Il mio token\t" + token);
+        return !token.equals("");
     }
 
     @Override
@@ -69,12 +76,6 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         return n;
     }
 
-    @Override
-    public boolean reconnect(String token) throws RemoteException {
-        boolean res = controller.reconnect(this, token);
-        this.token = res ? token : null;
-        return res;
-    }
 
 
     @Override
@@ -119,9 +120,9 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
     public void run(boolean newConnection, String token) throws RemoteException, InvalidLoginException {
         if(newConnection)
-            register();
+            register("user", "psw", "blue");
         else
-            System.out.println(reconnect(token));
+            System.out.println(reconnect("user", "psw"));
     }
 
 

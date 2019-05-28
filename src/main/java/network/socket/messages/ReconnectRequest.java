@@ -1,10 +1,12 @@
 package network.socket.messages;
 
 public class ReconnectRequest implements Request {
-    public final String token;
+    public final String username;
+    public final String password;
 
-    public ReconnectRequest(String token){
-        this.token = token;
+    public ReconnectRequest(String username, String password){
+        this.username = username;
+        this.password = password;
     }
 
     @Override

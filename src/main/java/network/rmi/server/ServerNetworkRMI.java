@@ -1,6 +1,5 @@
 package network.rmi.server;
 
-import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.Database;
@@ -12,7 +11,6 @@ import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
-import java.io.ObjectInputStream;
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -49,9 +47,16 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
     @Override
-    public String register(ServerInterface serverInterface, String username, String color) throws RemoteException, InvalidLoginException {
+    public String register(ServerInterface serverInterface, String username, String password, String color) throws RemoteException, InvalidLoginException {
         //TODO: registration procedure
-        return Database.get().login(serverInterface, username, color);
+        return Database.get().login(serverInterface, username, password, color);
+    }
+
+    @Override
+    public String reconnect(ServerInterface client, String username, String password) throws RemoteException, InvalidLoginException{
+        if(username == null || password == null)
+            return "";
+        return Database.get().login(client, username, password);
     }
 
     @Override
@@ -68,13 +73,6 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         return 0;
     }
 
-    @Override
-    public boolean reconnect(ServerInterface client, String token) throws RemoteException {
-        if(token == null)
-            return false;
-        String tokenFromDb = Database.get().login(client, token);
-        return tokenFromDb.equals(token);
-    }
 
 
     @Override

@@ -55,12 +55,13 @@ public class Database {
      * If the username and the color are not used by other players it generates an unique token and a new user.
      * @param network The Interface that must be used to send messages to the Client
      * @param username The name whom he wants to be called
+     * @param password A user-set password used for reconnection
      * @param color The color whom he wants to be associated with
      * @return The token associated with the user
      * @throws InvalidLoginException If username and/or color are already used, this Exception is thrown
      */
     //TODO: return user?
-    public synchronized String login(ServerInterface network, String username, String color) throws InvalidLoginException {
+    public synchronized String login(ServerInterface network, String username, String password, String color) throws InvalidLoginException {
         boolean wrongUsername = false;
         boolean wrongColor = false;
         //TODO: add controls
@@ -84,7 +85,7 @@ public class Database {
 
         Player user = usersByUsername.get(username);
         if(user == null) {
-            user = new Player(username, color, isFirst, token);
+            user = new Player(username, password, color, isFirst, token);
             usersByUsername.put(token, user);
             networkByToken.put(token, network);
             usersByToken.put(token, user);
@@ -97,11 +98,21 @@ public class Database {
     /**
      * This method is used to reconnect a player that left before
      * @param network The Interface that must be used to send messages to the Client
-     * @param token The token used by the client before the disconnection. This value does not change.
-     * @return The same token if the procedure terminates correctly, an empty string otherwise
+     * @param username The name whom he wants to be called
+     * @param password A user-set password used to check the identity of the Client
+     * @return The token used by the Client before the disconnection. An empty string is returned in case of errors.
      */
-    public synchronized String login(ServerInterface network, String token){
-        if(!disconnectedToken.contains(token))
+    public synchronized String login(ServerInterface network, String username, String password){
+        boolean present = false;
+        String token = "-1";
+        for(String t : disconnectedToken) {
+            if (getUserByToken(t).getUsername().equals(username)
+                    && getUserByToken(t).getPassword().equals(password)) {
+                token = t;
+                present = true;
+            }
+        }
+        if(!present)
             return "";
 
         networkByToken.put(token, network);

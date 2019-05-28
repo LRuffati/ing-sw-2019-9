@@ -7,7 +7,6 @@ import network.ServerInterface;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
-import viewclasses.GameMapView;
 
 
 /**
@@ -49,21 +48,21 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(RegisterRequest request) {
+        String token;
         try {
-            String token = Database.get().login(this, request.username, request.color);
-            player = Database.get().getUserByToken(token);
+            token = Database.get().login(this, request.username, request.password, request.color);
         } catch (InvalidLoginException e) {
             return new ExceptionResponse(e);
         }
-        return new RegisterResponse(player.getToken());
+        return new RegisterResponse(token);
     }
 
     @Override
     public Response handle(ReconnectRequest request) {
-        if(request.token == null)
+        if(request.username == null || request.password == null)
             return new ReconnectResponse(false, "");
-        String tokenFromDb = Database.get().login(this, request.token);
-        return new ReconnectResponse(tokenFromDb.equals(request.token), tokenFromDb);
+        String tokenFromDb = Database.get().login(this, request.username, request.password);
+        return new ReconnectResponse(!tokenFromDb.equals(""), tokenFromDb);
     }
 
     @Override

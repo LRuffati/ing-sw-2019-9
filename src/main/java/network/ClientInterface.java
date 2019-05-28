@@ -1,7 +1,6 @@
 package network;
 
 
-import controllerresults.ActionResultType;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.exception.InvalidLoginException;
@@ -21,8 +20,8 @@ public interface ClientInterface {
     int mirror(int num) throws RemoteException;
 
     int close() throws RemoteException;
-    void register() throws RemoteException, InvalidLoginException;
-    boolean reconnect(String token) throws RemoteException;
+    boolean register(String username, String password, String color) throws RemoteException, InvalidLoginException;
+    boolean reconnect(String username, String password) throws RemoteException, InvalidLoginException;
 
     ControllerActionResultClient pickTarg(String choiceMakerId, int choice) throws RemoteException;
     ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException;

@@ -35,6 +35,14 @@ public class ClientController implements ClientControllerClientInterface{
         gameMapViewMap = new HashMap<>();
     }
 
+    public void login(String username, String password, String color) {
+
+    }
+
+    public void login(String username, String password) {
+
+    }
+
 
     private GameMapView getMap(TargetView targetView) throws RemoteException {
         String mapUid = targetView.getGameMapViewId();

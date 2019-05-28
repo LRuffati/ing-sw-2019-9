@@ -19,8 +19,8 @@ import java.util.List;
 public interface ServerRMIInterface extends Remote {
     int mirror(String token, int n) throws RemoteException;
     int close(String token) throws RemoteException;
-    String register(ServerInterface user, String username, String color) throws RemoteException, InvalidLoginException;
-    boolean reconnect(ServerInterface user, String token) throws RemoteException;
+    String register(ServerInterface user, String username, String password, String color) throws RemoteException, InvalidLoginException;
+    String reconnect(ServerInterface user, String username, String password) throws RemoteException, InvalidLoginException;
 
     ControllerActionResultClient pickTarget(String token, String choiceMakerId, int choice) throws RemoteException;
     ControllerActionResultClient pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException;

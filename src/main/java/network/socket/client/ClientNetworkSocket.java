@@ -1,5 +1,6 @@
 package network.socket.client;
 
+import controllerclient.ClientController;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
@@ -55,9 +56,9 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     public void run(boolean newConnection, String token) throws RemoteException {
         startReceiver();
         if(newConnection)
-            register();
+            register("username", "password", "red");
         else
-            reconnect(token);
+            reconnect("username", "password");
         System.out.println("Ready to receive");
     }
 
@@ -95,17 +96,19 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public void register(){
-        client.request(new RegisterRequest("a", "blue"));
+    public boolean register(String username, String password, String color){
+        client.request(new RegisterRequest(username, password, color));
         sync();
-        System.out.println("token\n" + ClientContext.get().getToken());
+        String token = ClientContext.get().getToken();
+        System.out.println("token\n" + token);
+        return token.equals("");
     }
 
     @Override
-    public boolean reconnect(String token) throws RemoteException {
-        client.request(new ReconnectRequest(token));
+    public boolean reconnect(String username, String password) throws RemoteException {
+        client.request(new ReconnectRequest(username, password));
         sync();
-        return ClientContext.get().getReconnected();
+        return ClientContext.get().getToken().equals("");
     }
 
     /**
