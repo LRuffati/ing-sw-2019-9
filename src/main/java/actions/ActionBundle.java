@@ -6,30 +6,34 @@ import actions.utils.ActionPicker;
 import board.GameMap;
 import board.Sandbox;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import uid.DamageableUID;
+import viewclasses.ActionView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ActionBundle implements ActionPicker {
     private final DamageableUID pov;
     private boolean finalized;
     private final List<ActionTemplate> actionsPossible;
     private final GameMap map;
+    private final Sandbox sandboxFromMap;
 
     private List<Effect> effects;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer;
+    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
 
     ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
         this.actionsPossible = actions;
         finalized = false;
         this.map = map;
         this.pov = caller;
+        this.sandboxFromMap = map.createSandbox(pov);
         finalizer = tup -> { // This will be called once the action is complete
             /*
             Objective:
@@ -40,25 +44,25 @@ public class ActionBundle implements ActionPicker {
                 necessary info for the GRAB and PAY effects
              */
             Sandbox sandbox = tup.x;
-            if (this.finalized) return new ControllerActionResult(ActionResultType.ALREADYTERMINATED);
+            if (this.finalized) return new ControllerActionResultServer(ActionResultType.ALREADYTERMINATED,"", sandbox);
             else {
                 this.finalized = true;
                 this.effects = sandbox.getEffectsHistory();
-                return new ControllerActionResult(ActionResultType.TERMINATED);
+                return new ControllerActionResultServer(ActionResultType.TERMINATED,"", sandbox);
             }
         };
     }
 
 
     @Override
-    public Tuple<Boolean, List<ActionTemplate>> showActionsAvailable() {
-        return new Tuple<>(false, new ArrayList<>(actionsPossible));
+    public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
+        return new Tuple<>(false, actionsPossible.stream().map(ActionTemplate::generateView).collect(Collectors.toList()));
     }
 
     @Override
-    public ControllerActionResult pickAction(int choice) {
+    public ControllerActionResultServer pickAction(int choice) {
         if (choice<0 || choice>=actionsPossible.size()){
-            return new ControllerActionResult(this);
+            return new ControllerActionResultServer(this, "", sandboxFromMap);
         }
         Sandbox sandbox = map.createSandbox(pov);
         ActionTemplate chosen = actionsPossible.get(choice);

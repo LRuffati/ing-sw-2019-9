@@ -22,12 +22,11 @@ public class SocketServerLauncher {
         pool = Executors.newCachedThreadPool();
         System.out.println( ">>> Listening on " + port);
         receiveConnections(this);
-        //run();
     }
 
     public void run() throws IOException, RemoteException {
         System.in.read();
-        for(String token : Database.get().getTokens())
+        for(String token : Database.get().getConnectedTokens())
             Database.get().getNetworkByToken(token).sendUpdate("ciao");
     }
 
@@ -35,7 +34,7 @@ public class SocketServerLauncher {
         serverSocket.close();
     }
 
-    public void receiveConnections(SocketServerLauncher socketServerLauncher) {
+    private void receiveConnections(SocketServerLauncher socketServerLauncher) {
         // start a receiver thread
         conn = new Thread(
                 () -> {

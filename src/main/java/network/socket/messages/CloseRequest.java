@@ -2,10 +2,10 @@ package network.socket.messages;
 
 public class CloseRequest implements Request {
 
-    public final int value;
+    public final String token;
 
-    public CloseRequest(int value){
-        this.value = value;
+    public CloseRequest(String token){
+        this.token = token;
     }
 
     @Override

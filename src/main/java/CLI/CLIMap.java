@@ -6,16 +6,14 @@ import board.GameMap;
 import gamemanager.GameBuilder;
 import grabbables.Weapon;
 import player.Actor;
+import uid.DamageableUID;
 import uid.TileUID;
-import viewclasses.ActorView;
-import viewclasses.AmmoCardView;
-import viewclasses.GameMapView;
-import viewclasses.TileView;
+import viewclasses.*;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.List;
 
 public class CLIMap {
     private final int dimTile = 5;
@@ -234,7 +232,7 @@ public class CLIMap {
      * Set the static position of every player's ascii character in a tile.
      */
     //TODO WARNING: we must be sure that the number of players are less than six.
-    public void setPlayersPos(){
+    private void setPlayersPos(){
         int i = 1;
         int j = 0;
         for(Map.Entry<ActorView,Character> entry : players.entrySet()){
@@ -247,7 +245,7 @@ public class CLIMap {
     /**
      * Spawn the players on the map for the first time in the game.
      */
-    public void spawnPlayers(){
+    private void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
                 tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()]
@@ -255,5 +253,39 @@ public class CLIMap {
                         = players.get(a);
             }
         }
+    }
+
+    public void applyTarget(List<TargetView> targetViewList){
+        GameMapView targetMap = new GameMapView(mp);
+        Collection<TileUID> tiles;
+        Collection<DamageableUID> actors;
+        Map<TileView, Color> tilesColor = new HashMap<>();
+        Map<ActorView, Color> actorsColor = new HashMap<>();
+        for(TargetView target :  targetViewList) {
+            tiles = target.getTileUIDList();
+            actors = target.getDamageableUIDList();
+            for (TileView t : targetMap.allTiles()) {
+                if (!tiles.contains(t.uid())) {
+                    tilesColor.put(t,t.color());
+                    t.setColor(Color.DARK_GRAY);
+                }
+            }
+            for (ActorView a : targetMap.players()) {
+                if (!actors.contains(a.uid())) {
+                    actorsColor.put(a,a.color());
+                    a.setColor(Color.lightGray);
+                }
+            }
+        }
+        printMap();
+
+        for(Map.Entry<TileView,Color> entry: tilesColor.entrySet()){
+            entry.getKey().setColor(entry.getValue());
+        }
+
+        for(Map.Entry<ActorView,Color> entry: actorsColor.entrySet()){
+            entry.getKey().setColor(entry.getValue());
+        }
+
     }
 }

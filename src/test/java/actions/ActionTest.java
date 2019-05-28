@@ -2,45 +2,34 @@ package actions;
 
 import actions.conditions.Condition;
 import actions.effects.EffectTemplate;
-import actions.selectors.ContainedSelector;
 import actions.selectors.HasSelector;
 import actions.selectors.Selector;
-import actions.selectors.VisibleSelector;
 import actions.targeters.TargeterTemplate;
-import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.DirectionTarget;
-import actions.targeters.targets.GroupTarget;
 import actions.targeters.targets.Targetable;
-import actions.utils.AmmoAmount;
-import actions.utils.AmmoAmountUncapped;
 import board.Coord;
 import board.Direction;
 import board.GameMap;
 import board.Sandbox;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import gamemanager.GameBuilder;
 import genericitems.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import player.Actor;
-import player.Pawn;
-import uid.DamageableUID;
-import uid.TileUID;
 
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class ActionTest {
     Action testedAction;
     Sandbox oldsandbox;
     Sandbox newsandbox;
-    Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResult> finalizer;
+    Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
     ActionInfo mockInfo;
     private GameMap map;
     private List<Actor> actorList;
@@ -60,7 +49,7 @@ class ActionTest {
         actorList = builder.getActorList();
         newsandbox = mock(Sandbox.class);
         finalizer = sandboxMapTuple -> {
-            return new ControllerActionResult(ActionResultType.TERMINATED);
+            return new ControllerActionResultServer(ActionResultType.TERMINATED, "", newsandbox);
                 };
         mockInfo = mock(ActionInfo.class);
     }

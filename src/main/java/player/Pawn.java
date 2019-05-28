@@ -150,6 +150,7 @@ public class Pawn {
         }
         actorView.setMarks(marks);
 
+
         actorView.setColor(color);
         actorView.setUsername(username);
 

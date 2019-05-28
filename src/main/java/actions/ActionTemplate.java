@@ -1,13 +1,13 @@
 package actions;
 
 import actions.effects.EffectTemplate;
-import actions.effects.EffectType;
 import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
+import viewclasses.ActionView;
 
 import java.util.*;
 import java.util.function.Function;
@@ -130,7 +130,13 @@ public class ActionTemplate {
 
     public Action generate(Sandbox sandbox, Map<String, Targetable> prevTargs,
                            Function<Tuple<Sandbox, Map<String, Targetable>>,
-                                   ControllerActionResult> finalizer){
+                                   ControllerActionResultServer> finalizer){
         return new Action(sandbox, this, prevTargs, finalizer);
+    }
+
+
+
+    public ActionView generateView() {
+        return new ActionView(info.getName(), info.getActionId(), info.getCost());
     }
 }

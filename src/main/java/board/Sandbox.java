@@ -10,10 +10,11 @@ import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
+import viewclasses.*;
 
+import java.rmi.server.UID;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Sandbox {
     /*
@@ -48,6 +49,8 @@ public class Sandbox {
     public final DamageableUID pov;
     private final GameMap map;
 
+    public final String uid;
+
     public Sandbox(GameMap map, DamageableUID pov){
 
         this.roomsTargeted = new HashMap<>();
@@ -63,6 +66,7 @@ public class Sandbox {
         this.updatedAmmoAvailable = map.getPawn(pov).getActor().getTotalAmmo();
 
         this.father = null;
+        this.uid = new UID().toString();
     }
 
     public Sandbox(Sandbox parent, List<Effect> effects){
@@ -88,6 +92,8 @@ public class Sandbox {
         this.father = parent;
         this.effectsHistory = new ArrayList<>(father.effectsHistory);
         effectsHistory.addAll(effects);
+
+        this.uid = new UID().toString();
     }
 
 
@@ -240,5 +246,72 @@ public class Sandbox {
             ret.add(new Tuple<>(status, i));
         }
         return ret;
+    }
+
+
+
+    /**
+     * This method generates a TargetView (TileView) given a TileUID
+     */
+    public TargetView generateTargetView(TileUID tileUID) {
+        return new TargetView(uid, null, List.of(tileUID));
+    }
+    /**
+     * This method generates a TargetView (TileListView) given a Collection of TileUid
+     */
+    public TargetView generateTargetView(Collection<TileUID> tiles) {
+        return new TargetView(uid, null, tiles);
+    }
+    /**
+     * This method generates a TargetView (ActorView) given a DamageableUID
+     */
+    public TargetView generateTargetView(DamageableUID damageableUID) {
+        return new TargetView(uid, List.of(damageableUID), null);
+    }
+    /**
+     * This method generates a TargetView (ActorListView) given a Collection of DamageableUID
+     */
+    public TargetView generateTargetView(Set<DamageableUID> targets) {
+        return new TargetView(uid, targets, null);
+    }
+
+    
+
+    /**
+     * This method generates a GameMapView of the current Sandbox.
+     * Starting from the GameMapView, all the players position, tha ammoAmount and the weapons are updated considering the Action already performed
+     */
+    public GameMapView generateView() {
+        GameMapView gameMapView = map.generateView(pov);
+
+        for(Map.Entry entry : updatedLocations.entrySet()) {
+
+            TileView tileView = gameMapView.getPosition(map.getCoord((TileUID)entry.getValue()));
+            List<ActorView> players = tileView.players();
+
+            for(ActorView actor: gameMapView.players()) {
+                if(actor.uid().equals(entry.getKey())) {
+                    actor.position().setPlayers(tileView.players().stream().filter(x -> !x.equals(actor)).collect(Collectors.toList()));
+                    actor.setPosition(tileView);
+
+                    players.add(actor);
+                }
+            }
+
+            tileView.setPlayers(players);
+        }
+
+        gameMapView.you().setAmmo(updatedAmmoAvailable);
+
+        gameMapView.you().setLoadedWeapon(getArsenal().stream()
+                .filter(i -> i.x == Boolean.TRUE)
+                .map(i -> i.y.generateView())
+                .collect(Collectors.toList()));
+        gameMapView.you().setUnloadedWeapon(getArsenal().stream()
+                .filter(i -> i.x == Boolean.FALSE)
+                .map(i -> i.y.generateView())
+                .collect(Collectors.toList()));
+
+        return gameMapView;
     }
 }

@@ -45,6 +45,7 @@ public class ParserWeapon {
             String weaponId = null;
             String description;
             String scannerString = scanner.nextLine();
+            if(scannerString.equals("")) scannerString = scanner.nextLine();
             sLine = new Scanner(scannerString);
             sLine.useDelimiter(" ");
             Map<AmmoColor, Integer> amountGiven = new HashMap<>();
@@ -92,11 +93,11 @@ public class ParserWeapon {
                     reloadWeapon = new AmmoAmount(amountGiven);
                     break;
 
-                case "nome:":
+                case "nomeWeapon:":
                     name = scannerString.substring(scannerString.indexOf(':')+1).trim();
                     break;
 
-                case "description:":
+                case "descrizioneWeapon:":
                     description = scannerString.substring(scannerString.indexOf(':'));
                     break;
 
@@ -149,7 +150,10 @@ public class ParserWeapon {
                     boolean ifOptional = false;
                     Collection<Tuple<Boolean, String>> actionRequirements = new ArrayList<>();
                     Collection<Tuple<Boolean, String>> targetRequirements = new ArrayList<>();
-                    actionId = actionId.substring(0, actionId.length() - 1);
+                    if(actionId.charAt(actionId.length()-1)==':') {
+                        actionId = actionId.substring(0, actionId.length() - 1);
+                    }
+                    System.out.print("\n" + actionId + "\n");
                     if (mNotNull && (sLine.next().equals("follows")||maybeCost.equals("follows"))){
                         listaFollow = sLine.next();
                         String substring = listaFollow
@@ -184,7 +188,7 @@ public class ParserWeapon {
                         actionName = toIf.substring(toIf.indexOf(':')+1).trim();
                         toIf = scanner.nextLine();
                     }
-                    if (toIf.equals("descrizione:")) {
+                    if (toIf.equals("descrizioneAction:")) {
                         actionDescription = toIf.substring(toIf.indexOf(':')+1).trim();
                     }
 
@@ -192,11 +196,9 @@ public class ParserWeapon {
                     List<EffectTemplate> effects = new ArrayList<>();
                     sLine = new Scanner(scanner.nextLine());
 
-                    //TODO FIX
                     if(sLine.next().equals("target")){
                         targetId = sLine.next();
                         targetType = sLine.next();
-                        System.out.print("\n" + targetId + "\n" + targetType);
                         List<Tuple<String, Condition>> filters = new ArrayList<>();
                         selector = sLine.next().substring(1);
                         Selector toSelector = null;
@@ -311,29 +313,31 @@ public class ParserWeapon {
                                 filters,targetType,ifOptional,ifNew,ifAutomatic)));
 
                     }
-                    if(mNotNull){
-                        while (scanner.nextLine().contains("effect")) {
-                            sLine.next();
-                            String effect = sLine.next();
-                            EffectTemplate toEffect = null;
 
-                            switch (effect.toLowerCase()) {
-                                case "fire":
-                                    toEffect = new Fire();
-                                    break;
+                    String effectIf = scanner.nextLine();
+                    sLine = new Scanner(effectIf);
+                    if (effectIf.contains("effect")) {
+                        sLine.next();
+                        String effect = sLine.next();
+                        EffectTemplate toEffect = null;
 
-                                case "damage":
-                                    int amount = Integer.parseInt(sLine.next());
-                                    String targId = sLine.next();
-                                    toEffect = new DamageTemplate(targId, amount);
-                                    break;
+                        switch (effect.toLowerCase()) {
+                            case "fire":
+                                toEffect = new Fire();
+                                break;
 
-                                default:
-                                    break;
-                            }
-                            effects.add(toEffect);
+                            case "damage":
+                                int amount = Integer.parseInt(sLine.next());
+                                String targId = sLine.next();
+                                toEffect = new DamageTemplate(targId, amount);
+                                break;
+
+                            default:
+                                break;
                         }
+                        effects.add(toEffect);
                     }
+
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
                             targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
                     break;

@@ -167,7 +167,8 @@ public class Targeter {
 
         final List<Targetable> passedTargets = new ArrayList<>(validTargets);
 
-        master.giveTargets(targetID, validTargets, integer -> {
+        //master.giveTargets(targetID, validTargets, integer -> {
+        master.giveTargets(targetID, validTargets.stream().map(x -> x.generateView(sandbox)).collect(Collectors.toList()) , integer -> {
             if (optional && integer<0)
                 return null;
             else if (integer >= passedTargets.size()){

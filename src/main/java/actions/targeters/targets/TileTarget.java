@@ -5,6 +5,7 @@ import board.Sandbox;
 import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.TargetView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -164,5 +165,11 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
     @Override
     public boolean seen(Sandbox sandbox, @NotNull PointLike source, boolean negation) {
         return negation ^ source.tilesSeen(sandbox).contains(location(sandbox));
+    }
+
+
+    @Override
+    public TargetView generateView(Sandbox sandbox) {
+        return sandbox.generateTargetView(tileUID);
     }
 }

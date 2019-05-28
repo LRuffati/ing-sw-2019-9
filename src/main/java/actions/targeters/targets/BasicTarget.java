@@ -11,6 +11,7 @@ import player.DominationPoint;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.TargetView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -206,5 +207,11 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     public Set<TileUID> coexistingTiles(Sandbox sandbox){
         if (sandbox == null) throw new NullPointerException();
         return sandbox.allTiles();
+    }
+
+
+    @Override
+    public TargetView generateView(Sandbox sandbox) {
+        return sandbox.generateTargetView(selfUID);
     }
 }

@@ -1,10 +1,9 @@
 package CLI;
 
+import board.GameMap;
 import grabbables.Weapon;
 import player.Actor;
-import viewclasses.ActorView;
-import viewclasses.GameMapView;
-import viewclasses.PowerUpView;
+import viewclasses.*;
 
 import java.io.FileNotFoundException;
 import java.time.Duration;
@@ -19,31 +18,12 @@ public class CLIDemo {
      */
     public static void start(GameMapView gmv) {
         toPrintMap = new CLIMap(gmv);
-        Objects.requireNonNull(toPrintMap).printMap();
     }
 
     public CLIDemo(GameMapView gmv){
         start(gmv);
     }
 
-    /**
-     * Leave an ASCII character on the player position.
-     * @param w the weapon to be dropped.
-     * @param player that drops the weapon. (Needed also to get the position where to drop the weapon.
-     */
-    public void dropWeapon(Actor player, Weapon w){
-        toPrintMap.writeOnMap('w',player.getPawn().getMap().getCoord(player.getPawn().getTile()));
-    }
-
-    /**
-     * This method is needed when there are no more weapons on the spawn point.
-     * @param player is the player on the spawn point.
-     */
-    public void deleteWeapon(Actor player){
-        if(player.getGm().getTile(player.getPawn().getTile()).spawnPoint()){
-            toPrintMap.writeOnMap('/', player.getPawn().getMap().getCoord(player.getPawn().getTile()));
-        }
-    }
 
     /**
      * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
@@ -54,10 +34,24 @@ public class CLIDemo {
 
     /**
      * Method to introduce a new player to the game and show the initial options.
+     * It initially clear the whole command line, then it shows the title of the game.
      */
     public void greetings(){
-        System.out.println("Hello there, shooter. State your name: \n");
-        System.console().readLine();
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+        System.out.print("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
+                " /$$__  $$| $$__  $$| $$__  $$| $$_____/| $$$ | $$ /$$__  $$| $$      |_  $$_/| $$$ | $$| $$_____/\n" +
+                "| $$  \\ $$| $$  \\ $$| $$  \\ $$| $$      | $$$$| $$| $$  \\ $$| $$        | $$  | $$$$| $$| $$      \n" +
+                "| $$$$$$$$| $$  | $$| $$$$$$$/| $$$$$   | $$ $$ $$| $$$$$$$$| $$        | $$  | $$ $$ $$| $$$$$   \n" +
+                "| $$__  $$| $$  | $$| $$__  $$| $$__/   | $$  $$$$| $$__  $$| $$        | $$  | $$  $$$$| $$__/   \n" +
+                "| $$  | $$| $$  | $$| $$  \\ $$| $$      | $$\\  $$$| $$  | $$| $$        | $$  | $$\\  $$$| $$      \n" +
+                "| $$  | $$| $$$$$$$/| $$  | $$| $$$$$$$$| $$ \\  $$| $$  | $$| $$$$$$$$ /$$$$$$| $$ \\  $$| $$$$$$$$\n" +
+                "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
+
+
+
+        //TODO write option to join a game, create a game whenever I got methods from network.
+        //System.console().readLine();
     }
 
     /**
@@ -99,8 +93,8 @@ public class CLIDemo {
         System.out.println(timeLeft.toString() + " is the time left.");
     }
 
-    public void displayScoreAll(List<ActorView> players){
-        for(ActorView a:players){
+    public void displayScoreAll(ActorListView players){
+        for(ActorView a:players.getActorList()){
             System.out.println(a.getAnsi() + "Player " + a.name() + " gained score ✺(^O^)✺ is " + a.score() + ".");
         }
     }
@@ -108,5 +102,12 @@ public class CLIDemo {
     public void addKill(ActorView killer, ActorView victim){
         System.out.println(killer.getAnsi() + "Player " + killer.name() + " frag \uD83D\uDC80 player " + victim.name() + ".");
     }
+
+    public void printAppliedTarget(List<TargetView> targetViewList){
+        toPrintMap.applyTarget(targetViewList);
+
+    }
+
+
 
 }

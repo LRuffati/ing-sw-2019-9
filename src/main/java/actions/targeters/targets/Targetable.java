@@ -3,8 +3,8 @@ package actions.targeters.targets;
 import board.Sandbox;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.TargetView;
 
-import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -36,4 +36,6 @@ public interface Targetable {
 
         return pawns && tiles;
     }
+
+    TargetView generateView(Sandbox sandbox);
 }

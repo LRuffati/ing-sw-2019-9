@@ -1,8 +1,9 @@
 package actions.utils;
 
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import actions.targeters.targets.Targetable;
 import genericitems.Tuple;
+import viewclasses.TargetView;
 
 import java.util.List;
 import java.util.function.Function;
@@ -15,16 +16,16 @@ public interface ChoiceMaker {
     /**
      * This function will be called by the Targeter
      */
-    void giveTargets(String targetId, List<Targetable> possibilities,
+    void giveTargets(String targetId, List<TargetView> possibilities,
                      Function<Integer, Targetable> action);
 
     /**
      * This function will be called by the controller
      */
-    Tuple<Boolean, List<Targetable>> showOptions();
+    Tuple<Boolean, List<TargetView>> showOptions();
 
     /**
      *
      */
-    ControllerActionResult pick(int choice);
+    ControllerActionResultServer pick(int choice);
 }

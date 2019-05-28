@@ -1,5 +1,6 @@
 package network.socket.server;
 
+import network.Database;
 import network.socket.messages.Request;
 import network.socket.messages.Response;
 
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,12 +36,14 @@ public class ClientHandler implements Runnable{
         stop = false;
     }
 
-    public void respond(Response response){
+    void respond(Response response){
         try{
             out.writeObject(response);
-            //TODO: giusto farlo qui?
-            out.flush();
-            //out.reset();
+            out.reset();
+        }
+        catch (SocketException e) {
+            System.out.println("Hard quit");
+            Database.get().logout(controller);
         }
         catch (IOException e) {
             logger.log(Level.SEVERE, "IO - " + e.getMessage());
@@ -56,10 +60,14 @@ public class ClientHandler implements Runnable{
                     respond(response);
                 }
             } while (!stop);
+        } catch (SocketException e) {
+            System.out.println("Soft quit");
+            //TODO: notify controller too?
+            Database.get().logout(controller);
+            close();
         } catch (Exception e) {
             logger.log(Level.SEVERE, e.getClass().getSimpleName() + " - " + e.getMessage());
         }
-        close();
     }
 
     public void stop() {
@@ -73,20 +81,20 @@ public class ClientHandler implements Runnable{
             try {
                 in.close();
             } catch (IOException e) {
-                logger.log(Level.SEVERE, err + e.getMessage());
+                logger.log(Level.SEVERE, "In:\t" + err + e.getMessage());
             }
         }
         if (out != null) {
             try {
                 out.close();
             } catch (IOException e) {
-                logger.log(Level.SEVERE, err + e.getMessage());
+                logger.log(Level.SEVERE, "Out:\t" + err + e.getMessage());
             }
         }
         try {
             socket.close();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, err + e.getMessage());
+            logger.log(Level.SEVERE, "Socket:\t" + err + e.getMessage());
         }
     }
 }

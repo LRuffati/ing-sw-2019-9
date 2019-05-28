@@ -1,11 +1,15 @@
 package network.rmi;
 
+import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerNetworkRMI;
+import network.socket.server.ServerNetworkSocket;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Demo class that starts a Server RMI
@@ -41,6 +45,7 @@ public class RMIServerLauncher {
             Registry registry = LocateRegistry.createRegistry(port);
             registry.rebind("//" + host + ":" + port + "/controller", controller);
 
+            startPing(controller);
             return controller;
         }
         catch (RemoteException e){
@@ -49,6 +54,23 @@ public class RMIServerLauncher {
         }
     }
 
+    private static void startPing(ServerNetworkRMI controller){
+        TimerTask repeatedTask = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    if(controller instanceof ServerNetworkRMI)
+                    controller.sendPing();
+                }
+                catch (RemoteException e){
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        Timer timer  = new Timer("pingTimer");
+        timer.scheduleAtFixedRate(repeatedTask, 0, 100);
+    }
 
     public static void main(String[] args) {
         System.out.println("\nServer RMI\n");

@@ -5,11 +5,11 @@ import actions.targeters.interfaces.PointLike;
 import actions.targeters.interfaces.SuperTile;
 import actions.targeters.interfaces.Visible;
 import board.Sandbox;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
+import viewclasses.TargetView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -93,4 +93,9 @@ public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTi
         return negation ^ getSelectedTiles(sandbox).parallelStream().anyMatch(seenTiles::contains);
     }
 
+
+    @Override
+    public TargetView generateView(Sandbox sandbox) {
+        return sandbox.generateTargetView(containedTiles(sandbox));
+    }
 }
