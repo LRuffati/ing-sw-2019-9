@@ -6,7 +6,7 @@ import actions.utils.AmmoAmountUncapped;
 import actions.utils.WeaponChooser;
 import board.Sandbox;
 import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResult;
+import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 public class ReloadTemplate implements EffectTemplate{
 
-    public ControllerActionResult spawn(Map<String, Targetable> targets, Sandbox sandbox,
+    public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox,
                                   Function<Sandbox,
-            ControllerActionResult> consumer){
+            ControllerActionResultServer> consumer){
         //1. Genera WeaponChooser
 
         List<Tuple<AmmoAmount, Weapon>> scariche =
@@ -38,19 +38,19 @@ public class ReloadTemplate implements EffectTemplate{
             }
 
             @Override
-            public ControllerActionResult pick(int[] choice) {
+            public ControllerActionResultServer pick(int[] choice) {
                 AmmoAmountUncapped tot = new AmmoAmountUncapped(new AmmoAmount());
                 for(int i: choice){
                     tot.add(scariche.get(i).x);
                 }
                 if (new AmmoAmountUncapped(sandbox.updatedAmmoAvailable)<tot){
-                    return new ControllerActionResult(ActionResultType.REDO, "Not enough ammo");
+                    return new ControllerActionResultServer(ActionResultType.REDO, "Not enough ammo");
                 } else {
                     // TODO: make it update weapons
                     return consumer.apply(new Sandbox(sandbox, List.of(new PayEffect(tot))));
                 }
             }
         };
-        return new ControllerActionResult(chooser);
+        return new ControllerActionResultServer(chooser);
     }
 }

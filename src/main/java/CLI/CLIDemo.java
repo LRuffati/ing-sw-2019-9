@@ -48,7 +48,7 @@ public class CLIDemo {
                 "| $$  | $$| $$$$$$$/| $$  | $$| $$$$$$$$| $$ \\  $$| $$  | $$| $$$$$$$$ /$$$$$$| $$ \\  $$| $$$$$$$$\n" +
                 "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
 
-
+        
 
         //TODO write option to join a game, create a game whenever I got methods from network.
         //System.console().readLine();

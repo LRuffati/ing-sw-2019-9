@@ -62,7 +62,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
             for (Map.Entry<AmmoColor, Integer> i: c.amounts.entrySet()){
                 newMap.put(i.getKey(), amounts.get(i.getKey())-i.getValue());
             }
-            return new AmmoAmount(newMap);
+            return new AmmoAmountUncapped(newMap);
         } else throw new IllegalArgumentException("Cost is greater than available amounts");
     }
 
