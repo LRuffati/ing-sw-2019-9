@@ -10,8 +10,10 @@ import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.GameMapView;
+import viewclasses.TargetView;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,5 +57,15 @@ class CLIMapTest {
     void greetingsTest(){
         CLIDemo demo = new CLIDemo(gmv);
         demo.greetings();
+    }
+
+    @Test
+    void printTargetTest(){
+        CLIDemo demo = new CLIDemo(gmv);
+        TargetView tw = new TargetView("asd", new ArrayList<>(), new ArrayList<>());
+        List<TargetView> targetViewList = new ArrayList<>();
+        targetViewList.add(tw);
+        demo.printAppliedTarget(targetViewList);
+        demo.getPrintedMap();
     }
 }

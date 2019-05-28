@@ -1,11 +1,9 @@
 package CLI;
 
+import board.GameMap;
 import grabbables.Weapon;
 import player.Actor;
-import viewclasses.ActorListView;
-import viewclasses.ActorView;
-import viewclasses.GameMapView;
-import viewclasses.PowerUpView;
+import viewclasses.*;
 
 import java.io.FileNotFoundException;
 import java.time.Duration;
@@ -100,6 +98,9 @@ public class CLIDemo {
         System.out.println(killer.getAnsi() + "Player " + killer.name() + " frag \uD83D\uDC80 player " + victim.name() + ".");
     }
 
+    public void printAppliedTarget(List<TargetView> targetViewList){
+        toPrintMap.applyTarget(targetViewList);
 
+    }
 
 }

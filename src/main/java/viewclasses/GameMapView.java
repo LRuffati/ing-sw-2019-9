@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * This class contains the GameMap that is used by the view and transmitted from the server to the client
  */
-public class GameMapView implements Serializable {
+public class GameMapView implements Serializable{
     private Map<Coord, TileView> tiles;
     private Coord maxPos;
     private ActorView you;
@@ -20,12 +20,23 @@ public class GameMapView implements Serializable {
         tiles = new HashMap<>();
     }
 
+    public GameMapView(GameMapView toCopy){
+        this.tiles = toCopy.getTiles();
+        this.maxPos = toCopy.maxPos();
+        this.you = toCopy.you();
+        this.players = toCopy.players();
+    }
+
     public Coord maxPos(){
         return maxPos;
     }
 
     public Collection<TileView> allTiles(){
         return tiles.values();
+    }
+
+    public Map<Coord, TileView> getTiles() {
+        return tiles;
     }
 
     public Set<Coord> allCoord(){
