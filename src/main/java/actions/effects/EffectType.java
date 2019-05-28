@@ -4,8 +4,8 @@ public enum EffectType {
     MOVE,
     MARK,
     DAMAGE,
-    FIRE,
-    RELOAD,
+    FIRE, // Makes weapon unavailable
+    RELOAD, // Makes weapon available
 
     PAY,
     GRAB

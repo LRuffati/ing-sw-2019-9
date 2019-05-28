@@ -4,6 +4,7 @@ import actions.effects.Effect;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.RoomTarget;
 import actions.targeters.targets.TileTarget;
+import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import genericitems.Tuple;
 import grabbables.Weapon;
@@ -301,7 +302,7 @@ public class Sandbox {
             tileView.setPlayers(players);
         }
 
-        gameMapView.you().setAmmo(updatedAmmoAvailable);
+        gameMapView.you().setAmmo(new AmmoAmount(updatedAmmoAvailable));
 
         gameMapView.you().setLoadedWeapon(getArsenal().stream()
                 .filter(i -> i.x == Boolean.TRUE)

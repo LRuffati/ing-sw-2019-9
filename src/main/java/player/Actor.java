@@ -109,7 +109,7 @@ public class Actor {
             throw new InvalidParameterException("There isn't this item here");
 
         AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
-        ammoAvailable = ammoAvailable.add(card.getAmmoAmount());
+        ammoAvailable = new AmmoAmount(ammoAvailable.add(new AmmoAmount(card.getAmmoAmount())));
         for(int i = 0; i<card.getNumOfPowerUp() && powerUps.size()< MAX_PUP; i++)
             powerUps.add(gm.pickUpPowerUp());
         gm.discardAmmoCard(card);
@@ -175,8 +175,8 @@ public class Actor {
      * @param powerUpToPay the powerUps that the have to be considered in the check
      * @return True if can be reloaded, false otherwise
      */
-    public boolean checkAmmo(AmmoAmount ammoAmount, List<PowerUp> powerUpToPay){
-        AmmoAmount amount = new AmmoAmount();
+    public boolean checkAmmo(AmmoAmountUncapped ammoAmount, List<PowerUp> powerUpToPay){
+        AmmoAmountUncapped amount = new AmmoAmountUncapped();
         for(PowerUp p : powerUpToPay){
             amount = amount.add(p.getAmmo());
         }
@@ -190,7 +190,7 @@ public class Actor {
      * @return the sum of ammoAvailable and all the powerups
      */
     public AmmoAmountUncapped getTotalAmmo(){
-        AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable);
+        AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable.getAmounts());
         for(PowerUp pu : powerUps){
             am.add(pu.getAmmo());
         }
@@ -202,10 +202,10 @@ public class Actor {
      */
     private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
         for(PowerUp p : powerUpToPay){
-            amount = amount.subtract(p.getAmmo());
+            amount = new AmmoAmount(amount.subtract(p.getAmmo()));
             gm.discardPowerUp(p);
         }
-        ammoAvailable = ammoAvailable.subtract(amount);
+        ammoAvailable = new AmmoAmount(ammoAvailable.subtract(amount));
     }
 
     /**

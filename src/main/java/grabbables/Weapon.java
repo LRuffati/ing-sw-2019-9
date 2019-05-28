@@ -3,6 +3,7 @@ package grabbables;
 import actions.ActionTemplate;
 import actions.WeaponUse;
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoAmountUncapped;
 import board.GameMap;
 import uid.DamageableUID;
 import viewclasses.WeaponView;
@@ -65,8 +66,8 @@ public class Weapon extends Grabbable{
      * @param ammoAvailable The amount of ammo currently available
      * @return An empty Optional if the weapon can't be reloaded, otherwise the amount of ammo left
      */
-    public Optional<AmmoAmount> canReload(AmmoAmount ammoAvailable){
-        Optional<AmmoAmount> ret;
+    public Optional<AmmoAmountUncapped> canReload(AmmoAmountUncapped ammoAvailable){
+        Optional<AmmoAmountUncapped> ret;
         try {
             ret = Optional.of(ammoAvailable.subtract(reloadCost));
         }
@@ -81,8 +82,8 @@ public class Weapon extends Grabbable{
      * @param ammoAvailable The amount of ammo currently available
      * @return An empty Optional if the weapon can't be picked up, otherwise the amount of ammo left
      */
-    public Optional<AmmoAmount> canPickUp(AmmoAmount ammoAvailable){
-        Optional<AmmoAmount> ret;
+    public Optional<AmmoAmountUncapped> canPickUp(AmmoAmountUncapped ammoAvailable){
+        Optional<AmmoAmountUncapped> ret;
         try {
             ret = Optional.of(ammoAvailable.subtract(buyCost));
         }

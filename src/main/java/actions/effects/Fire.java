@@ -38,6 +38,11 @@ public class Fire implements EffectTemplate {
                     Weapon weapUsed = loadedWeapon.get(choice[0]);
                     List<Effect> effects = List.of(new Effect() {
                         @Override
+                        public EffectType type() {
+                            return null;
+                        }
+
+                        @Override
                         public Map<Weapon, Boolean> newWeapons(Map<Weapon, Boolean> oldWeapons) {
                             Map<Weapon, Boolean> updated = new HashMap<>(oldWeapons);
                             updated.put(weapUsed, Boolean.FALSE);

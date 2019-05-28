@@ -7,7 +7,7 @@ public class PayEffect implements Effect{
     private final AmmoAmountUncapped amount;
 
     public PayEffect(AmmoAmount amount) {
-        this.amount = new AmmoAmountUncapped(amount);
+        this.amount = new AmmoAmount(amount);
     }
 
     public PayEffect(AmmoAmountUncapped amount) {

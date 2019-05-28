@@ -10,10 +10,8 @@ import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -39,18 +37,35 @@ public class ReloadTemplate implements EffectTemplate{
 
             @Override
             public ControllerActionResultServer pick(int[] choice) {
-                AmmoAmountUncapped tot = new AmmoAmountUncapped(new AmmoAmount());
+                AmmoAmountUncapped tot = new AmmoAmount();
+                List<Effect> reloaded = new ArrayList<>();
+                Function<Weapon, Effect> fun = weapon -> new Effect() {
+                    @Override
+                    public EffectType type() {
+                        return EffectType.RELOAD;
+                    }
+
+                    @Override
+                    public Map<Weapon, Boolean> newWeapons(Map<Weapon, Boolean> oldWeapons) {
+                        Map<Weapon, Boolean> newW = new HashMap<>(oldWeapons);
+                        newW.put(weapon, Boolean.TRUE);
+                        return newW;
+                    }
+                };
+
                 for(int i: choice){
                     tot.add(scariche.get(i).x);
+                    reloaded.add(fun.apply(scariche.get(i).y));
                 }
-                if (new AmmoAmountUncapped(sandbox.updatedAmmoAvailable)<tot){
-                    return new ControllerActionResultServer(ActionResultType.REDO, "Not enough ammo");
+                if (new AmmoAmountUncapped(sandbox.updatedAmmoAvailable.getAmounts()).compareTo(tot)<0){
+                    return new ControllerActionResultServer(ActionResultType.REDO, "Not enough " +
+                            "ammo", sandbox);
                 } else {
-                    // TODO: make it update weapons
-                    return consumer.apply(new Sandbox(sandbox, List.of(new PayEffect(tot))));
+                    reloaded.add(new PayEffect(tot));
+                    return consumer.apply(new Sandbox(sandbox, reloaded));
                 }
             }
         };
-        return new ControllerActionResultServer(chooser);
+        return new ControllerActionResultServer(chooser, "Pick weapons to reload", sandbox);
     }
 }

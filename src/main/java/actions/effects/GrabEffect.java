@@ -10,4 +10,9 @@ public class GrabEffect implements Effect {
         this.cell = cell;
         this.type = EffectType.GRAB;
     }
+
+    @Override
+    public EffectType type() {
+        return EffectType.GRAB;
+    }
 }

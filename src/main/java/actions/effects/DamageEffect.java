@@ -11,4 +11,9 @@ public class DamageEffect implements Effect{
         this.uid = uid;
         this.amount = amount;
     }
+
+    @Override
+    public EffectType type() {
+        return EffectType.DAMAGE;
+    }
 }
