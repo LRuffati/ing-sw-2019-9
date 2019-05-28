@@ -49,16 +49,9 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         }
     }
 
-    public void run() throws RemoteException {
-        run(true, "");
-    }
 
-    public void run(boolean newConnection, String token) throws RemoteException {
+    public void run() {
         startReceiver();
-        if(newConnection)
-            register("username", "password", "red");
-        else
-            reconnect("username", "password");
         System.out.println("Ready to receive");
     }
 
@@ -101,14 +94,14 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         sync();
         String token = ClientContext.get().getToken();
         System.out.println("token\n" + token);
-        return token.equals("");
+        return !token.equals("");
     }
 
     @Override
     public boolean reconnect(String username, String password) throws RemoteException {
         client.request(new ReconnectRequest(username, password));
         sync();
-        return ClientContext.get().getToken().equals("");
+        return !ClientContext.get().getToken().equals("");
     }
 
     /**

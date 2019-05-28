@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  * The server can send a message to every Client connected.
  */
 public class Main {
-    public static void runServers() throws IOException {
+    private static void runServers() throws IOException {
         String host = "localhost";
         RMIServerLauncher.RMILauncher(host, ParserConfiguration.parseInt("RMIPort"));
         new SocketServerLauncher(ParserConfiguration.parseInt("SocketPort"));
@@ -42,19 +42,20 @@ public class Main {
         }
     }
 
-    public static void runSocket() throws IOException{
+    private static void runSocket() throws IOException{
         System.out.println("\nClient Socket\n");
         Client client = new Client("localhost", ParserConfiguration.parseInt("SocketPort"));
         client.init();
         ClientNetworkSocket controller = new ClientNetworkSocket(client);
         controller.run();
 
+        register(controller);
         run(controller);
 
         //client.close();
     }
 
-    public static void runRMI() throws RemoteException, InvalidLoginException, NotBoundException {
+    private static void runRMI() throws RemoteException, InvalidLoginException, NotBoundException {
         System.out.println("\nClient RMI\n");
         Registry registry = LocateRegistry.getRegistry();
 
@@ -67,8 +68,9 @@ public class Main {
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
         ClientNetworkRMI client = new ClientNetworkRMI(controller);
-        client.run();
+        //client.run();
 
+        register(client);
         run(client);
     }
 
@@ -79,9 +81,9 @@ public class Main {
         client.init();
         ClientNetworkSocket controller = new ClientNetworkSocket(client);
 
-        System.out.println("Insert Token");
-        controller.run(false, new Scanner(System.in).next());
+        controller.run();
 
+        reconnect(controller);
         run(controller);
 
         //client.close();
@@ -100,13 +102,55 @@ public class Main {
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
         ClientNetworkRMI client = new ClientNetworkRMI(controller);
-        System.out.println("Insert Token");
-        client.run(false, new Scanner(System.in).next());
+
+        /*System.out.println("Insert Token");
+        client.run(false, new Scanner(System.in).next());*/
+        reconnect(client);
 
         run(client);
     }
 
-    public static void run(ClientInterface clientInterface) throws RemoteException{
+    private static void register(ClientInterface clientInterface) throws RemoteException {
+        Scanner scanner = new Scanner(System.in);
+        boolean res = false;
+        do {
+            System.out.print("Insert username:\t");
+            String username = scanner.next();
+            System.out.print("Insert password:\t");
+            String password = scanner.next();
+            System.out.print("Insert colour:\t");
+            String colour = scanner.next();
+            try {
+                res = clientInterface.register(username, password, colour);
+            }
+            catch (InvalidLoginException e){
+                if(e.wrongUsername)
+                    System.out.println("This username already exists");
+                if(e.wrongColor)
+                    System.out.println("This color already exists");
+            }
+        } while(!res);
+    }
+
+    private static void reconnect(ClientInterface clientInterface) throws RemoteException {
+        Scanner scanner = new Scanner(System.in);
+        boolean res = false;
+        do {
+            System.out.print("Insert username:\t");
+            String username = scanner.next();
+            System.out.print("Insert password:\t");
+            String password = scanner.next();
+            try {
+                res = clientInterface.reconnect(username, password);
+            }
+            catch (InvalidLoginException e){
+                if(e.wrongUsername)
+                    System.out.println("This username already exists");
+            }
+        } while(!res);
+    }
+
+    private static void run(ClientInterface clientInterface) throws RemoteException{
         int num = 10;
         while(num>=0) {
             System.out.print("Next int:\t");

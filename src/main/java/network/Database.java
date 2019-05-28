@@ -65,13 +65,11 @@ public class Database {
         boolean wrongUsername = false;
         boolean wrongColor = false;
         //TODO: add controls
-        /*
+
         if (usersByToken.values().stream().map(Player::getUsername).anyMatch(u -> u.equals(username)))
             wrongUsername = true;
         if (!colors.contains(color))
             wrongColor = true;
-        */
-
         if(wrongColor || wrongUsername)
             throw new InvalidLoginException("Login exception", wrongUsername, wrongColor);
 

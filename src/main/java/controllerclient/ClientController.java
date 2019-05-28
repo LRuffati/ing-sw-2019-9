@@ -4,6 +4,7 @@ package controllerclient;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
+import network.exception.InvalidLoginException;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -35,12 +36,20 @@ public class ClientController implements ClientControllerClientInterface{
         gameMapViewMap = new HashMap<>();
     }
 
-    public void login(String username, String password, String color) {
 
+    @Override
+    public boolean login(String username, String password, String color) throws RemoteException, InvalidLoginException {
+        return network.register(username, password, color);
     }
 
-    public void login(String username, String password) {
+    @Override
+    public boolean login(String username, String password) throws RemoteException, InvalidLoginException {
+        return network.reconnect(username, password);
+    }
 
+    @Override
+    public void quit() throws RemoteException {
+        network.close();
     }
 
 
@@ -97,11 +106,6 @@ public class ClientController implements ClientControllerClientInterface{
     }
 
 
-    /**
-     * This method is called by the View to notify the Server that a new choice has been made.
-     * @param elem Contains the type of the action to be performed and an identifier of the action.
-     * @param choices A list containing all the index of elements that have been chosen. PickTarget and PickAction only analyze the first element of the List.
-     */
     @Override
     public void pick(ControllerActionResultClient elem, List<Integer> choices) throws RemoteException {
         switch (elem.type) {
@@ -120,9 +124,6 @@ public class ClientController implements ClientControllerClientInterface{
         }
     }
 
-    /**
-     * This method is used by the client to restart the action.
-     */
     @Override
     public void restartSelection() throws RemoteException {
         ControllerActionResultClient first = stack.getFirst();
@@ -131,9 +132,6 @@ public class ClientController implements ClientControllerClientInterface{
         newSelection(first);
     }
 
-    /**
-     * This method is used by the client to repeat the last selection
-     */
     @Override
     public void rollback() throws RemoteException {
         stack.pop();
