@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface Effect {
+
+    EffectType type();
+
     default Map<Weapon, Boolean> newWeapons(Map<Weapon, Boolean> oldWeapons){
         return new HashMap<>(oldWeapons);
     }

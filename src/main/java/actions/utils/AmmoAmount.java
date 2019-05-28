@@ -56,7 +56,7 @@ public class AmmoAmount implements Comparable<AmmoAmount> {
      * @param c the cost
      * @return the original ammoAmount decreased by c
      */
-    public AmmoAmount subtract(AmmoAmount c){
+    public AmmoAmountUncapped subtract(AmmoAmount c){
         if (this.compareTo(c)>0) {
             Map<AmmoColor,Integer> newMap = new EnumMap<>(amounts);
             for (Map.Entry<AmmoColor, Integer> i: c.amounts.entrySet()){

@@ -46,6 +46,7 @@ public class ReloadTemplate implements EffectTemplate{
                 if (new AmmoAmountUncapped(sandbox.updatedAmmoAvailable)<tot){
                     return new ControllerActionResult(ActionResultType.REDO, "Not enough ammo");
                 } else {
+                    // TODO: make it update weapons
                     return consumer.apply(new Sandbox(sandbox, List.of(new PayEffect(tot))));
                 }
             }

@@ -13,6 +13,6 @@ public class GrabTemplate {
     ControllerActionResult spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox,
             ControllerActionResult> consumer){
         TileUID cell = targets.get("self").getSelectedTiles(sandbox).iterator().next();
-        return consumer(new Sandbox(sandbox, List.of(new GrabEffect(cell))));
+        return consumer.apply(new Sandbox(sandbox, List.of(new GrabEffect(cell))));
     }
 }
