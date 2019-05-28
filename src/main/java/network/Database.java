@@ -60,11 +60,9 @@ public class Database {
      * @return The token associated with the user
      * @throws InvalidLoginException If username and/or color are already used, this Exception is thrown
      */
-    //TODO: return user?
     public synchronized String login(ServerInterface network, String username, String password, String color) throws InvalidLoginException {
         boolean wrongUsername = false;
         boolean wrongColor = false;
-        //TODO: add controls
 
         if (usersByToken.values().stream().map(Player::getUsername).anyMatch(u -> u.equals(username)))
             wrongUsername = true;
@@ -129,8 +127,8 @@ public class Database {
         usersByToken.remove(token);
         networkByToken.remove(token);
         //TODO: check validity of connectedToken and disconnectedToken
-        if(connectedToken.contains(token)) connectedToken.remove(token);
-        if(disconnectedToken.contains(token)) disconnectedToken.remove(token);
+        connectedToken.remove(token);
+        disconnectedToken.remove(token);
     }
 
     /**

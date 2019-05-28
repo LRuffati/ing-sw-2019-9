@@ -71,7 +71,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         if(!checkConnection(request.token))
             return new ExceptionResponse(new InvalidTokenException());
         //TODO: notify controller
-        Database.get().logout(this);
+        Database.get().quit(request.token);
 
 
         clientHandler.stop();

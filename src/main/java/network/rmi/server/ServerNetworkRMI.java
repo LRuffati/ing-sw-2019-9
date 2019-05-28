@@ -68,7 +68,7 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
     @Override
     public int close(String token) {
-        Database.get().logout(token);
+        Database.get().quit(token);
         System.out.println("Richiesta di uscita");
         return 0;
     }
