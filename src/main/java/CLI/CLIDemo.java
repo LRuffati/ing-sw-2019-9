@@ -1,18 +1,25 @@
 package CLI;
 
 import board.GameMap;
+import controllerclient.ClientController;
 import grabbables.Weapon;
+import network.exception.InvalidLoginException;
+import network.socket.client.Client;
 import player.Actor;
 import viewclasses.*;
 
 import java.io.FileNotFoundException;
+import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class CLIDemo {
     private static CLIMap toPrintMap;
+    private Scanner in = new Scanner(System.in);
+
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
@@ -36,7 +43,7 @@ public class CLIDemo {
      * Method to introduce a new player to the game and show the initial options.
      * It initially clear the whole command line, then it shows the title of the game.
      */
-    public void greetings(){
+    public void greetings(ClientController player){
         System.out.print("\033[H\033[2J");
         System.out.flush();
         System.out.print("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
@@ -48,10 +55,37 @@ public class CLIDemo {
                 "| $$  | $$| $$$$$$$/| $$  | $$| $$$$$$$$| $$ \\  $$| $$  | $$| $$$$$$$$ /$$$$$$| $$ \\  $$| $$$$$$$$\n" +
                 "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
 
-        
+        System.out.println("Type '1' to join a game.");
+        boolean joining = false;
+        if(in.nextLine().equals("1")) joining = joinGame(player);
+        if(joining) System.out.println("Welcome to ADRENALINE!\nPlease, wait for other players to join.");
 
-        //TODO write option to join a game, create a game whenever I got methods from network.
-        //System.console().readLine();
+    }
+
+    public boolean joinGame(ClientController player){
+        String username = "";
+        String password = "";
+        String color = "";
+        while(username.isEmpty()){
+            System.out.println(">>> Enter your username!");
+            username = in.nextLine();
+        }
+        while(password.isEmpty()){
+            System.out.println(">>> Enter your password!");
+            password = in.nextLine();
+        }
+        while(color.isEmpty()){
+            System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue");
+            color = in.nextLine();
+            //TODO gestisci colori
+        }
+
+        try {
+            return player.login(username,password,color);
+        } catch (RemoteException | InvalidLoginException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     /**

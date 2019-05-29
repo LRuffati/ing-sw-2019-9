@@ -150,7 +150,6 @@ public class ParserWeapon {
                     if(actionId.charAt(actionId.length()-1)==':') {
                         actionId = actionId.substring(0, actionId.length() - 1);
                     }
-                    System.out.print("\n" + actionId + "\n");
                     if (mNotNull && (sLine.next().equals("follows")||maybeCost.equals("follows"))){
                         listaFollow = sLine.next();
                         String substring = listaFollow

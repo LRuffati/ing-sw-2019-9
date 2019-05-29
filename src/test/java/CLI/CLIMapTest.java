@@ -56,7 +56,7 @@ class CLIMapTest {
     @Test
     void greetingsTest(){
         CLIDemo demo = new CLIDemo(gmv);
-        demo.greetings();
+        //demo.greetings();
     }
 
     @Test
