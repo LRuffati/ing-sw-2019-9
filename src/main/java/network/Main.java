@@ -81,7 +81,7 @@ public class Main {
         client.init();
         ClientNetworkSocket controller = new ClientNetworkSocket(client, null);
 
-        controller.run();
+        //controller.run();
 
         reconnect(controller);
         run(controller);

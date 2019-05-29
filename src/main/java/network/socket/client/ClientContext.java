@@ -17,8 +17,6 @@ import java.util.List;
  */
 public class ClientContext {
     private static ClientContext instance;
-    public static final Object NULLVALUE = null;
-    public static final int NULLINT = -100;
 
     private ClientContext() {}
 
@@ -57,14 +55,21 @@ public class ClientContext {
     }
 
 
-    private boolean reconnected;
-    public void setReconnected(boolean reconnected) {
-        this.reconnected = reconnected;
+    private boolean connectedResult;
+    public void setConnectionResult(boolean connectedResult) {
+        this.connectedResult = connectedResult;
     }
-    public boolean getReconnected() {
-        return reconnected;
+    public boolean getConnectionResult() {
+        return connectedResult;
     }
 
+    private Tuple<Boolean, Boolean> loginException;
+    public void setLoginException(boolean wrongUsername, boolean wrongColor) {
+        this.loginException = new Tuple<>(wrongUsername, wrongColor);
+    }
+    public Tuple<Boolean, Boolean> getLoginException() {
+        return loginException;
+    }
 
     private ControllerActionResultClient pickElem;
     public void setPickElement(ControllerActionResultClient result) {

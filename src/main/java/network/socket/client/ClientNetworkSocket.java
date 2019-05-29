@@ -4,6 +4,7 @@ import controllerclient.ClientControllerNetworkInterface;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
+import network.exception.InvalidLoginException;
 import network.socket.messages.*;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
@@ -11,7 +12,6 @@ import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -24,17 +24,10 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     private ClientControllerNetworkInterface clientController;
 
-    private final Object NULLVALUE;
-    private final int NULLINT;
 
     public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController){
         this.client = client;
-
         this.clientController = clientController;
-
-        this.NULLVALUE = ClientContext.NULLVALUE;
-        this.NULLINT = ClientContext.NULLINT;
-
         run();
     }
 
@@ -96,19 +89,33 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public boolean register(String username, String password, String color){
+    public boolean register(String username, String password, String color) throws InvalidLoginException {
         client.request(new RegisterRequest(username, password, color));
         sync();
-        String token = ClientContext.get().getToken();
-        System.out.println("token\n" + token);
-        return !token.equals("");
+        ClientContext c = ClientContext.get();
+        if(c.getConnectionResult()) {
+            String token = ClientContext.get().getToken();
+            System.out.println("token\n" + token);
+            return true;
+        }
+        else {
+            throw new InvalidLoginException("Invalid connection", c.getLoginException().x, c.getLoginException().y);
+        }
     }
 
     @Override
-    public boolean reconnect(String username, String password) throws RemoteException {
+    public boolean reconnect(String username, String password) throws InvalidLoginException {
         client.request(new ReconnectRequest(username, password));
         sync();
-        return !ClientContext.get().getToken().equals("");
+        ClientContext c = ClientContext.get();
+        if(c.getConnectionResult()) {
+            String token = ClientContext.get().getToken();
+            System.out.println("Reconnected with: token\n" + token);
+            return true;
+        }
+        else {
+            throw new InvalidLoginException("Invalid reconnection", c.getLoginException().x, c.getLoginException().y);
+        }
     }
 
     /**
@@ -178,13 +185,16 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(RegisterResponse response) {
+        ClientContext.get().setConnectionResult(response.result);
+        if(!response.result) ClientContext.get().setLoginException(response.wrongUsername, response.wrongColor);
         ClientContext.get().setToken(response.token);
         desync();
     }
 
     @Override
     public void handle(ReconnectResponse response) {
-        ClientContext.get().setReconnected(response.result);
+        ClientContext.get().setConnectionResult(response.result);
+        if(!response.result) ClientContext.get().setLoginException(response.wrongUsername, response.wrongColor);
         ClientContext.get().setToken(response.token);
         desync();
     }

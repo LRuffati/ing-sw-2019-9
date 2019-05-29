@@ -69,7 +69,7 @@ public class Database {
         if (!colors.contains(color))
             wrongColor = true;
         if(wrongColor || wrongUsername)
-            throw new InvalidLoginException("Login exception", wrongUsername, wrongColor);
+            throw new InvalidLoginException("Connection exception", wrongUsername, wrongColor);
 
         boolean isFirst = false;
         String token = new UID().toString();
@@ -98,7 +98,7 @@ public class Database {
      * @param password A user-set password used to check the identity of the Client
      * @return The token used by the Client before the disconnection. An empty string is returned in case of errors.
      */
-    public synchronized String login(ServerInterface network, String username, String password){
+    public synchronized String login(ServerInterface network, String username, String password) throws InvalidLoginException{
         boolean present = false;
         String token = "-1";
         for(String t : disconnectedToken) {
@@ -109,7 +109,7 @@ public class Database {
             }
         }
         if(!present)
-            return "";
+            throw new InvalidLoginException("Reconnection exception", true, false);
 
         networkByToken.put(token, network);
         disconnectedToken.remove(token);
@@ -123,10 +123,11 @@ public class Database {
      * @param token The token of the caller.
      */
     public synchronized void quit(String token) {
+        System.out.println("quit request");
         colors.add(getUserByToken(token).getColor());
         usersByToken.remove(token);
         networkByToken.remove(token);
-        //TODO: check validity of connectedToken and disconnectedToken
+
         connectedToken.remove(token);
         disconnectedToken.remove(token);
     }

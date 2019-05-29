@@ -59,18 +59,23 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         String token;
         try {
             token = Database.get().login(this, request.username, request.password, request.color);
+            return new RegisterResponse(token);
         } catch (InvalidLoginException e) {
-            return new ExceptionResponse(e);
+            return new RegisterResponse(e.wrongUsername, e.wrongColor);
         }
-        return new RegisterResponse(token);
     }
 
     @Override
     public Response handle(ReconnectRequest request) {
         if(request.username == null || request.password == null)
-            return new ReconnectResponse(false, "");
-        String tokenFromDb = Database.get().login(this, request.username, request.password);
-        return new ReconnectResponse(!tokenFromDb.equals(""), tokenFromDb);
+            return new ReconnectResponse(true);
+        try {
+            String tokenFromDb = Database.get().login(this, request.username, request.password);
+            return new ReconnectResponse(tokenFromDb);
+        }
+        catch (InvalidLoginException e) {
+            return new RegisterResponse(e.wrongUsername, false);
+        }
     }
 
     @Override
