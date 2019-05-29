@@ -1,6 +1,7 @@
 package controllerclient;
 
 
+import CLI.CLIDemo;
 import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
@@ -44,7 +45,7 @@ public class ClientController implements ClientControllerClientInterface, Client
      */
     public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
         //view = cli ? new CLIDemo() : new GUI();
-        //view = cli ? new CLIDemo() : null;
+        //view = cli ? new CLIDemo(this) : null;
 
         if(socket) {
             Client client = new Client(networkAddress, ParserConfiguration.parseInt("SocketPort"));
