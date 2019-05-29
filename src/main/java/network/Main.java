@@ -47,7 +47,7 @@ public class Main {
         Client client = new Client("localhost", ParserConfiguration.parseInt("SocketPort"));
         client.init();
         ClientNetworkSocket controller = new ClientNetworkSocket(client, null);
-        controller.run();
+        //controller.run();
 
         register(controller);
         run(controller);
@@ -110,7 +110,7 @@ public class Main {
         run(client);
     }
 
-    private static void register(ClientInterface clientInterface) throws RemoteException {
+    public static void register(ClientInterface clientInterface) throws RemoteException {
         Scanner scanner = new Scanner(System.in);
         boolean res = false;
         do {
@@ -150,7 +150,7 @@ public class Main {
         } while(!res);
     }
 
-    private static void run(ClientInterface clientInterface) throws RemoteException{
+    public static void run(ClientInterface clientInterface) throws RemoteException{
         int num = 10;
         while(num>=0) {
             System.out.print("Next int:\t");

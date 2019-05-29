@@ -1,6 +1,5 @@
 package network.socket.client;
 
-import controllerclient.ClientControllerNetworkInterface;
 import network.exception.NextResponseException;
 import network.socket.messages.Request;
 import network.socket.messages.Response;

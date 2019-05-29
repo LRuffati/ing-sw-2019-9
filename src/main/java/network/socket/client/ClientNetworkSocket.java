@@ -34,6 +34,8 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
         this.NULLVALUE = ClientContext.NULLVALUE;
         this.NULLINT = ClientContext.NULLINT;
+
+        run();
     }
 
     private void sync(){

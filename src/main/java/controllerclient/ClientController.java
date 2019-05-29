@@ -2,14 +2,24 @@ package controllerclient;
 
 
 import controllerresults.ControllerActionResultClient;
+import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
 import network.ClientInterface;
+import network.Main;
 import network.exception.InvalidLoginException;
+import network.rmi.client.ClientNetworkRMI;
+import network.rmi.server.ServerRMIInterface;
+import network.socket.client.Client;
+import network.socket.client.ClientNetworkSocket;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.*;
 
 /**
@@ -27,16 +37,40 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     /**
-     * Builder of the Class
-     * @param view The view that must be associated with this ClientController. All the messages will be sent to this view.
-     * @param network The network that must be associated with this ClientController.
+     * Builder of the class. This generates the View (CLI or GUI) and the Network (Socket or RMI), depending by the choices of the user.
+     * @param socket true if a socket connection is required. False if a RMI connection is required
+     * @param cli true if Cli is required. False is Gui is required
+     * @param networkAddress Contains the address used by the Network to connect with the Server
      */
-    public ClientController(View view, ClientInterface network) {
-        this.view = view;
-        this.network = network;
+    public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
+        //view = cli ? new CLIDemo() : new GUI();
+        //view = cli ? new CLIDemo() : null;
+
+        if(socket) {
+            Client client = new Client(networkAddress, ParserConfiguration.parseInt("SocketPort"));
+            client.init();
+            network = new ClientNetworkSocket(client, this);
+        }
+        else {
+            Registry registry = LocateRegistry.getRegistry();
+            String lookup = String.format("//%s:%d/controller", networkAddress, ParserConfiguration.parseInt("RMIPort"));
+            ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
+            network = new ClientNetworkRMI(controller);
+        }
 
         stack = new ArrayDeque<>();
         gameMapViewMap = new HashMap<>();
+
+        Main.register(network);
+        Main.run(network);
+    }
+
+    /**
+     * Method used by the View to notify its presence. Once the view is connected all the messages are sent to her.
+     * @param view The view that want to receive the messages.
+     */
+    public void attachView(View view) {
+        this.view = view;
     }
 
 
