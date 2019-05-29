@@ -1,6 +1,6 @@
 package network.socket.client;
 
-import controllerclient.ClientController;
+import controllerclient.ClientControllerNetworkInterface;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
@@ -22,11 +22,16 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private final Client client;
     private Thread receiver;
 
+    private ClientControllerNetworkInterface clientController;
+
     private final Object NULLVALUE;
     private final int NULLINT;
 
-    public ClientNetworkSocket(Client client){
+    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController){
         this.client = client;
+
+        this.clientController = clientController;
+
         this.NULLVALUE = ClientContext.NULLVALUE;
         this.NULLINT = ClientContext.NULLINT;
     }
@@ -226,5 +231,13 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     public void handle(GetMapResponse response) {
         ClientContext.get().setGameMapView(response.gameMapView);
         desync();
+    }
+
+
+
+    //ClientControllerNetworkInterface methods
+    @Override
+    public void handle(NotifyMap response) {
+        clientController.updateMap(response.gameMap);
     }
 }

@@ -1,5 +1,7 @@
 package network;
 
+import viewclasses.GameMapView;
+
 import java.rmi.RemoteException;
 
 /**
@@ -13,6 +15,7 @@ public interface ServerInterface {
 
     void ping() throws RemoteException;
 
+    void nofifyMap(GameMapView gameMap) throws RemoteException;
 
 
     /**

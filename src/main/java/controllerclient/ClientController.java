@@ -16,12 +16,15 @@ import java.util.*;
  * This class is used to store the data needed to the client and to send him notification.
  * This is the only access used by the View to receive messages and to query the Server.
  */
-public class ClientController implements ClientControllerClientInterface{
+public class ClientController implements ClientControllerClientInterface, ClientControllerNetworkInterface {
     private View view;
     private ClientInterface network;
 
+    private GameMapView gameMap;
+
     private Deque<ControllerActionResultClient> stack;
     private Map<String, GameMapView> gameMapViewMap;
+
 
     /**
      * Builder of the Class
@@ -138,4 +141,17 @@ public class ClientController implements ClientControllerClientInterface{
         newSelection(stack.pop());
     }
 
+    @Override
+    public GameMapView getMap() {
+        return gameMap;
+    }
+
+
+    //ClientControllerNetworkInterface methods
+
+    @Override
+    public void updateMap(GameMapView gameMap) {
+        this.gameMap = gameMap;
+        view.updateMap(gameMap);
+    }
 }

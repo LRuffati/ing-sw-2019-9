@@ -1,5 +1,6 @@
 package network.socket.client;
 
+import controllerclient.ClientControllerNetworkInterface;
 import network.exception.NextResponseException;
 import network.socket.messages.Request;
 import network.socket.messages.Response;
@@ -22,7 +23,6 @@ public class Client {
     private Socket socket;
     private ObjectInputStream in;
     private ObjectOutputStream out;
-
 
     public Client(String host, int port) {
         this.host = host;

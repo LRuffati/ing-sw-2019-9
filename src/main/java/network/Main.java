@@ -46,7 +46,7 @@ public class Main {
         System.out.println("\nClient Socket\n");
         Client client = new Client("localhost", ParserConfiguration.parseInt("SocketPort"));
         client.init();
-        ClientNetworkSocket controller = new ClientNetworkSocket(client);
+        ClientNetworkSocket controller = new ClientNetworkSocket(client, null);
         controller.run();
 
         register(controller);
@@ -79,7 +79,7 @@ public class Main {
         System.out.println("\nClient Socket Reconnect\n");
         Client client = new Client("localhost", ParserConfiguration.parseInt("SocketPort"));
         client.init();
-        ClientNetworkSocket controller = new ClientNetworkSocket(client);
+        ClientNetworkSocket controller = new ClientNetworkSocket(client, null);
 
         controller.run();
 

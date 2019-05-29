@@ -7,6 +7,9 @@ import network.ServerInterface;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
+import viewclasses.GameMapView;
+
+import java.rmi.RemoteException;
 
 
 /**
@@ -43,6 +46,11 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public void ping() {}
+
+    @Override
+    public void nofifyMap(GameMapView gameMap) {
+        clientHandler.respond(new NotifyMap(gameMap));
+    }
 
     //RequestHandler methods
 

@@ -1,7 +1,6 @@
 package network.socket;
 
 import network.socket.client.Client;
-import network.socket.client.ClientContext;
 import network.socket.client.ClientNetworkSocket;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class SocketClientLauncher {
 
         Client client = new Client(host, port);
         client.init();
-        ClientNetworkSocket controller = new ClientNetworkSocket(client);
+        ClientNetworkSocket controller = new ClientNetworkSocket(client, null);
         controller.run();
 
         int num = 10;

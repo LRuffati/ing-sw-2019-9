@@ -1,5 +1,6 @@
 package network.rmi.client;
 
+import controllerclient.ClientControllerNetworkInterface;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
@@ -20,6 +21,7 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
     private transient ServerRMIInterface controller;
     private transient String token;
+    private transient ClientControllerNetworkInterface clientController;
 
     public ClientNetworkRMI(ServerRMIInterface controller) throws RemoteException {
         this.controller = controller;
@@ -44,6 +46,10 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         System.out.println(exception.getMessage());
     }
 
+    @Override
+    public void nofifyMap(GameMapView gameMap) {
+        clientController.updateMap(gameMap);
+    }
 
     //ClientInterface methods
 

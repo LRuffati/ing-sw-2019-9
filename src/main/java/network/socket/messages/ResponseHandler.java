@@ -18,4 +18,8 @@ public interface ResponseHandler {
     void handle(ShowOptionsResponse response);
 
     void handle(GetMapResponse response);
+
+
+
+    void handle(NotifyMap response);
 }
