@@ -13,7 +13,7 @@ public class PayTemplate implements EffectTemplate{
 
     private final AmmoAmount amount;
 
-    PayTemplate(AmmoAmount amount){
+    public PayTemplate(AmmoAmount amount){
 
         this.amount = amount;
     }

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class GrabTemplate {
-    ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox,
+public class GrabTemplate implements EffectTemplate{
+    public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox,
             ControllerActionResultServer> consumer){
         TileUID cell = targets.get("self").getSelectedTiles(sandbox).iterator().next();
         return consumer.apply(new Sandbox(sandbox, List.of(new GrabEffect(cell))));

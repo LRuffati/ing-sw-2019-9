@@ -4,10 +4,7 @@ import actions.Action;
 import actions.ActionInfo;
 import actions.ActionTemplate;
 import actions.conditions.*;
-import actions.effects.DamageEffect;
-import actions.effects.DamageTemplate;
-import actions.effects.EffectTemplate;
-import actions.effects.Fire;
+import actions.effects.*;
 import actions.selectors.*;
 import actions.targeters.TargeterTemplate;
 import actions.utils.AmmoAmount;
@@ -320,6 +317,9 @@ public class ParserWeapon {
                         sLine.next();
                         String effect = sLine.next();
                         EffectTemplate toEffect = null;
+                        int amount;
+                        String targId;
+                        String targIdbis;
 
                         switch (effect.toLowerCase()) {
                             case "fire":
@@ -327,10 +327,65 @@ public class ParserWeapon {
                                 break;
 
                             case "damage":
-                                int amount = Integer.parseInt(sLine.next());
-                                String targId = sLine.next();
+                                amount = Integer.parseInt(sLine.next());
+                                targId = sLine.next();
                                 toEffect = new DamageTemplate(targId, amount);
                                 break;
+
+                            case "reload":
+                                toEffect = new ReloadTemplate();
+                                break;
+
+                            case "grab":
+                                toEffect = new GrabTemplate();
+                                break;
+
+                            case "mark":
+                                amount = Integer.parseInt(sLine.next());
+                                targId = sLine.next();
+                                toEffect = new MarkTemplate(targId, amount);
+                                break;
+
+                            case "move":
+                                targId = sLine.next();
+                                sLine.next();
+                                targIdbis = sLine.next();
+                                toEffect = new MoveTemplate(targId, targIdbis);
+                                break;
+
+                            case "pay":
+                                int red = 0;
+                                int yellow = 0;
+                                int blue = 0;
+                                int toAdd = 0;
+                                Map<AmmoColor, Integer> givenA = new HashMap<>();
+
+                                while(sLine.hasNext()) {
+                                    toAdd = Integer.parseInt(sLine.next());
+                                    switch (sLine.next()) {
+                                        case "R,":
+                                            red += toAdd;
+                                            break;
+
+                                        case "Y,":
+                                            yellow += toAdd;
+                                            break;
+
+                                        case "B,":
+                                            blue += toAdd;
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                                givenA.put(AmmoColor.RED, red);
+                                givenA.put(AmmoColor.BLUE, blue);
+                                givenA.put(AmmoColor.YELLOW, yellow);
+                                AmmoAmount toPay = new AmmoAmount(givenA);
+                                toEffect = new PayTemplate(toPay);
+                                break;
+
 
                             default:
                                 break;
