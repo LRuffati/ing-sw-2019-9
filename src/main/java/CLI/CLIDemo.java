@@ -3,6 +3,8 @@ package CLI;
 import board.GameMap;
 import controllerclient.ClientController;
 import controllerclient.ClientControllerClientInterface;
+import controllerclient.View;
+import controllerresults.ControllerActionResultClient;
 import grabbables.Weapon;
 import network.exception.InvalidLoginException;
 import network.socket.client.Client;
@@ -17,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class CLIDemo {
+public class CLIDemo implements View {
     private static CLIMap toPrintMap;
     private Scanner in = new Scanner(System.in);
 
@@ -28,8 +30,8 @@ public class CLIDemo {
         toPrintMap = new CLIMap(gmv);
     }
 
-    public CLIDemo(GameMapView gmv){
-        start(gmv);
+    public CLIDemo(){
+
     }
 
 
@@ -143,4 +145,33 @@ public class CLIDemo {
 
     }
 
+    @Override
+    public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
+
+    }
+
+    @Override
+    public void chooseAction(ControllerActionResultClient elem, List<ActionView> action) {
+
+    }
+
+    @Override
+    public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) {
+
+    }
+
+    @Override
+    public void rollback() {
+
+    }
+
+    @Override
+    public void terminated() {
+
+    }
+
+    @Override
+    public void updateMap(GameMapView gameMapView) {
+
+    }
 }

@@ -75,20 +75,24 @@ public class ParserWeapon {
                     amountGiven.put(AmmoColor.RED,R);
                     amountGiven.put(AmmoColor.YELLOW,Y);
                     buyWeapon = new AmmoAmount(amountGiven);
-                    switch(ammoColour.charAt(0)){
+
+                    switch (ammoColour.charAt(0)) {
                         case 'B':
-                            amountGiven.replace(AmmoColor.BLUE, B-1);
+                            amountGiven.replace(AmmoColor.BLUE, B - 1);
                             break;
                         case 'R':
-                            amountGiven.replace(AmmoColor.RED, R-1);
+                            amountGiven.replace(AmmoColor.RED, R - 1);
                             break;
                         case 'Y':
-                            amountGiven.replace(AmmoColor.YELLOW, Y-1);
+                            amountGiven.replace(AmmoColor.YELLOW, Y - 1);
                             break;
                         default:
                             break;
                     }
+
                     reloadWeapon = new AmmoAmount(amountGiven);
+                    System.out.println("\n" + "Costo arma: " + buyWeapon.toString() + "\n" + "Ricarica arma: " +
+                            reloadWeapon.toString() + "\n");
                     break;
 
                 case "nomeWeapon:":
