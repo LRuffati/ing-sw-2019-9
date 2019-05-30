@@ -2,6 +2,7 @@ package CLI;
 
 import board.GameMap;
 import controllerclient.ClientController;
+import controllerclient.ClientControllerClientInterface;
 import grabbables.Weapon;
 import network.exception.InvalidLoginException;
 import network.socket.client.Client;
@@ -141,7 +142,5 @@ public class CLIDemo {
         toPrintMap.applyTarget(targetViewList);
 
     }
-
-
 
 }

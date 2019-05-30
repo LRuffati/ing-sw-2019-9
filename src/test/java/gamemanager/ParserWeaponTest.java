@@ -61,5 +61,7 @@ public class ParserWeaponTest {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+
+        System.out.println(weaponCollection.size());
     }
 }
