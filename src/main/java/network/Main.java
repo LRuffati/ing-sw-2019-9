@@ -10,6 +10,7 @@ import network.socket.client.ClientNetworkSocket;
 import network.exception.InvalidLoginException;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -25,7 +26,7 @@ import java.util.stream.Collectors;
  */
 public class Main {
     private static void runServers() throws IOException {
-        String host = "localhost";
+        String host = ParserConfiguration.parse("RMIBinding");
         RMIServerLauncher.RMILauncher(host, ParserConfiguration.parseInt("RMIPort"));
         new SocketServerLauncher(ParserConfiguration.parseInt("SocketPort"));
 
@@ -63,7 +64,7 @@ public class Main {
             System.out.println("Registry bindings: " + name);
         }
         System.out.println("\n");
-        String host = "localhost";
+        String host = ParserConfiguration.parse("RMIBinding");
         String lookup = String.format("//%s:%d/controller", host, ParserConfiguration.parseInt("RMIPort"));
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
@@ -97,7 +98,7 @@ public class Main {
             System.out.println("Registry bindings: " + name);
         }
         System.out.println("\n");
-        String host = "localhost";
+        String host = ParserConfiguration.parse("RMIBinding");
         String lookup = String.format("//%s:%d/controller", host, ParserConfiguration.parseInt("RMIPort"));
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 

@@ -47,6 +47,9 @@ src/resources/map1.txt
 
 
 #Constants for Server
+-RMIBinding
+ADRENALINE_GROUP_9
+
 -RMIPort
 1099
 
