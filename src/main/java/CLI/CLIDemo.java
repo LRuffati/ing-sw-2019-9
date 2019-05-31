@@ -36,7 +36,6 @@ public class CLIDemo implements View {
 
     }
 
-
     /**
      * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
      */
@@ -51,7 +50,7 @@ public class CLIDemo implements View {
     public void greetings(){
         System.out.print("\033[H\033[2J");
         System.out.flush();
-        System.out.print("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
+        System.out.println("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
                 " /$$__  $$| $$__  $$| $$__  $$| $$_____/| $$$ | $$ /$$__  $$| $$      |_  $$_/| $$$ | $$| $$_____/\n" +
                 "| $$  \\ $$| $$  \\ $$| $$  \\ $$| $$      | $$$$| $$| $$  \\ $$| $$        | $$  | $$$$| $$| $$      \n" +
                 "| $$$$$$$$| $$  | $$| $$$$$$$/| $$$$$   | $$ $$ $$| $$$$$$$$| $$        | $$  | $$ $$ $$| $$$$$   \n" +
@@ -162,6 +161,7 @@ public class CLIDemo implements View {
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
                         System.out.println(a.getAnsi() + i + ". " + a.name());
+                        i+=1;
                         break;
                     }
                 }
@@ -169,6 +169,7 @@ public class CLIDemo implements View {
                 for(TileView t : gameMap.allTiles()){
                     if(t.uid().equals(tile.iterator().next())){
                         System.out.println(t.getAnsi() + i + ". " + gameMap.getCoord(t).toString());
+                        i+=1;
                         break;
                     }
                 }
@@ -201,8 +202,8 @@ public class CLIDemo implements View {
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 0;
         while(actionIterator.hasNext()){
-
             System.out.println(i + ". " + actionIterator.next().getName());
+            i+=1;
         }
 
         boolean flag = false;
@@ -227,27 +228,72 @@ public class CLIDemo implements View {
 
     @Override
     public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) {
-        System.out.println("Choose your weapons:\n");
+        System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<WeaponView> weaponIterator = weapon.iterator();
-        int i = 0;
+        int i = 1;
+        List<Integer> l = new ArrayList<>();
         while(weaponIterator.hasNext()){
             WeaponView wv = weaponIterator.next();
             System.out.println(i + ". " + wv.name());
+            i+=1;
+        }
+        while(true){
+            boolean flag = false;
+
+            while(!flag) {
+                try {
+                    i = in.nextInt();
+                    flag = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Please, pick a weapon typing ONLY his index on the line.");
+                }
+            }
+            if(i!=0) l.add(i-1); else break;
+        }
+
+        try {
+            client.pick(elem,l);
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void rollback() {
-
+        System.out.println("Rollback executed.");
     }
 
     @Override
     public void terminated() {
-
+        System.out.println("Action finally executed.");
     }
 
     @Override
     public void updateMap(GameMapView gameMapView) {
+        CLIMap cm = new CLIMap(gameMapView);
+        cm.printMap();
+    }
 
+    public void tileInfo(TileView t){
+        System.out.print("\n>> The tile belongs to the ");
+        System.out.print(t.getAnsi() + t.color().toString() + " room\n");
+        if(t.spawnPoint()){
+            System.out.println(">> There is a spawn point for weapons in the tile.\n");
+            System.out.println(">> You can pick up: ");
+            for(WeaponView w : t.weapons()){
+                System.out.println(" +" + w.name());
+            }
+        } else {
+            System.out.println(">> There is a spawn point for ammunition in the tile.\n");
+        }
+
+        if(t.players().isEmpty()){
+            System.out.println(">> There are no players in the tile.");
+        } else {
+            System.out.println(">> The following players are in the tile: ");
+            for(ActorView a: t.players()){
+                System.out.println(" +" + a.getAnsi() + a.name());
+            }
+        }
     }
 }
