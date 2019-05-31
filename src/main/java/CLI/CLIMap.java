@@ -36,7 +36,6 @@ public class CLIMap {
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         playerPos = new HashMap<>();
-        //TODO Is there a cleaner way to put the ASCII characters for the players? I hope so.
         String dictionary = "abcdefghi";
         int i = 0;
 
@@ -184,13 +183,13 @@ public class CLIMap {
     /**
      * Put the current players in the map with the correct ASCII characters.
      * @param player is the player to be put on the map.
-     * @param tile is the tile where the player is to be moved.
+     * @param cord is the tile where the player is to be moved.
      */
     //TODO To be carefully tested, probably won't work as expected due to the searcCharacter method.
-    public void movePlayer(ActorView player, TileView tile){
+    public void movePlayer(ActorView player, Coord cord){
         if(searchCharacter(players.get(player)).getX()!=null && searchCharacter(players.get(player)).getY()!=null)
             tiles[searchCharacter(players.get(player)).getX()][searchCharacter(players.get(player)).getY()]= ' ';
-        tiles[mp.getCoord(tile).getY()*dimTile + playerPos.get(players.get(player)).getY()][mp.getCoord(tile).getX()*
+        tiles[cord.getY()*dimTile + playerPos.get(players.get(player)).getY()][cord.getX()*
                 dimTile + playerPos.get(players.get(player)).getX()] = players.get(player);
     }
 
@@ -231,15 +230,16 @@ public class CLIMap {
     /**
      * Set the static position of every player's ascii character in a tile.
      */
-    //TODO WARNING: we must be sure that the number of players are less than six.
     private void setPlayersPos(){
-        int i = 1;
-        int j = 0;
-        for(Map.Entry<ActorView,Character> entry : players.entrySet()){
-            playerPos.put(entry.getValue(),new Coord(i,j));
-            i++;
-            j++;
-        }
+        if(players.size()<=6) {
+            int i = 1;
+            int j = 0;
+            for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
+                playerPos.put(entry.getValue(), new Coord(i, j));
+                i++;
+                j++;
+            }
+        } else System.out.println("Too many players!");
     }
 
     /**

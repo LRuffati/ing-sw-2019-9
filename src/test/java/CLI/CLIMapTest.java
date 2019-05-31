@@ -79,4 +79,10 @@ class CLIMapTest {
         demo.printAppliedTarget(targetViewList);
         demo.getPrintedMap();
     }
+
+    @Test
+    void movePlayersTest(){
+
+
+    }
 }

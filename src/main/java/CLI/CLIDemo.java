@@ -14,6 +14,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
 
+import javax.sound.midi.SysexMessage;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.time.Duration;
@@ -23,7 +24,7 @@ import java.util.function.Consumer;
 public class CLIDemo implements View {
     private static CLIMap toPrintMap;
     private Scanner in = new Scanner(System.in);
-    private ClientController client;
+    private ClientControllerClientInterface client;
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
@@ -31,7 +32,7 @@ public class CLIDemo implements View {
         toPrintMap = new CLIMap(gmv);
     }
 
-    public CLIDemo(ClientController client){
+    public CLIDemo(ClientControllerClientInterface client){
         this.client = client;
 
     }
@@ -79,9 +80,21 @@ public class CLIDemo implements View {
             password = in.nextLine();
         }
         while(color.isEmpty()){
-            System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue");
+            System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue\n -> Type 'y' " +
+                    "if you've already picked a color in a previous login");
             color = in.nextLine();
-            //TODO gestisci colori
+            if(color.toLowerCase().equals("y")) {
+                try {
+                    return client.login(username,password);
+                } catch (RemoteException | InvalidLoginException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(!color.toLowerCase().equals("gray")&&!color.toLowerCase().equals("purple")&&!color.toLowerCase().
+                    equals("yellow")&&!color.toLowerCase().equals("green")&&!color.toLowerCase().equals("blue")){
+                System.out.println("Invalid color. Pick a color among the followings:");
+                color = "";
+            }
         }
 
         try {
@@ -227,7 +240,7 @@ public class CLIDemo implements View {
     }
 
     @Override
-    public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) {
+    public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException {
         System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
@@ -237,6 +250,7 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + wv.name());
             i+=1;
         }
+        System.out.println("99. Rollback\n100. Restart Selection");
         while(true){
             boolean flag = false;
 
@@ -248,7 +262,21 @@ public class CLIDemo implements View {
                     System.out.println("Please, pick a weapon typing ONLY his index on the line.");
                 }
             }
-            if(i!=0) l.add(i-1); else break;
+            if(i!=0) {
+                if(i==99){
+                    if(!l.isEmpty()) {
+                        l.remove(l.size()-1);
+                        try {
+                            client.rollback();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if(i==100) {
+                    l.clear();
+                    client.restartSelection();
+                } else l.add(i-1);
+            } else break;
         }
 
         try {
@@ -270,8 +298,8 @@ public class CLIDemo implements View {
 
     @Override
     public void updateMap(GameMapView gameMapView) {
-        CLIMap cm = new CLIMap(gameMapView);
-        cm.printMap();
+        toPrintMap = new CLIMap(gameMapView);
+        toPrintMap.printMap();
     }
 
     public void tileInfo(TileView t){
@@ -295,5 +323,11 @@ public class CLIDemo implements View {
                 System.out.println(" +" + a.getAnsi() + a.name());
             }
         }
+    }
+
+    public void weaponInfo(WeaponView w){
+        System.out.println("The reload cost of the " + w.name() + " is " + w.reloadCost().toString());
+        System.out.println("The purchase cost of the " + w.name() + " is " + w.buyCost().toString());
+        //TODO gestire azioni effettuabili dall'arma
     }
 }
