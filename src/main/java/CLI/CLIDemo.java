@@ -1,5 +1,6 @@
 package CLI;
 
+import board.Coord;
 import board.GameMap;
 import controllerclient.ClientController;
 import controllerclient.ClientControllerClientInterface;
@@ -9,28 +10,29 @@ import grabbables.Weapon;
 import network.exception.InvalidLoginException;
 import network.socket.client.Client;
 import player.Actor;
+import uid.DamageableUID;
+import uid.TileUID;
 import viewclasses.*;
 
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class CLIDemo implements View {
     private static CLIMap toPrintMap;
     private Scanner in = new Scanner(System.in);
-
+    private ClientController client;
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
-    public static void start(GameMapView gmv) {
+    public void start(GameMapView gmv) {
         toPrintMap = new CLIMap(gmv);
     }
 
-    public CLIDemo(){
+    public CLIDemo(ClientController client){
+        this.client = client;
 
     }
 
@@ -46,7 +48,7 @@ public class CLIDemo implements View {
      * Method to introduce a new player to the game and show the initial options.
      * It initially clear the whole command line, then it shows the title of the game.
      */
-    public void greetings(ClientController player){
+    public void greetings(){
         System.out.print("\033[H\033[2J");
         System.out.flush();
         System.out.print("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
@@ -60,12 +62,12 @@ public class CLIDemo implements View {
 
         System.out.println("Type '1' to join a game.");
         boolean joining = false;
-        if(in.nextLine().equals("1")) joining = joinGame(player);
+        if(in.nextLine().equals("1")) joining = joinGame();
         if(joining) System.out.println("Welcome to ADRENALINE!\nPlease, wait for other players to join.");
 
     }
 
-    public boolean joinGame(ClientController player){
+    public boolean joinGame(){
         String username = "";
         String password = "";
         String color = "";
@@ -84,7 +86,7 @@ public class CLIDemo implements View {
         }
 
         try {
-            return player.login(username,password,color);
+            return client.login(username,password,color);
         } catch (RemoteException | InvalidLoginException e) {
             e.printStackTrace();
         }
@@ -147,17 +149,91 @@ public class CLIDemo implements View {
 
     @Override
     public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
+        CLIMap map = new CLIMap(gameMap);
+        map.applyTarget(target);
+        System.out.println("Choose your target:\n");
+        Iterator<TargetView> targetIterator = target.iterator();
+        int i = 0;
+        while(targetIterator.hasNext()){
+            TargetView tw = targetIterator.next();
+            Collection<DamageableUID> dmg = tw.getDamageableUIDList();
+            Collection<TileUID> tile = tw.getTileUIDList();
+            if(!dmg.isEmpty()){
+                for(ActorView a: gameMap.players()){
+                    if(a.uid().equals(dmg.iterator().next())){
+                        System.out.println(a.getAnsi() + i + ". " + a.name());
+                        break;
+                    }
+                }
+            } else {
+                for(TileView t : gameMap.allTiles()){
+                    if(t.uid().equals(tile.iterator().next())){
+                        System.out.println(t.getAnsi() + i + ". " + gameMap.getCoord(t).toString());
+                        break;
+                    }
+                }
+            }
+        }
 
+        boolean flag = false;
+
+        while(!flag) {
+            try {
+                i = in.nextInt();
+                flag = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick a target typing ONLY his index on the line.");
+            }
+        }
+
+        List<Integer> l = new ArrayList<>();
+        l.add(i);
+        try {
+            client.pick(elem,l);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void chooseAction(ControllerActionResultClient elem, List<ActionView> action) {
+        System.out.println("Choose your action:\n");
+        Iterator<ActionView> actionIterator = action.iterator();
+        int i = 0;
+        while(actionIterator.hasNext()){
 
+            System.out.println(i + ". " + actionIterator.next().getName());
+        }
+
+        boolean flag = false;
+
+        while(!flag) {
+            try {
+                i = in.nextInt();
+                flag = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick an action typing ONLY his index on the line.");
+            }
+        }
+
+        List<Integer> l = new ArrayList<>();
+        l.add(i);
+        try {
+            client.pick(elem,l);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) {
-
+        System.out.println("Choose your weapons:\n");
+        Iterator<WeaponView> weaponIterator = weapon.iterator();
+        int i = 0;
+        while(weaponIterator.hasNext()){
+            WeaponView wv = weaponIterator.next();
+            System.out.println(i + ". " + wv.name());
+        }
     }
 
     @Override
