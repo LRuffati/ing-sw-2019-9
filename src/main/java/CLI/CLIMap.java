@@ -181,16 +181,18 @@ public class CLIMap {
 
 
     /**
-     * Put the current players in the map with the correct ASCII characters.
-     * @param player is the player to be put on the map.
+     * Move the you player.
      * @param cord is the tile where the player is to be moved.
      */
     //TODO To be carefully tested, probably won't work as expected due to the searcCharacter method.
-    public void movePlayer(ActorView player, Coord cord){
-        if(searchCharacter(players.get(player)).getX()!=null && searchCharacter(players.get(player)).getY()!=null)
-            tiles[searchCharacter(players.get(player)).getX()][searchCharacter(players.get(player)).getY()]= ' ';
-        tiles[cord.getY()*dimTile + playerPos.get(players.get(player)).getY()][cord.getX()*
-                dimTile + playerPos.get(players.get(player)).getX()] = players.get(player);
+    public void moveYou(Coord cord){
+        /*if(searchCharacter(players.get(mp.you())).getX()!=null && searchCharacter(players.get(mp.you())).getY()!=null)
+            tiles[searchCharacter(players.get(mp.you())).getX()][searchCharacter(players.get(mp.you())).getY()]= ' ';
+
+
+         */
+        tiles[cord.getY()*dimTile + playerPos.get(players.get(mp.you())).getY()][cord.getX()*
+                dimTile + playerPos.get(players.get(mp.you())).getX()] = players.get(mp.you());
     }
 
     /**
@@ -231,15 +233,13 @@ public class CLIMap {
      * Set the static position of every player's ascii character in a tile.
      */
     private void setPlayersPos(){
-        if(players.size()<=6) {
-            int i = 1;
-            int j = 0;
-            for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
-                playerPos.put(entry.getValue(), new Coord(i, j));
-                i++;
-                j++;
-            }
-        } else System.out.println("Too many players!");
+        int i = 1;
+        int j = 0;
+        for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
+            playerPos.put(entry.getValue(), new Coord(i, j));
+            i++;
+            j++;
+        }
     }
 
     /**
@@ -288,5 +288,6 @@ public class CLIMap {
         }
 
     }
+
 
 }

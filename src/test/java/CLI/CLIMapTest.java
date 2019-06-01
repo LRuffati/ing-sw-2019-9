@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.ActorView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
@@ -41,11 +42,12 @@ class CLIMapTest {
         map = builder.getMap();
         actorList = builder.getActorList();
         gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
-        try {
-            client = new ClientController(true,true,"192.168.1.1");
+        /*try {
+            client = new ClientController(true,true,"localhost");
         } catch (NotBoundException | IOException e) {
             e.printStackTrace();
         }
+         */
     }
 
 
@@ -82,7 +84,12 @@ class CLIMapTest {
 
     @Test
     void movePlayersTest(){
+        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        CLIMap map = new CLIMap(gmv);
+        map.moveYou(new Coord(0,0));
+        Iterator<ActorView> iterator = gmv.players().iterator();
+        iterator.next();
 
-
+        map.printMap();
     }
 }
