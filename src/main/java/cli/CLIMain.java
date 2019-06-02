@@ -36,6 +36,6 @@ public class CLIMain {
         }
         CLIDemo demo = new CLIDemo(client);
         demo.start(gmv);
-        demo.waitForStart(30);
+        demo.endGame();
     }
 }
