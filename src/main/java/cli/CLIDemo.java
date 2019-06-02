@@ -59,6 +59,11 @@ public class CLIDemo implements View {
 
     }
 
+    /**
+     * It takes username and password as input if the player had already joined the game with the same credentials.
+     * It also takes a color if it's the player's first login.
+     * @return true if the player joined the game.
+     */
     public boolean joinGame(){
         String username = "";
         String password = "";
@@ -98,6 +103,11 @@ public class CLIDemo implements View {
         return false;
     }
 
+    /**
+     * After the player joined the game, he await for the game to start. This can happen only when there are three or
+     * more players in the same game and the firstPlayer decides do start or the timer elapses.
+     * @param timeLeft is the timer (in seconds) that starts when there are three players that joined the game.
+     */
     public void waitForStart(int timeLeft){
         //TODO da gestire con le informazioni giuste da controller
         boolean flag = true;
@@ -186,6 +196,9 @@ public class CLIDemo implements View {
 
     }
 
+    /**
+     * See documentation in the View interface.
+     */
     @Override
     public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
         CLIMap map = new CLIMap(gameMap);
@@ -236,6 +249,9 @@ public class CLIDemo implements View {
         }
     }
 
+    /**
+     * See documentation in the View interface.
+     */
     @Override
     public void chooseAction(ControllerActionResultClient elem, List<ActionView> action) {
         System.out.println("Choose your action:\n");
@@ -266,6 +282,9 @@ public class CLIDemo implements View {
         }
     }
 
+    /**
+     * See documentation in the View interface.
+     */
     @Override
     public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException {
         System.out.println("Choose your weapons:\n0. Exit selection");
@@ -313,22 +332,36 @@ public class CLIDemo implements View {
         }
     }
 
+    /**
+     * See documentation in the View interface.
+     */
     @Override
     public void rollback() {
         System.out.println("Rollback executed.");
     }
 
+    /**
+     * See documentation in the View interface.
+     */
     @Override
     public void terminated() {
         System.out.println("Action finally executed.");
     }
 
+    /**
+     * See documentation in the View interface.
+     */
     @Override
     public void updateMap(GameMapView gameMapView) {
         toPrintMap = new CLIMap(gameMapView);
         toPrintMap.printMap();
     }
 
+    /**
+     * It shows the room which the tile belongs. If there are weapons or ammoTile and finally what players are in this
+     * tile.
+     * @param t to get the info from.
+     */
     public void tileInfo(TileView t){
         System.out.print("\n>> The tile belongs to the ");
         System.out.print(t.getAnsi() + t.color().toString() + " room\n");

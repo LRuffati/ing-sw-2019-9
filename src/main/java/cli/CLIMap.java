@@ -177,7 +177,8 @@ public class CLIMap {
 
 
     /**
-     * Move the you player.
+     * Move a player.
+     * @param a is the player to be moved
      * @param cord is the tile where the player is to be moved.
      */
     //TODO To be carefully tested, probably won't work as expected due to the searcCharacter method.
@@ -243,6 +244,10 @@ public class CLIMap {
         }
     }
 
+    /**
+     * It shows a version of the Map on the CLI where only the selectable targets are colored.
+     * @param targetViewList is the list of the selectable targets.
+     */
     public void applyTarget(List<TargetView> targetViewList){
         GameMapView targetMap = new GameMapView(mp);
         Collection<TileUID> tiles;
