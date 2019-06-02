@@ -227,7 +227,6 @@ public class CLIMap {
                 i-=1;
                 j+=1;
             }
-            System.out.println(playerPos.get(entry.getValue()));
         }
     }
 

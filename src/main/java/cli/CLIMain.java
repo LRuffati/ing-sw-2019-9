@@ -36,6 +36,6 @@ public class CLIMain {
         }
         CLIDemo demo = new CLIDemo(client);
         demo.start(gmv);
-        demo.getPrintedMap();
+        demo.waitForStart(30);
     }
 }

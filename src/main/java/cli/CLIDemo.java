@@ -111,17 +111,19 @@ public class CLIDemo implements View {
             for(Map.Entry<ActorView, Character> entry: toPrintMap.getPlayers().entrySet()){
                 if(entry.getKey().firstPlayer()){
                     System.out.println(entry.getKey().name() + ", you can start the game whenever you want by typing" +
-                            "'p'. Otherwise the game will start in " + timeLeft);
+                            "'p'. Otherwise the game will start in " + timeLeft + " seconds.");
                     Timer timer = new Timer();
                     TimerTask timerTask;
+                    //TODO controllare come far dare l'input al giocare prima che il tempo sia finito.
                     timer.schedule(
-                        timerTask = new TimerTask() {
+                        new TimerTask() {
                             @Override
                             public void run() {
                                 return;
                             }
                         },timeLeft
                     );
+                    if(in.nextLine().equalsIgnoreCase("p")) return;
                 }
             }
 
