@@ -1,7 +1,6 @@
 package controllerclient;
 
 
-import CLI.CLIDemo;
 import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
@@ -13,7 +12,6 @@ import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
 import view.gui.GuiController;
-import view.gui.Login;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -44,7 +42,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     /**
-     * Builder of the class. This generates the View (CLI or GUI) and the Network (Socket or RMI), depending by the choices of the user.
+     * Builder of the class. This generates the View (cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
      * @param socket true if a socket connection is required. False if a RMI connection is required
      * @param cli true if Cli is required. False is Gui is required
      * @param networkAddress Contains the address used by the Network to connect with the Server
@@ -52,7 +50,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
         logger = Logger.getLogger(ClientController.class.getName());
 
-        view = cli ? new CLIDemo(this) : new GuiController(this);
+        //view = cli ? new CLIDemo(this) : new GuiController(this);
 
         if(socket) {
             Client client = new Client(networkAddress, ParserConfiguration.parseInt("SocketPort"));

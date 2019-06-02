@@ -6,6 +6,7 @@ import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public interface View {
      * @param elem The identifier of the selector.
      * @param weapon A List containing all the element that can be chosen
      */
-    void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon);
+    void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException;
 
     /**
      * Method that notifies when a rollback is automatically executed
