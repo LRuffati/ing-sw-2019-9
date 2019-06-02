@@ -11,7 +11,6 @@ import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
-import view.gui.GuiController;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
