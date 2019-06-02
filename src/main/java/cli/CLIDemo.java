@@ -53,9 +53,8 @@ public class CLIDemo implements View {
                 "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
 
         System.out.println("Type '1' to join a game.");
-        boolean joining = false;
-        if(in.nextLine().equals("1")) joining = joinGame();
-        if(joining) System.out.println("Welcome to ADRENALINE!\nPlease, wait for other players to join.");
+        if(in.nextLine().equals("1")) joinGame();
+        System.out.println("Welcome to ADRENALINE!\nPlease, wait for other players to join.");
 
     }
 
@@ -64,10 +63,11 @@ public class CLIDemo implements View {
      * It also takes a color if it's the player's first login.
      * @return true if the player joined the game.
      */
-    public boolean joinGame(){
+    public void joinGame(){
         String username = "";
         String password = "";
         String color = "";
+
         while(username.isEmpty()){
             System.out.println(">>> Enter your username!");
             username = in.nextLine();
@@ -81,11 +81,7 @@ public class CLIDemo implements View {
                     "if you've already picked a color in a previous login");
             color = in.nextLine();
             if(color.equalsIgnoreCase("y")) {
-                try {
-                    return client.login(username,password);
-                } catch (RemoteException | InvalidLoginException e) {
-                    e.printStackTrace();
-                }
+                client.login(username,password);
             }
             if(!color.equalsIgnoreCase("gray")&&!color.equalsIgnoreCase("purple")&&!color.
                     equalsIgnoreCase("yellow")&&!color.equalsIgnoreCase("green")&&!color.
@@ -94,13 +90,7 @@ public class CLIDemo implements View {
                 color = "";
             }
         }
-
-        try {
-            return client.login(username,password,color);
-        } catch (RemoteException | InvalidLoginException e) {
-            e.printStackTrace();
-        }
-        return false;
+        client.login(username,password,color);
     }
 
     /**
@@ -242,11 +232,7 @@ public class CLIDemo implements View {
 
         List<Integer> l = new ArrayList<>();
         l.add(i);
-        try {
-            client.pick(elem,l);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        client.pick(elem,l);
     }
 
     /**
@@ -275,11 +261,7 @@ public class CLIDemo implements View {
 
         List<Integer> l = new ArrayList<>();
         l.add(i);
-        try {
-            client.pick(elem,l);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        client.pick(elem,l);
     }
 
     /**
@@ -312,11 +294,7 @@ public class CLIDemo implements View {
                 if(i==99){
                     if(!l.isEmpty()) {
                         l.remove(l.size()-1);
-                        try {
-                            client.rollback();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
+                        client.rollback();
                     }
                 } else if(i==100) {
                     l.clear();
@@ -325,11 +303,7 @@ public class CLIDemo implements View {
             } else break;
         }
 
-        try {
-            client.pick(elem,l);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        client.pick(elem,l);
     }
 
     /**
@@ -355,6 +329,22 @@ public class CLIDemo implements View {
     public void updateMap(GameMapView gameMapView) {
         toPrintMap = new CLIMap(gameMapView);
         toPrintMap.printMap();
+    }
+
+    @Override
+    public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
+        if(result){
+            System.out.println("Login completed correctly.");
+        } else {
+            if(invalidColor) {
+                System.out.println("Sorry! This color has already been picked from another player. If" +
+                        "you're that player, try login with your old credentials.");
+            } else {
+                if(invalidUsername){
+                    System.out.println("Please, try another username and/or password.");
+                }
+            }
+        }
     }
 
     /**
