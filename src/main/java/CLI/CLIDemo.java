@@ -1,36 +1,41 @@
 package CLI;
 
+import board.Coord;
 import board.GameMap;
 import controllerclient.ClientController;
+import controllerclient.ClientControllerClientInterface;
+import controllerclient.View;
+import controllerresults.ControllerActionResultClient;
 import grabbables.Weapon;
 import network.exception.InvalidLoginException;
 import network.socket.client.Client;
 import player.Actor;
+import uid.DamageableUID;
+import uid.TileUID;
 import viewclasses.*;
 
+import javax.sound.midi.SysexMessage;
 import java.io.FileNotFoundException;
 import java.rmi.RemoteException;
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.util.function.Consumer;
 
-public class CLIDemo {
+public class CLIDemo implements View {
     private static CLIMap toPrintMap;
     private Scanner in = new Scanner(System.in);
-
+    private ClientControllerClientInterface client;
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
-    public static void start(GameMapView gmv) {
+    public void start(GameMapView gmv) {
         toPrintMap = new CLIMap(gmv);
     }
 
-    public CLIDemo(GameMapView gmv){
-        start(gmv);
-    }
+    public CLIDemo(ClientControllerClientInterface client){
+        this.client = client;
 
+    }
 
     /**
      * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
@@ -43,10 +48,10 @@ public class CLIDemo {
      * Method to introduce a new player to the game and show the initial options.
      * It initially clear the whole command line, then it shows the title of the game.
      */
-    public void greetings(ClientController player){
+    public void greetings(){
         System.out.print("\033[H\033[2J");
         System.out.flush();
-        System.out.print("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
+        System.out.println("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
                 " /$$__  $$| $$__  $$| $$__  $$| $$_____/| $$$ | $$ /$$__  $$| $$      |_  $$_/| $$$ | $$| $$_____/\n" +
                 "| $$  \\ $$| $$  \\ $$| $$  \\ $$| $$      | $$$$| $$| $$  \\ $$| $$        | $$  | $$$$| $$| $$      \n" +
                 "| $$$$$$$$| $$  | $$| $$$$$$$/| $$$$$   | $$ $$ $$| $$$$$$$$| $$        | $$  | $$ $$ $$| $$$$$   \n" +
@@ -57,12 +62,12 @@ public class CLIDemo {
 
         System.out.println("Type '1' to join a game.");
         boolean joining = false;
-        if(in.nextLine().equals("1")) joining = joinGame(player);
+        if(in.nextLine().equals("1")) joining = joinGame();
         if(joining) System.out.println("Welcome to ADRENALINE!\nPlease, wait for other players to join.");
 
     }
 
-    public boolean joinGame(ClientController player){
+    public boolean joinGame(){
         String username = "";
         String password = "";
         String color = "";
@@ -75,13 +80,25 @@ public class CLIDemo {
             password = in.nextLine();
         }
         while(color.isEmpty()){
-            System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue");
+            System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue\n -> Type 'y' " +
+                    "if you've already picked a color in a previous login");
             color = in.nextLine();
-            //TODO gestisci colori
+            if(color.toLowerCase().equals("y")) {
+                try {
+                    return client.login(username,password);
+                } catch (RemoteException | InvalidLoginException e) {
+                    e.printStackTrace();
+                }
+            }
+            if(!color.toLowerCase().equals("gray")&&!color.toLowerCase().equals("purple")&&!color.toLowerCase().
+                    equals("yellow")&&!color.toLowerCase().equals("green")&&!color.toLowerCase().equals("blue")){
+                System.out.println("Invalid color. Pick a color among the followings:");
+                color = "";
+            }
         }
 
         try {
-            return player.login(username,password,color);
+            return client.login(username,password,color);
         } catch (RemoteException | InvalidLoginException e) {
             e.printStackTrace();
         }
@@ -142,6 +159,175 @@ public class CLIDemo {
 
     }
 
+    @Override
+    public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
+        CLIMap map = new CLIMap(gameMap);
+        map.applyTarget(target);
+        System.out.println("Choose your target:\n");
+        Iterator<TargetView> targetIterator = target.iterator();
+        int i = 0;
+        while(targetIterator.hasNext()){
+            TargetView tw = targetIterator.next();
+            Collection<DamageableUID> dmg = tw.getDamageableUIDList();
+            Collection<TileUID> tile = tw.getTileUIDList();
+            if(!dmg.isEmpty()){
+                for(ActorView a: gameMap.players()){
+                    if(a.uid().equals(dmg.iterator().next())){
+                        System.out.println(a.getAnsi() + i + ". " + a.name());
+                        i+=1;
+                        break;
+                    }
+                }
+            } else {
+                for(TileView t : gameMap.allTiles()){
+                    if(t.uid().equals(tile.iterator().next())){
+                        System.out.println(t.getAnsi() + i + ". " + gameMap.getCoord(t).toString());
+                        i+=1;
+                        break;
+                    }
+                }
+            }
+        }
 
+        boolean flag = false;
 
+        while(!flag) {
+            try {
+                i = in.nextInt();
+                flag = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick a target typing ONLY his index on the line.");
+            }
+        }
+
+        List<Integer> l = new ArrayList<>();
+        l.add(i);
+        try {
+            client.pick(elem,l);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void chooseAction(ControllerActionResultClient elem, List<ActionView> action) {
+        System.out.println("Choose your action:\n");
+        Iterator<ActionView> actionIterator = action.iterator();
+        int i = 0;
+        while(actionIterator.hasNext()){
+            System.out.println(i + ". " + actionIterator.next().getName());
+            i+=1;
+        }
+
+        boolean flag = false;
+
+        while(!flag) {
+            try {
+                i = in.nextInt();
+                flag = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick an action typing ONLY his index on the line.");
+            }
+        }
+
+        List<Integer> l = new ArrayList<>();
+        l.add(i);
+        try {
+            client.pick(elem,l);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException {
+        System.out.println("Choose your weapons:\n0. Exit selection");
+        Iterator<WeaponView> weaponIterator = weapon.iterator();
+        int i = 1;
+        List<Integer> l = new ArrayList<>();
+        while(weaponIterator.hasNext()){
+            WeaponView wv = weaponIterator.next();
+            System.out.println(i + ". " + wv.name());
+            i+=1;
+        }
+        System.out.println("99. Rollback\n100. Restart Selection");
+        while(true){
+            boolean flag = false;
+
+            while(!flag) {
+                try {
+                    i = in.nextInt();
+                    flag = true;
+                } catch (InputMismatchException e) {
+                    System.out.println("Please, pick a weapon typing ONLY his index on the line.");
+                }
+            }
+            if(i!=0) {
+                if(i==99){
+                    if(!l.isEmpty()) {
+                        l.remove(l.size()-1);
+                        try {
+                            client.rollback();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else if(i==100) {
+                    l.clear();
+                    client.restartSelection();
+                } else l.add(i-1);
+            } else break;
+        }
+
+        try {
+            client.pick(elem,l);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void rollback() {
+        System.out.println("Rollback executed.");
+    }
+
+    @Override
+    public void terminated() {
+        System.out.println("Action finally executed.");
+    }
+
+    @Override
+    public void updateMap(GameMapView gameMapView) {
+        toPrintMap = new CLIMap(gameMapView);
+        toPrintMap.printMap();
+    }
+
+    public void tileInfo(TileView t){
+        System.out.print("\n>> The tile belongs to the ");
+        System.out.print(t.getAnsi() + t.color().toString() + " room\n");
+        if(t.spawnPoint()){
+            System.out.println(">> There is a spawn point for weapons in the tile.\n");
+            System.out.println(">> You can pick up: ");
+            for(WeaponView w : t.weapons()){
+                System.out.println(" +" + w.name());
+            }
+        } else {
+            System.out.println(">> There is a spawn point for ammunition in the tile.\n");
+        }
+
+        if(t.players().isEmpty()){
+            System.out.println(">> There are no players in the tile.");
+        } else {
+            System.out.println(">> The following players are in the tile: ");
+            for(ActorView a: t.players()){
+                System.out.println(" +" + a.getAnsi() + a.name());
+            }
+        }
+    }
+
+    public void weaponInfo(WeaponView w){
+        System.out.println("The reload cost of the " + w.name() + " is " + w.reloadCost().toString());
+        System.out.println("The purchase cost of the " + w.name() + " is " + w.buyCost().toString());
+        //TODO gestire azioni effettuabili dall'arma
+    }
 }

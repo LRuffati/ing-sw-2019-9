@@ -36,7 +36,7 @@ public interface ClientControllerClientInterface {
      * @return true iif the login procedure succeeded
      * @throws InvalidLoginException if the username or the color are already used, this exception is thrown
      */
-    boolean login(String username, String password, String color) throws RemoteException, InvalidLoginException;
+    void login(String username, String password, String color) throws InvalidLoginException;
     /**
      * This method is used to allow a Client to login after a disconnection
      * @param username The username chosen by the User. It must be unique
@@ -44,7 +44,7 @@ public interface ClientControllerClientInterface {
      * @return true iif the reconnection procedure succeeded
      * @throws InvalidLoginException if the username or the password are incorrect, this exception is thrown
      */
-    boolean login(String username, String password) throws RemoteException, InvalidLoginException;
+    void login(String username, String password) throws InvalidLoginException;
 
     /**
      * This method is used if the Client want to definitively quit the game. No reconnection is allowed after that.

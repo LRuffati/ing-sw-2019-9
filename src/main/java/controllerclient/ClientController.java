@@ -1,7 +1,6 @@
 package controllerclient;
 
 
-import CLI.CLIDemo;
 import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
@@ -12,6 +11,7 @@ import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
+import view.gui.Login;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -22,12 +22,16 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is used to store the data needed to the client and to send him notification.
  * This is the only access used by the View to receive messages and to query the Server.
  */
 public class ClientController implements ClientControllerClientInterface, ClientControllerNetworkInterface {
+    private Logger logger;
+
     private View view;
     private ClientInterface network;
 
@@ -44,8 +48,11 @@ public class ClientController implements ClientControllerClientInterface, Client
      * @param networkAddress Contains the address used by the Network to connect with the Server
      */
     public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
+        logger = Logger.getLogger(ClientController.class.getName());
+
         //view = cli ? new CLIDemo() : new GUI();
         //view = cli ? new CLIDemo(this) : null;
+        Login.run(this);
 
         if(socket) {
             Client client = new Client(networkAddress, ParserConfiguration.parseInt("SocketPort"));
@@ -76,18 +83,33 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     @Override
-    public boolean login(String username, String password, String color) throws RemoteException, InvalidLoginException {
-        return network.register(username, password, color);
+    public void login(String username, String password, String color) throws InvalidLoginException {
+        try {
+            network.register(username, password, color);
+        }
+        catch (RemoteException e) {
+            logger.log(Level.SEVERE, "Exception in login (register)", e);
+        }
     }
 
     @Override
-    public boolean login(String username, String password) throws RemoteException, InvalidLoginException {
-        return network.reconnect(username, password);
+    public void login(String username, String password) throws InvalidLoginException {
+        try {
+            network.reconnect(username, password);
+        }
+        catch (RemoteException e) {
+            logger.log(Level.SEVERE, "Exception in login (reconnect)", e);
+        }
     }
 
     @Override
-    public void quit() throws RemoteException {
-        network.close();
+    public void quit() {
+        try {
+            network.close();
+        }
+        catch (RemoteException e) {
+            logger.log(Level.SEVERE, "Exception in quit", e);
+        }
     }
 
 
@@ -108,62 +130,72 @@ public class ClientController implements ClientControllerClientInterface, Client
      * If the action is terminated the stack of the passed action and the Map containing all the GameMapViews are deleted.
      * @param elem A ControllerActionResultClient that specify the type of the Request and some other details.
      */
-    public void newSelection(ControllerActionResultClient elem) throws RemoteException {
-        switch (elem.type){
-            case PICKTARGET:
-                stack.push(elem);
-                Tuple<Boolean, List<TargetView>> resTarget = network.showOptionsTarget(elem.actionId);
-                GameMapView gameMapView = getMap(resTarget.y.iterator().next());
-                view.chooseTarget(gameMapView, elem, resTarget.y);
-                break;
+    public void newSelection(ControllerActionResultClient elem) {
+        try {
+            switch (elem.type) {
+                case PICKTARGET:
+                    stack.push(elem);
+                    Tuple<Boolean, List<TargetView>> resTarget = network.showOptionsTarget(elem.actionId);
+                    GameMapView gameMapView = getMap(resTarget.y.iterator().next());
+                    view.chooseTarget(gameMapView, elem, resTarget.y);
+                    break;
 
-            case PICKACTION:
-                stack.push(elem);
-                Tuple<Boolean, List<ActionView>> resAction = network.showOptionsAction(elem.actionId);
-                view.chooseAction(elem, resAction.y);
-                break;
+                case PICKACTION:
+                    stack.push(elem);
+                    Tuple<Boolean, List<ActionView>> resAction = network.showOptionsAction(elem.actionId);
+                    view.chooseAction(elem, resAction.y);
+                    break;
 
-            case PICKWEAPON:
-                stack.push(elem);
-                view.chooseWeapon(elem, network.showOptionsWeapon(elem.actionId));
-                break;
+                case PICKWEAPON:
+                    stack.push(elem);
+                    view.chooseWeapon(elem, network.showOptionsWeapon(elem.actionId));
+                    break;
 
-            case ROLLBACK:
-                newSelection(stack.pop());
-                view.rollback();
-                break;
-            case TERMINATED:
-                stack.clear();
-                gameMapViewMap.clear();
-                view.terminated();
-                break;
+                case ROLLBACK:
+                    newSelection(stack.pop());
+                    view.rollback();
+                    break;
+                case TERMINATED:
+                    stack.clear();
+                    gameMapViewMap.clear();
+                    view.terminated();
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+        }
+        catch (RemoteException e) {
+            logger.log(Level.SEVERE, "Exception in newSelection", e);
         }
     }
 
 
     @Override
-    public void pick(ControllerActionResultClient elem, List<Integer> choices) throws RemoteException {
-        switch (elem.type) {
-            case PICKTARGET:
-                newSelection(network.pickTarg(elem.actionId, choices.get(0)));
-                break;
-            case PICKACTION:
-                newSelection(network.pickAction(elem.actionId, choices.get(0)));
-                break;
-            case PICKWEAPON:
-                newSelection(network.pickWeapon(elem.actionId, choices));
-                break;
+    public void pick(ControllerActionResultClient elem, List<Integer> choices) {
+        try {
+            switch (elem.type) {
+                case PICKTARGET:
+                    newSelection(network.pickTarg(elem.actionId, choices.get(0)));
+                    break;
+                case PICKACTION:
+                    newSelection(network.pickAction(elem.actionId, choices.get(0)));
+                    break;
+                case PICKWEAPON:
+                    newSelection(network.pickWeapon(elem.actionId, choices));
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
+            }
+        }
+        catch (RemoteException e) {
+            logger.log(Level.SEVERE, "Exception in pick", e);
         }
     }
 
     @Override
-    public void restartSelection() throws RemoteException {
+    public void restartSelection() {
         ControllerActionResultClient first = stack.getFirst();
         stack.clear();
         gameMapViewMap.clear();
@@ -171,7 +203,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void rollback() throws RemoteException {
+    public void rollback() {
         stack.pop();
         newSelection(stack.pop());
     }
