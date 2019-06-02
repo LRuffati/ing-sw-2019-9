@@ -16,16 +16,16 @@ public interface ClientControllerClientInterface {
      * @param elem Contains the type of the action to be performed and an identifier of the action.
      * @param choices A list containing all the index of elements that have been chosen. PickTarget and PickAction only analyze the first element of the List.
      */
-    void pick(ControllerActionResultClient elem, List<Integer> choices) throws RemoteException;
+    void pick(ControllerActionResultClient elem, List<Integer> choices);
     /**
      * This method is used by the client to restart the action.
      */
-    void restartSelection() throws RemoteException;
+    void restartSelection();
 
     /**
      * This method is used by the client to repeat the last selection
      */
-    void rollback() throws RemoteException;
+    void rollback();
 
 
     /**
@@ -33,23 +33,19 @@ public interface ClientControllerClientInterface {
      * @param username The username chosen by the User. It must be unique
      * @param password The password used to allow reconnection after timeout/disconnection
      * @param color The color chosen by the User
-     * @return true iif the login procedure succeeded
-     * @throws InvalidLoginException if the username or the color are already used, this exception is thrown
      */
-    void login(String username, String password, String color) throws InvalidLoginException;
+    void login(String username, String password, String color);
     /**
      * This method is used to allow a Client to login after a disconnection
      * @param username The username chosen by the User. It must be unique
      * @param password The password used to allow reconnection after timeout/disconnection
-     * @return true iif the reconnection procedure succeeded
-     * @throws InvalidLoginException if the username or the password are incorrect, this exception is thrown
      */
-    void login(String username, String password) throws InvalidLoginException;
+    void login(String username, String password);
 
     /**
      * This method is used if the Client want to definitively quit the game. No reconnection is allowed after that.
      */
-    void quit() throws RemoteException;
+    void quit();
 
     /**
      * This method returns the last valid GameMap

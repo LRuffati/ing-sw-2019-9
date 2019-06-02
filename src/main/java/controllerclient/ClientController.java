@@ -1,6 +1,7 @@
 package controllerclient;
 
 
+import CLI.CLIDemo;
 import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
@@ -11,6 +12,7 @@ import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
+import view.gui.GuiController;
 import view.gui.Login;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
@@ -50,9 +52,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
         logger = Logger.getLogger(ClientController.class.getName());
 
-        //view = cli ? new CLIDemo() : new GUI();
-        //view = cli ? new CLIDemo(this) : null;
-        Login.run(this);
+        view = cli ? new CLIDemo(this) : new GuiController(this);
 
         if(socket) {
             Client client = new Client(networkAddress, ParserConfiguration.parseInt("SocketPort"));
@@ -83,9 +83,13 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     @Override
-    public void login(String username, String password, String color) throws InvalidLoginException {
+    public void login(String username, String password, String color) {
         try {
             network.register(username, password, color);
+            view.loginResponse(true, false, false);
+        }
+        catch (InvalidLoginException e) {
+            view.loginResponse(false, e.wrongUsername, e.wrongColor);
         }
         catch (RemoteException e) {
             logger.log(Level.SEVERE, "Exception in login (register)", e);
@@ -93,9 +97,13 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void login(String username, String password) throws InvalidLoginException {
+    public void login(String username, String password) {
         try {
             network.reconnect(username, password);
+            view.loginResponse(true, false, false);
+        }
+        catch (InvalidLoginException e) {
+            view.loginResponse(false, e.wrongUsername, e.wrongColor);
         }
         catch (RemoteException e) {
             logger.log(Level.SEVERE, "Exception in login (reconnect)", e);

@@ -6,7 +6,6 @@ import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ public interface View {
      * @param elem The identifier of the selector.
      * @param weapon A List containing all the element that can be chosen
      */
-    void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException;
+    void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon);
 
     /**
      * Method that notifies when a rollback is automatically executed
@@ -53,5 +52,11 @@ public interface View {
     void updateMap(GameMapView gameMapView);
 
 
-    boolean loginResponse(boolean invalidUsername, boolean invalidColor, boolean invalidPassword);
+    /**
+     * This method is used as a response to a Login request
+     * @param result True iif the login procedure terminated correctly
+     * @param invalidUsername True if the username or the password are already used/not the right ones
+     * @param invalidColor True if the Color is already used
+     */
+    void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor);
 }
