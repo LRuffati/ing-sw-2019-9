@@ -1,7 +1,6 @@
 package controllerclient;
 
 
-import CLI.CLIDemo;
 import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
@@ -38,7 +37,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     /**
-     * Builder of the class. This generates the View (CLI or GUI) and the Network (Socket or RMI), depending by the choices of the user.
+     * Builder of the class. This generates the View (cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
      * @param socket true if a socket connection is required. False if a RMI connection is required
      * @param cli true if Cli is required. False is Gui is required
      * @param networkAddress Contains the address used by the Network to connect with the Server

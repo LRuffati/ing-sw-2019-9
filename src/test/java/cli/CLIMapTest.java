@@ -1,22 +1,17 @@
-package CLI;
+package cli;
 
 import board.Coord;
 import board.GameMap;
-import board.Tile;
 import controllerclient.ClientController;
 import gamemanager.GameBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import player.Actor;
-import uid.DamageableUID;
-import uid.TileUID;
 import viewclasses.ActorView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -86,9 +81,11 @@ class CLIMapTest {
     void movePlayersTest(){
         gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
         CLIMap map = new CLIMap(gmv);
-        map.moveYou(new Coord(0,0));
         Iterator<ActorView> iterator = gmv.players().iterator();
-        iterator.next();
+        map.moveActor(iterator.next(), new Coord(0,0));
+        map.moveActor(iterator.next(), new Coord(0,0));
+        map.moveActor(iterator.next(), new Coord(1,0));
+        map.moveActor(iterator.next(), new Coord(0,2));
 
         map.printMap();
     }

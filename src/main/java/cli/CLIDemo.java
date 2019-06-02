@@ -1,25 +1,17 @@
-package CLI;
+package cli;
 
-import board.Coord;
-import board.GameMap;
-import controllerclient.ClientController;
 import controllerclient.ClientControllerClientInterface;
 import controllerclient.View;
 import controllerresults.ControllerActionResultClient;
-import grabbables.Weapon;
 import network.exception.InvalidLoginException;
-import network.socket.client.Client;
-import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
-
-import javax.sound.midi.SysexMessage;
-import java.io.FileNotFoundException;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Consumer;
 
 public class CLIDemo implements View {
     private static CLIMap toPrintMap;
@@ -83,15 +75,16 @@ public class CLIDemo implements View {
             System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue\n -> Type 'y' " +
                     "if you've already picked a color in a previous login");
             color = in.nextLine();
-            if(color.toLowerCase().equals("y")) {
+            if(color.equalsIgnoreCase("y")) {
                 try {
                     return client.login(username,password);
                 } catch (RemoteException | InvalidLoginException e) {
                     e.printStackTrace();
                 }
             }
-            if(!color.toLowerCase().equals("gray")&&!color.toLowerCase().equals("purple")&&!color.toLowerCase().
-                    equals("yellow")&&!color.toLowerCase().equals("green")&&!color.toLowerCase().equals("blue")){
+            if(!color.equalsIgnoreCase("gray")&&!color.equalsIgnoreCase("purple")&&!color.
+                    equalsIgnoreCase("yellow")&&!color.equalsIgnoreCase("green")&&!color.
+                    equalsIgnoreCase("blue")){
                 System.out.println("Invalid color. Pick a color among the followings:");
                 color = "";
             }
@@ -104,6 +97,38 @@ public class CLIDemo implements View {
         }
         return false;
     }
+
+    public void waitForStart(int timeLeft){
+        //TODO da gestire con le informazioni giuste da controller
+        boolean flag = true;
+        while(toPrintMap.getPlayers().size()<3) {
+            if (flag) {
+                System.out.println("Wait for other players to join the game.");
+                flag = false;
+            }
+        }
+        while(toPrintMap.getPlayers().size()<5){
+            for(Map.Entry<ActorView, Character> entry: toPrintMap.getPlayers().entrySet()){
+                if(entry.getKey().firstPlayer()){
+                    System.out.println(entry.getKey().name() + ", you can start the game whenever you want by typing" +
+                            "'p'. Otherwise the game will start in " + timeLeft);
+                    Timer timer = new Timer();
+                    TimerTask timerTask;
+                    timer.schedule(
+                        timerTask = new TimerTask() {
+                            @Override
+                            public void run() {
+                                return;
+                            }
+                        },timeLeft
+                    );
+                }
+            }
+
+        }
+    }
+
+
 
     /**
      * Print the event "Player user uses powerUp pu" on the cli.

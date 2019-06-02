@@ -1,11 +1,7 @@
-package CLI;
+package cli;
 
 import board.Coord;
 import board.Direction;
-import board.GameMap;
-import gamemanager.GameBuilder;
-import grabbables.Weapon;
-import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
@@ -185,25 +181,13 @@ public class CLIMap {
      * @param cord is the tile where the player is to be moved.
      */
     //TODO To be carefully tested, probably won't work as expected due to the searcCharacter method.
-    public void moveYou(Coord cord){
-        /*if(searchCharacter(players.get(mp.you())).getX()!=null && searchCharacter(players.get(mp.you())).getY()!=null)
+    public void moveActor(ActorView a, Coord cord){
+        /*
+        if(searchCharacter(players.get(mp.you())).getX()!=null && searchCharacter(players.get(mp.you())).getY()!=null)
             tiles[searchCharacter(players.get(mp.you())).getX()][searchCharacter(players.get(mp.you())).getY()]= ' ';
-
-
          */
-        tiles[cord.getY()*dimTile + playerPos.get(players.get(mp.you())).getY()][cord.getX()*
-                dimTile + playerPos.get(players.get(mp.you())).getX()] = players.get(mp.you());
-    }
-
-    /**
-     * Put weapons in the map with correct ASCII characters checking where in the map is a spawn point.
-     * It places the character right below the spawn character.
-     */
-    //TODO To be fixed but now it's not the moment nor the place.
-    private void putWeapons(){
-        while(searchCharacter('s')!=null){
-            tiles[searchCharacter('s').getY()+1][searchCharacter('s').getX()]='w';
-        }
+        tiles[cord.getY()*dimTile + playerPos.get(players.get(a)).getY()][cord.getX()*
+                dimTile + playerPos.get(players.get(a)).getX()] = players.get(a);
     }
 
     /**
@@ -233,12 +217,17 @@ public class CLIMap {
      * Set the static position of every player's ascii character in a tile.
      */
     private void setPlayersPos(){
-        int i = 1;
-        int j = 0;
+        int i = 2;
+        int j = 1;
         for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
             playerPos.put(entry.getValue(), new Coord(i, j));
-            i++;
-            j++;
+            if(i%2==0){
+                i+=1;
+            } else {
+                i-=1;
+                j+=1;
+            }
+            System.out.println(playerPos.get(entry.getValue()));
         }
     }
 
@@ -248,8 +237,8 @@ public class CLIMap {
     private void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
-                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getY()]
-                        [mp.getCoord(t).getX()*dimTile+playerPos.get(players.get(a)).getX()]
+                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getX()]
+                        [mp.getCoord(t).getX()*dimTile+playerPos.get(players.get(a)).getY()]
                         = players.get(a);
             }
         }
@@ -289,5 +278,7 @@ public class CLIMap {
 
     }
 
-
+    public Map<ActorView, Character> getPlayers() {
+        return players;
+    }
 }
