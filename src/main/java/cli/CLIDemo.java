@@ -3,7 +3,6 @@ package cli;
 import controllerclient.ClientControllerClientInterface;
 import controllerclient.View;
 import controllerresults.ControllerActionResultClient;
-import network.exception.InvalidLoginException;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
@@ -14,14 +13,14 @@ import java.time.Duration;
 import java.util.*;
 
 public class CLIDemo implements View {
-    private static CLIMap toPrintMap;
+    private static CLIMap climap;
     private Scanner in = new Scanner(System.in);
     private ClientControllerClientInterface client;
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
     public void start(GameMapView gmv) {
-        toPrintMap = new CLIMap(gmv);
+        climap = new CLIMap(gmv);
     }
 
     public CLIDemo(ClientControllerClientInterface client){
@@ -33,7 +32,7 @@ public class CLIDemo implements View {
      * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
      */
     public void getPrintedMap(){
-        toPrintMap.printMap();
+        climap.printMap();
     }
 
     /**
@@ -101,14 +100,14 @@ public class CLIDemo implements View {
     public void waitForStart(int timeLeft){
         //TODO da gestire con le informazioni giuste da controller
         boolean flag = true;
-        while(toPrintMap.getPlayers().size()<3) {
+        while(climap.getPlayers().size()<3) {
             if (flag) {
                 System.out.println("Wait for other players to join the game.");
                 flag = false;
             }
         }
-        while(toPrintMap.getPlayers().size()<5){
-            for(Map.Entry<ActorView, Character> entry: toPrintMap.getPlayers().entrySet()){
+        while(climap.getPlayers().size()<5){
+            for(Map.Entry<ActorView, Character> entry: climap.getPlayers().entrySet()){
                 if(entry.getKey().firstPlayer()){
                     System.out.println(entry.getKey().name() + ", you can start the game whenever you want by typing" +
                             "'p'. Otherwise the game will start in " + timeLeft + " seconds.");
@@ -190,7 +189,7 @@ public class CLIDemo implements View {
     }
 
     public void printAppliedTarget(List<TargetView> targetViewList){
-        toPrintMap.applyTarget(targetViewList);
+        climap.applyTarget(targetViewList);
 
     }
 
@@ -211,7 +210,8 @@ public class CLIDemo implements View {
             if(!dmg.isEmpty()){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
-                        System.out.println(a.getAnsi() + i + ". " + a.name());
+                        System.out.println(a.getAnsi() + i + ". " + a.name() + " whom character on the map " +
+                                "is '" + climap.getPlayers().get(a) + "'.");
                         i+=1;
                         break;
                     }
@@ -335,8 +335,8 @@ public class CLIDemo implements View {
      */
     @Override
     public void updateMap(GameMapView gameMapView) {
-        toPrintMap = new CLIMap(gameMapView);
-        toPrintMap.printMap();
+        climap = new CLIMap(gameMapView);
+        climap.printMap();
     }
 
     @Override
