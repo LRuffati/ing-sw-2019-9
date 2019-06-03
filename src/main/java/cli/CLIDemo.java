@@ -130,7 +130,15 @@ public class CLIDemo implements View {
         }
     }
 
-
+    public void quitGame(){
+        System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
+                "want to go back.");
+        if(in.nextLine().equalsIgnoreCase("y")){
+            client.quit();
+        } else if (in.nextLine().equalsIgnoreCase("n")){
+            client.rollback();
+        }
+    }
 
     /**
      * Print the event "Player user uses powerUp pu" on the cli.
