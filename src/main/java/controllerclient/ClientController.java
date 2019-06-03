@@ -1,6 +1,7 @@
 package controllerclient;
 
 
+import cli.CLIDemo;
 import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
@@ -11,6 +12,7 @@ import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
+import view.gui.Framework;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -49,7 +51,10 @@ public class ClientController implements ClientControllerClientInterface, Client
     public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
         logger = Logger.getLogger(ClientController.class.getName());
 
-        //view = cli ? new CLIDemo(this) : new GuiController(this);
+        if (cli)
+            view = new CLIDemo(this);
+        else
+            Framework.run(this);
 
         if(socket) {
             Client client = new Client(networkAddress, ParserConfiguration.parseInt("SocketPort"));
@@ -81,6 +86,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void login(String username, String password, String color) {
+        color = color.toLowerCase();
         try {
             network.register(username, password, color);
             view.loginResponse(true, false, false);

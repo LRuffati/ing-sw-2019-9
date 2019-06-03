@@ -8,18 +8,16 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
+import java.util.Collections;
 import java.util.List;
 
-public class Login extends JPanel implements ActionListener{
+//public class Login extends JFrame implements ActionListener{
+class Login extends JFrame {
 
     private static ClientControllerClientInterface cliController;
-    private static GuiController guiManager;
+    private Framework controller;
 
-    private JFrame frame;
     private JLabel titleLabel;
     private JLabel subTitleLabel;
 
@@ -29,7 +27,7 @@ public class Login extends JPanel implements ActionListener{
     private JTextField usernameField;
     private JLabel passwordLabel;
     private JTextField passwordField;
-    private JComboBox color;
+    private JComboBox colorMenu;
     private JButton confirm;
 
     private JLabel messageLabel;
@@ -37,6 +35,7 @@ public class Login extends JPanel implements ActionListener{
     private JTextPane messageArea;
 
     boolean connect = true;
+    String color;
 
 
     private GridBagConstraints put(int gridx, int gridy, int fill){
@@ -62,10 +61,18 @@ public class Login extends JPanel implements ActionListener{
         tp.replaceSelection(msg);
     }
 
-    private Login() {
-        super(new GridBagLayout());
 
-        guiManager.attachView(this);
+    Login(Framework controller) {
+        super("Adrenaline - Login");
+
+        setLayout(new GridBagLayout());
+        //super(new GridBagLayout());
+
+        this.controller = controller;
+
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
+        setSize(500,500);
 
         titleLabel = new JLabel("ADRENALINE");
         titleLabel.setFont(new Font(titleLabel.getName(), Font.BOLD, 20));
@@ -75,7 +82,19 @@ public class Login extends JPanel implements ActionListener{
         usernameLabel = new JLabel("Username:");
         usernameField = new JTextField(10);
         passwordLabel = new JLabel("Password:");
-        passwordField= new JTextField(10);
+        passwordField = new JTextField(10);
+
+        colorMenu = new JComboBox(List.of("Blue", "Pink", "Green", "Yellow", "Gray").toArray());
+        color = "Blue";
+        colorMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                color = (String)colorMenu.getSelectedItem();
+                System.out.println(color);
+            }
+        });
+
+
 
         messageArea = new JTextPane();
         messageArea.setEditable(true);
@@ -84,11 +103,34 @@ public class Login extends JPanel implements ActionListener{
 
 
         connectionMenu = new JComboBox(List.of("Connect", "Reconnect").toArray());
-        connectionMenu.addActionListener(this);
+        connectionMenu.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (connectionMenu.getSelectedItem() == null)
+                    return;
+                if (connectionMenu.getSelectedItem().equals("Connect"))
+                    connect = true;
+                if (connectionMenu.getSelectedItem().equals("Reconnect"))
+                    connect = false;
+            }
+        });
 
 
         confirm = new JButton("CONFERMA");
-        confirm.addActionListener(this);
+        confirm.setMnemonic(KeyEvent.VK_ENTER);
+        confirm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String username = usernameField.getText();
+                String password = passwordField.getText();
+
+                appendToPane(messageArea, "Sending login request", Color.blue);
+                if (connect)
+                    cliController.login(username, password, color);
+                else
+                    cliController.login(username, password);
+            }
+        });
 
 
         add(titleLabel, put(0,0,GridBagConstraints.HORIZONTAL));
@@ -112,35 +154,8 @@ public class Login extends JPanel implements ActionListener{
         c.gridheight = 2;
         add(messageAreaPane, c);
         add(connectionMenu, put(0,7,GridBagConstraints.BOTH));
-    }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        switch (e.getActionCommand()) {
-            case "comboBoxChanged":
-                if (connectionMenu.getSelectedItem() == null)
-                    break;
-                if (connectionMenu.getSelectedItem().equals("Connect"))
-                    connect = true;
-                if (connectionMenu.getSelectedItem().equals("Reconnect"))
-                    connect = false;
-                break;
-
-            case "CONFERMA":
-                String username = usernameField.getText();
-                String password = passwordField.getText();
-
-                appendToPane(messageArea, "Sending login request", Color.blue);
-                if (connect)
-                    cliController.login(username, password, "yellow");
-                else
-                    cliController.login(username, password);
-                break;
-
-            default:
-                System.out.println(e.getActionCommand());
-                break;
-        }
+        add(colorMenu, put(0,8,GridBagConstraints.HORIZONTAL));
     }
 
 
@@ -150,52 +165,7 @@ public class Login extends JPanel implements ActionListener{
         } else {
             appendToPane(messageArea, "Registration failed", Color.red);
             if (invalidUsername) appendToPane(messageArea, "Invalid username", Color.red);
-            if (invalidColor) appendToPane(messageArea, "Invalid color", Color.red);
-        }
-    }
-
-
-    private static void createAndShowGUI() {createAndShowGUI(null,null);}
-    private static void createAndShowGUI(GuiController guiManager1, ClientControllerClientInterface controller) {
-
-        cliController = controller;
-        guiManager = guiManager1;
-
-        JFrame frame = new JFrame("Adrenaline - Login");
-        frame.addWindowListener(new WindowEventHandler());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(500,500));
-
-
-        Login login = new Login();
-        frame.add(login);
-
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-
-    public static void main(String[] args){
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
-    }
-
-    public static void run(GuiController guiManager, ClientControllerClientInterface controller) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI(guiManager, controller);
-            }
-        });
-    }
-
-    static class WindowEventHandler extends WindowAdapter {
-        @Override
-        public void windowClosing(WindowEvent evt) {
-            System.out.println("exit");
-            cliController.quit();
+            if (invalidColor) appendToPane(messageArea, "Invalid colorMenu", Color.red);
         }
     }
 

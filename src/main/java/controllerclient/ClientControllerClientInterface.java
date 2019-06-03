@@ -1,10 +1,8 @@
 package controllerclient;
 
 import controllerresults.ControllerActionResultClient;
-import network.exception.InvalidLoginException;
 import viewclasses.GameMapView;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -51,4 +49,9 @@ public interface ClientControllerClientInterface {
      * This method returns the last valid GameMap
      */
     GameMapView getMap();
+
+    /**
+     * Method used if the View needs to notify the ClientController the new View object
+     */
+    void attachView(View view);
 }
