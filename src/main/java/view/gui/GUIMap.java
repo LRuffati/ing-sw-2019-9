@@ -8,24 +8,25 @@ import java.io.File;
 import java.io.IOException;
 
 public class GUIMap extends JPanel {
-    private Framework controller;
-    private BufferedImage emptyMap;
+    private static BufferedImage emptyMap;
 
-    public GUIMap(){
+    public GUIMap(String path){
         try {
-            this.emptyMap = ImageIO.read(new File("src/resources/firstMap.png"));
+            emptyMap = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
+        JLabel label = getLabel();
+        Image dEmptyMap = emptyMap.getScaledInstance(label.getWidth(),label.getHeight(),Image.SCALE_SMOOTH);
+        ImageIcon mapIcon = new ImageIcon(dEmptyMap);
+
     }
 
-    public Component addMapToLabel(){
-        JLabel label = new JLabel(new ImageIcon(emptyMap));
-        return add(label);
+    private JLabel getLabel(){
+        JLabel label = new JLabel();
+        label.setBounds(339,518,339,518);
+        return label;
     }
 
-    public static void main(String[] str){
-        GUIMap gui = new GUIMap();
-        Component component = gui.addMapToLabel();
-    }
+
 }
