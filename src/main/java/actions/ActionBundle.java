@@ -28,7 +28,7 @@ public class ActionBundle implements ActionPicker {
 
     private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
 
-    ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
+    public ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
         this.actionsPossible = actions;
         finalized = false;
         this.map = map;
@@ -70,6 +70,9 @@ public class ActionBundle implements ActionPicker {
         return action.iterate();
     }
 
+    public boolean isFinalized(){
+        return finalized;
+    }
 
     public List<Effect> getEffects() {
         return new ArrayList<>(effects);
