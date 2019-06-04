@@ -22,7 +22,7 @@ public class GUIMap extends JPanel {
         }
 
         frame = new JFrame("label");
-        Image imgMap = emptyMap.getScaledInstance(604,800,Image.SCALE_SMOOTH);
+        Image imgMap = emptyMap.getScaledInstance(emptyMap.getWidth()/3,emptyMap.getHeight()/3,Image.SCALE_SMOOTH);
         ImageIcon iconMap = new ImageIcon(imgMap);
 
         label = new JLabel(iconMap);
