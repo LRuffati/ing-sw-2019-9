@@ -34,6 +34,7 @@ public class ParserWeaponTest {
 
     @Test
     void simpleWeaponTest(){
+        assertEquals(1, weaponCollection.size());
         Weapon weaponToTest = weaponCollection.iterator().next();
         assertEquals(weaponCollection.size(),1);
         assertEquals("precisione asd",weaponToTest.getName());

@@ -32,7 +32,6 @@ public class InitGame {
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
-            notifyStarting();
             startGame();
         }
         if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
@@ -52,7 +51,7 @@ public class InitGame {
     public void reconnect(Player player) {
         //todo: return slave controller
         numOfPlayer++;
-        System.out.println("Connection by\t" + player);
+        System.out.println("Reconnection by\t" + player);
         //notifyConnection(numOfPlayer, player.getUsername(), player.getColor());
         checkGameStart();
     }
@@ -89,7 +88,9 @@ public class InitGame {
         //todo
     }
 
+
     public void startGame() {
+        notifyStarting();
         try {
             game = new GameBuilder(numOfPlayer);
         }

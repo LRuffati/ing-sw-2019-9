@@ -46,7 +46,6 @@ class CLIMapTest {
     }
 
 
-    @Test
     void printVoidMapTest(){
         CLIDemo demo = new CLIDemo(client,gmv);
         demo.getPrintedMap();
@@ -60,13 +59,11 @@ class CLIMapTest {
         assert(map.searchCharacter('s').getY()==1);
     }
 
-    @Test
     void greetingsTest(){
         CLIDemo demo = new CLIDemo(client,gmv);
         demo.greetings();
     }
 
-    @Test
     void printTargetTest(){
         CLIDemo demo = new CLIDemo(client,gmv);
         TargetView tw = new TargetView("asd", new ArrayList<>(), new ArrayList<>());
