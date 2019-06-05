@@ -19,12 +19,11 @@ public class CLIDemo implements View {
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
-    public void start(GameMapView gmv) {
-        climap = new CLIMap(gmv);
-    }
 
-    public CLIDemo(ClientControllerClientInterface client){
+    public CLIDemo(ClientControllerClientInterface client, GameMapView gmv){
         this.client = client;
+        climap = new CLIMap(gmv);
+        greetings();
 
     }
 
@@ -200,6 +199,7 @@ public class CLIDemo implements View {
     public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
+        printAppliedTarget(target);
         System.out.println("Choose your target:\n");
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 0;

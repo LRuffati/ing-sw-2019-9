@@ -52,7 +52,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         logger = Logger.getLogger(ClientController.class.getName());
 
         if (cli)
-            view = new CLIDemo(this);
+            view = new CLIDemo(this,gameMap);
         else
             Framework.run(this);
 
