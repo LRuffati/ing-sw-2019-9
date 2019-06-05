@@ -1,5 +1,6 @@
 package network;
 
+import controller.SlaveController;
 import player.Actor;
 import uid.DamageableUID;
 
@@ -17,15 +18,23 @@ public class Player implements Serializable {
     private DamageableUID uid;
     private String token;
 
+    private ServerInterface serverInterface;
+
     private boolean onLine;
 
-    public Player(String username, String password, String color, boolean gameMaster, String token) {
+    public Player(String username,
+                  String password,
+                  String color,
+                  boolean gameMaster,
+                  String token,
+                  ServerInterface serverInterface) {
         this.username = username;
         this.password = password;
         this.color = color;
         this.gameMaster = gameMaster;
         this.token = token;
         this.onLine = true;
+        this.serverInterface = serverInterface;
     }
 
     public void setActor(Actor actor) {
@@ -64,6 +73,9 @@ public class Player implements Serializable {
         return password;
     }
 
+    public ServerInterface getServerInterface() {
+        return serverInterface;
+    }
 
     public void setOnLine(boolean onLine) {
         this.onLine = onLine;
@@ -71,5 +83,11 @@ public class Player implements Serializable {
 
     public boolean isOnLine() {
         return onLine;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Username:\t" + username + "\nColor:\t" + color + "\nPassword:\t" + password + "\nToken:\t" + token;
     }
 }

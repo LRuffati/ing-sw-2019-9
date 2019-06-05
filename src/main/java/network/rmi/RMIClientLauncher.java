@@ -1,5 +1,6 @@
 package network.rmi;
 
+import gamemanager.ParserConfiguration;
 import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 

@@ -1,6 +1,7 @@
 package network.rmi;
 
 import controller.InitGame;
+import gamemanager.ParserConfiguration;
 import network.rmi.server.ServerNetworkRMI;
 
 import java.rmi.RemoteException;
@@ -36,13 +37,14 @@ public class RMIServerLauncher {
     }
 
 
-    public static ServerNetworkRMI RMILauncher(String host, int port){
+    public static ServerNetworkRMI RMILauncher(int port){
         try{
             ServerNetworkRMI controller = new ServerNetworkRMI();
             System.out.println(">>> Controller exported");
 
+            String host = ParserConfiguration.parse("RMIBinding");
             Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("//" + host + ":" + port + "/controller", controller);
+            registry.rebind(host, controller);
 
             startPing(controller);
             return controller;
