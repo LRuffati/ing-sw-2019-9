@@ -1,6 +1,8 @@
 package network;
 
+import controller.InitGame;
 import network.exception.InvalidLoginException;
+import uid.DamageableUID;
 
 import java.rmi.server.UID;
 import java.util.*;
@@ -19,6 +21,10 @@ public class Database {
         gameMaster = null;
     }
 
+    private InitGame mainController = new InitGame();
+    //private MainController mainController;
+    //private final Map<String, SlaveController> controllerByToken = new HashMap<>();
+
     private final Map<String, Player> usersByToken = new HashMap<>();
     private final Map<String, Player> usersByUsername = new HashMap<>();
     private final Map<String, ServerInterface> networkByToken = new HashMap<>();
@@ -27,6 +33,14 @@ public class Database {
     private Set<String> disconnectedToken = new HashSet<>();
     private Set<String> connectedToken = new HashSet<>();
 
+
+    public void setMainController(InitGame mainController){
+        this.mainController = mainController;
+    }
+
+    public InitGame getMainController() {
+        return mainController;
+    }
 
     /**
      * @return Returns the Player bound to the player
@@ -48,6 +62,14 @@ public class Database {
         if(network == null)
             throw new IllegalArgumentException("Invalid token " + token);
         return network;
+    }
+
+    public ServerInterface getNetwordByDamageableUid(DamageableUID uid){
+        for(String token : connectedToken) {
+            if(getUserByToken(token).getUid().equals(uid))
+                return getNetworkByToken(token);
+        }
+        throw new IllegalArgumentException("Invalid uid");
     }
 
     /**
@@ -88,6 +110,8 @@ public class Database {
         }
         connectedToken.add(token);
 
+        mainController.connect(user);
+
         return token;
     }
 
@@ -114,6 +138,9 @@ public class Database {
         networkByToken.put(token, network);
         disconnectedToken.remove(token);
         connectedToken.add(token);
+
+        mainController.reconnect(getUserByToken(token));
+
         return token;
     }
 
@@ -124,12 +151,15 @@ public class Database {
      */
     public synchronized void quit(String token) {
         System.out.println("quit request");
+        mainController.logout(getUserByToken(token));
+
         colors.add(getUserByToken(token).getColor());
         usersByToken.remove(token);
         networkByToken.remove(token);
 
         connectedToken.remove(token);
         disconnectedToken.remove(token);
+
     }
 
     /**
@@ -138,6 +168,8 @@ public class Database {
      * @param token The token of the caller.
      */
     public synchronized void logout(String token){
+        mainController.logout(getUserByToken(token));
+
         networkByToken.remove(token);
         connectedToken.remove(token);
         disconnectedToken.add(token);

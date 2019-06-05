@@ -72,6 +72,10 @@ public class GameBuilder {
         scoreboard = new Scoreboard(actorList);
     }
 
+    public GameBuilder(int numOfPlayer) throws FileNotFoundException {
+        this(null, null, null, null, numOfPlayer);
+    }
+
 
     private GameMap parserMap(String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
         if(mapPath != null) return GameMap.gameMapFactory(mapPath, numOfPlayer, decks);

@@ -40,7 +40,6 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
                 client.ping();
             }
             catch (ConnectException e) {
-                //TODO: notify controller too?
                 d.logout(client);
             }
         }
@@ -48,7 +47,6 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
     @Override
     public String register(ServerInterface serverInterface, String username, String password, String color) throws RemoteException, InvalidLoginException {
-        //TODO: registration procedure
         return Database.get().login(serverInterface, username, password, color);
     }
 
@@ -116,6 +114,8 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         checkConnection(token);
         return ObjectMap.get().showGameMap(gameMapId);
     }
+
+
 
     @Override
     public boolean equals(Object obj) {

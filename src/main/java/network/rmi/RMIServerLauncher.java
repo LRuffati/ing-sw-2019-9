@@ -1,8 +1,7 @@
 package network.rmi;
 
-import network.rmi.client.ClientNetworkRMI;
+import controller.InitGame;
 import network.rmi.server.ServerNetworkRMI;
-import network.socket.server.ServerNetworkSocket;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -60,7 +59,7 @@ public class RMIServerLauncher {
             public void run() {
                 try {
                     if(controller instanceof ServerNetworkRMI)
-                    controller.sendPing();
+                        controller.sendPing();
                 }
                 catch (RemoteException e){
                     e.printStackTrace();
@@ -83,6 +82,5 @@ public class RMIServerLauncher {
             porta = 1099;
 
         new RMIServerLauncher(porta);
-
     }
 }
