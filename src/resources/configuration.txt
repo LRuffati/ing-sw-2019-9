@@ -20,6 +20,9 @@ src/resources/map1.txt
 -map4Path
 src/resources/map1.txt
 
+-GuiDirectoryPath
+src/resources/gui
+
 
 #Options of the game
 -scoreBeforeFrenzy
@@ -57,13 +60,13 @@ ADRENALINE_GROUP_9
 8000
 
 -TimeBeforeStarting
-120
+1000
 
 -TimeForMove
 120
 
 -minNumOfPlayers
-2
+3
 
 -maxNumOfPlayers
-3
+5

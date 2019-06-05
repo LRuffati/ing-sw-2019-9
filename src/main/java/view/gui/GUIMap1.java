@@ -1,5 +1,7 @@
 package view.gui;
 
+import gamemanager.ParserConfiguration;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -8,6 +10,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class GUIMap1 extends JPanel {
+
+    private static final String SRC = ParserConfiguration.parsePath("GuiDirectoryPath") + "/";
+
     private BufferedImage emptyMap;
     private BufferedImage ammoTile;
     private JPanel panel;
@@ -35,12 +40,12 @@ public class GUIMap1 extends JPanel {
     }
 
     public static void main(String[] args){
-        new GUIMap1("src/resources/GUImap1.png");
+        new GUIMap1(SRC + "GUImap1.png");
     }
 
     private void setGreenAmmoTile(JLabel label){
         try {
-            ammoTile = ImageIO.read(new File("src/resources/greenAmmo.png"));
+            ammoTile = ImageIO.read(new File(SRC + "greenAmmo.png"));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
@@ -59,7 +64,7 @@ public class GUIMap1 extends JPanel {
 
     private void setYellowAmmoTile(JLabel label){
         try {
-            ammoTile = ImageIO.read(new File("src/resources/yellowAmmo.png"));
+            ammoTile = ImageIO.read(new File(SRC + "yellowAmmo.png"));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
