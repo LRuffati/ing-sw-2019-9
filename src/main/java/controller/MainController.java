@@ -2,19 +2,28 @@ package controller;
 
 import gamemanager.GameBuilder;
 import gamemanager.ParserConfiguration;
+import network.Database;
 import network.NetworkBuilder;
 import network.Player;
+import player.Actor;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class InitGame {
+public class MainController {
 
     private int numOfPlayer;
+
     private Timer timerForStarting;
     private boolean timerRunning = false;
+
+    private boolean gameStarted = false;
+
     private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
     private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
@@ -22,13 +31,13 @@ public class InitGame {
     private GameBuilder game;
 
 
-    public InitGame(){
+    public MainController(){
         numOfPlayer = 0;
     }
 
 
     private void checkGameStart() {
-        if(numOfPlayer < MIN_PLAYER)
+        if(numOfPlayer < MIN_PLAYER || gameStarted)
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
@@ -40,27 +49,32 @@ public class InitGame {
         }
     }
 
-    public void connect(Player player) {
-        //todo: return slave controller
+    public SlaveController connect(Player player) {
+        if(!canConnect())   throw new IllegalArgumentException("Invalid request");
+
         numOfPlayer++;
-        System.out.println("Connection by\t" + player);
-        //notifyConnection(numOfPlayer, player.getUsername(), player.getColor());
+        System.out.println("Connection");
+        notifyConnection(numOfPlayer, player);
         checkGameStart();
+
+        return new SlaveController(player);
     }
 
     public void reconnect(Player player) {
-        //todo: return slave controller
         numOfPlayer++;
-        System.out.println("Reconnection by\t" + player);
-        //notifyConnection(numOfPlayer, player.getUsername(), player.getColor());
+        System.out.println("Reconnection");
+        notifyConnection(numOfPlayer, player);
         checkGameStart();
     }
 
 
+    public boolean canConnect() {
+        return numOfPlayer<5 && !gameStarted;
+    }
 
     public void logout(Player player) {
         numOfPlayer--;
-        System.out.println("Logout by\t" + player);
+        notifyDisconnection(player);
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning) {
                 timerClose();
@@ -71,8 +85,12 @@ public class InitGame {
         }
     }
 
-    void notifyConnection(int n, String user, String color){
-        //todo
+    void notifyConnection(int n, Player player){
+        System.out.println(player);
+    }
+
+    void notifyDisconnection(Player player) {
+        System.out.println("Disconnection of\n" + player);
     }
 
     void notifyStarting(){
@@ -91,13 +109,28 @@ public class InitGame {
 
     public void startGame() {
         notifyStarting();
+        gameStarted = true;
+        createGame();
+    }
+
+    private GameBuilder createGame() {
         try {
             game = new GameBuilder(numOfPlayer);
+            Iterator<Actor> actorList = game.getActorList().iterator();
+            for(Player player : Database.get().getPlayers()) {
+                Actor actor = actorList.next();
+                player.setActor(actor);
+                player.setUid(actor.pawnID());
+                actor.pawn().setUsername(player.getUsername());
+                actor.pawn().setColor((Color) Color.class.getField(player.getColor()).get(null));
+            }
         }
-        catch (FileNotFoundException e){
+        catch (FileNotFoundException | NoSuchFieldException | IllegalAccessException e){
             e.printStackTrace();
         }
+        return game;
     }
+
 
     private void timerClose(){
         timerForStarting.cancel();
@@ -118,8 +151,10 @@ public class InitGame {
         timerRunning = true;
     }
 
+
     public static void main(String[] str) {
-        InitGame initGame = new InitGame();
+
+        MainController initGame = new MainController();
         NetworkBuilder network = new NetworkBuilder(initGame);
     }
 }

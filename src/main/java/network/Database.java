@@ -1,6 +1,7 @@
 package network;
 
-import controller.InitGame;
+import controller.MainController;
+import controller.SlaveController;
 import network.exception.InvalidLoginException;
 import uid.DamageableUID;
 
@@ -21,24 +22,24 @@ public class Database {
         gameMaster = null;
     }
 
-    private InitGame mainController = new InitGame();
-    //private MainController mainController;
-    //private final Map<String, SlaveController> controllerByToken = new HashMap<>();
+    private MainController mainController;
+    private final Map<String, SlaveController> controllerByToken = new HashMap<>();
 
     private final Map<String, Player> usersByToken = new HashMap<>();
     private final Map<String, Player> usersByUsername = new HashMap<>();
     private final Map<String, ServerInterface> networkByToken = new HashMap<>();
+
     private String gameMaster;
     private List<String> colors;
     private Set<String> disconnectedToken = new HashSet<>();
     private Set<String> connectedToken = new HashSet<>();
 
 
-    public void setMainController(InitGame mainController){
+    public void setMainController(MainController mainController){
         this.mainController = mainController;
     }
 
-    public InitGame getMainController() {
+    public MainController getMainController() {
         return mainController;
     }
 
@@ -93,9 +94,14 @@ public class Database {
         if(wrongColor || wrongUsername)
             throw new InvalidLoginException("Connection exception", wrongUsername, wrongColor);
 
-        boolean isFirst = false;
+        if(!mainController.canConnect())
+            throw new InvalidLoginException("Game already started", false, false);
+
+
         String token = new UID().toString();
-        colors.remove(color);
+
+
+        boolean isFirst = false;
         if(gameMaster == null) {
             gameMaster = token;
             isFirst = true;
@@ -103,15 +109,16 @@ public class Database {
 
         Player user = usersByUsername.get(username);
         if(user == null) {
-            user = new Player(username, password, color, isFirst, token);
+            user = new Player(username, password, color, isFirst, token, network);
             usersByUsername.put(token, user);
             networkByToken.put(token, network);
             usersByToken.put(token, user);
         }
+        colors.remove(color);
+
+        controllerByToken.put(token, mainController.connect(user));
+
         connectedToken.add(token);
-
-        mainController.connect(user);
-
         return token;
     }
 
@@ -199,5 +206,9 @@ public class Database {
 
     public Set<String> getDisconnectedToken() {
         return disconnectedToken;
+    }
+
+    public Collection<Player> getPlayers() {
+        return usersByToken.values();
     }
 }
