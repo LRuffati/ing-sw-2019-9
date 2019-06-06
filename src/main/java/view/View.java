@@ -1,6 +1,7 @@
 package view;
 
 import controllerresults.ControllerActionResultClient;
+import network.Player;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -60,4 +61,25 @@ public interface View {
      * @param invalidColor True if the Color is already used
      */
     void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor);
+
+
+
+    /**
+     * This notification is used when a player logs in or logs out the game
+     * @param player The player that logged-in or out
+     * @param connected True if the player logged in, False if the player logged out
+     */
+    void onConnection(Player player, boolean connected);
+
+    /**
+     * Method used to notify that the game is starting
+     * @param map the name of the configuration Map used in the game. Useful for the GUI
+     */
+    void onStarting(String map);
+
+    /**
+     * Method used to notify the user that an action must be performed in a certain amount of time.
+     * @param timeToCount Millisecond before timer end.
+     */
+    void onTimer(int timeToCount);
 }

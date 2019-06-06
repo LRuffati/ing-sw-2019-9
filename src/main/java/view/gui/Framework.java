@@ -20,7 +20,7 @@ public class Framework implements View {
     private Login login;
 
     private Framework(ClientControllerClientInterface controller){
-        controller.attachView(this);
+        //controller.attachView(this);
 
         login = new Login(this);
         JFrame frame = login;
@@ -28,13 +28,13 @@ public class Framework implements View {
         frame.setVisible(true);
     }
 
-    private static void createAndShowGUI(ClientControllerClientInterface controller) {
+    private static Framework createAndShowGUI(ClientControllerClientInterface controller) {
         clientController = controller;
-        new Framework(controller);
+        return new Framework(controller);
     }
 
-    public static void run(ClientControllerClientInterface controller) {
-        createAndShowGUI(controller);
+    public static Framework run(ClientControllerClientInterface controller) {
+        return createAndShowGUI(controller);
     }
 
 
