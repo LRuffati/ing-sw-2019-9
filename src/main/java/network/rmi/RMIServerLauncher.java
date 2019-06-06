@@ -1,6 +1,6 @@
 package network.rmi;
 
-import controller.InitGame;
+//import controller.InitGame;
 import gamemanager.ParserConfiguration;
 import network.rmi.server.ServerNetworkRMI;
 

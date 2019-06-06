@@ -37,6 +37,9 @@ public class Framework implements View {
         createAndShowGUI(controller);
     }
 
+    public ClientControllerClientInterface getClientController() {
+        return clientController;
+    }
 
     @Override
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
