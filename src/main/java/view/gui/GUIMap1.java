@@ -18,21 +18,32 @@ public class GUIMap1 extends JPanel {
     private JPanel panel;
     private Graphics g;
 
-    public GUIMap1(String path){
+    public GUIMap1(){
+
+
         try {
-            emptyMap = ImageIO.read(new File(path));
+            ammoTile = ImageIO.read(new File(SRC + "greenAmmo.png"));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
 
         JFrame frame = new JFrame("label");
-        Image imgMap = emptyMap.getScaledInstance(emptyMap.getWidth()/2,emptyMap.getHeight()/2,Image.SCALE_SMOOTH);
-        ImageIcon iconMap = new ImageIcon(imgMap);
 
 
-        JLabel label = new JLabel(iconMap);
-        setGreenAmmoTile(label);
+        JLabel label = new JLabel();
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile1.png");
         setYellowAmmoTile(label);
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile3.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile4.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile5.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile6.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile7.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile8.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile9.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile10.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile11.png");
+        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile12.png");
+
         frame.add(label);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
@@ -40,12 +51,12 @@ public class GUIMap1 extends JPanel {
     }
 
     public static void main(String[] args){
-        new GUIMap1(SRC + "GUImap1.png");
+        new GUIMap1();
     }
 
-    private void setGreenAmmoTile(JLabel label){
+    private void setGreenAmmoTile(JLabel label, String path){
         try {
-            ammoTile = ImageIO.read(new File(SRC + "greenAmmo.png"));
+            ammoTile = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
@@ -58,13 +69,13 @@ public class GUIMap1 extends JPanel {
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
         ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),0,0);
-        label.setLayout(new FlowLayout(FlowLayout.LEFT,300,62));
+        //label.setLayout(new FlowLayout(FlowLayout.LEFT,300,62));
         label.add(ammoButton);
     }
 
     private void setYellowAmmoTile(JLabel label){
         try {
-            ammoTile = ImageIO.read(new File(SRC + "yellowAmmo.png"));
+            ammoTile = ImageIO.read(new File("src/resources/gui/firstMap/tile2.png"));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
@@ -76,8 +87,8 @@ public class GUIMap1 extends JPanel {
         ammoButton.addActionListener(e -> System.out.println("prova bottone ammotile stanza gialla"));
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
-        ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),0,0);
-        label.setLayout(new FlowLayout(FlowLayout.LEADING,164,161));
+        ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),500,0);
+        label.setLayout(new FlowLayout(FlowLayout.LEADING,0,0));
         label.add(ammoButton);
     }
 
