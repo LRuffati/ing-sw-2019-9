@@ -1,7 +1,7 @@
 package cli;
 
 import board.GameMap;
-import controllerclient.ClientController;
+import testcontroller.ClientController;
 import gamemanager.GameBuilder;
 import player.Actor;
 import viewclasses.GameMapView;

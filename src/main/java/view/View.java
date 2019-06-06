@@ -1,4 +1,4 @@
-package controllerclient;
+package view;
 
 import controllerresults.ControllerActionResultClient;
 import viewclasses.ActionView;

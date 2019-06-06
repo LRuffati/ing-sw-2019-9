@@ -1,6 +1,6 @@
 package view.gui;
 
-import controllerclient.ClientControllerClientInterface;
+import testcontroller.controllerclient.ClientControllerClientInterface;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
@@ -9,7 +9,6 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Collections;
 import java.util.List;
 
 //public class Login extends JFrame implements ActionListener{

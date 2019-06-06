@@ -1,6 +1,7 @@
-package controllerclient;
+package testcontroller.controllerclient;
 
 import controllerresults.ControllerActionResultClient;
+import view.View;
 import viewclasses.GameMapView;
 
 import java.util.List;

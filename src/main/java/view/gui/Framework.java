@@ -1,7 +1,7 @@
 package view.gui;
 
-import controllerclient.ClientControllerClientInterface;
-import controllerclient.View;
+import testcontroller.controllerclient.ClientControllerClientInterface;
+import view.View;
 import controllerresults.ControllerActionResultClient;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;

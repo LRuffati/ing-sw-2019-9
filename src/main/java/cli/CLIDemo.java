@@ -1,7 +1,7 @@
 package cli;
 
-import controllerclient.ClientControllerClientInterface;
-import controllerclient.View;
+import testcontroller.controllerclient.ClientControllerClientInterface;
+import view.View;
 import controllerresults.ControllerActionResultClient;
 import uid.DamageableUID;
 import uid.TileUID;

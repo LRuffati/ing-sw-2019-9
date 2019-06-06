@@ -1,6 +1,6 @@
 package network.socket.client;
 
-import controllerclient.ClientControllerNetworkInterface;
+import testcontroller.controllerclient.ClientControllerNetworkInterface;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
