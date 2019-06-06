@@ -1,11 +1,14 @@
 package actions.effects;
 
 import actions.utils.AmmoAmountUncapped;
+import board.GameMap;
 import grabbables.Weapon;
+import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface Effect {
@@ -24,4 +27,14 @@ public interface Effect {
         return old;
     }
 
+    /**
+     *
+     * @param next
+     * @param pov
+     * @param gameMap
+     * @param finalize
+     * @return
+     */
+    ControllerMainLineResultServer mergeInGameMap(List<Effect> next, Actor pov, GameMap gameMap,
+                                                  Runnable<ControllerMainLineResultServer> finalize)
 }
