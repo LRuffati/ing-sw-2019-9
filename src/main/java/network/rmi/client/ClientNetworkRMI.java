@@ -1,10 +1,12 @@
 package network.rmi.client;
 
+import network.Player;
 import testcontroller.controllerclient.ClientControllerNetworkInterface;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
+import view.View;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -21,11 +23,17 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
     private transient ServerRMIInterface controller;
     private transient String token;
+
+    private transient View view;
     private transient ClientControllerNetworkInterface clientController;
 
-    public ClientNetworkRMI(ServerRMIInterface controller) throws RemoteException {
+    public ClientNetworkRMI(ServerRMIInterface controller, View view) throws RemoteException {
         this.controller = controller;
+        this.view = view;
     }
+
+    @Override
+    public void setToken(String token) {}
 
     //ServerInterface methods
 
@@ -50,6 +58,29 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     public void nofifyMap(GameMapView gameMap) {
         clientController.updateMap(gameMap);
     }
+
+
+    @Override
+    public void onConnection(Player player) {
+        view.onConnection(player, true);
+    }
+
+    @Override
+    public void onDisconnection(Player player) {
+        view.onConnection(player, false);
+    }
+
+    @Override
+    public void onStarting(String map) {
+        view.onStarting(map);
+    }
+
+    @Override
+    public void onTimer(int ms) {
+        view.onTimer(ms);
+    }
+
+
 
     //ClientInterface methods
 

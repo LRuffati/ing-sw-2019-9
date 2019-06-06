@@ -2,13 +2,13 @@ package network.socket.messages.notify;
 
 import network.socket.messages.Response;
 import network.socket.messages.ResponseHandler;
-import viewclasses.GameMapView;
 
-public class NotifyMap implements Response {
+public class OnStarting implements Response {
 
-    public final GameMapView gameMap;
-    public NotifyMap(GameMapView gameMap) {
-        this.gameMap = gameMap;
+    public final String mapName;
+
+    public OnStarting(String map) {
+        this.mapName = map;
     }
 
     @Override

@@ -7,10 +7,8 @@ import network.ServerInterface;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
+import network.socket.messages.notify.*;
 import viewclasses.GameMapView;
-
-import java.rmi.RemoteException;
-
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -19,7 +17,7 @@ import java.rmi.RemoteException;
 public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     private final ClientHandler clientHandler;
-    private Player player;
+    private String token;
 
     public ServerNetworkSocket(ClientHandler clientHandler){
         this.clientHandler = clientHandler;
@@ -29,6 +27,11 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     private boolean checkConnection(String token) {
         return Database.get().getConnectedTokens().contains(token);
+    }
+
+    @Override
+    public void setToken(String token) {
+        this.token = token;
     }
 
 
@@ -51,6 +54,33 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     public void nofifyMap(GameMapView gameMap) {
         clientHandler.respond(new NotifyMap(gameMap));
     }
+
+
+
+    @Override
+    public void onTimer(int ms) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnTimer(ms));
+    }
+
+    @Override
+    public void onStarting(String map) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnStarting(map));
+    }
+
+    @Override
+    public void onDisconnection(Player player) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnConnection(player, false));
+    }
+
+    @Override
+    public void onConnection(Player player) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnConnection(player, true));
+    }
+
 
     //RequestHandler methods
 

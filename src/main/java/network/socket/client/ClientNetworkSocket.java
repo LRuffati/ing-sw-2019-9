@@ -1,11 +1,13 @@
 package network.socket.client;
 
+import network.socket.messages.notify.*;
 import testcontroller.controllerclient.ClientControllerNetworkInterface;
 import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
 import network.ClientInterface;
 import network.exception.InvalidLoginException;
 import network.socket.messages.*;
+import view.View;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -22,12 +24,14 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private final Client client;
     private Thread receiver;
 
+    private View view;
     private ClientControllerNetworkInterface clientController;
 
 
-    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController){
+    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController, View view){
         this.client = client;
         this.clientController = clientController;
+        this.view = view;
         run();
     }
 
@@ -251,5 +255,20 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     @Override
     public void handle(NotifyMap response) {
         clientController.updateMap(response.gameMap);
+    }
+
+    @Override
+    public void handle(OnConnection response) {
+        view.onConnection(response.playerConnected, response.connected);
+    }
+
+    @Override
+    public void handle(OnStarting response) {
+        view.onStarting(response.mapName);
+    }
+
+    @Override
+    public void handle(OnTimer response) {
+        view.onTimer(response.timeToWait);
     }
 }

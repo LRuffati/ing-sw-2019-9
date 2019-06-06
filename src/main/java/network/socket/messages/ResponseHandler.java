@@ -1,5 +1,7 @@
 package network.socket.messages;
 
+import network.socket.messages.notify.*;
+
 /**
  * This interface contains all the Response that the Client can receive
  */
@@ -22,4 +24,8 @@ public interface ResponseHandler {
 
 
     void handle(NotifyMap response);
+
+    void handle(OnTimer response);
+    void handle(OnConnection response);
+    void handle(OnStarting response);
 }
