@@ -2,6 +2,8 @@ package testcontroller;
 
 import actions.ActionBundle;
 import grabbables.PowerUp;
+import network.Player;
+import network.ServerInterface;
 import player.Actor;
 
 import java.util.List;
@@ -34,6 +36,14 @@ import java.util.Set;
  * each possible interaction line
  */
 public class SlaveController {
+    private Player player;
+    private ServerInterface network;
+
+    public SlaveController(Player player, ServerInterface network) {
+        this.player = player;
+        this.network = network;
+    }
+
     /**
      * This function sets in motion the main turn line
      *
@@ -89,4 +99,21 @@ public class SlaveController {
         return null;
     }
 
+
+
+    void onConnection(Player player) {
+        network.onConnection(player);
+    }
+
+    void onDisconnection(Player player) {
+        network.onDisconnection(player);
+    }
+
+    void onStarting(String map) {
+        network.onStarting(map);
+    }
+
+    void onTimer(int ms) {
+        network.onTimer(ms);
+    }
 }
