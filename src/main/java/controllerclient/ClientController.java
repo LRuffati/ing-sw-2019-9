@@ -18,6 +18,7 @@ import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
 import java.io.IOException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -62,9 +63,14 @@ public class ClientController implements ClientControllerClientInterface, Client
             network = new ClientNetworkSocket(client, this);
         }
         else {
-            Registry registry = LocateRegistry.getRegistry();
-            String lookup = String.format("//%s:%d/controller", networkAddress, ParserConfiguration.parseInt("RMIPort"));
-            ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
+            Registry registry = LocateRegistry.getRegistry(networkAddress, ParserConfiguration.parseInt("RMIPort"));
+            ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(ParserConfiguration.parse("RMIBinding"));
+            //ServerRMIInterface controller = (ServerRMIInterface)Naming.lookup(ParserConfiguration.parse("RMIBinding"));
+
+            //String lookup = String.format("//%s:%d/%s", networkAddress, ParserConfiguration.parseInt("RMIPort"), "prova");//ParserConfiguration.parse("RMIBinding"));
+            //Registry registry = LocateRegistry.getRegistry();
+            //ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
+            //ServerRMIInterface controller = (ServerRMIInterface) Naming.lookup(lookup);
             network = new ClientNetworkRMI(controller);
         }
 

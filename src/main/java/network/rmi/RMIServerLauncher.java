@@ -1,9 +1,14 @@
 package network.rmi;
 
 //import controller.InitGame;
+import exception.AlreadyBoundedActorException;
 import gamemanager.ParserConfiguration;
 import network.rmi.server.ServerNetworkRMI;
 
+import javax.swing.text.html.parser.Parser;
+import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -37,19 +42,26 @@ public class RMIServerLauncher {
     }
 
 
-    public static ServerNetworkRMI RMILauncher(int port){
+    public static ServerNetworkRMI RMILauncher(String host, int port){
         try{
+            System.setProperty("java.rmi.server.hostname", host);
+
             ServerNetworkRMI controller = new ServerNetworkRMI();
             System.out.println(">>> Controller exported");
 
-            String host = ParserConfiguration.parse("RMIBinding");
             Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind(host, controller);
+            registry.bind(ParserConfiguration.parse("RMIBinding"), controller);
+
+            /*String host = "prova";//ParserConfiguration.parse("RMIBinding");
+            Registry registry = LocateRegistry.createRegistry(port);
+            registry.rebind(host, controller);*/
+
+            //Naming.rebind(ParserConfiguration.parse("RMIBinding"), controller);
 
             startPing(controller);
             return controller;
         }
-        catch (RemoteException e){
+        catch (RemoteException | AlreadyBoundException e){
             e.printStackTrace();
             return null;
         }

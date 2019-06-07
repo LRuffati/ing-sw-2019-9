@@ -6,21 +6,21 @@ import network.rmi.RMIServerLauncher;
 import network.socket.SocketServerLauncher;
 
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class NetworkBuilder {
     public NetworkBuilder(MainController controller) {
         String host;
-        int port;
 
         Database.get().setMainController(controller);
 
-        //host = ParserConfiguration.parse("RMIBinding");
-        port = ParserConfiguration.parseInt("RMIPort");
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Inserire indirizzo IP del server:\t");
+        host = scanner.nextLine();
         try {
-            //RMIServerLauncher.RMILauncher(host, port);
-            RMIServerLauncher.RMILauncher(port);
+            RMIServerLauncher.RMILauncher(host, ParserConfiguration.parseInt("RMIPort"));
             new SocketServerLauncher(ParserConfiguration.parseInt("SocketPort"));
         }
         catch (IOException ex) {

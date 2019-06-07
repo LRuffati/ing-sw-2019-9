@@ -27,11 +27,15 @@ import java.util.stream.Collectors;
  */
 public class Main {
     private static void runServers() throws IOException {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Inserire indirizzo IP del server:\t");
+        String host = scanner.nextLine();
+
         int port = ParserConfiguration.parseInt("RMIPort");
-        RMIServerLauncher.RMILauncher(port);
+        RMIServerLauncher.RMILauncher(host, port);
         new SocketServerLauncher(ParserConfiguration.parseInt("SocketPort"));
 
-        Scanner scanner = new Scanner(System.in);
         int i = 0;
         while(i < 100){
             i++;
