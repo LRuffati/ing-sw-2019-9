@@ -31,18 +31,18 @@ public class GUIMap1 extends JPanel {
         frame.setSize(681,920);
         frame.setResizable(false);
         JLabel label = new JLabel();
-        setFirstTile(label,"src/resources/gui/firstMap/tile1.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile2.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile3.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile4.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile5.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile6.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile7.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile8.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile9.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile10.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile11.png");
-        setFollowingTile(label,"src/resources/gui/firstMap/tile12.png");
+        setFirstTile(label,"src/resources/gui/firstMap/tile1.png", Color.GREEN);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile2.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile3.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile4.png", Color.BLUE);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile5.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile6.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile7.png", Color.BLUE);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile8.png", Color.RED);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile9.png", Color.WHITE);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile10.png", Color.BLUE);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile11.png", Color.RED);
+        setFollowingTile(label,"src/resources/gui/firstMap/tile12.png", null);
 
         frame.add(label);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,7 +54,7 @@ public class GUIMap1 extends JPanel {
         new GUIMap1();
     }
 
-    private void setFollowingTile(JLabel label, String path){
+    private void setFollowingTile(JLabel label, String path, Color tileColor){
         try {
             ammoTile = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -65,15 +65,14 @@ public class GUIMap1 extends JPanel {
         JButton ammoButton = new JButton();
         ammoButton.setIcon(iconAmmo);
         //come aggiungere azione a bottone:
-        ammoButton.addActionListener(e -> System.out.println("prova bottone ammotile stanza verde"));
+        ammoButton.addActionListener(e -> System.out.println("prova bottone ammotile stanza " + tileColor.toString()));
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
         ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),0,0);
-        //label.setLayout(new FlowLayout(FlowLayout.LEFT,300,62));
         label.add(ammoButton);
     }
 
-    private void setFirstTile(JLabel label,String path){
+    private void setFirstTile(JLabel label,String path, Color tileColor){
         try {
             ammoTile = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -84,7 +83,7 @@ public class GUIMap1 extends JPanel {
         JButton ammoButton = new JButton();
         ammoButton.setIcon(iconAmmo);
         //come aggiungere azione a bottone:
-        ammoButton.addActionListener(e -> System.out.println("prova bottone ammotile stanza gialla"));
+        ammoButton.addActionListener(e -> System.out.println("prova bottone ammotile stanza " + tileColor.toString()));
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
         ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),500,0);
