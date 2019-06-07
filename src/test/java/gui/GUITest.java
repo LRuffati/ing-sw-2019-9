@@ -8,6 +8,6 @@ public class GUITest {
 
     @Test
     void emptyMapTest(){
-        map = new GUIMap1("src/resources/gui/GUImap1.png");
+        map = new GUIMap1();
     }
 }

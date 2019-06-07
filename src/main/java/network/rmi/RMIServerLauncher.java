@@ -1,14 +1,10 @@
 package network.rmi;
 
 //import controller.InitGame;
-import exception.AlreadyBoundedActorException;
 import gamemanager.ParserConfiguration;
 import network.rmi.server.ServerNetworkRMI;
 
-import javax.swing.text.html.parser.Parser;
-import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
-import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

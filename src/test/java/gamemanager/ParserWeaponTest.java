@@ -17,7 +17,7 @@ public class ParserWeaponTest {
 
     @BeforeEach
     void setup(){
-        String path = "src/test/java/gamemanager/weaponToTest";
+        String path = "C:\\Users\\carme\\Documents\\ing-sw-2019-9\\src\\test\\java\\gamemanager\\weaponToTest";
         try{
             weaponCollection = ParserWeapon.parse(path);
         } catch (FileNotFoundException e) {
