@@ -28,25 +28,25 @@ public class GUIMap1 extends JPanel {
         }
 
         JFrame frame = new JFrame("label");
-
-
+        frame.setSize(681,920);
+        frame.setResizable(false);
         JLabel label = new JLabel();
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile1.png");
-        setYellowAmmoTile(label);
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile3.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile4.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile5.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile6.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile7.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile8.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile9.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile10.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile11.png");
-        setGreenAmmoTile(label,"src/resources/gui/firstMap/tile12.png");
+        setFirstTile(label,"src/resources/gui/firstMap/tile1.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile2.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile3.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile4.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile5.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile6.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile7.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile8.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile9.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile10.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile11.png");
+        setFollowingTile(label,"src/resources/gui/firstMap/tile12.png");
 
         frame.add(label);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
+        //DO NOT USE pack() !!!
         frame.setVisible(true);
     }
 
@@ -54,7 +54,7 @@ public class GUIMap1 extends JPanel {
         new GUIMap1();
     }
 
-    private void setGreenAmmoTile(JLabel label, String path){
+    private void setFollowingTile(JLabel label, String path){
         try {
             ammoTile = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -73,9 +73,9 @@ public class GUIMap1 extends JPanel {
         label.add(ammoButton);
     }
 
-    private void setYellowAmmoTile(JLabel label){
+    private void setFirstTile(JLabel label,String path){
         try {
-            ammoTile = ImageIO.read(new File("src/resources/gui/firstMap/tile2.png"));
+            ammoTile = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
