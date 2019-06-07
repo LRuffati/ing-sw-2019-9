@@ -14,7 +14,7 @@ public class GUIMap1 extends JPanel {
     private static final String SRC = ParserConfiguration.parsePath("GuiDirectoryPath") + "/";
 
     private BufferedImage emptyMap;
-    private BufferedImage ammoTile;
+    private BufferedImage tile;
     private JPanel panel;
     private Graphics g;
 
@@ -22,16 +22,21 @@ public class GUIMap1 extends JPanel {
 
 
         try {
-            ammoTile = ImageIO.read(new File(SRC + "greenAmmo.png"));
+            tile = ImageIO.read(new File(SRC + "greenAmmo.png"));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
 
         JFrame frame = new JFrame("label");
-        frame.setSize(681,920);
+
+        if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
+            frame.setSize(681,920);
+        } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
+            frame.setSize(400,541);
+        }
         frame.setResizable(false);
         JLabel label = new JLabel();
-        setFirstTile(label,"src/resources/gui/firstMap/tile1.png", Color.GREEN);
+        setFirstTile(label,SRC + "firstMap/tile1.png", Color.GREEN);
         setFollowingTile(label,"src/resources/gui/firstMap/tile2.png", Color.YELLOW);
         setFollowingTile(label,"src/resources/gui/firstMap/tile3.png", Color.YELLOW);
         setFollowingTile(label,"src/resources/gui/firstMap/tile4.png", Color.BLUE);
@@ -43,7 +48,7 @@ public class GUIMap1 extends JPanel {
         setFollowingTile(label,"src/resources/gui/firstMap/tile10.png", Color.BLUE);
         setFollowingTile(label,"src/resources/gui/firstMap/tile11.png", Color.RED);
         setFollowingTile(label,"src/resources/gui/firstMap/tile12.png", null);
-
+        System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
         frame.add(label);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //DO NOT USE pack() !!!
@@ -56,16 +61,26 @@ public class GUIMap1 extends JPanel {
 
     private void setFollowingTile(JLabel label, String path, Color tileColor){
         try {
-            ammoTile = ImageIO.read(new File(path));
+            tile = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
-        Image imgAmmo = ammoTile.getScaledInstance(ammoTile.getWidth()/2,ammoTile.getHeight()/2,Image.SCALE_SMOOTH);
+        Image imgAmmo = tile;
+        if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
+            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2,Image.SCALE_SMOOTH);
+        } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
+            double tilewid = 0.58737 * (tile.getWidth() / 2.00000);
+            double tilehid = 0.588 * (tile.getHeight() / 2.00000);
+            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, Image.SCALE_SMOOTH);
+        }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
         JButton ammoButton = new JButton();
         ammoButton.setIcon(iconAmmo);
         //come aggiungere azione a bottone:
-        ammoButton.addActionListener(e -> System.out.println("prova bottone ammotile stanza " + tileColor.toString()));
+        ammoButton.addActionListener(e -> {
+            System.out.println("prova bottone ammotile stanza " + tileColor.toString());
+            String str = JOptionPane.showInputDialog(label,"asd",null);
+        });
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
         ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),0,0);
@@ -74,11 +89,18 @@ public class GUIMap1 extends JPanel {
 
     private void setFirstTile(JLabel label,String path, Color tileColor){
         try {
-            ammoTile = ImageIO.read(new File(path));
+            tile = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Errore su file da aprire.");
         }
-        Image imgAmmo = ammoTile.getScaledInstance(ammoTile.getWidth()/2,ammoTile.getHeight()/2,Image.SCALE_SMOOTH);
+        Image imgAmmo = tile;
+        if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
+            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2,Image.SCALE_SMOOTH);
+        } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
+            double tilewid = 0.58737 * (tile.getWidth() / 2.00000);
+            double tilehid = 0.588 * (tile.getHeight() / 2.00000);
+            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, Image.SCALE_SMOOTH);
+        }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
         JButton ammoButton = new JButton();
         ammoButton.setIcon(iconAmmo);
