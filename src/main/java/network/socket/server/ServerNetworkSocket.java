@@ -10,6 +10,8 @@ import network.exception.InvalidLoginException;
 import network.socket.messages.notify.*;
 import viewclasses.GameMapView;
 
+import java.util.List;
+
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
  * and the Requests called by the clients (implemented in RequestHandler)
@@ -146,23 +148,9 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(PickRequest request) {
-        String choosedId = request.chooserId;
-        int[] choice = request.choice;
-        if(choice.length < 1) {
-            //todo: return error
-        }
-        switch (request.type){
-            case 0:
-                return new PickResponse(0, ObjectMap.get().pickTarg(choosedId, choice[0]));
-            case 1:
-                return new PickResponse(1, ObjectMap.get().pickWeapon(choosedId, choice));
-            case 2:
-                return new PickResponse(2, ObjectMap.get().pickAction(choosedId, choice[0]));
-
-                default:
-                    //todo: return error
-        }
-        return new PickResponse(-1, null);
+        String choosedId = request.choiceId;
+        List<Integer> choices = request.choices;
+        return new PickResponse(ObjectMap.get().pick(choosedId, choices));
     }
 
     @Override

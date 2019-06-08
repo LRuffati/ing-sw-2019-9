@@ -188,6 +188,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
 
+
     @Override
     public void pick(ControllerActionResultClient elem, List<Integer> choices) {
         try {

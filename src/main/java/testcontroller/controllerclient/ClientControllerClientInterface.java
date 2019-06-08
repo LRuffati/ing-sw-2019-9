@@ -16,6 +16,10 @@ public interface ClientControllerClientInterface {
      * @param choices A list containing all the index of elements that have been chosen. PickTarget and PickAction only analyze the first element of the List.
      */
     void pick(ControllerActionResultClient elem, List<Integer> choices);
+
+    //todo: pick cosa????
+    void pick();
+
     /**
      * This method is used by the client to restart the action.
      */

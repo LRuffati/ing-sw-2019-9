@@ -1,20 +1,17 @@
 package network.rmi.server;
 
-import controllerresults.ControllerActionResultClient;
-import genericitems.Tuple;
 import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
-import viewclasses.ActionView;
+import testcontroller.ControllerMessage;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
 
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -23,13 +20,16 @@ import java.util.stream.Collectors;
  */
 public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIInterface{
 
+    transient Logger logger = Logger.getLogger(this.getClass().getName());
+
     public ServerNetworkRMI() throws RemoteException{
         super();
     }
 
     private boolean checkConnection(String token) throws RemoteException {
-        if(!Database.get().getConnectedTokens().contains(token))
+        if (!Database.get().getConnectedTokens().contains(token))
             throw new RemoteException("Invalid Token");
+
         return Database.get().getConnectedTokens().contains(token);
     }
 
@@ -76,46 +76,18 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
 
     @Override
-    public ControllerActionResultClient pickTarget(String token, String choiceMakerId, int choice) throws RemoteException{
+    public ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException{
         checkConnection(token);
-        return ObjectMap.get().pickTarg(choiceMakerId, choice);
+        return ObjectMap.get().pick(choiceId, choices);
     }
 
-    @Override
-    public ControllerActionResultClient pickWeapon(String token, String weaponChooserId, List<Integer> choice) throws RemoteException{
-        checkConnection(token);
-        return ObjectMap.get().pickWeapon(weaponChooserId, choice);
-    }
-
-    @Override
-    public ControllerActionResultClient pickAction(String token, String actionChooserId, int choice) throws RemoteException{
-        checkConnection(token);
-        return ObjectMap.get().pickAction(actionChooserId, choice);
-    }
-
-    @Override
-    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String token, String choiceMakerId) throws RemoteException {
-        checkConnection(token);
-        return ObjectMap.get().showOptionsTarget(choiceMakerId);
-    }
-
-    @Override
-    public List<WeaponView> showOptionsWeapon(String token, String weaponChooserId) throws RemoteException {
-        checkConnection(token);
-        return ObjectMap.get().showOptionsWeapon(weaponChooserId);
-    }
-
-    @Override
-    public Tuple<Boolean, List<ActionView>> showOptionsAction(String token, String actionPickerId) throws RemoteException {
-        checkConnection(token);
-        return ObjectMap.get().showOptionsAction(actionPickerId);
-    }
 
     @Override
     public GameMapView getMap(String token, String gameMapId) throws RemoteException {
         checkConnection(token);
         return ObjectMap.get().showGameMap(gameMapId);
     }
+
 
     @Override
     public boolean equals(Object obj) {
