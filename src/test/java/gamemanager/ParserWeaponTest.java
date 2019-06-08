@@ -17,7 +17,7 @@ public class ParserWeaponTest {
 
     @BeforeEach
     void setup(){
-        String path = "src/test/java/gamemanager/weaponToTest";
+        String path = "C:\\Users\\carme\\Documents\\ing-sw-2019-9\\src\\test\\java\\gamemanager\\weaponToTest";
         try{
             weaponCollection = ParserWeapon.parse(path);
         } catch (FileNotFoundException e) {
@@ -34,6 +34,7 @@ public class ParserWeaponTest {
 
     @Test
     void simpleWeaponTest(){
+        assertEquals(1, weaponCollection.size());
         Weapon weaponToTest = weaponCollection.iterator().next();
         assertEquals(weaponCollection.size(),1);
         assertEquals("precisione asd",weaponToTest.getName());

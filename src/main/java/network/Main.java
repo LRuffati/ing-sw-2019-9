@@ -9,6 +9,7 @@ import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
 import network.exception.InvalidLoginException;
 
+import javax.swing.text.html.parser.Parser;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.NotBoundException;
@@ -26,11 +27,15 @@ import java.util.stream.Collectors;
  */
 public class Main {
     private static void runServers() throws IOException {
-        String host = ParserConfiguration.parse("RMIBinding");
-        RMIServerLauncher.RMILauncher(host, ParserConfiguration.parseInt("RMIPort"));
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Inserire indirizzo IP del server:\t");
+        String host = scanner.nextLine();
+
+        int port = ParserConfiguration.parseInt("RMIPort");
+        RMIServerLauncher.RMILauncher(host, port);
         new SocketServerLauncher(ParserConfiguration.parseInt("SocketPort"));
 
-        Scanner scanner = new Scanner(System.in);
         int i = 0;
         while(i < 100){
             i++;
@@ -45,7 +50,8 @@ public class Main {
 
     private static void runSocket() throws IOException{
         System.out.println("\nClient Socket\n");
-        Client client = new Client("localhost", ParserConfiguration.parseInt("SocketPort"));
+        String host  = "localhost";
+        Client client = new Client(host, ParserConfiguration.parseInt("SocketPort"));
         client.init();
         ClientNetworkSocket controller = new ClientNetworkSocket(client, null);
         //controller.run();
@@ -64,8 +70,12 @@ public class Main {
             System.out.println("Registry bindings: " + name);
         }
         System.out.println("\n");
-        String host = ParserConfiguration.parse("RMIBinding");
-        String lookup = String.format("//%s:%d/controller", host, ParserConfiguration.parseInt("RMIPort"));
+
+        String host = "localhost";
+        String hostName = ParserConfiguration.parse("RMIBinding");
+        int port = ParserConfiguration.parseInt("RMIPort");
+        //String lookup = String.format("//%s:%d/%s", host, port, hostName);
+        String lookup = hostName;
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
         ClientNetworkRMI client = new ClientNetworkRMI(controller);
@@ -98,8 +108,10 @@ public class Main {
             System.out.println("Registry bindings: " + name);
         }
         System.out.println("\n");
+
         String host = ParserConfiguration.parse("RMIBinding");
-        String lookup = String.format("//%s:%d/controller", host, ParserConfiguration.parseInt("RMIPort"));
+        int port = ParserConfiguration.parseInt("RMIPort");
+        String lookup = String.format("//%s:%d/controller", host, port);
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
         ClientNetworkRMI client = new ClientNetworkRMI(controller);

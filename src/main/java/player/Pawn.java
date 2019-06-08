@@ -26,8 +26,8 @@ public class Pawn {
     private transient Actor actor;
     public final DamageableUID damageableUID;
     private transient GameMap map;
-    //TODO: addColor
-    private Color color = new Color(0,0,0);
+
+    private Color color = Color.yellow;
     private String username = "";
 
     /**
@@ -129,6 +129,7 @@ public class Pawn {
     public void setUsername(String username) {
         this.username = username;
     }
+
 
     public ActorView generateView(GameMapView gameMapView, boolean pointOfView) {
 

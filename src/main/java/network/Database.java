@@ -1,6 +1,9 @@
 package network;
 
+import controller.MainController;
+import controller.SlaveController;
 import network.exception.InvalidLoginException;
+import uid.DamageableUID;
 
 import java.rmi.server.UID;
 import java.util.*;
@@ -19,14 +22,26 @@ public class Database {
         gameMaster = null;
     }
 
+    private MainController mainController;
+    private final Map<String, SlaveController> controllerByToken = new HashMap<>();
+
     private final Map<String, Player> usersByToken = new HashMap<>();
     private final Map<String, Player> usersByUsername = new HashMap<>();
     private final Map<String, ServerInterface> networkByToken = new HashMap<>();
+
     private String gameMaster;
     private List<String> colors;
     private Set<String> disconnectedToken = new HashSet<>();
     private Set<String> connectedToken = new HashSet<>();
 
+
+    public void setMainController(MainController mainController){
+        this.mainController = mainController;
+    }
+
+    public MainController getMainController() {
+        return mainController;
+    }
 
     /**
      * @return Returns the Player bound to the player
@@ -50,6 +65,14 @@ public class Database {
         return network;
     }
 
+    public ServerInterface getNetwordByDamageableUid(DamageableUID uid){
+        for(String token : connectedToken) {
+            if(getUserByToken(token).getUid().equals(uid))
+                return getNetworkByToken(token);
+        }
+        throw new IllegalArgumentException("Invalid uid");
+    }
+
     /**
      * This method associates the connection with the player.
      * If the username and the color are not used by other players it generates an unique token and a new user.
@@ -71,9 +94,14 @@ public class Database {
         if(wrongColor || wrongUsername)
             throw new InvalidLoginException("Connection exception", wrongUsername, wrongColor);
 
-        boolean isFirst = false;
+        if(!mainController.canConnect())
+            throw new InvalidLoginException("Game already started", false, false);
+
+
         String token = new UID().toString();
-        colors.remove(color);
+
+
+        boolean isFirst = false;
         if(gameMaster == null) {
             gameMaster = token;
             isFirst = true;
@@ -81,13 +109,16 @@ public class Database {
 
         Player user = usersByUsername.get(username);
         if(user == null) {
-            user = new Player(username, password, color, isFirst, token);
+            user = new Player(username, password, color, isFirst, token, network);
             usersByUsername.put(token, user);
             networkByToken.put(token, network);
             usersByToken.put(token, user);
         }
-        connectedToken.add(token);
+        colors.remove(color);
 
+        controllerByToken.put(token, mainController.connect(user));
+
+        connectedToken.add(token);
         return token;
     }
 
@@ -114,6 +145,9 @@ public class Database {
         networkByToken.put(token, network);
         disconnectedToken.remove(token);
         connectedToken.add(token);
+
+        mainController.reconnect(getUserByToken(token));
+
         return token;
     }
 
@@ -124,12 +158,15 @@ public class Database {
      */
     public synchronized void quit(String token) {
         System.out.println("quit request");
+        mainController.logout(getUserByToken(token));
+
         colors.add(getUserByToken(token).getColor());
         usersByToken.remove(token);
         networkByToken.remove(token);
 
         connectedToken.remove(token);
         disconnectedToken.remove(token);
+
     }
 
     /**
@@ -138,6 +175,8 @@ public class Database {
      * @param token The token of the caller.
      */
     public synchronized void logout(String token){
+        mainController.logout(getUserByToken(token));
+
         networkByToken.remove(token);
         connectedToken.remove(token);
         disconnectedToken.add(token);
@@ -167,5 +206,9 @@ public class Database {
 
     public Set<String> getDisconnectedToken() {
         return disconnectedToken;
+    }
+
+    public Collection<Player> getPlayers() {
+        return usersByToken.values();
     }
 }

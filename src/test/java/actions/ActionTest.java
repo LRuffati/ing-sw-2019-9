@@ -56,40 +56,12 @@ class ActionTest {
 
     @Test
     void iterateAutomaticTarget(){
-        List<Tuple<String, TargeterTemplate>> targeters = new ArrayList<>();
-        Selector selector1 = new HasSelector();
-        List<Tuple<String, Condition>> filters = new ArrayList<>();
-        TargeterTemplate tt1 = new TargeterTemplate(new Tuple<>("Pietro", selector1), filters,
-                "tile", false, true,true);
-        Tuple<String,TargeterTemplate> t1 = new Tuple<>("Pietro", tt1);
-        targeters.add(t1);
-        List<EffectTemplate> effects = new ArrayList<>();
-        ActionTemplate aT = new ActionTemplate(mockInfo, targeters, effects);
-        Map<String, Targetable> previousTargets = new HashMap<>();
-        Targetable targetable1 = new DirectionTarget(newsandbox,map.getPosition(new Coord(2,2)),
-                Direction.DOWN,true);
-        previousTargets.put("Pietro",targetable1);
-        testedAction = new Action(newsandbox, aT, previousTargets,finalizer);
-        testedAction.iterate();
+
     }
 
     @Test
     void iterateManualTarget() {
-        List<Tuple<String, TargeterTemplate>> targeters = new ArrayList<>();
-        Selector selector1 = new HasSelector();
-        List<Tuple<String, Condition>> filters = new ArrayList<>();
-        TargeterTemplate tt1 = new TargeterTemplate(new Tuple<>("Pietro", selector1), filters,
-                "tile", false, true,false);
-        Tuple<String,TargeterTemplate> t1 = new Tuple<>("Pietro", tt1);
-        targeters.add(t1);
-        List<EffectTemplate> effects = new ArrayList<>();
-        ActionTemplate aT = new ActionTemplate(mockInfo, targeters, effects);
-        Map<String, Targetable> previousTargets = new HashMap<>();
-        Targetable targetable1 = new DirectionTarget(newsandbox,map.getPosition(new Coord(2,2)),
-                Direction.DOWN,true);
-        previousTargets.put("Pietro",targetable1);
-        testedAction = new Action(newsandbox, aT, previousTargets,finalizer);
-        testedAction.iterate();
+
     }
 
     @Test

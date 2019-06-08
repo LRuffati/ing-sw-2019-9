@@ -11,6 +11,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.System.exit;
+
 /**
  * Class used to send data to the Server via socket
  */
@@ -44,7 +46,7 @@ public class Client {
         try {
             return ((Response) in.readObject());
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
+        exit(0);//logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
         } catch (ClassNotFoundException e) {
             throw new NextResponseException("Wrong deserialization: " + e.getMessage());
         }

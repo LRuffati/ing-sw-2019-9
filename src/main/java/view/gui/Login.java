@@ -69,6 +69,7 @@ class Login extends JFrame {
         //super(new GridBagLayout());
 
         this.controller = controller;
+        cliController = controller.getClientController();
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 

@@ -1,9 +1,10 @@
 package network.rmi;
 
-import network.rmi.client.ClientNetworkRMI;
+//import controller.InitGame;
+import gamemanager.ParserConfiguration;
 import network.rmi.server.ServerNetworkRMI;
-import network.socket.server.ServerNetworkSocket;
 
+import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -39,16 +40,24 @@ public class RMIServerLauncher {
 
     public static ServerNetworkRMI RMILauncher(String host, int port){
         try{
+            System.setProperty("java.rmi.server.hostname", host);
+
             ServerNetworkRMI controller = new ServerNetworkRMI();
             System.out.println(">>> Controller exported");
 
             Registry registry = LocateRegistry.createRegistry(port);
-            registry.rebind("//" + host + ":" + port + "/controller", controller);
+            registry.bind(ParserConfiguration.parse("RMIBinding"), controller);
+
+            /*String host = "prova";//ParserConfiguration.parse("RMIBinding");
+            Registry registry = LocateRegistry.createRegistry(port);
+            registry.rebind(host, controller);*/
+
+            //Naming.rebind(ParserConfiguration.parse("RMIBinding"), controller);
 
             startPing(controller);
             return controller;
         }
-        catch (RemoteException e){
+        catch (RemoteException | AlreadyBoundException e){
             e.printStackTrace();
             return null;
         }
@@ -60,7 +69,7 @@ public class RMIServerLauncher {
             public void run() {
                 try {
                     if(controller instanceof ServerNetworkRMI)
-                    controller.sendPing();
+                        controller.sendPing();
                 }
                 catch (RemoteException e){
                     e.printStackTrace();
@@ -83,6 +92,5 @@ public class RMIServerLauncher {
             porta = 1099;
 
         new RMIServerLauncher(porta);
-
     }
 }

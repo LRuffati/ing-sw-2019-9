@@ -7,7 +7,6 @@ import network.socket.server.ClientHandler;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.Scanner;
@@ -24,7 +23,7 @@ public class SocketServerLauncher {
         receiveConnections(this);
     }
 
-    public void run() throws IOException, RemoteException {
+    public void run() throws IOException {
         System.in.read();
         for(String token : Database.get().getConnectedTokens())
             Database.get().getNetworkByToken(token).sendUpdate("ciao");
