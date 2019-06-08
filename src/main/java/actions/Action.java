@@ -85,7 +85,8 @@ public class Action {
                                 if (listTargets.isEmpty() && optionalTarg) {
                                     return fun.apply(action.apply(-1));
                                 } else if (listTargets.isEmpty()) {
-                                    return new RollbackMessage();
+                                    return new RollbackMessage("No targets are available from " +
+                                            "this position");
                                 } else {
                                     return fun.apply(action.apply(listTargets.get(0).x));
                                 }
@@ -192,7 +193,8 @@ public class Action {
                             thisTargeter.x);
 
             if (!targeter.giveChoices()) {
-                return new RollbackMessage();
+                return new RollbackMessage("Non ci sono bersagli validi disponibili da questa " +
+                        "posizione");
             }
 
             // available target or no target

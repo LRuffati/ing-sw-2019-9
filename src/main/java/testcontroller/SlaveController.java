@@ -53,7 +53,6 @@ public class SlaveController {
      * @return
      */
     public boolean startMainAction(List<ActionBundle> actionBundles, Set<PowerUp> powerUps){
-
     }
 
     /**

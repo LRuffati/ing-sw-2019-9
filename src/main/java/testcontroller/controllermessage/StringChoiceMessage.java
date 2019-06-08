@@ -16,7 +16,7 @@ public class StringChoiceMessage implements ControllerMessage {
     public StringChoiceMessage(List<String> options, String description, Function<Integer,
             ControllerMessage> picker){
         this.options = options;
-        this.description = description
+        this.description = description;
         this.picker = picker;
     }
 
