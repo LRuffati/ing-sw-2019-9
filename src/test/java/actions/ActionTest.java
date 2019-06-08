@@ -56,19 +56,21 @@ class ActionTest {
 
     @Test
     void iterateAutomaticTarget(){
-
+        assert false;
     }
 
     @Test
     void iterateManualTarget() {
-
+        assert false;
     }
 
     @Test
     void iterateManualTargetMandatory() {
+        assert false;
     }
 
     @Test
     void iterateManualTargetOptional() {
+        assert false;
     }
 }
