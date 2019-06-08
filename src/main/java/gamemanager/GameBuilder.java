@@ -37,6 +37,7 @@ public class GameBuilder {
     private List<Actor> actorList;
     private GameMap map;
     private Scoreboard scoreboard;
+    private String mapName;
 
     /**
      * Constructor of the class. It builds all the modules needed for the game to start.
@@ -74,16 +75,24 @@ public class GameBuilder {
 
 
     private GameMap parserMap(String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
-        if(mapPath != null) return GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+        mapName = null;
+        if (mapPath != null) {
+            mapName = mapPath;
+            return GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+        }
 
-        if(numOfPlayer == 3)
-            return GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path"), numOfPlayer, decks);
-        if(numOfPlayer == 4)
-            return GameMap.gameMapFactory(ParserConfiguration.parsePath("map2Path"), numOfPlayer, decks);
-        if(numOfPlayer == 5)
-            return GameMap.gameMapFactory(ParserConfiguration.parsePath("map3Path"), numOfPlayer, decks);
+        if (numOfPlayer == 3)
+            mapName = "map1";
+        if (numOfPlayer == 4)
+            mapName = "map2";
+        if (numOfPlayer == 5)
+            mapName = "map3";
 
-        return GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path"), numOfPlayer, decks);
+        if (mapName != null)
+            return GameMap.gameMapFactory(ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
+
+        mapName = "map1";
+        return GameMap.gameMapFactory(ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
     }
 
     private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
@@ -137,6 +146,9 @@ public class GameBuilder {
     }
     public List<Actor> getActorList(){
         return new ArrayList<>(actorList);
+    }
+    public String getMapName() {
+        return mapName;
     }
 }
 

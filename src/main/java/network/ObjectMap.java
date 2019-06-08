@@ -9,6 +9,8 @@ import controllerresults.ControllerActionResultClient;
 import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import testcontroller.ChoiceBoard;
+import testcontroller.ControllerMessage;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
@@ -27,16 +29,15 @@ public class ObjectMap {
         return ourInstance;
     }
 
-    private Map<String, ChoiceMaker> choiceMakerMap;
-    private Map<String, WeaponChooser> weaponChooserMap;
-    private Map<String, ActionPicker> actionPickerMap;
-    private Map<String, Sandbox> sandboxMap;
+    private Map<String, ControllerMessage> choiceMap;
+
+    private Map<String, ChoiceMaker> choiceMakerMap = new HashMap<>();
+    private Map<String, WeaponChooser> weaponChooserMap = new HashMap<>();
+    private Map<String, ActionPicker> actionPickerMap = new HashMap<>();
+
+    private Map<String, Sandbox> sandboxMap = new HashMap<>();
 
     private ObjectMap() {
-        choiceMakerMap = new HashMap<>();
-        weaponChooserMap = new HashMap<>();
-        actionPickerMap = new HashMap<>();
-        sandboxMap = new HashMap<>();
     }
 
     public void clearChache(){
@@ -49,6 +50,20 @@ public class ObjectMap {
     private String newID(){
         return new UID().toString();
     }
+
+    private ChoiceBoard handlePick(ControllerMessage controllerMessage) {
+        String id = newID();
+        choiceMap.put(id, controllerMessage);
+        sandboxMap.put(newID(), controllerMessage.sandbox());
+        return new ChoiceBoard();
+    }
+
+    public ChoiceBoard pick(String choiceId, List<Integer> choices) {
+        if(!choiceMap.containsKey(choiceId))
+            //todo return ??
+        return handlePick(choiceMap.get(choiceId).pick(choices));
+    }
+
 
     private ControllerActionResultClient handlePick(ControllerActionResultServer controllerActionResultServer){
 

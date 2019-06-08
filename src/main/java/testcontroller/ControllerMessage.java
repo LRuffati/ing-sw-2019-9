@@ -5,6 +5,8 @@ import board.Sandbox;
 import genericitems.Tuple;
 import testcontroller.controllerstates.SlaveControllerState;
 
+import java.util.List;
+
 /**
  * This class represents every message guiding the evolution of the game.
  * There are two types, interactive messages require a choice to be made by the player, update
@@ -53,6 +55,6 @@ public interface ControllerMessage {
      * @param choices the positions of the chosen elements
      * @return
      */
-    ControllerMessage pick(int[] choices);
+    ControllerMessage pick(List<Integer> choices);
 
 }

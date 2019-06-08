@@ -59,7 +59,7 @@ public class MainController {
      * @param player The Player that logged in
      */
     public void connect(Player player) {
-        if(!canConnect())   throw new IllegalArgumentException("Invalid request");
+        if(!canConnect())   throw new IllegalArgumentException("Invalid connection request");
 
         numOfPlayer++;
         System.out.println("Connection");
@@ -133,9 +133,10 @@ public class MainController {
     }
 
     private void startGame() {
-        notifyStarting();
         gameStarted = true;
         createGame();
+        notifyStarting(game.getMapName());
+        //todo notify inizio gioco
     }
 
     private GameBuilder createGame() {
