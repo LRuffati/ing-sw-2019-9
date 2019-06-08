@@ -3,7 +3,7 @@ package actions.effects;
 import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
-import controllerresults.ControllerActionResultServer;
+import testcontroller.controllermessage.ControllerMessage;
 
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,8 @@ public class PayTemplate implements EffectTemplate{
     }
 
     @Override
-    public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResultServer> consumer) {
+    public ControllerMessage spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox,
+            ControllerMessage> consumer) {
         return consumer.apply(new Sandbox(sandbox, List.of(new PayEffect(amount))));
     }
 }

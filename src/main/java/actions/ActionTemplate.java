@@ -5,8 +5,8 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.ActionView;
 
 import java.util.*;
@@ -130,7 +130,7 @@ public class ActionTemplate {
 
     public Action generate(Sandbox sandbox, Map<String, Targetable> prevTargs,
                            Function<Tuple<Sandbox, Map<String, Targetable>>,
-                                   ControllerActionResultServer> finalizer){
+                                   ControllerMessage> finalizer){
         return new Action(sandbox, this, prevTargs, finalizer);
     }
 

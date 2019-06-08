@@ -4,10 +4,11 @@ import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
 import actions.utils.AmmoAmount;
 import board.Sandbox;
-import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllermessage.PickActionMessage;
+import testcontroller.controllermessage.RollbackMessage;
 import viewclasses.ActionView;
 
 import java.util.*;
@@ -18,7 +19,7 @@ public class WeaponUse implements ActionPicker {
     private Weapon weapon;
     private Sandbox sandbox;
 
-    private final Function<Sandbox, ControllerActionResultServer> finalizer;
+    private final Function<Sandbox, ControllerMessage> finalizer;
 
     Map<String, Targetable> existingTargets;
     List<String> previousActions;
@@ -27,7 +28,7 @@ public class WeaponUse implements ActionPicker {
     private final boolean canStop;
 
     public WeaponUse(Weapon weapon, Sandbox sandbox,
-                     Function<Sandbox, ControllerActionResultServer> finalizer){
+                     Function<Sandbox, ControllerMessage> finalizer){
         this.weapon = weapon;
         this.sandbox = sandbox;
         this.finalizer = finalizer;
@@ -75,21 +76,21 @@ public class WeaponUse implements ActionPicker {
     }
 
     @Override
-    public ControllerActionResultServer pickAction(int choice) {
+    public ControllerMessage pickAction(int choice) {
         Tuple<String, ActionTemplate> action;
         if (choice<0 && canStop){
             return finalizer.apply(sandbox);
         } else if (0<=choice && choice<availableActions.size()){
             action = availableActions.get(choice);
-        } else return new ControllerActionResultServer(ActionResultType.ROLLBACK,"", sandbox);
+        } else return new RollbackMessage();
 
         final List<String> updatedActions = new LinkedList<>(previousActions);
         updatedActions.add(action.x);
-        Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> fun =
+        Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> fun =
                 tup -> {
                     WeaponUse weaponUseNew= new WeaponUse(WeaponUse.this, tup.x, tup.y,
                             updatedActions);
-                    return new ControllerActionResultServer(weaponUseNew,"", sandbox);
+                    return new PickActionMessage(weaponUseNew,"", sandbox);
                 };
         Action nextAction = new Action(sandbox, action.y, existingTargets, fun);
         return nextAction.iterate();
