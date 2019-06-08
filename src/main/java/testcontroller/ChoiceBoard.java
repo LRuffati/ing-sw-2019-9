@@ -1,7 +1,11 @@
 package testcontroller;
 
+import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
+import actions.utils.WeaponChooser;
+import genericitems.Tuple;
 import testcontroller.controllerstates.PickTypes;
+import uid.TileUID;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -32,6 +36,40 @@ public class ChoiceBoard {
      * TODO: change to something other than string
      */
     public final String description;
+
+    public ChoiceBoard(ChoiceMaker choiceMaker, String message) {
+        Tuple<Boolean, List<TargetView>> tup = choiceMaker.showOptions();
+        single = true;
+        optional = tup.x;
+        description = message;
+        type = PickTypes.TARGET;
+        //TODO: tup.y nella lista giusta, altre a null
+    }
+
+    public ChoiceBoard(WeaponChooser weaponChooser, String s) {
+        Tuple<Boolean, Boolean> opts = weaponChooser.params();
+        single = opts.y;
+        optional = opts.x;
+        description = s;
+        type = PickTypes.WEAPON;
+        //TODO: add to the correct list weaponChooser.showOptions()
+    }
+
+    public ChoiceBoard(ActionPicker actionPicker, String s) {
+        type = PickTypes.ACTION;
+        description = s;
+        single = true;
+        optional = actionPicker.showActionsAvailable().x;
+        //TODO: add actionpicker.showactionsavailable().y
+    }
+
+    public ChoiceBoard(List<String> options, String s){
+        type = PickTypes.STRING;
+        description = s;
+        single = true;
+        optional = false;
+        //TODO: add to list
+    }
 
     /**
      * The lists contain view elements or are null

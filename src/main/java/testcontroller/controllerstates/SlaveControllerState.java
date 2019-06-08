@@ -32,6 +32,14 @@ public enum SlaveControllerState {
      * In the SlaveController this update is directly made by the main controller class, for the
      * client this can be achieved either by polling or by a remote wake up
      */
-    WAIT // I'm waiting for instructions
+    WAIT, // I'm waiting for instructions
+
+    /**
+     * Used to notify that, while in a choice path the user should roll back to a previous state.
+     * This can happen when the user gets in a position from which it can't choose any valid
+     * option but terminating the operation is likewise not acceptable.
+     * A Message of this type should never appear as the result from SlaveController.giveMessage
+     */
+    ROLLBACK
 }
 

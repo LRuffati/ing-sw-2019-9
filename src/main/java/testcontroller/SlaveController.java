@@ -5,6 +5,7 @@ import grabbables.PowerUp;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
+import testcontroller.controllermessage.ControllerMessage;
 
 import java.util.List;
 import java.util.Set;
@@ -52,7 +53,7 @@ public class SlaveController {
      * @return
      */
     public boolean startMainAction(List<ActionBundle> actionBundles, Set<PowerUp> powerUps){
-        return false;
+
     }
 
     /**
