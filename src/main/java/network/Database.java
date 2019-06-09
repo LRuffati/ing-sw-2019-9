@@ -175,6 +175,8 @@ public class Database {
      * @param token The token of the caller.
      */
     public synchronized void logout(String token){
+        if(token == null || !connectedToken.contains(token))
+            return;
         mainController.logout(getUserByToken(token));
 
         networkByToken.remove(token);

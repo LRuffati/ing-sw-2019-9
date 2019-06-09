@@ -2,6 +2,7 @@ package network.rmi;
 
 //import controller.InitGame;
 import gamemanager.ParserConfiguration;
+import network.Database;
 import network.rmi.server.ServerNetworkRMI;
 
 import java.rmi.AlreadyBoundException;
@@ -68,8 +69,13 @@ public class RMIServerLauncher {
             @Override
             public void run() {
                 try {
+                    for(String token : Database.get().getConnectedTokens()) {
+                        Database.get().getNetworkByToken(token).ping();
+                    }
+                    /*
                     if(controller instanceof ServerNetworkRMI)
                         controller.sendPing();
+                        */
                 }
                 catch (RemoteException e){
                     e.printStackTrace();

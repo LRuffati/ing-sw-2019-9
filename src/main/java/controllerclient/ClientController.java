@@ -92,17 +92,25 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void login(String username, String password, String color) {
-        color = color.toLowerCase();
-        try {
-            network.register(username, password, color);
-            view.loginResponse(true, false, false);
-        }
-        catch (InvalidLoginException e) {
-            view.loginResponse(false, e.wrongUsername, e.wrongColor);
-        }
-        catch (RemoteException e) {
-            logger.log(Level.SEVERE, "Exception in login (register)", e);
-        }
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    network.register(username, password, color.toLowerCase());
+                    view.loginResponse(true, false, false);
+                } catch (
+                        InvalidLoginException e) {
+                    view.loginResponse(false, e.wrongUsername, e.wrongColor);
+                } catch (
+                        RemoteException e) {
+                    logger.log(Level.SEVERE, "Exception in login (register)", e);
+                }
+                Thread.currentThread().interrupt();
+            }
+
+        };
+        thread.start();
     }
 
     @Override
