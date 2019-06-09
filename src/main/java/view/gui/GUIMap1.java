@@ -1,5 +1,6 @@
 package view.gui;
 
+import board.Coord;
 import gamemanager.ParserConfiguration;
 
 import javax.imageio.ImageIO;
@@ -8,6 +9,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 public class GUIMap1 extends JPanel {
 
@@ -17,9 +19,9 @@ public class GUIMap1 extends JPanel {
     private BufferedImage tile;
     private JPanel panel;
     private Graphics g;
+    private Map<JButton, Coord> coordinate;
 
     public GUIMap1(){
-
 
         try {
             tile = ImageIO.read(new File(SRC + "greenAmmo.png"));
