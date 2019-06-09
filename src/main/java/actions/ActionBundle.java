@@ -5,9 +5,11 @@ import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
 import board.GameMap;
 import board.Sandbox;
-import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllermessage.PickActionMessage;
+import testcontroller.controllermessage.StringChoiceMessage;
+import testcontroller.controllermessage.WaitMessage;
 import uid.DamageableUID;
 import viewclasses.ActionView;
 
@@ -26,7 +28,7 @@ public class ActionBundle implements ActionPicker {
 
     private List<Effect> effects;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
+    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> finalizer;
 
     public ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
         this.actionsPossible = actions;
@@ -36,20 +38,38 @@ public class ActionBundle implements ActionPicker {
         this.sandboxFromMap = map.createSandbox(pov);
         finalizer = tup -> { // This will be called once the action is complete
             /*
-            Objective:
-                Add all the effects to ActionBundle
-                Return TERMINATED
-                The controller will read a Terminated, will know to look for the original
-                ActionBundle and will proceed to apply to the game map, as well as getting the
-                necessary info for the GRAB and PAY effects
-             */
+            Check if finalized, else create a PickStringMessage and return it
+            */
             Sandbox sandbox = tup.x;
-            if (this.finalized) return new ControllerActionResultServer(ActionResultType.ALREADYTERMINATED,"", sandbox);
+            if (this.finalized) return new WaitMessage();
             else {
-                this.finalized = true;
-                this.effects = sandbox.getEffectsHistory();
-                return new ControllerActionResultServer(ActionResultType.TERMINATED,"", sandbox);
-            }
+                Function<Integer, ControllerMessage> func = i -> {
+                    this.finalized = true;
+                    this.effects = sandbox.getEffectsHistory();
+
+                    //TODO: write the actual function
+                    /*
+                    1. Setta lo slaveController in modalità wait
+                    2. Fa' partire un nuovo thread
+                    3. Restituisce Wait alla rete
+
+                    Il thread:
+                    1. Passa la lista di effetti al MainController e termina, se il MainController
+                    restituisce un false allora:
+                        1. Ripulisce gli effect in action bundle
+                        2. Resetta la flag finalized
+                        3. Resetta controller timer
+                        4. Rimette in slavecontroller il ControllerMessage precedente
+                     */
+
+                    return new WaitMessage();
+                };
+            List<String> pass = new ArrayList<>();
+            pass.add(0, "Sì confermo l'azione");
+            pass.add(1, "No, voglio modificare qualcosa");
+            return new StringChoiceMessage(pass, "Vuoi confermare l'azione o modificare", func);
+        }
+
         };
     }
 
@@ -60,9 +80,9 @@ public class ActionBundle implements ActionPicker {
     }
 
     @Override
-    public ControllerActionResultServer pickAction(int choice) {
+    public ControllerMessage pickAction(int choice) {
         if (choice<0 || choice>=actionsPossible.size()){
-            return new ControllerActionResultServer(this, "", sandboxFromMap);
+            return new PickActionMessage(this, "", sandboxFromMap);
         }
         Sandbox sandbox = map.createSandbox(pov);
         ActionTemplate chosen = actionsPossible.get(choice);

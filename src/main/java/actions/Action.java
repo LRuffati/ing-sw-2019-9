@@ -1,7 +1,5 @@
 package actions;
 
-import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResultServer;
 import actions.effects.EffectTemplate;
 import actions.utils.ChoiceMaker;
 import actions.targeters.Targeter;
@@ -9,6 +7,11 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 import genericitems.Tuple;
+import testcontroller.Message;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllermessage.PickTargetMessage;
+import testcontroller.controllermessage.RollbackMessage;
+import testcontroller.controllerstates.UpdateTypes;
 import viewclasses.TargetView;
 
 import java.util.*;
@@ -24,12 +27,12 @@ public class Action {
     private final Map<String, Targetable> previousTargets;
     private final List<EffectTemplate> unresolvedEffects;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
+    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> finalizer;
 
     Action(Sandbox sandbox,
            ActionTemplate actionTemplate,
            Map<String, Targetable> previousTargets,
-           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer){
+           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> finalizer){
 
         this.sandbox = sandbox;
         this.info = actionTemplate.getInfo();
@@ -44,7 +47,7 @@ public class Action {
            List<Tuple<String, TargeterTemplate>> targeters,
            List<EffectTemplate> effects,
            Map<String, Targetable> previousTargets,
-           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer){
+           Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> finalizer){
         this.sandbox = sandbox;
         this.info = info;
         this.targeterTemplates = targeters;
@@ -67,13 +70,13 @@ public class Action {
 
     private ChoiceMaker giveChoiceMaker(boolean automatic, boolean optionalTarg,
                                         Function<Targetable,
-                                                ControllerActionResultServer> fun) {
+                                                ControllerMessage> fun) {
 
         Function<
                 Function<Integer, Targetable>, // Bind the variable provided by Targeter
                 Function<
                         List<Tuple<Integer, TargetView>>, // Bind target list
-                        Function<Integer, ControllerActionResultServer>
+                        Function<Integer, ControllerMessage>
                         >
                 > functionAutomatic =
                 action ->
@@ -82,7 +85,8 @@ public class Action {
                                 if (listTargets.isEmpty() && optionalTarg) {
                                     return fun.apply(action.apply(-1));
                                 } else if (listTargets.isEmpty()) {
-                                    return new ControllerActionResultServer(ActionResultType.ROLLBACK, "", sandbox);
+                                    return new RollbackMessage("No targets are available from " +
+                                            "this position");
                                 } else {
                                     return fun.apply(action.apply(listTargets.get(0).x));
                                 }
@@ -92,7 +96,7 @@ public class Action {
                 Function<Integer, Targetable>, // Bind the variable provided by Targeter
                 Function<
                         List<Tuple<Integer, TargetView>>, // Bind target list
-                        Function<Integer, ControllerActionResultServer>
+                        Function<Integer, ControllerMessage>
                         >
                 > functionManual =
 
@@ -106,7 +110,7 @@ public class Action {
                                 };
 
         Function<Function<Integer, Targetable>, Function<List<Tuple<Integer, TargetView>>,
-                Function<Integer, ControllerActionResultServer>>> pickFunction;
+                Function<Integer, ControllerMessage>>> pickFunction;
 
         if (automatic) pickFunction = functionAutomatic;
         else pickFunction = functionManual;
@@ -135,7 +139,7 @@ public class Action {
             }
 
             @Override
-            public ControllerActionResultServer pick(int choice) {
+            public ControllerMessage pick(int choice) {
                 return pickFunction.apply(action).apply(listTargets).apply(choice);
             }
         };
@@ -149,7 +153,7 @@ public class Action {
 
     Se non ho più niente: return la finalLambda.apply(sandbox)
      */
-    ControllerActionResultServer iterate(){
+     ControllerMessage iterate(){
         if (!targeterTemplates.isEmpty()){
 
             Iterator<Tuple<String, TargeterTemplate>> targetersIter= targeterTemplates.iterator();
@@ -158,7 +162,7 @@ public class Action {
             Tuple<String, TargeterTemplate> thisTargeter = targetersIter.next();
 
             // This is the same for both automatic and manual ChoiceMaker
-            Function<Targetable, ControllerActionResultServer> fun = target -> {
+            Function<Targetable, ControllerMessage> fun = target -> {
                 // This will create a new Action, same sandbox, same effects, a new target,
                 // less targeters
                 Map<String, Targetable> targetsUpdated = new HashMap<>(previousTargets);
@@ -189,14 +193,40 @@ public class Action {
                             thisTargeter.x);
 
             if (!targeter.giveChoices()) {
-                return new ControllerActionResultServer(ActionResultType.ROLLBACK, "", sandbox);
+                return new RollbackMessage("Non ci sono bersagli validi disponibili da questa " +
+                        "posizione");
             }
 
             // available target or no target
             if (thisTargeter.y.automatic)
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
-                return new ControllerActionResultServer(choiceMaker, "", sandbox);
+                return new PickTargetMessage(choiceMaker, new Message() {
+                    @Override
+                    public UpdateTypes type() {
+                        return UpdateTypes.DESCRIPTION;
+                    }
+
+                    @Override
+                    public String message() {
+                        return "";
+                    }
+
+                    @Override
+                    public List<EffectView> getChanges() {
+                        return null;
+                    }
+
+                    @Override
+                    public Sandbox sandbox() {
+                        return sandbox;
+                    }
+
+                    @Override
+                    public Integer gameMapIteration() {
+                        return null;
+                    }
+                }, sandbox);
         } else if (!unresolvedEffects.isEmpty()){
 
             Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();
@@ -204,7 +234,7 @@ public class Action {
             // Retrieve first element and remove it from unresolvediter
             EffectTemplate nextEffect = unresolvedIter.next();
 
-            Function<Sandbox, ControllerActionResultServer> fun = sandbox1 -> {
+            Function<Sandbox, ControllerMessage> fun = sandbox1 -> {
                 List<EffectTemplate> unresolvedList = new ArrayList<>();
                 unresolvedIter.forEachRemaining(unresolvedList::add); // Add all effects except
                 // the first one to the list

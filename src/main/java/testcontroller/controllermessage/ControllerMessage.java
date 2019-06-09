@@ -1,8 +1,10 @@
-package testcontroller;
+package testcontroller.controllermessage;
 
 import board.GameMap;
 import board.Sandbox;
 import genericitems.Tuple;
+import testcontroller.ChoiceBoard;
+import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
 
 import java.util.List;

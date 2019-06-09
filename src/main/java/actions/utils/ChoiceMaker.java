@@ -3,6 +3,7 @@ package actions.utils;
 import controllerresults.ControllerActionResultServer;
 import actions.targeters.targets.Targetable;
 import genericitems.Tuple;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.TargetView;
 
 import java.util.List;
@@ -27,5 +28,5 @@ public interface ChoiceMaker {
     /**
      *
      */
-    ControllerActionResultServer pick(int choice);
+    ControllerMessage pick(int choice);
 }

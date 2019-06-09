@@ -36,5 +36,5 @@ public interface Effect {
      * @return
      */
     ControllerMainLineResultServer mergeInGameMap(List<Effect> next, Actor pov, GameMap gameMap,
-                                                  Runnable<ControllerMainLineResultServer> finalize)
+                                                  Runnable<ControllerMainLineResultServer> finalize);
 }

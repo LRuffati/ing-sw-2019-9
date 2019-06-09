@@ -22,5 +22,15 @@ public enum UpdateTypes {
     /**
      * I'm receiving a complete Sandbox view
      */
-    SANDBOX
+    SANDBOX,
+
+    /**
+     * Just a string, describing the action
+     */
+    DESCRIPTION,
+
+    /**
+     * When the client receives this it must roll back to a previous choice
+     */
+    ROLLBACK
 }
