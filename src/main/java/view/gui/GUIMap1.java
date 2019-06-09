@@ -10,6 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GUIMap1 extends JPanel {
 
@@ -17,7 +18,6 @@ public class GUIMap1 extends JPanel {
 
     private BufferedImage emptyMap;
     private BufferedImage tile;
-    private JPanel panel;
     private Graphics g;
     private Map<JButton, Coord> coordinate;
 
@@ -29,14 +29,17 @@ public class GUIMap1 extends JPanel {
             System.out.println("Errore su file da aprire.");
         }
 
-        JFrame frame = new JFrame("label");
-
+        JFrame frame = new JFrame("frame");
+        JPanel panel = new JPanel();
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
             frame.setSize(681,920);
         } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
             frame.setSize(400,541);
         }
-        frame.setResizable(false);
+
+        frame.setResizable(true);
+        //frame.getContentPane().add(panel);
+
         JLabel label = new JLabel();
         setFirstTile(label,SRC + "firstMap/tile1.png", Color.GREEN);
         setFollowingTile(label,"src/resources/gui/firstMap/tile2.png", Color.YELLOW);
@@ -50,7 +53,16 @@ public class GUIMap1 extends JPanel {
         setFollowingTile(label,"src/resources/gui/firstMap/tile10.png", Color.BLUE);
         setFollowingTile(label,"src/resources/gui/firstMap/tile11.png", Color.RED);
         setFollowingTile(label,"src/resources/gui/firstMap/tile12.png", null);
+
         System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+
+
+
+        //panel.setLayout(new FlowLayout(FlowLayout.LEADING,0,0));
+        panel.add(label);
+        panel.setBackground(Color.YELLOW);
+        //panel.setSize(681,920);
+        //frame.getContentPane().add(panel);
         frame.add(label);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //DO NOT USE pack() !!!
@@ -81,7 +93,8 @@ public class GUIMap1 extends JPanel {
         //come aggiungere azione a bottone:
         ammoButton.addActionListener(e -> {
             System.out.println("prova bottone ammotile stanza " + tileColor.toString());
-            String str = JOptionPane.showInputDialog(label,"asd",null);
+            int input = JOptionPane.showConfirmDialog(label, "You want to move here?", "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if(input == JOptionPane.OK_OPTION) System.out.println("Player    moved from    to    ");
         });
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
