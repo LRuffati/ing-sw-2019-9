@@ -1,86 +1,59 @@
 package testcontroller.controllerclient;
 
-import network.Database;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllerstates.SlaveControllerState;
-import testcontroller.controllerstates.UpdateTypes;
 import viewclasses.GameMapView;
 
 import java.util.List;
 
-//todo: implementa ControllerMessage??
-public class ControllerMessageClient {
+public class ControllerMessageClient implements ControllerMessage{
 
     private SlaveControllerState type;
-    private GameMapView sandbox;
-    private GameMapView gameMap;
-
     private ChoiceBoard choiceBoard;
+    private Message message;
+    private String gameMapHash;
+    private GameMapView sandbox;
 
-    private boolean sendMap;
 
-    private UpdateTypes updateType;
-    private String message;
-    List<EffectView> changes;
-
-    public ControllerMessageClient(ControllerMessage controllerMessage, boolean sendMap, String token) {
+    public ControllerMessageClient(ControllerMessage controllerMessage) {
         this.type = controllerMessage.type();
-        this.sandbox = controllerMessage.sandbox().generateView();
-
         this.choiceBoard = controllerMessage.genView();
-
-        this.sendMap = sendMap;
-        this.gameMap = (sendMap)
-                ? controllerMessage.gamemap().x.generateView(Database.get().getUserByToken(token).getUid())
-                : null;
-
-        updateType = controllerMessage.getMessage().type();
-        message = controllerMessage.getMessage().message();
-        changes = controllerMessage.getMessage().getChanges();
+        this.sandbox = controllerMessage.sandbox();
+        this.gameMapHash = controllerMessage.gamemap();
+        this.message = controllerMessage.getMessage();
     }
 
+    @Override
     public SlaveControllerState type() {
         return type;
     }
 
+    @Override
     public ChoiceBoard genView() {
-        return null;
+        return choiceBoard;
     }
 
+    @Override
     public Message getMessage() {
-        return null;
+        return message;
     }
 
-    //todo: implementa ControllerMessage, ma mi serve una GMView invece di una Tupla
-    public GameMapView gamemap() {
-        if(sendMap)
-            return gameMap;
-        return null;
+    @Override
+    public String gamemap() {
+        return gameMapHash;
     }
 
-    //todo: implementa ControllerMessage, ma mi serve una GMView invece di una SandBox
+    @Override
     public GameMapView sandbox() {
         return sandbox;
     }
 
-    //todo: cosa devo farne?
+    //todo: come fare questo?
+    @Override
     public ControllerMessage pick(List<Integer> choices) {
         return null;
     }
 
-
-
-    public UpdateTypes getUpdateType() {
-        return updateType;
-    }
-
-    public String message() {
-        return message;
-    }
-
-    public List<EffectView> changes() {
-        return changes;
-    }
 }
