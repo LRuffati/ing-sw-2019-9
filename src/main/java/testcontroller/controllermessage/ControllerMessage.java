@@ -1,11 +1,9 @@
 package testcontroller.controllermessage;
 
-import board.GameMap;
-import board.Sandbox;
-import genericitems.Tuple;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.GameMapView;
 
 import java.util.List;
 
@@ -40,17 +38,17 @@ public interface ControllerMessage {
     Message getMessage();
 
     /**
-     * Returns the game map linked to this action and the revision at which it had been generated
+     * Returns the hash of the game map linked to this action and the revision at which it had been generated
      * @return
      */
-    Tuple<GameMap, Integer> gamemap();
+    String gamemap();
 
     /**
      * If the elements refer to a sandbox rather than to the gamemap this returns the correct
      * sandbox, if there is no sandbox involved then null
      * @return
      */
-    Sandbox sandbox();
+    GameMapView sandbox();
 
     /**
      * This makes the choice
