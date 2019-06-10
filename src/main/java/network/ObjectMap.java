@@ -1,10 +1,10 @@
 package network;
 
 
+import board.GameMap;
 import board.Sandbox;
-import testcontroller.ChoiceBoard;
-import testcontroller.ControllerMessage;
 import testcontroller.controllerclient.ControllerMessageClient;
+import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
@@ -21,11 +21,13 @@ public class ObjectMap {
         return ourInstance;
     }
 
+    private String token;
+
     private Map<String, ControllerMessage> choiceMap = new HashMap<>();
 
-
-
     private Map<String, Sandbox> sandboxMap = new HashMap<>();
+    private Map<Integer, GameMap> gameMapMap = new HashMap<>();
+
 
     private ObjectMap() {
     }
@@ -33,13 +35,15 @@ public class ObjectMap {
     public void clearChache(){
         choiceMap.clear();
         sandboxMap.clear();
+        gameMapMap.clear();
     }
 
     private String newID(){
         return new UID().toString();
     }
 
-    private ControllerMessage handlePick(ControllerMessage controllerMessage) {
+    //todo: ControllerMessage
+    private ControllerMessageClient handlePick(ControllerMessage controllerMessage) {
         String id = newID();
         choiceMap.put(id, controllerMessage);
         sandboxMap.put(newID(), controllerMessage.sandbox());
@@ -47,12 +51,16 @@ public class ObjectMap {
         if(controllerMessage.type().equals(SlaveControllerState.WAIT))
             clearChache();
 
-        return new ControllerMessageClient(controllerMessage);
+        boolean sendMap = gameMapMap.containsKey((Integer) controllerMessage.gamemap().y);
+        return new ControllerMessageClient(controllerMessage, sendMap, token);
     }
 
-    public ControllerMessage pick(String choiceId, List<Integer> choices) {
+    //todo: implements ControllerMessage
+    public ControllerMessageClient pick(String token, String choiceId, List<Integer> choices) {
+        this.token = token;
+
         if(!choiceMap.containsKey(choiceId)) {
-            //todo: return error
+            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction(), true, token);
         }
         return handlePick(choiceMap.get(choiceId).pick(choices));
     }
@@ -60,5 +68,4 @@ public class ObjectMap {
     public GameMapView showGameMap(String gameMapId) {
         return sandboxMap.get(gameMapId).generateView();
     }
-
 }
