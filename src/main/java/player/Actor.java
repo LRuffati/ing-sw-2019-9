@@ -1,5 +1,6 @@
 package player;
 
+import actions.ActionBundle;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
@@ -472,6 +473,13 @@ public class Actor {
      */
     public Collection<PowerUp> getPowerUp() {
         return powerUps;
+    }
+
+    /**
+     * Takes into account the situation of the player
+     * @return
+     */
+    public List<ActionBundle> getActions() {
     }
 }
 

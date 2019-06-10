@@ -1,5 +1,6 @@
 package testcontroller;
 
+import actions.effects.Effect;
 import gamemanager.GameBuilder;
 import gamemanager.ParserConfiguration;
 import network.Database;
@@ -22,42 +23,20 @@ public class MainController {
 
     private Timer timerForStarting;
     private boolean timerRunning = false;
-
     private boolean gameStarted = false;
 
-    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
-    private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
-
-    private GameBuilder game;
     private List<SlaveController> slaveControllerList;
 
-
-    public MainController(){
-        numOfPlayer = 0;
-    }
-
-
-    private void checkGameStart() {
-        if(numOfPlayer < MIN_PLAYER || gameStarted)
-            return;
-        if(numOfPlayer == MAX_PLAYER) {
-            timerClose();
-            startGame();
-        }
-        if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
-            timerStart(TIME_BEFORE_STARTING);
-            notifyTimer(TIME_BEFORE_STARTING);
-        }
-    }
-
     /**
-     * Method called by the network layer when a new connection is made.
-     * It notifies all the clients that there is a new player,
-     * and then it checks whether the game can start, and in case it creates the new game.
-     * This method can be used only if the game is not started yet.
-     * @param player The Player that logged in
+     *
+     * @param responsible the SlaveController which started it all (redundant)
+     * @param effects (the list of effects)
+     * @param onResolved (When I finish the list of effects run this function)
+     *                   If I call a slave controller function in between then I will have to
+     *                   call it and pass a runnable that will:
+     * @return
      */
+<<<<<<< HEAD
     public void connect(Player player) {
         if(!canConnect())   throw new IllegalArgumentException("Invalid connection request");
 
@@ -193,5 +172,27 @@ public class MainController {
     public static void main(String[] str) {
         MainController initGame = new MainController();
         NetworkBuilder network = new NetworkBuilder(initGame);
+    }
+
+    public void resolveEffect(SlaveController responsible, List<Effect> effects,
+                                 Runnable onResolved){
+        if (effects.isEmpty()){
+            new Thread(onResolved).start();
+        } else {
+            Effect first = effects.get(0);
+            List<Effect> next = effects.subList(1, effects.size());
+            Runnable nextOnRes = new Runnable() {
+                @Override
+                public void run() {
+                    MainController.this.resolveEffect(responsible, next, onResolved);
+                }
+            };
+            (new Thread(new Runnable() {
+                @Override
+                public void run() {
+                   first.mergeInGameMap(responsible, nextOnRes);
+                }
+            })).start();
+        }
     }
 }
