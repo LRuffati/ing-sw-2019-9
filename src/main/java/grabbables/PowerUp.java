@@ -1,10 +1,13 @@
 package grabbables;
 
+import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.PowerUpType;
 import viewclasses.PowerUpView;
 
-public class PowerUp extends Grabbable {
+import java.util.List;
+
+public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
     private final AmmoAmount ammo;
 
@@ -12,6 +15,14 @@ public class PowerUp extends Grabbable {
         this.type = type;
         this.ammo = ammo;
     }
+
+    /**
+     * Gets the list of effects which were played prior to this call and tells if I can use the
+     * powerup
+     * @param lastEffects
+     * @return
+     */
+    public abstract boolean canUse(List<Effect> lastEffects);
 
     /**
      * @return The type of powerUp contained

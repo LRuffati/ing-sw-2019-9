@@ -28,7 +28,9 @@ public class ActionBundle implements ActionPicker {
 
     private List<Effect> effects;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> finalizer;
+    private final Function<Thread, Function<Tuple<Sandbox, Map<String, Targetable>>,
+            ControllerMessage>> finalizer;
+    private Thread thread;
 
     public ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
         this.actionsPossible = actions;
@@ -36,7 +38,7 @@ public class ActionBundle implements ActionPicker {
         this.map = map;
         this.pov = caller;
         this.sandboxFromMap = map.createSandbox(pov);
-        finalizer = tup -> { // This will be called once the action is complete
+        finalizer = thread -> tup -> { // This will be called once the action is complete
             /*
             Check if finalized, else create a PickStringMessage and return it
             */
@@ -73,6 +75,9 @@ public class ActionBundle implements ActionPicker {
         };
     }
 
+    public void setThread(Thread thread){
+        this.thread = thread;
+    }
 
     @Override
     public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
@@ -86,7 +91,10 @@ public class ActionBundle implements ActionPicker {
         }
         Sandbox sandbox = map.createSandbox(pov);
         ActionTemplate chosen = actionsPossible.get(choice);
-        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(pov)), finalizer);
+        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(pov)),
+                finalizer.apply(thread));
+        thread = null; // I should create finalizer only once, if multiple accesses are happening
+        // it's a mistake
         return action.iterate();
     }
 

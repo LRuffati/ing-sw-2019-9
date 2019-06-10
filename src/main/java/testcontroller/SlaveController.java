@@ -39,20 +39,54 @@ import java.util.Set;
 public class SlaveController {
     private Player player;
     private ServerInterface network;
+    private ControllerMessage currentMessage;
+    public final Actor self;
+
 
     public SlaveController(Player player, ServerInterface network) {
         this.player = player;
         this.network = network;
+        this.currentMessage = new WaitMessage();
+        this.self = player.getActor();
     }
 
     /**
      * This function sets in motion the main turn line
      *
-     * @param actionBundles The list of actions that can be chosen in the right order
-     * @param powerUps The set of powerups which are available to the player
+     * @param onEndTurn The action to perform once I don't have anything else to do
      * @return
      */
-    public boolean startMainAction(List<ActionBundle> actionBundles, Set<PowerUp> powerUps){
+    public boolean startMainAction(Runnable onEndTurn){
+        List<ActionBundle> turnActions = self.getActions(); //Non include il reload
+        this.currentMessage = setPowUps(List.of(), turnActions);
+        return true;
+    }
+
+    /**
+     * The finalizer of an ActionBundle or start main action calls this function and sets the
+     * slave controller message to the result.
+     * The result makes you pick powerups, then resolves them and the finalizer returns a
+     * PickActionMessage(nextActs.get(0)), if nextActs is empty then it starts the reload instead
+     *
+     * @param lastEffects
+     * @param nextActs
+     * @return
+     */
+    protected ControllerMessage setPowUps(List<Effect> lastEffects, List<ActionBundle> nextActs){
+        List<PowerUp> pows = self.getPowerUp().stream()
+                                    .filter(i->i.canUse(lastEffects))
+                                    .collect(Collectors.toList());
+
+        /*TODO: create finalizer for the powerups, from last to first (if nextacts isn't empty):
+                n) Put thread in actionBundle and sets slaveController to pickActionMessage(actionb)
+                n-1) Create thread with the final action of calling setPowerUps with the tail of
+                nextActs and the effects
+                n-2) Apply effects to the Main and passes last two actions as a finalizer
+                ...
+                2) Returns a pickTarget for the second
+                1) Returns a pickTarget for the first powerup
+        * */
+        new PickPowerupMessage(pows, )
     }
 
     /**
