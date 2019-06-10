@@ -64,6 +64,13 @@ public class Database {
         return network;
     }
 
+    public synchronized SlaveController getControllerByToken(String token){
+        SlaveController controller = controllerByToken.get(token);
+        if(controller == null)
+            throw new IllegalArgumentException("Invalid token " + token);
+        return controller;
+    }
+
     /**
      * This method associates the connection with the player.
      * If the username and the color are not used by other players it generates an unique token and a new user.
