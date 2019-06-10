@@ -1,14 +1,20 @@
 package testcontroller;
 
+import actions.Action;
 import actions.ActionBundle;
+import actions.effects.Effect;
 import grabbables.PowerUp;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
 import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllermessage.PickPowerupMessage;
+import testcontroller.controllermessage.WaitMessage;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * This class is still going to be part of the server but it represents a single player
@@ -96,7 +102,7 @@ public class SlaveController {
      *                    should be two, on subsequent rounds 1
      * @return
      */
-    public boolean startRespawn(int cardstotake){
+    public boolean startRespawn(int cardstotake, Runnable onRespawned){
         return false;
     }
 
@@ -107,7 +113,7 @@ public class SlaveController {
      * @param offender The player which caused the damage
      * @return
      */
-    public boolean startTakeback(Actor offender){
+    public boolean startTagback(Actor offender, Runnable onFinished){
         return false;
     }
 
