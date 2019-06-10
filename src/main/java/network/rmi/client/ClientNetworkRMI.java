@@ -1,18 +1,12 @@
 package network.rmi.client;
 
 import network.Player;
-import testcontroller.ChoiceBoard;
-import testcontroller.ControllerMessage;
 import testcontroller.controllerclient.ClientControllerNetworkInterface;
-import controllerresults.ControllerActionResultClient;
-import genericitems.Tuple;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
+import testcontroller.controllermessage.ControllerMessage;
 import view.View;
-import viewclasses.ActionView;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -123,8 +117,8 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
 
     @Override
-    public GameMapView getMap(String gameMapId) throws RemoteException{
-        return controller.getMap(token, gameMapId);
+    public GameMapView getMap() throws RemoteException{
+        return controller.getMap(token);
     }
 
 

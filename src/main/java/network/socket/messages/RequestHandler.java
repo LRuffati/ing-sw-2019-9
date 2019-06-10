@@ -12,7 +12,6 @@ public interface RequestHandler {
     Response handle(ReconnectRequest request);
 
     Response handle(PickRequest request);
-    Response handle(ShowOptionsRequest request);
 
     Response handle(GetMapRequest request);
 }

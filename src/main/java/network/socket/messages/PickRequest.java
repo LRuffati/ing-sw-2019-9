@@ -1,15 +1,16 @@
 package network.socket.messages;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class PickRequest  implements Request{
+public class PickRequest implements Request{
 
     public final String choiceId;
     public final List<Integer> choices;
 
-    public PickRequest(int type, String chooserId, List<Integer> choice){
+    public PickRequest(String chooserId, List<Integer> choice){
         this.choiceId = chooserId;
-        this.choices = choice;
+        this.choices = new ArrayList<>(choice);
     }
 
     @Override

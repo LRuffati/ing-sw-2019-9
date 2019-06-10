@@ -2,16 +2,12 @@ package network.socket.client;
 
 import network.socket.messages.notify.*;
 import testcontroller.controllerclient.ClientControllerNetworkInterface;
-import controllerresults.ControllerActionResultClient;
-import genericitems.Tuple;
 import network.ClientInterface;
 import network.exception.InvalidLoginException;
 import network.socket.messages.*;
+import testcontroller.controllermessage.ControllerMessage;
 import view.View;
-import viewclasses.ActionView;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
 
 import java.io.IOException;
 import java.util.List;
@@ -123,57 +119,20 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     /**
-     * @param type 0 for pickTarg, 1 for pickWeapon, 2 for pickAction
      * @param chooserId Id of the chosen container
      * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
      */
-    private ControllerActionResultClient pick(int type, String chooserId, List<Integer> choice){
-        client.request(new PickRequest(type, chooserId, choice));
+    @Override
+    public ControllerMessage pick(String chooserId, List<Integer> choice){
+        client.request(new PickRequest(chooserId, choice));
         sync();
         return ClientContext.get().getPickElement();
     }
 
-    @Override
-    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) {
-        return pick(0, choiceMakerId, List.of(choice));
-    }
 
     @Override
-    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) {
-        return pick(1, weaponChooserId, choice);
-    }
-
-    @Override
-    public ControllerActionResultClient pickAction(String actionChooserId, int choice) {
-        return pick(2, actionChooserId, List.of(choice));
-    }
-
-    private void showOptions(int type, String chooserId){
-        client.request(new ShowOptionsRequest(ClientContext.get().getToken(), type, chooserId));
-        sync();
-    }
-
-    @Override
-    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) {
-        showOptions(0, choiceMakerId);
-        return ClientContext.get().getShowOptionsTarget();
-    }
-
-    @Override
-    public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
-        showOptions(1, weaponChooserId);
-        return ClientContext.get().getShowOptionsWeapon();
-    }
-
-    @Override
-        public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
-        showOptions(2, actionPickerId);
-        return ClientContext.get().getShowOptionsAction();
-    }
-
-    @Override
-    public GameMapView getMap(String gameMapId) {
-        client.request(new GetMapRequest(gameMapId));
+    public GameMapView getMap() {
+        client.request(new GetMapRequest());
         sync();
         return ClientContext.get().getGameMapView();
     }
@@ -227,12 +186,6 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     @Override
     public void handle(PickResponse response) {
         ClientContext.get().setPickElement(response.result);
-        desync();
-    }
-
-    @Override
-    public void handle(ShowOptionsResponse response) {
-        ClientContext.get().setShowOptions(response.result);
         desync();
     }
 

@@ -1,12 +1,12 @@
 package network.socket.messages;
 
-import testcontroller.ChoiceBoard;
+import testcontroller.controllermessage.ControllerMessage;
 
 public class PickResponse implements Response {
 
-    public final ChoiceBoard result;
+    public final ControllerMessage result;
 
-    public PickResponse(ChoiceBoard result){
+    public PickResponse(ControllerMessage result){
         this.result = result;
     }
 

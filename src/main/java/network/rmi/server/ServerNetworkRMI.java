@@ -4,7 +4,7 @@ import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
-import testcontroller.ControllerMessage;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 import java.rmi.ConnectException;
@@ -76,16 +76,16 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
 
     @Override
-    public ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException{
+    public ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException {
         checkConnection(token);
-        return ObjectMap.get().pick(choiceId, choices);
+        return ObjectMap.get().pick(token, choiceId, choices);
     }
 
 
     @Override
-    public GameMapView getMap(String token, String gameMapId) throws RemoteException {
+    public GameMapView getMap(String token) throws RemoteException {
         checkConnection(token);
-        return ObjectMap.get().showGameMap(gameMapId);
+        return Database.get().getControllerByToken(token).sendMap();
     }
 
 

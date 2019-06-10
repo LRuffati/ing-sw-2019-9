@@ -2,7 +2,7 @@ package network.rmi.server;
 
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
-import testcontroller.ControllerMessage;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 import java.rmi.Remote;
@@ -20,5 +20,5 @@ public interface ServerRMIInterface extends Remote {
 
     ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException;
 
-    GameMapView getMap(String token, String gameMapId) throws RemoteException;
+    GameMapView getMap(String token) throws RemoteException;
 }

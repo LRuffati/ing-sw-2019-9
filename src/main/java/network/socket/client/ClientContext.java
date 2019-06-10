@@ -1,14 +1,9 @@
 package network.socket.client;
 
-import controllerresults.ControllerActionResultClient;
 import genericitems.Tuple;
-import genericitems.Tuple3;
-import viewclasses.ActionView;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
 
-import java.util.List;
 
 /**
  * SINGLETON (CLIENT SIDE)
@@ -56,50 +51,27 @@ public class ClientContext {
 
 
     private boolean connectedResult;
-    public void setConnectionResult(boolean connectedResult) {
+    void setConnectionResult(boolean connectedResult) {
         this.connectedResult = connectedResult;
     }
-    public boolean getConnectionResult() {
+    boolean getConnectionResult() {
         return connectedResult;
     }
 
     private Tuple<Boolean, Boolean> loginException;
-    public void setLoginException(boolean wrongUsername, boolean wrongColor) {
+    void setLoginException(boolean wrongUsername, boolean wrongColor) {
         this.loginException = new Tuple<>(wrongUsername, wrongColor);
     }
-    public Tuple<Boolean, Boolean> getLoginException() {
+    Tuple<Boolean, Boolean> getLoginException() {
         return loginException;
     }
 
-    private ControllerActionResultClient pickElem;
-    public void setPickElement(ControllerActionResultClient result) {
+    private ControllerMessage pickElem;
+    void setPickElement(ControllerMessage result) {
         this.pickElem = result;
     }
-    public ControllerActionResultClient getPickElement() {
+    ControllerMessage getPickElement() {
         return pickElem;
-    }
-
-
-    private Tuple3<
-            Tuple<Boolean, List<TargetView>>,
-            List<WeaponView>,
-            Tuple<Boolean, List<ActionView>>
-            > showOptions;
-    public void setShowOptions(Tuple3<
-            Tuple<Boolean, List<TargetView>>,
-            List<WeaponView>,
-            Tuple<Boolean, List<ActionView>>
-            > showOptions) {
-        this.showOptions = showOptions;
-    }
-    public Tuple<Boolean, List<TargetView>> getShowOptionsTarget(){
-        return showOptions.x;
-    }
-    public List<WeaponView> getShowOptionsWeapon(){
-        return showOptions.y;
-    }
-    public Tuple<Boolean, List<ActionView>> getShowOptionsAction() {
-        return showOptions.z;
     }
 
 

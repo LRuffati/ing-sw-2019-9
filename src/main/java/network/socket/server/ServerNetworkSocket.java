@@ -10,8 +10,6 @@ import network.exception.InvalidLoginException;
 import network.socket.messages.notify.*;
 import viewclasses.GameMapView;
 
-import java.util.List;
-
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
  * and the Requests called by the clients (implemented in RequestHandler)
@@ -148,33 +146,11 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(PickRequest request) {
-        String choosedId = request.choiceId;
-        List<Integer> choices = request.choices;
-        return new PickResponse(ObjectMap.get().pick(choosedId, choices));
+        return new PickResponse(ObjectMap.get().pick(token, request.choiceId, request.choices));
     }
-
-    @Override
-    public Response handle(ShowOptionsRequest request) {
-        if(!checkConnection(request.token))
-            return new ExceptionResponse(new InvalidTokenException());
-        String choosedId = request.chooserId;
-        switch (request.type){
-            case 0:
-                return new ShowOptionsResponse(0, ObjectMap.get().showOptionsTarget(choosedId), null, null);
-            case 1:
-                return new ShowOptionsResponse(1, null, ObjectMap.get().showOptionsWeapon(choosedId), null);
-            case 2:
-                return new ShowOptionsResponse(2, null, null, ObjectMap.get().showOptionsAction(choosedId));
-
-                default:
-                    //todo: return error
-        }
-        return new ShowOptionsResponse(-1,null,null,null);
-    }
-
 
     @Override
     public Response handle(GetMapRequest request) {
-        return new GetMapResponse(ObjectMap.get().showGameMap(request.gameMapId));
+        return new GetMapResponse(Database.get().getControllerByToken(token).sendMap());
     }
 }

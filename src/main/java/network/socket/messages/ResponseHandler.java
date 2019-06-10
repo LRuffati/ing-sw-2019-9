@@ -17,7 +17,6 @@ public interface ResponseHandler {
     void handle(TextResponse response);
 
     void handle(PickResponse response);
-    void handle(ShowOptionsResponse response);
 
     void handle(GetMapResponse response);
 
