@@ -21,51 +21,34 @@ public class ObjectMap {
         return ourInstance;
     }
 
-    private String token;
-
     private Map<String, ControllerMessage> choiceMap = new HashMap<>();
 
-    private Map<String, Sandbox> sandboxMap = new HashMap<>();
-    private Map<Integer, GameMap> gameMapMap = new HashMap<>();
-
-
-    private ObjectMap() {
-    }
+    private ObjectMap() {}
 
     public void clearChache(){
         choiceMap.clear();
-        sandboxMap.clear();
-        gameMapMap.clear();
     }
 
     private String newID(){
         return new UID().toString();
     }
 
-    //todo: ControllerMessage
-    private ControllerMessageClient handlePick(ControllerMessage controllerMessage) {
+
+    private ControllerMessage handlePick(ControllerMessage controllerMessage) {
         String id = newID();
         choiceMap.put(id, controllerMessage);
-        sandboxMap.put(newID(), controllerMessage.sandbox());
 
         if(controllerMessage.type().equals(SlaveControllerState.WAIT))
             clearChache();
 
-        boolean sendMap = gameMapMap.containsKey((Integer) controllerMessage.gamemap().y);
-        return new ControllerMessageClient(controllerMessage, sendMap, token);
+        return new ControllerMessageClient(controllerMessage);
     }
 
-    //todo: implements ControllerMessage
-    public ControllerMessageClient pick(String token, String choiceId, List<Integer> choices) {
-        this.token = token;
+    public ControllerMessage pick(String token, String choiceId, List<Integer> choices) {
 
         if(!choiceMap.containsKey(choiceId)) {
-            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction(), true, token);
+            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction());
         }
         return handlePick(choiceMap.get(choiceId).pick(choices));
-    }
-
-    public GameMapView showGameMap(String gameMapId) {
-        return sandboxMap.get(gameMapId).generateView();
     }
 }
