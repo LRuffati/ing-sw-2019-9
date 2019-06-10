@@ -60,4 +60,9 @@ public interface View {
      * @param invalidColor True if the Color is already used
      */
     void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor);
+
+    /**
+     * Avvisa la view che si può effettuare il login
+     */
+    void loginNotif();
 }

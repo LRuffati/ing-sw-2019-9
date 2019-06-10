@@ -20,12 +20,13 @@ public class CLIDemo implements View {
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
 
-    public CLIDemo(ClientControllerClientInterface client, GameMapView gmv){
+    public CLIDemo(ClientControllerClientInterface client){
         this.client = client;
-        climap = new CLIMap(gmv);
         greetings();
 
     }
+
+    public void setClimap(GameMapView gmv){climap = new CLIMap(gmv);}
 
     /**
      * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
@@ -50,9 +51,7 @@ public class CLIDemo implements View {
                 "| $$  | $$| $$$$$$$/| $$  | $$| $$$$$$$$| $$ \\  $$| $$  | $$| $$$$$$$$ /$$$$$$| $$ \\  $$| $$$$$$$$\n" +
                 "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
 
-        System.out.println("Type '1' to join a game.");
-        if(in.nextLine().equals("1")) joinGame();
-        System.out.println("Welcome to ADRENALINE!\nPlease, wait for other players to join.");
+        System.out.println("Welcome to ADRENALINE!\n");
 
     }
 
@@ -75,13 +74,14 @@ public class CLIDemo implements View {
             password = in.nextLine();
         }
         while(color.isEmpty()){
-            System.out.println(">>> Choose your color:\n -> Gray\n -> Purple\n -> Yellow\n -> Green\n -> Blue\n -> Type 'y' " +
+            System.out.println(">>> Choose your color:\n -> Gray\n -> Pink\n -> Yellow\n -> Green\n -> Blue\n -> Type 'y' " +
                     "if you've already picked a color in a previous login");
             color = in.nextLine();
             if(color.equalsIgnoreCase("y")) {
                 client.login(username,password);
+                return;
             }
-            if(!color.equalsIgnoreCase("gray")&&!color.equalsIgnoreCase("purple")&&!color.
+            if(!color.equalsIgnoreCase("gray")&&!color.equalsIgnoreCase("pink")&&!color.
                     equalsIgnoreCase("yellow")&&!color.equalsIgnoreCase("green")&&!color.
                     equalsIgnoreCase("blue")){
                 System.out.println("Invalid color. Pick a color among the followings:");
@@ -90,6 +90,9 @@ public class CLIDemo implements View {
         }
         client.login(username,password,color);
     }
+
+
+
 
     /**
      * After the player joined the game, he await for the game to start. This can happen only when there are three or
@@ -353,6 +356,11 @@ public class CLIDemo implements View {
                 }
             }
         }
+    }
+
+    @Override
+    public void loginNotif() {
+        joinGame();
     }
 
     /**
