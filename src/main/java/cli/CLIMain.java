@@ -34,7 +34,7 @@ public class CLIMain {
         } catch (NotBoundException | IOException e) {
             e.printStackTrace();
         }
-        CLIDemo demo = new CLIDemo(client,gmv);
+        CLIDemo demo = new CLIDemo(client);
         demo.endGame();
     }
 }

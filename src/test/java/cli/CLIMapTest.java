@@ -47,7 +47,7 @@ class CLIMapTest {
 
 
     void printVoidMapTest(){
-        CLIDemo demo = new CLIDemo(client,gmv);
+        CLIDemo demo = new CLIDemo(client);
         demo.getPrintedMap();
     }
 
@@ -60,12 +60,12 @@ class CLIMapTest {
     }
 
     void greetingsTest(){
-        CLIDemo demo = new CLIDemo(client,gmv);
+        CLIDemo demo = new CLIDemo(client);
         demo.greetings();
     }
 
     void printTargetTest(){
-        CLIDemo demo = new CLIDemo(client,gmv);
+        CLIDemo demo = new CLIDemo(client);
         TargetView tw = new TargetView("asd", new ArrayList<>(), new ArrayList<>());
         List<TargetView> targetViewList = new ArrayList<>();
         targetViewList.add(tw);

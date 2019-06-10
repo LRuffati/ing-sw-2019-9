@@ -22,10 +22,7 @@ public class Framework implements View {
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
 
-        login = new Login(this);
-        JFrame frame = login;
-        frame.addWindowListener(new WindowEventHandler());
-        frame.setVisible(true);
+
     }
 
     private static void createAndShowGUI(ClientControllerClientInterface controller) {
@@ -44,6 +41,14 @@ public class Framework implements View {
     @Override
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
         login.loginResponse(result, invalidUsername, invalidColor);
+    }
+
+    @Override
+    public void loginNotif() {
+        login = new Login(this);
+        JFrame frame = login;
+        frame.addWindowListener(new WindowEventHandler());
+        frame.setVisible(true);
     }
 
 

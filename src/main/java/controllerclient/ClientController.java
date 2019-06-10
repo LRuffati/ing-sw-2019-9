@@ -53,7 +53,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         logger = Logger.getLogger(ClientController.class.getName());
 
         if (cli)
-            view = new CLIDemo(this,gameMap);
+            view = new CLIDemo(this);
         else
             Framework.run(this);
 
@@ -74,11 +74,13 @@ public class ClientController implements ClientControllerClientInterface, Client
             network = new ClientNetworkRMI(controller);
         }
 
+        view.loginNotif();
+
         stack = new ArrayDeque<>();
         gameMapViewMap = new HashMap<>();
 
-        Main.register(network);
-        Main.run(network);
+        //Main.register(network);
+        //Main.run(network);
     }
 
     /**

@@ -10,7 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.awt.Image.SCALE_SMOOTH;
 
 public class GUIMap1 extends JPanel {
 
@@ -18,46 +19,44 @@ public class GUIMap1 extends JPanel {
 
     private BufferedImage emptyMap;
     private BufferedImage tile;
-    private Graphics g;
     private Map<JButton, Coord> coordinate;
+    private BufferedImage scoreBoard;
+    private JFrame frame;
+    private BufferedImage pg;
 
     public GUIMap1(){
 
-        try {
-            tile = ImageIO.read(new File(SRC + "greenAmmo.png"));
-        } catch (IOException e) {
-            System.out.println("Errore su file da aprire.");
-        }
-
-        JFrame frame = new JFrame("frame");
+        this.frame = new JFrame("frame");
         JPanel panel = new JPanel();
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            frame.setSize(681,920);
+            frame.setSize(683,920);
         } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
-            frame.setSize(400,541);
+            frame.setSize(401,541);
         }
 
         frame.setResizable(true);
         //frame.getContentPane().add(panel);
 
         JLabel label = new JLabel();
-        setFirstTile(label,SRC + "firstMap/tile1.png", Color.GREEN);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile2.png", Color.YELLOW);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile3.png", Color.YELLOW);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile4.png", Color.BLUE);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile5.png", Color.YELLOW);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile6.png", Color.YELLOW);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile7.png", Color.BLUE);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile8.png", Color.RED);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile9.png", Color.WHITE);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile10.png", Color.BLUE);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile11.png", Color.RED);
-        setFollowingTile(label,"src/resources/gui/firstMap/tile12.png", null);
+
+
+        setFirstTile(label,"src/resources/gui/GUImap1/GUImap1_1.png", Color.GREEN);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_2.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_3.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_4.png", Color.BLUE);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_5.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_6.png", Color.YELLOW);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_7.png", Color.BLUE);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_8.png", Color.RED);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_9.png", Color.WHITE);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_10.png", Color.BLUE);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_11.png", Color.RED);
+        setFollowingTile(label,"src/resources/gui/GUImap1/GUImap1_12.png", null);
 
         System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 
 
-
+        //panel.setSize(682,920);
         //panel.setLayout(new FlowLayout(FlowLayout.LEADING,0,0));
         panel.add(label);
         panel.setBackground(Color.YELLOW);
@@ -81,11 +80,11 @@ public class GUIMap1 extends JPanel {
         }
         Image imgAmmo = tile;
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2,Image.SCALE_SMOOTH);
+            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2, SCALE_SMOOTH);
         } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
             double tilewid = 0.58737 * (tile.getWidth() / 2.00000);
             double tilehid = 0.588 * (tile.getHeight() / 2.00000);
-            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, Image.SCALE_SMOOTH);
+            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
         JButton ammoButton = new JButton();
@@ -93,6 +92,14 @@ public class GUIMap1 extends JPanel {
         //come aggiungere azione a bottone:
         ammoButton.addActionListener(e -> {
             System.out.println("prova bottone ammotile stanza " + tileColor.toString());
+            try {
+                pg = ImageIO.read(new File("src/resources/gui/pgTest.png"));
+            } catch (IOException ignored) {
+            }
+
+            Image pgscal = pg.getScaledInstance(pg.getWidth()/5,pg.getHeight()/5,SCALE_SMOOTH);
+            ImageIcon pgIcon = new ImageIcon(pgscal);
+            ammoButton.setIcon(pgIcon);
             int input = JOptionPane.showConfirmDialog(label, "You want to move here?", "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
             if(input == JOptionPane.OK_OPTION) System.out.println("Player    moved from    to    ");
         });
@@ -110,11 +117,11 @@ public class GUIMap1 extends JPanel {
         }
         Image imgAmmo = tile;
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2,Image.SCALE_SMOOTH);
+            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2, SCALE_SMOOTH);
         } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
             double tilewid = 0.58737 * (tile.getWidth() / 2.00000);
             double tilehid = 0.588 * (tile.getHeight() / 2.00000);
-            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, Image.SCALE_SMOOTH);
+            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
         JButton ammoButton = new JButton();
@@ -129,7 +136,7 @@ public class GUIMap1 extends JPanel {
     }
 
 
-
-
-
+    public JFrame getFrame() {
+        return frame;
+    }
 }
