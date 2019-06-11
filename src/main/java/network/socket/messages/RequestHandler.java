@@ -14,4 +14,6 @@ public interface RequestHandler {
     Response handle(PickRequest request);
 
     Response handle(GetMapRequest request);
+
+    Response handle(PollRequest request);
 }

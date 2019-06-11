@@ -10,6 +10,7 @@ import view.View;
 import viewclasses.GameMapView;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -131,12 +132,14 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
 
     @Override
-    public GameMapView getMap() {
+    public void getMap() {
         client.request(new GetMapRequest());
-        sync();
-        return ClientContext.get().getGameMapView();
     }
 
+    @Override
+    public void poll() {
+        client.request(new PollRequest());
+    }
 
     //ClientHandler methods
 
@@ -198,8 +201,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(GetMapResponse response) {
-        ClientContext.get().setGameMapView(response.gameMapView);
-        desync();
+        clientController.updateMap(response.gameMapView);
     }
 
 
@@ -224,4 +226,10 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     public void handle(OnTimer response) {
         view.onTimer(response.timeToWait);
     }
+
+    @Override
+    public void handle(PollResponse response) {
+        clientController.onControllerMessage(response.controllerMessage);
+    }
+
 }

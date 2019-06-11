@@ -117,8 +117,14 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
 
     @Override
-    public GameMapView getMap() throws RemoteException{
-        return controller.getMap(token);
+    public void getMap() throws RemoteException{
+        controller.getMap(token);
+    }
+
+    @Override
+    public void poll() throws RemoteException {
+        ControllerMessage message = controller.poll(token);
+        clientController.onControllerMessage(message);
     }
 
 

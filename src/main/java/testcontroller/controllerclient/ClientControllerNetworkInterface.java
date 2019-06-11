@@ -1,5 +1,6 @@
 package testcontroller.controllerclient;
 
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 /**
@@ -8,4 +9,6 @@ import viewclasses.GameMapView;
  */
 public interface ClientControllerNetworkInterface {
     void updateMap(GameMapView gameMapView);
+
+    void onControllerMessage(ControllerMessage controllerMessage);
 }

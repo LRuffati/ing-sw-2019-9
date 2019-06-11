@@ -1,6 +1,5 @@
 package testcontroller.controllerclient;
 
-import controllerresults.ControllerActionResultClient;
 import view.View;
 import viewclasses.GameMapView;
 
@@ -12,13 +11,10 @@ import java.util.List;
 public interface ClientControllerClientInterface {
     /**
      * This method is called by the View to notify the Server that a new choice has been made.
-     * @param elem Contains the type of the action to be performed and an identifier of the action.
+     * @param id Contains the type of the action to be performed and an identifier of the action.
      * @param choices A list containing all the index of elements that have been chosen. PickTarget and PickAction only analyze the first element of the List.
      */
-    void pick(ControllerActionResultClient elem, List<Integer> choices);
-
-    //todo: pick cosa????
-    void pick();
+    void pick(String id, List<Integer> choices);
 
     /**
      * This method is used by the client to restart the action.

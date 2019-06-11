@@ -1,13 +1,8 @@
 package view;
 
-import controllerresults.ControllerActionResultClient;
 import network.Player;
-import viewclasses.ActionView;
-import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
+import viewclasses.*;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -15,27 +10,51 @@ import java.util.List;
  */
 public interface View {
     /**
-     * This method is used when a target must be chosen by the Client. Only one element can be picked up.
+     * This method is used when a target must be chosen by the Client.
      * The response is sent through the pick method
-     * @param gameMap The map that refers to the chose
-     * @param elem The identifier of the selector.
+     * @param gameMap The map that refers to the choose
+     * @param choiceId The identifier of the selector.
+     * @param single True iif only one element can be chosen
+     * @param optional True iif an empty list can be chosen
      * @param target A List containing all the element that can be chosen
      */
-    void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target);
+    void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId);
     /**
-     * This method is used when an action must be chosen by the Client. Only one element can be picked up.
+     * This method is used when an action must be chosen by the Client.
      * The response is sent through the pick method
-     * @param elem The identifier of the selector.
+     * @param choiceId The identifier of the selector.
+     * @param single True iif only one element can be chosen
+     * @param optional True iif an empty list can be chosen
      * @param action A List containing all the element that can be chosen
      */
-    void chooseAction(ControllerActionResultClient elem, List<ActionView> action);
+    void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId);
     /**
-     * This method is used when one or more weapons must be chosen by the Client.
+     * This method is used when an weapon must be chosen by the Client.
      * The response requires a List of object, and is sent through the pick method
-     * @param elem The identifier of the selector.
+     * @param choiceId The identifier of the selector.
+     * @param single True iif only one element can be chosen
+     * @param optional True iif an empty list can be chosen
      * @param weapon A List containing all the element that can be chosen
      */
-    void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException;
+    void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId);
+    /**
+     * This method is used when a powerUp must be chosen by the Client.
+     * The response requires a List of object, and is sent through the pick method
+     * @param choiceId The identifier of the selector.
+     * @param single True iif only one element can be chosen
+     * @param optional True iif an empty list can be chosen
+     * @param powerUp A List containing all the element that can be chosen
+     */
+    void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId);
+    /**
+     * This method is used when a String must be chosen by the Client.
+     * The response requires a List of object, and is sent through the pick method
+     * @param choiceId The identifier of the selector.
+     * @param single True iif only one element can be chosen
+     * @param optional True iif an empty list can be chosen
+     * @param string A List containing all the element that can be chosen
+     */
+    void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId);
 
     /**
      * Method that notifies when a rollback is automatically executed

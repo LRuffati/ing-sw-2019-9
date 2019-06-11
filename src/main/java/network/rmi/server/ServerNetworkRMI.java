@@ -4,7 +4,9 @@ import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
+import testcontroller.controllerclient.ControllerMessageClient;
 import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
 import java.rmi.ConnectException;
@@ -88,6 +90,16 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         return Database.get().getControllerByToken(token).sendMap();
     }
 
+    @Override
+    public ControllerMessage poll(String token) throws RemoteException {
+        checkConnection(token);
+        ControllerMessage msg = Database.get().getControllerByToken(token).getInstruction();
+        if(!msg.type().equals(SlaveControllerState.WAIT))
+            msg = ObjectMap.get().init(msg);
+        else
+            msg = new ControllerMessageClient(msg, null);
+        return msg;
+    }
 
     @Override
     public boolean equals(Object obj) {

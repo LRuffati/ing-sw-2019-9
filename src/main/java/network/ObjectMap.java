@@ -41,14 +41,20 @@ public class ObjectMap {
         if(controllerMessage.type().equals(SlaveControllerState.WAIT))
             clearChache();
 
-        return new ControllerMessageClient(controllerMessage);
+        return new ControllerMessageClient(controllerMessage, id);
     }
 
     public ControllerMessage pick(String token, String choiceId, List<Integer> choices) {
 
         if(!choiceMap.containsKey(choiceId)) {
-            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction());
+            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction(), null);
         }
         return handlePick(choiceMap.get(choiceId).pick(choices));
+    }
+
+    public ControllerMessage init(ControllerMessage controllerMessage) {
+        String id = newID();
+        choiceMap.put(id, controllerMessage);
+        return new ControllerMessageClient(controllerMessage, id);
     }
 }

@@ -10,6 +10,8 @@ import java.util.List;
 
 public class ControllerMessageClient implements ControllerMessage{
 
+    public final String id;
+
     private SlaveControllerState type;
     private ChoiceBoard choiceBoard;
     private Message message;
@@ -17,7 +19,9 @@ public class ControllerMessageClient implements ControllerMessage{
     private GameMapView sandbox;
 
 
-    public ControllerMessageClient(ControllerMessage controllerMessage) {
+    public ControllerMessageClient(ControllerMessage controllerMessage, String id) {
+        this.id = id;
+
         this.type = controllerMessage.type();
         this.choiceBoard = controllerMessage.genView();
         this.sandbox = controllerMessage.sandbox();

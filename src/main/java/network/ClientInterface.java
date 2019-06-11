@@ -3,7 +3,6 @@ package network;
 
 import network.exception.InvalidLoginException;
 import testcontroller.controllermessage.ControllerMessage;
-import viewclasses.GameMapView;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -20,5 +19,7 @@ public interface ClientInterface {
 
     ControllerMessage pick(String choiceIf, List<Integer> choices) throws RemoteException;
 
-    GameMapView getMap() throws RemoteException;
+    void getMap() throws RemoteException;
+
+    void poll() throws RemoteException;
 }

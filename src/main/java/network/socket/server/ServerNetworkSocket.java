@@ -8,7 +8,12 @@ import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
 import network.socket.messages.notify.*;
+import testcontroller.controllerclient.ControllerMessageClient;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
+
+import java.awt.image.DataBuffer;
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -141,6 +146,16 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         System.out.println("Request di mirror\t" + request.num);
 
         return new MirrorResponse(request.num);
+    }
+
+    @Override
+    public Response handle(PollRequest request) {
+        ControllerMessage msg = Database.get().getControllerByToken(token).getInstruction();
+        if(!msg.type().equals(SlaveControllerState.WAIT))
+            msg = ObjectMap.get().init(msg);
+        else
+            msg = new ControllerMessageClient(msg, null);
+        return new PollResponse(msg);
     }
 
 

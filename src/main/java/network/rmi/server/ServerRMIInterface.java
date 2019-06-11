@@ -21,4 +21,6 @@ public interface ServerRMIInterface extends Remote {
     ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException;
 
     GameMapView getMap(String token) throws RemoteException;
+
+    ControllerMessage poll(String token) throws RemoteException;
 }

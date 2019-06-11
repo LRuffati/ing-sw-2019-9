@@ -22,6 +22,7 @@ public interface ResponseHandler {
 
 
 
+    void handle(PollResponse response);
     void handle(NotifyMap response);
 
     void handle(OnTimer response);

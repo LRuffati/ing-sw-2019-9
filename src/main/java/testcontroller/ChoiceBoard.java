@@ -6,6 +6,8 @@ import actions.utils.WeaponChooser;
 import genericitems.Tuple;
 import testcontroller.controllerstates.PickTypes;
 import uid.TileUID;
+import viewclasses.ActionView;
+import viewclasses.PowerUpView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
@@ -74,5 +76,9 @@ public class ChoiceBoard {
     /**
      * The lists contain view elements or are null
       */
-    List<...> ...
+    List<ActionView> actionViews;
+    List<WeaponView> weaponViews;
+    List<TargetView> targetViews;
+    List<PowerUpView> powerUpViews;
+    List<String> stringViews;
 }

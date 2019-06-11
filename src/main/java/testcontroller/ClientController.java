@@ -1,7 +1,6 @@
 package testcontroller;
 
 import cli.CLIDemo;
-import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
 import network.ClientInterface;
@@ -13,6 +12,9 @@ import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
 import testcontroller.controllerclient.ClientControllerClientInterface;
 import testcontroller.controllerclient.ClientControllerNetworkInterface;
+import testcontroller.controllerclient.ControllerMessageClient;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllerstates.SlaveControllerState;
 import view.View;
 import view.gui.Framework;
 import viewclasses.ActionView;
@@ -42,10 +44,16 @@ public class ClientController implements ClientControllerClientInterface, Client
     private View view;
     private ClientInterface network;
 
+
+    private Deque<ControllerMessage> stack;
+    private Map<String, GameMapView> gameMapViewMap;
+
+    private String currentGameMap;
     private GameMapView gameMap;
 
-    private Deque<ControllerActionResultClient> stack;
-    private Map<String, GameMapView> gameMapViewMap;
+    private TimerTask repeatedTask;
+    private Timer timerForPolling;
+    private boolean polling;
 
 
     /**
@@ -76,6 +84,8 @@ public class ClientController implements ClientControllerClientInterface, Client
 
         stack = new ArrayDeque<>();
         gameMapViewMap = new HashMap<>();
+
+        initPolling();
 
         Main.register(network);
         Main.run(network);
@@ -128,103 +138,125 @@ public class ClientController implements ClientControllerClientInterface, Client
             logger.log(Level.SEVERE, "Exception in quit", e);
         }
     }
-
-
-    private GameMapView getMap(TargetView targetView) throws RemoteException {
-        String mapUid = targetView.getGameMapViewId();
-        if(!gameMapViewMap.containsKey(mapUid)) {
-            GameMapView mapView = network.getMap(mapUid);
-            gameMapViewMap.put(mapUid, mapView);
-
-            return mapView;
-        }
-        return gameMapViewMap.get(mapUid);
-    }
-
-    /**
-     * This method notify the View that a new choice can be done.
-     * Depending on the type of selection different actions can be performed.
-     * If the action is terminated the stack of the passed action and the Map containing all the GameMapViews are deleted.
-     * @param elem A ControllerActionResultClient that specify the type of the Request and some other details.
-     */
-    public void newSelection(ControllerActionResultClient elem) {
-        try {
-            switch (elem.type) {
-                case PICKTARGET:
-                    stack.push(elem);
-                    Tuple<Boolean, List<TargetView>> resTarget = network.showOptionsTarget(elem.actionId);
-                    GameMapView gameMapView = getMap(resTarget.y.iterator().next());
-                    view.chooseTarget(gameMapView, elem, resTarget.y);
-                    break;
-
-                case PICKACTION:
-                    stack.push(elem);
-                    Tuple<Boolean, List<ActionView>> resAction = network.showOptionsAction(elem.actionId);
-                    view.chooseAction(elem, resAction.y);
-                    break;
-
-                case PICKWEAPON:
-                    stack.push(elem);
-                    view.chooseWeapon(elem, network.showOptionsWeapon(elem.actionId));
-                    break;
-
-                case ROLLBACK:
-                    newSelection(stack.pop());
-                    view.rollback();
-                    break;
-                case TERMINATED:
-                    stack.clear();
-                    gameMapViewMap.clear();
-                    view.terminated();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        catch (RemoteException e) {
-            logger.log(Level.SEVERE, "Exception in newSelection", e);
-        }
-    }
-
+    
 
 
     @Override
-    public void pick(ControllerActionResultClient elem, List<Integer> choices) {
-        try {
-            switch (elem.type) {
-                case PICKTARGET:
-                    newSelection(network.pickTarg(elem.actionId, choices.get(0)));
-                    break;
-                case PICKACTION:
-                    newSelection(network.pickAction(elem.actionId, choices.get(0)));
-                    break;
-                case PICKWEAPON:
-                    newSelection(network.pickWeapon(elem.actionId, choices));
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        catch (RemoteException e) {
-            logger.log(Level.SEVERE, "Exception in pick", e);
-        }
+    public void pick(String id, List<Integer> choices) {
+        network.pick(id, choices);
     }
 
     @Override
     public void restartSelection() {
-        ControllerActionResultClient first = stack.getFirst();
+        ControllerMessage first = stack.getFirst();
         stack.clear();
         gameMapViewMap.clear();
-        newSelection(first);
+        elaborate(first);
     }
 
     @Override
     public void rollback() {
         stack.pop();
-        newSelection(stack.pop());
+        elaborate(stack.pop());
     }
+
+    @Override
+    public void onControllerMessage(ControllerMessage controllerMessage) {
+        elaborate(controllerMessage);
+    }
+
+    private void elaborate(ControllerMessage controllerMessage) {
+        if(controllerMessage.getMessage() != null) {
+            view.onMessage(controllerMessage.getMessage());
+        }
+
+        if(!currentGameMap.equals(controllerMessage.gamemap())) {
+            currentGameMap = controllerMessage.gamemap();
+            //todo: meglio così o a eventi?
+            network.getMap();
+        }
+
+        if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
+            stack.clear();
+            if (!polling)   setPolling(true);
+        }
+        else {
+            stack.push(controllerMessage);
+            if(polling)    setPolling(false);
+        }
+
+
+        switch (controllerMessage.type()) {
+            case MAIN:
+                break;
+            case RESPAWN:
+                view.onRespawn();
+                break;
+            case USETAKEBACK:
+                view.onTakeback();
+                break;
+            case TERMINATOR:
+                view.onTerminator();
+                break;
+            case ROLLBACK:
+                view.onRollback();
+                rollback();
+                break;
+
+                default:
+                    break;
+        }
+
+        ChoiceBoard choice = controllerMessage.genView();
+        String id = ((ControllerMessageClient)controllerMessage).id;
+        if(choice!= null) {
+            switch (choice.type) {
+                case STRING:
+                    view.chooseString(choice.stringViews, choice.single, choice.optional, choice.description, id);
+                    break;
+                case ACTION:
+                    view.chooseAction(choice.actionViews, choice.single, choice.optional, choice.description, id;
+                    break;
+                case TARGET:
+                    view.chooseTarget(choice.targetViews, choice.single, choice.optional, choice.description, controllerMessage.sandbox(), id);
+                    break;
+                case WEAPON:
+                    view.chooseWeapon(choice.weaponViews, choice.single, choice.optional, choice.description, id);
+                    break;
+                case POWERUP:
+                    view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional, choice.description, id);
+                    break;
+
+                    default:
+                        break;
+            }
+        }
+
+    }
+
+
+    private void initPolling() {
+        repeatedTask = new TimerTask() {
+            public void run() {
+                System.out.println("Polling");
+                network.poll();
+            }
+        };
+        timerForPolling = new Timer("TimerForPolling");
+    }
+
+    private void setPolling(boolean value) {
+        if(polling != value)
+            if(value) {
+                timerForPolling.scheduleAtFixedRate(repeatedTask, 0, 2000);
+            }
+            else {
+                timerForPolling.cancel();
+            }
+        polling = value;
+    }
+
+
 
     @Override
     public GameMapView getMap() {
