@@ -1,52 +1,110 @@
 package view.gui;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-public class GUIScoreBoard{
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+@SuppressWarnings("serial")
+public class GUIScoreBoard extends JPanel {
+    private static final Color DRAWING_COLOR = new Color(255, 100, 200);
+    private static final Color FINAL_DRAWING_COLOR = Color.red;
+
+    private int skullIndex;
 
     private BufferedImage scoreBoardBuffered;
-    private JFrame scoreBoardFrame;
-    private JLabel scoreBoardLabel;
-    private Image scoreBoard;
+    private Image img;
+    private Point startPt = null;
+    private Point endPt = null;
+    private Point currentPt = null;
+    private int prefW;
+    private int prefH;
 
-    public GUIScoreBoard(){
-        scoreBoardFrame = new JFrame("Scoreboard");
-        try {
-            scoreBoardBuffered = ImageIO.read(new File("src/resources/gui/ScoreBoard.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public GUIScoreBoard() throws IOException {
+        scoreBoardBuffered = ImageIO.read(new File("src/resources/gui/ScoreBoardScaled.png"));
+        img = scoreBoardBuffered.getScaledInstance(scoreBoardBuffered.getWidth()/3,scoreBoardBuffered.getHeight()/3,Image.SCALE_SMOOTH);
 
-        scoreBoard = scoreBoardBuffered.getScaledInstance(scoreBoardBuffered.getWidth()/2,scoreBoardBuffered.getHeight()/2,Image.SCALE_SMOOTH);
-        scoreBoardLabel = new JLabel(new ImageIcon(scoreBoard));
-        scoreBoardLabel.setLayout(new FlowLayout());
-        scoreBoardFrame.add(scoreBoardLabel);
-        scoreBoardFrame.setVisible(true);
-        scoreBoardFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        scoreBoardFrame.pack();
-        setSkull(Color.green,1);
-    }
-
-    /**
-     * Fills with a colored oval a skull on the ScoreBoard.
-     * @param color indicates the player.
-     * @param i the index of the skull where to draw.
-     */
-    public void setSkull(Color color,int i){
-        Graphics g = scoreBoardLabel.getGraphics();
-        g.setColor(color);
-        g.fillOval((30 + 108 * i)/2,91/2,60/2,95/2);
+        Graphics g = scoreBoardBuffered.getGraphics();
+        g.drawImage(scoreBoardBuffered, 0, 0, this);
         g.dispose();
 
     }
 
+    public void setSkullIndex(int i){
+        this.skullIndex = i;
+    }
 
-    public static void main(String[] args){
-        GUIScoreBoard sb = new GUIScoreBoard();
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (scoreBoardBuffered != null) {
+            g.drawImage(scoreBoardBuffered, 0, 0, this);
+        }
+
+        g.setColor(DRAWING_COLOR);
+
+        g.fillOval((30 + 108 * skullIndex)/2,91/2,60/2,95/2);
+
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(prefW, prefH);
+    }
+
+    public void drawToBackground() {
+        Graphics g = scoreBoardBuffered.getGraphics();
+        g.setColor(FINAL_DRAWING_COLOR);
+        g.drawRect((30 + 108)/2,91/2,60/2,95/2);
+        g.dispose();
+
+        startPt = null;
+        repaint();
+    }
+
+    private class MyMouseAdapter extends MouseAdapter {
+        @Override
+        public void mouseDragged(MouseEvent mEvt) {
+            currentPt = mEvt.getPoint();
+            GUIScoreBoard.this.repaint();
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent mEvt) {
+            endPt = mEvt.getPoint();
+            currentPt = null;
+            drawToBackground();
+        }
+
+        @Override
+        public void mousePressed(MouseEvent mEvt) {
+            startPt = mEvt.getPoint();
+        }
+    }
+
+    private static void createAndShowGui() {
+        GUIScoreBoard mainPanel = null;
+        try {
+            mainPanel = new GUIScoreBoard();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+        JFrame frame = new JFrame("Drawing Panel");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().add(mainPanel);
+        frame.pack();
+        frame.setSize(new Dimension(1000,250));
+        frame.setLocationByPlatform(true);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(GUIScoreBoard::createAndShowGui);
     }
 }

@@ -92,7 +92,7 @@ public class GUIMap1 extends JPanel {
         //come aggiungere azione a bottone:
         ammoButton.addActionListener(e -> {
             System.out.println("prova bottone ammotile stanza " + tileColor.toString());
-            try {
+            /*try {
                 pg = ImageIO.read(new File("src/resources/gui/pgTest.png"));
             } catch (IOException ignored) {
             }
@@ -100,7 +100,9 @@ public class GUIMap1 extends JPanel {
             Image pgscal = pg.getScaledInstance(pg.getWidth()/5,pg.getHeight()/5,SCALE_SMOOTH);
             ImageIcon pgIcon = new ImageIcon(pgscal);
             ammoButton.setIcon(pgIcon);
+            */
             int input = JOptionPane.showConfirmDialog(label, "You want to move here?", "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+
             if(input == JOptionPane.OK_OPTION) System.out.println("Player    moved from    to    ");
         });
         ammoButton.setContentAreaFilled( false );
