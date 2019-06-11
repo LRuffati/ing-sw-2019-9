@@ -27,11 +27,10 @@ public class GUIMap1 extends JPanel {
     public GUIMap1(){
 
         this.frame = new JFrame("frame");
-        JPanel panel = new JPanel();
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
             frame.setSize(683,920);
         } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
-            frame.setSize(401,541);
+            frame.setSize(392,542);
         }
 
         frame.setResizable(true);
@@ -57,12 +56,14 @@ public class GUIMap1 extends JPanel {
 
 
         //panel.setSize(682,920);
-        //panel.setLayout(new FlowLayout(FlowLayout.LEADING,0,0));
-        panel.add(label);
-        panel.setBackground(Color.YELLOW);
+        setLayout(new GridLayout());
+        add(label);
+
+        label.setSize(new Dimension(682,920));
+        setBackground(Color.YELLOW);
         //panel.setSize(681,920);
         //frame.getContentPane().add(panel);
-        frame.add(label);
+        frame.add(this);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //DO NOT USE pack() !!!
         frame.setVisible(true);
@@ -133,12 +134,8 @@ public class GUIMap1 extends JPanel {
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
         ammoButton.setBounds(iconAmmo.getIconWidth(),iconAmmo.getIconHeight(),500,0);
-        label.setLayout(new FlowLayout(FlowLayout.LEADING,0,0));
+        label.setLayout(new GridLayout(4,3,0,0));
         label.add(ammoButton);
     }
 
-
-    public JFrame getFrame() {
-        return frame;
-    }
 }

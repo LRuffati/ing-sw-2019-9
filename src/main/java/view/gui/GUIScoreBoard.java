@@ -5,16 +5,18 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
 @SuppressWarnings("serial")
 public class GUIScoreBoard extends JPanel {
-    private static final Color DRAWING_COLOR = new Color(255, 100, 200);
-    private static final Color FINAL_DRAWING_COLOR = Color.red;
+    private static List<Color> DRAWING_COLOR = new ArrayList<>();
+    private static Color FINAL_DRAWING_COLOR;
 
-    private int skullIndex;
+    private List<Integer> skullIndex = new ArrayList<>();
 
     private BufferedImage scoreBoardBuffered;
     private Image img;
@@ -28,14 +30,21 @@ public class GUIScoreBoard extends JPanel {
         scoreBoardBuffered = ImageIO.read(new File("src/resources/gui/ScoreBoardScaled.png"));
         img = scoreBoardBuffered.getScaledInstance(scoreBoardBuffered.getWidth()/3,scoreBoardBuffered.getHeight()/3,Image.SCALE_SMOOTH);
 
+        setSkullIndex(8,Color.red);
+        setSkullIndex(6, Color.YELLOW);
+        setSkullIndex(3, Color.YELLOW);
+        setSkullIndex(4, Color.YELLOW);
+
         Graphics g = scoreBoardBuffered.getGraphics();
         g.drawImage(scoreBoardBuffered, 0, 0, this);
         g.dispose();
 
     }
 
-    public void setSkullIndex(int i){
-        this.skullIndex = i;
+    public void setSkullIndex(int i, Color color){
+        this.skullIndex.add(i);
+        DRAWING_COLOR.add(color);
+        FINAL_DRAWING_COLOR = color;
     }
 
     @Override
@@ -45,9 +54,11 @@ public class GUIScoreBoard extends JPanel {
             g.drawImage(scoreBoardBuffered, 0, 0, this);
         }
 
-        g.setColor(DRAWING_COLOR);
+        for(int i = 0; i<skullIndex.size(); i++) {
+            g.setColor(DRAWING_COLOR.get(i));
 
-        g.fillOval((30 + 108 * skullIndex)/2,91/2,60/2,95/2);
+            g.fillOval((33 + 108 * skullIndex.get(i)) / 2, 91 / 2, 61 / 2, 95 / 2);
+        }
 
     }
 
@@ -99,7 +110,7 @@ public class GUIScoreBoard extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.pack();
-        frame.setSize(new Dimension(1000,250));
+        frame.setSize(new Dimension(500,145));
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
     }
