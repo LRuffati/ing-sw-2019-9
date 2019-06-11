@@ -157,6 +157,7 @@ public class ClientController implements ClientControllerClientInterface, Client
      * If the action is terminated the stack of the passed action and the Map containing all the GameMapViews are deleted.
      * @param elem A ControllerActionResultClient that specify the type of the Request and some other details.
      */
+    /*
     public void newSelection(ControllerActionResultClient elem) {
         try {
             switch (elem.type) {
@@ -239,6 +240,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     public GameMapView getMap() {
         return gameMap;
     }
+    */
 
 
     //ClientControllerNetworkInterface methods
@@ -248,4 +250,5 @@ public class ClientController implements ClientControllerClientInterface, Client
         this.gameMap = gameMap;
         view.updateMap(gameMap);
     }
+
 }

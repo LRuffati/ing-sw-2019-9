@@ -1,12 +1,10 @@
 package view.gui;
 
 import controllerclient.ClientControllerClientInterface;
+import controllerclient.Message;
 import controllerclient.View;
-import controllerresults.ControllerActionResultClient;
-import viewclasses.ActionView;
-import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
+import network.Player;
+import viewclasses.*;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -17,8 +15,10 @@ public class Framework implements View {
 
     private static ClientControllerClientInterface clientController;
 
+    private PhaseType phase;
     private Login login;
     private static boolean loginFlag = false;
+    private WaitingScreen waitingScreen;
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
@@ -42,35 +42,29 @@ public class Framework implements View {
     @Override
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
         if(result) {
+            phase = PhaseType.WAITING;
             loginFlag = true;
             login.dispatchEvent(new WindowEvent(login, WindowEvent.WINDOW_CLOSING));
+
+            waitingScreen = new WaitingScreen(this);
+            waitingScreen.addWindowListener(new WindowEventHandler());
+            waitingScreen.setVisible(true);
         }
-       // login.loginResponse(result, invalidUsername, invalidColor);
+       else {
+            login.loginResponse(result, invalidUsername, invalidColor);
+        }
     }
 
     @Override
     public void loginNotif() {
+        phase = PhaseType.LOGIN;
         login = new Login(this);
-        JFrame frame = login;
         login.addWindowListener(new WindowEventHandler());
         login.setVisible(true);
     }
 
 
-    @Override
-    public void chooseAction(ControllerActionResultClient elem, java.util.List<ActionView> action) {
 
-    }
-
-    @Override
-    public void chooseWeapon(ControllerActionResultClient elem, java.util.List<WeaponView> weapon) {
-
-    }
-
-    @Override
-    public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
-
-    }
 
     @Override
     public void terminated() {
@@ -78,14 +72,75 @@ public class Framework implements View {
     }
 
     @Override
-    public void rollback() {
+    public void updateMap(GameMapView gameMapView) {
 
     }
 
     @Override
-    public void updateMap(GameMapView gameMapView) {
+    public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId){
 
     }
+
+    @Override
+    public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
+
+    }
+
+    @Override
+    public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
+
+    }
+
+    @Override
+    public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
+
+    }
+
+    @Override
+    public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
+
+    }
+
+    @Override
+    public void onConnection(Player player, boolean connected) {
+
+    }
+
+    @Override
+    public void onTimer(int timeToCount) {
+
+    }
+
+    @Override
+    public void onStarting(String map) {
+
+    }
+
+    @Override
+    public void onMessage(Message message) {
+
+    }
+
+    @Override
+    public void onRespawn() {
+
+    }
+
+    @Override
+    public void onRollback() {
+
+    }
+
+    @Override
+    public void onTakeback() {
+
+    }
+
+    @Override
+    public void onTerminator() {
+
+    }
+
 
 
     public void quit(JFrame frame) {
