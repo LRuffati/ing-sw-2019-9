@@ -78,6 +78,10 @@ public interface View {
      */
     void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor);
 
+    /**
+     * Avvisa la view che si può effettuare il login
+     */
+    void loginNotif();
 
 
     /**
