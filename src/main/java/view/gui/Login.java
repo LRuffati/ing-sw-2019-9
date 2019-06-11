@@ -1,18 +1,14 @@
 package view.gui;
 
 import controllerclient.ClientControllerClientInterface;
+import network.Player;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Collections;
 import java.util.List;
 
-//public class Login extends JFrame implements ActionListener{
 class Login extends JFrame {
 
     private static ClientControllerClientInterface cliController;
@@ -34,8 +30,8 @@ class Login extends JFrame {
     private JScrollPane messageAreaPane;
     private JTextPane messageArea;
 
-    boolean connect = true;
-    String color;
+    private boolean connect = true;
+    private String color;
 
 
     private GridBagConstraints put(int gridx, int gridy, int fill){
@@ -55,10 +51,18 @@ class Login extends JFrame {
         aset = sc.addAttribute(aset, StyleConstants.FontFamily, "Lucida Console");
         aset = sc.addAttribute(aset, StyleConstants.Alignment, StyleConstants.ALIGN_JUSTIFIED);
 
-        int len = tp.getDocument().getLength();
+        /*int len = tp.getDocument().getLength();
         tp.setCaretPosition(len);
         tp.setCharacterAttributes(aset, false);
-        tp.replaceSelection(msg);
+        tp.replaceSelection(msg);*/
+
+        try {
+            StyledDocument doc = tp.getStyledDocument();
+            doc.insertString(doc.getLength(), msg, aset);
+        }
+        catch (BadLocationException e) {
+            System.out.println(e.offsetRequested());
+        }
     }
 
 
@@ -98,9 +102,10 @@ class Login extends JFrame {
 
 
         messageArea = new JTextPane();
-        messageArea.setEditable(true);
+        messageArea.setEditable(false);
         messageArea.setSize(new Dimension(2,10));
         messageAreaPane = new JScrollPane(messageArea);
+        messageAreaPane.setSize(2,10);
 
 
         connectionMenu = new JComboBox(List.of("Connect", "Reconnect").toArray());
@@ -170,4 +175,7 @@ class Login extends JFrame {
         }
     }
 
+    void onConnection(Player player, boolean connected) {
+        appendToPane(messageArea, String.format("%s %s", player.getUsername(), connected ? "connected" : "disconnected"), Color.black);
+    }
 }

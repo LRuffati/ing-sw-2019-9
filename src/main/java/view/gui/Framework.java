@@ -102,8 +102,23 @@ public class Framework implements View {
     }
 
     @Override
-    public void onConnection(Player player, boolean connected) {
+    public void onConnection(Player player, boolean connected, int numOfPlayers) {
+        switch (phase){
+            case LOGIN:
+                login.onConnection(player, connected);
+                break;
+            case WAITING:
+                waitingScreen.onConnection(player, connected);
+                break;
+            case GAME:
+                //todo
+                break;
+            case TERMINATED:
+                break;
 
+                default:
+                    break;
+        }
     }
 
     @Override
