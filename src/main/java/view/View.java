@@ -1,6 +1,7 @@
 package view;
 
 import network.Player;
+import testcontroller.Message;
 import viewclasses.*;
 
 import java.util.List;
@@ -56,10 +57,6 @@ public interface View {
      */
     void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId);
 
-    /**
-     * Method that notifies when a rollback is automatically executed
-     */
-    void rollback();
 
     /**
      * Method that notifies when the current Action is completed
@@ -101,4 +98,33 @@ public interface View {
      * @param timeToCount Millisecond before timer end.
      */
     void onTimer(int timeToCount);
+
+    /**
+     * Method used to notify the user that he has to respawn.
+     * The view only need to print a text message representing the event.
+     */
+    void onRespawn();
+    /**
+     * Method used to notify the user that he can use a takeback grenade.
+     * The view only need to print a text message representing the event.
+     */
+    void onTakeback();
+    /**
+     * Method used to notify the user that he can move the Terminator.
+     * The view only need to print a text message representing the event.
+     * [THIS FUNCTIONALITY IS NOT IMPLEMENTED]
+     */
+    void onTerminator();
+    /**
+     * Method used to notify the user that the current flow of actions cannot be continued and a rollback has been made.
+     * The view only need to print a text message representing the event.
+     */
+    void onRollback();
+
+
+    /**
+     * Method used to notify the user of all the effect applied to the map and to the players
+     * Message should contain a List of element that only holds a printable message
+     */
+    void onMessage(Message message);
 }
