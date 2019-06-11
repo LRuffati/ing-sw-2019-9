@@ -5,6 +5,7 @@ import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
 import network.ClientInterface;
 import network.Main;
+import network.Player;
 import network.exception.InvalidLoginException;
 import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
@@ -172,13 +173,15 @@ public class ClientController implements ClientControllerClientInterface, Client
 
         if(!currentGameMap.equals(controllerMessage.gamemap())) {
             currentGameMap = controllerMessage.gamemap();
-            //todo: meglio così o a eventi?
             network.getMap();
         }
 
         if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
             stack.clear();
-            if (!polling)   setPolling(true);
+            if (!polling) {
+                setPolling(true);
+                view.terminated();
+            }
         }
         else {
             stack.push(controllerMessage);
@@ -215,7 +218,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                     view.chooseString(choice.stringViews, choice.single, choice.optional, choice.description, id);
                     break;
                 case ACTION:
-                    view.chooseAction(choice.actionViews, choice.single, choice.optional, choice.description, id;
+                    view.chooseAction(choice.actionViews, choice.single, choice.optional, choice.description, id);
                     break;
                 case TARGET:
                     view.chooseTarget(choice.targetViews, choice.single, choice.optional, choice.description, controllerMessage.sandbox(), id);
@@ -270,5 +273,21 @@ public class ClientController implements ClientControllerClientInterface, Client
     public void updateMap(GameMapView gameMap) {
         this.gameMap = gameMap;
         view.updateMap(gameMap);
+    }
+
+    @Override
+    public void onStarting(String map) {
+        setPolling(true);
+        view.onStarting(map);
+    }
+
+    @Override
+    public void onTimer(int ms) {
+        view.onTimer(ms);
+    }
+
+    @Override
+    public void onConnection(Player player, boolean connection) {
+        view.onConnection(player, connection);
     }
 }

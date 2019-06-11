@@ -58,22 +58,22 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
     @Override
     public void onConnection(Player player) {
-        view.onConnection(player, true);
+        clientController.onConnection(player, true);
     }
 
     @Override
     public void onDisconnection(Player player) {
-        view.onConnection(player, false);
+        clientController.onConnection(player, false);
     }
 
     @Override
     public void onStarting(String map) {
-        view.onStarting(map);
+        clientController.onStarting(map);
     }
 
     @Override
     public void onTimer(int ms) {
-        view.onTimer(ms);
+        clientController.onTimer(ms);
     }
 
 
