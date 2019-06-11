@@ -33,7 +33,7 @@ public class GUIMap1 extends JPanel {
             frame.setSize(392,542);
         }
 
-        frame.setResizable(true);
+        frame.setResizable(false);
         //frame.getContentPane().add(panel);
 
         JLabel label = new JLabel();

@@ -18,6 +18,7 @@ public class Framework implements View {
     private static ClientControllerClientInterface clientController;
 
     private Login login;
+    private static boolean loginFlag = false;
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
@@ -40,15 +41,19 @@ public class Framework implements View {
 
     @Override
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
-        login.loginResponse(result, invalidUsername, invalidColor);
+        if(result) {
+            loginFlag = true;
+            login.dispatchEvent(new WindowEvent(login, WindowEvent.WINDOW_CLOSING));
+        }
+       // login.loginResponse(result, invalidUsername, invalidColor);
     }
 
     @Override
     public void loginNotif() {
         login = new Login(this);
         JFrame frame = login;
-        frame.addWindowListener(new WindowEventHandler());
-        frame.setVisible(true);
+        login.addWindowListener(new WindowEventHandler());
+        login.setVisible(true);
     }
 
 
@@ -110,8 +115,12 @@ public class Framework implements View {
     static class WindowEventHandler extends WindowAdapter {
         @Override
         public void windowClosing(WindowEvent evt) {
-            System.out.println("exit");
-            clientController.quit();
+            if(!loginFlag) {
+                System.out.println("exit");
+                clientController.quit();
+            } else {
+                loginFlag = false;
+            }
         }
     }
 
