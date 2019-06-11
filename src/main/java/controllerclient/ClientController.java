@@ -151,96 +151,27 @@ public class ClientController implements ClientControllerClientInterface, Client
         return gameMapViewMap.get(mapUid);
     }
 
-    /**
-     * This method notify the View that a new choice can be done.
-     * Depending on the type of selection different actions can be performed.
-     * If the action is terminated the stack of the passed action and the Map containing all the GameMapViews are deleted.
-     * @param elem A ControllerActionResultClient that specify the type of the Request and some other details.
-     */
-    /*
-    public void newSelection(ControllerActionResultClient elem) {
-        try {
-            switch (elem.type) {
-                case PICKTARGET:
-                    stack.push(elem);
-                    Tuple<Boolean, List<TargetView>> resTarget = network.showOptionsTarget(elem.actionId);
-                    GameMapView gameMapView = getMap(resTarget.y.iterator().next());
-                    view.chooseTarget(gameMapView, elem, resTarget.y);
-                    break;
-
-                case PICKACTION:
-                    stack.push(elem);
-                    Tuple<Boolean, List<ActionView>> resAction = network.showOptionsAction(elem.actionId);
-                    view.chooseAction(elem, resAction.y);
-                    break;
-
-                case PICKWEAPON:
-                    stack.push(elem);
-                    view.chooseWeapon(elem, network.showOptionsWeapon(elem.actionId));
-                    break;
-
-                case ROLLBACK:
-                    newSelection(stack.pop());
-                    view.rollback();
-                    break;
-                case TERMINATED:
-                    stack.clear();
-                    gameMapViewMap.clear();
-                    view.terminated();
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        catch (RemoteException e) {
-            logger.log(Level.SEVERE, "Exception in newSelection", e);
-        }
-    }
 
 
     @Override
-    public void pick(ControllerActionResultClient elem, List<Integer> choices) {
-        try {
-            switch (elem.type) {
-                case PICKTARGET:
-                    newSelection(network.pickTarg(elem.actionId, choices.get(0)));
-                    break;
-                case PICKACTION:
-                    newSelection(network.pickAction(elem.actionId, choices.get(0)));
-                    break;
-                case PICKWEAPON:
-                    newSelection(network.pickWeapon(elem.actionId, choices));
-                    break;
+    public void pick(String id, List<Integer> choices) {
 
-                default:
-                    break;
-            }
-        }
-        catch (RemoteException e) {
-            logger.log(Level.SEVERE, "Exception in pick", e);
-        }
     }
 
     @Override
     public void restartSelection() {
-        ControllerActionResultClient first = stack.getFirst();
-        stack.clear();
-        gameMapViewMap.clear();
-        newSelection(first);
+
     }
 
     @Override
     public void rollback() {
-        stack.pop();
-        newSelection(stack.pop());
+
     }
 
     @Override
     public GameMapView getMap() {
-        return gameMap;
+        return null;
     }
-    */
 
 
     //ClientControllerNetworkInterface methods
