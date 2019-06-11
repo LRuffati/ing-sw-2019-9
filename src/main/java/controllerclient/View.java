@@ -1,4 +1,4 @@
-package view;
+package controllerclient;
 
 import network.Player;
 import testcontroller.Message;
