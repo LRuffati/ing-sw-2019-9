@@ -15,4 +15,6 @@ public interface RequestHandler {
     Response handle(ShowOptionsRequest request);
 
     Response handle(GetMapRequest request);
+
+    Response handle(PingResponse response);
 }

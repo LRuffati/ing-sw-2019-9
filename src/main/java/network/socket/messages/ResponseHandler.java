@@ -22,4 +22,6 @@ public interface ResponseHandler {
 
 
     void handle(NotifyMap response);
+
+    void handle(PingRequest request);
 }

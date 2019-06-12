@@ -79,6 +79,8 @@ public class ClientController implements ClientControllerClientInterface, Client
         stack = new ArrayDeque<>();
         gameMapViewMap = new HashMap<>();
 
+
+        add();
         //Main.register(network);
         //Main.run(network);
     }
@@ -182,4 +184,31 @@ public class ClientController implements ClientControllerClientInterface, Client
         view.updateMap(gameMap);
     }
 
+
+
+
+    private Timer timer;
+    private TimerTask timerTask;
+
+    public void add() {
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                stop();
+                quit();
+            }
+        };
+
+        timer = new Timer("timerForDisconnection");
+        timer.schedule(timerTask, 1000);
+    }
+
+    public void reset() {
+        timer.cancel();
+        timer.schedule(timerTask, 200);
+    }
+
+    public void stop() {
+        timer.cancel();
+    }
 }

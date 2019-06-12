@@ -5,6 +5,7 @@ import genericitems.Tuple;
 import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
+import network.TimerForDisconnection;
 import network.exception.InvalidLoginException;
 import viewclasses.ActionView;
 import viewclasses.GameMapView;
@@ -44,6 +45,12 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
             }
         }
     }
+
+    @Override
+    public void pingResponse(String token) {
+        TimerForDisconnection.reset(token);
+    }
+
 
     @Override
     public String register(ServerInterface serverInterface, String username, String password, String color) throws RemoteException, InvalidLoginException {
@@ -114,6 +121,7 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         checkConnection(token);
         return ObjectMap.get().showGameMap(gameMapId);
     }
+
 
 
 

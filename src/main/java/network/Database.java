@@ -119,6 +119,9 @@ public class Database {
         controllerByToken.put(token, mainController.connect(user));
 
         connectedToken.add(token);
+
+        TimerForDisconnection.add(token);
+
         return token;
     }
 
@@ -148,6 +151,8 @@ public class Database {
 
         mainController.reconnect(getUserByToken(token));
 
+        TimerForDisconnection.add(token);
+
         return token;
     }
 
@@ -167,6 +172,7 @@ public class Database {
         connectedToken.remove(token);
         disconnectedToken.remove(token);
 
+        TimerForDisconnection.stop(token);
     }
 
     /**
@@ -182,6 +188,8 @@ public class Database {
         networkByToken.remove(token);
         connectedToken.remove(token);
         disconnectedToken.add(token);
+
+        TimerForDisconnection.reset(token);
     }
 
     /**

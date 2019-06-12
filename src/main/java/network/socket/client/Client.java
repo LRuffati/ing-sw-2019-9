@@ -62,4 +62,13 @@ public class Client {
             logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
         }
     }
+
+    public void request(Object object) {
+        try {
+            out.writeObject(object);
+            out.reset();
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
+        }
+    }
 }

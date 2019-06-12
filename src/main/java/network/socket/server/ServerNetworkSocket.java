@@ -1,9 +1,6 @@
 package network.socket.server;
 
-import network.Database;
-import network.ObjectMap;
-import network.Player;
-import network.ServerInterface;
+import network.*;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
@@ -45,7 +42,9 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     }
 
     @Override
-    public void ping() {}
+    public void ping() {
+        clientHandler.respond(new PingRequest());
+    }
 
     @Override
     public void nofifyMap(GameMapView gameMap) {
@@ -53,6 +52,13 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     }
 
     //RequestHandler methods
+
+
+    @Override
+    public Response handle(PingResponse response) {
+        TimerForDisconnection.reset(player.getToken());
+        return null;
+    }
 
     @Override
     public Response handle(RegisterRequest request) {

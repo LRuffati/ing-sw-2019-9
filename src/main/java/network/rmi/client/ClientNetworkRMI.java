@@ -36,7 +36,8 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
     @Override
     public void ping() {
-        return;
+        clientController.reset();
+        controller.pingResponse(token);
     }
 
     @Override

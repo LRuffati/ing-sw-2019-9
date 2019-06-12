@@ -7,5 +7,6 @@ import viewclasses.GameMapView;
  * Mostly are notify methods.
  */
 public interface ClientControllerNetworkInterface {
+    void reset();
     void updateMap(GameMapView gameMapView);
 }

@@ -31,4 +31,6 @@ public interface ServerRMIInterface extends Remote {
     Tuple<Boolean, List<ActionView>> showOptionsAction(String token, String actionPickerId) throws RemoteException;
 
     GameMapView getMap(String token, String gameMapId) throws RemoteException;
+
+    void pingResponse(String token);
 }

@@ -55,7 +55,6 @@ public class RMIServerLauncher {
 
             //Naming.rebind(ParserConfiguration.parse("RMIBinding"), controller);
 
-            startPing(controller);
             return controller;
         }
         catch (RemoteException | AlreadyBoundException e){
@@ -64,28 +63,7 @@ public class RMIServerLauncher {
         }
     }
 
-    private static void startPing(ServerNetworkRMI controller){
-        TimerTask repeatedTask = new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    for(String token : Database.get().getConnectedTokens()) {
-                        Database.get().getNetworkByToken(token).ping();
-                    }
-                    /*
-                    if(controller instanceof ServerNetworkRMI)
-                        controller.sendPing();
-                        */
-                }
-                catch (RemoteException e){
-                    e.printStackTrace();
-                }
-            }
-        };
 
-        Timer timer  = new Timer("pingTimer");
-        timer.scheduleAtFixedRate(repeatedTask, 0, 100);
-    }
 
     public static void main(String[] args) {
         System.out.println("\nServer RMI\n");

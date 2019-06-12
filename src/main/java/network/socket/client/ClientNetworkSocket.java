@@ -246,6 +246,11 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
 
+    @Override
+    public void handle(PingRequest request) {
+        clientController.reset();
+        client.request(new PingResponse());
+    }
 
     //ClientControllerNetworkInterface methods
     @Override
