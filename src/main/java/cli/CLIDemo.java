@@ -461,7 +461,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onMessage(Message message) {
-        //TODO waiting for class Message
+        System.out.println(message.getStr());
     }
 
     /**

@@ -137,7 +137,7 @@ public class Framework implements View {
         changeFrameFlag = true;
         waitingScreen.dispatchEvent(new WindowEvent(waitingScreen, WindowEvent.WINDOW_CLOSING));
 
-        game = new GUIMap1();
+        //game = new GUIMap1();
         //game.addWindowListener(new WindowEventHandler());
         game.setVisible(true);
     }
