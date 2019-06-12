@@ -11,13 +11,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
+
 public class Framework implements View {
 
     private static ClientControllerClientInterface clientController;
 
     private PhaseType phase;
     private Login login;
-    private static boolean loginFlag = false;
+    private GUIMap1 game;
+    private static boolean changeFrameFlag = false;
     private WaitingScreen waitingScreen;
 
     private Framework(ClientControllerClientInterface controller){
@@ -43,10 +46,11 @@ public class Framework implements View {
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
         if(result) {
             phase = PhaseType.WAITING;
-            loginFlag = true;
+            changeFrameFlag = true;
             login.dispatchEvent(new WindowEvent(login, WindowEvent.WINDOW_CLOSING));
 
             waitingScreen = new WaitingScreen(this);
+            waitingScreen.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             waitingScreen.addWindowListener(new WindowEventHandler());
             waitingScreen.setVisible(true);
         }
@@ -59,6 +63,7 @@ public class Framework implements View {
     public void loginNotif() {
         phase = PhaseType.LOGIN;
         login = new Login(this);
+        login.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         login.addWindowListener(new WindowEventHandler());
         login.setVisible(true);
     }
@@ -123,12 +128,18 @@ public class Framework implements View {
 
     @Override
     public void onTimer(int timeToCount) {
-
+        waitingScreen.onTimer(timeToCount);
     }
 
     @Override
     public void onStarting(String map) {
+        phase = PhaseType.GAME;
+        changeFrameFlag = true;
+        waitingScreen.dispatchEvent(new WindowEvent(waitingScreen, WindowEvent.WINDOW_CLOSING));
 
+        game = new GUIMap1();
+        //game.addWindowListener(new WindowEventHandler());
+        game.setVisible(true);
     }
 
     @Override
@@ -182,14 +193,15 @@ public class Framework implements View {
         return n == JOptionPane.YES_OPTION;
     }
 
+
     static class WindowEventHandler extends WindowAdapter {
         @Override
         public void windowClosing(WindowEvent evt) {
-            if(!loginFlag) {
+            if(!changeFrameFlag) {
                 System.out.println("exit");
                 clientController.quit();
             } else {
-                loginFlag = false;
+                changeFrameFlag = false;
             }
         }
     }
