@@ -188,16 +188,14 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     private Timer timer = new Timer();
-    private TimerTask timerTask;
 
     public void add() {
         timer = new Timer("TimerForDisconnection");
-        timerTask = new TimerTask() {
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 stop();
                 quit();
-                System.out.println("quit");
             }
         };
 
@@ -206,7 +204,6 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     public void reset() {
         try {
-            System.out.println("ack");
             timer.cancel();
             add();
         }
