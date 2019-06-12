@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,7 +61,7 @@ public class ClientHandler implements Runnable{
                     respond(response);
                 }
             } while (!stop);
-        } catch (SocketException e) {
+        } catch (SocketException | SocketTimeoutException e) {
             System.out.println("Soft quit");
             //TODO: notify controller too?
             Database.get().logout(controller);

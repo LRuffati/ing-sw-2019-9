@@ -44,7 +44,7 @@ public class NetworkBuilder {
                     }
                 }
                 catch (RemoteException e){
-                    //empty
+                    e.getMessage();
                 }
             }
         };

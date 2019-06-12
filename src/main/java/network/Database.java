@@ -119,9 +119,11 @@ public class Database {
 
         controllerByToken.put(token, mainController.connect(user));
 
-        connectedToken.add(token);
+        synchronized (wait) {
+            connectedToken.add(token);
 
-        TimerForDisconnection.add(token);
+            TimerForDisconnection.add(token);
+        }
 
         return token;
     }
@@ -148,11 +150,14 @@ public class Database {
 
         networkByToken.put(token, network);
         disconnectedToken.remove(token);
-        connectedToken.add(token);
 
         mainController.reconnect(getUserByToken(token));
 
-        TimerForDisconnection.add(token);
+        synchronized (wait) {
+            connectedToken.add(token);
+            TimerForDisconnection.add(token);
+        }
+
 
         return token;
     }
@@ -164,16 +169,16 @@ public class Database {
      */
     public synchronized void quit(String token) {
         System.out.println("quit request");
-        mainController.logout(getUserByToken(token));
+        logout(token);
 
-        colors.add(getUserByToken(token).getColor());
+        /*colors.add(getUserByToken(token).getColor());
         usersByToken.remove(token);
         networkByToken.remove(token);
 
         connectedToken.remove(token);
         disconnectedToken.remove(token);
 
-        TimerForDisconnection.stop(token);
+        TimerForDisconnection.stop(token);*/
     }
 
     /**
@@ -185,8 +190,10 @@ public class Database {
         if(token == null || !connectedToken.contains(token))
             return;
 
+
         synchronized (wait) {
             connectedToken.remove(token);
+            TimerForDisconnection.stop(token);
         }
 
         mainController.logout(getUserByToken(token));
@@ -194,7 +201,6 @@ public class Database {
         networkByToken.remove(token);
         disconnectedToken.add(token);
 
-        TimerForDisconnection.reset(token);
     }
 
     /**
@@ -216,10 +222,9 @@ public class Database {
     }
 
     public Set<String> getConnectedTokens(){
-        Set<String> ret = new HashSet<>();
+        Set<String> ret;
         synchronized (wait) {
-            for(String s : connectedToken)
-                ret.add(s);
+            ret = new HashSet<>(connectedToken);
         }
         return ret;
     }

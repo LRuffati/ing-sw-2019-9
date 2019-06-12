@@ -88,6 +88,6 @@ public class Player implements Serializable {
 
     @Override
     public String toString() {
-        return "Username:\t" + username + "\nColor:\t" + color + "\nPassword:\t" + password + "\nToken:\t" + token;
+        return "Username:\t" + username + "\nColor:\t" + color + "\nPassword:\t" + password + "\nToken:\t" + token+"\n\n";
     }
 }

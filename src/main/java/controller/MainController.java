@@ -90,6 +90,7 @@ public class MainController {
     }
 
     void notifyDisconnection(Player player) {
+        System.out.println("size\t"+Database.get().getConnectedTokens().size());
         System.out.println("Disconnection of\n" + player);
     }
 
