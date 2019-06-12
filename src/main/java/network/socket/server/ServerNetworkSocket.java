@@ -65,6 +65,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         String token;
         try {
             token = Database.get().login(this, request.username, request.password, request.color);
+            player = Database.get().getUserByToken(token);
             return new RegisterResponse(token);
         } catch (InvalidLoginException e) {
             return new RegisterResponse(e.wrongUsername, e.wrongColor);
@@ -77,6 +78,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
             return new ReconnectResponse(true);
         try {
             String tokenFromDb = Database.get().login(this, request.username, request.password);
+            player = Database.get().getUserByToken(tokenFromDb);
             return new ReconnectResponse(tokenFromDb);
         }
         catch (InvalidLoginException e) {

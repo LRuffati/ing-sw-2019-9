@@ -5,7 +5,6 @@ import java.util.*;
 public class TimerForDisconnection {
     private static Map<TimerTask, String> timerMap = new HashMap<>();
     private static Map<String, Timer> tokenToTimerMap = new HashMap<>();
-    private static Map<Timer, TimerTask> timerTimerTaskMap = new HashMap<>();
 
     private TimerForDisconnection(){}
 
@@ -20,13 +19,26 @@ public class TimerForDisconnection {
         Timer timer = new Timer("timerForDisconnection");
         timerMap.put(repeatedTask, token);
         tokenToTimerMap.put(token, timer);
-        timerTimerTaskMap.put(timer, repeatedTask);
-        timer.schedule(repeatedTask, 2000);
+        timer.schedule(repeatedTask, 200);
     }
 
     public static void reset(String token) {
-        tokenToTimerMap.get(token).cancel();
-        tokenToTimerMap.get(token).schedule(timerTimerTaskMap.get(tokenToTimerMap.get(token)), 200);
+        try {
+            tokenToTimerMap.get(token).cancel();
+
+            for(Map.Entry entry : timerMap.entrySet()) {
+                if(entry.getValue().equals(token)) {
+                    timerMap.remove(entry.getKey());
+                    break;
+                }
+            }
+
+            tokenToTimerMap.remove(token);
+            add(token);
+        }
+        catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void stop(String token) {

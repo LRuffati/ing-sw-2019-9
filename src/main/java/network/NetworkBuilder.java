@@ -7,6 +7,7 @@ import network.rmi.server.ServerNetworkRMI;
 import network.socket.SocketServerLauncher;
 
 import java.io.IOException;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.Timer;
@@ -43,12 +44,12 @@ public class NetworkBuilder {
                     }
                 }
                 catch (RemoteException e){
-                    e.printStackTrace();
+                    //empty
                 }
             }
         };
 
         Timer timer  = new Timer("pingTimer");
-        timer.scheduleAtFixedRate(repeatedTask, 0, 100);
+        timer.scheduleAtFixedRate(repeatedTask, 1000, 100);
     }
 }

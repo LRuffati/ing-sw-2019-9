@@ -78,7 +78,7 @@ public class Main {
         String lookup = hostName;
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
-        ClientNetworkRMI client = new ClientNetworkRMI(controller);
+        ClientNetworkRMI client = new ClientNetworkRMI(controller, null);
         //client.run();
 
         register(client);
@@ -114,7 +114,7 @@ public class Main {
         String lookup = String.format("//%s:%d/controller", host, port);
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
 
-        ClientNetworkRMI client = new ClientNetworkRMI(controller);
+        ClientNetworkRMI client = new ClientNetworkRMI(controller, null);
 
         /*System.out.println("Insert Token");
         client.run(false, new Scanner(System.in).next());*/

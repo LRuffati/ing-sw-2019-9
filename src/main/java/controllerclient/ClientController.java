@@ -71,7 +71,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             //Registry registry = LocateRegistry.getRegistry();
             //ServerRMIInterface controller = (ServerRMIInterface) registry.lookup(lookup);
             //ServerRMIInterface controller = (ServerRMIInterface) Naming.lookup(lookup);
-            network = new ClientNetworkRMI(controller);
+            network = new ClientNetworkRMI(controller, this);
         }
 
         view.loginNotif();
@@ -79,8 +79,6 @@ public class ClientController implements ClientControllerClientInterface, Client
         stack = new ArrayDeque<>();
         gameMapViewMap = new HashMap<>();
 
-
-        add();
         //Main.register(network);
         //Main.run(network);
     }
@@ -103,6 +101,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 try {
                     network.register(username, password, color.toLowerCase());
                     view.loginResponse(true, false, false);
+                    add();
                 } catch (
                         InvalidLoginException e) {
                     view.loginResponse(false, e.wrongUsername, e.wrongColor);
@@ -122,6 +121,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         try {
             network.reconnect(username, password);
             view.loginResponse(true, false, false);
+            add();
         }
         catch (InvalidLoginException e) {
             view.loginResponse(false, e.wrongUsername, e.wrongColor);
@@ -187,25 +187,32 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
 
-    private Timer timer;
+    private Timer timer = new Timer();
     private TimerTask timerTask;
 
     public void add() {
+        timer = new Timer("TimerForDisconnection");
         timerTask = new TimerTask() {
             @Override
             public void run() {
                 stop();
                 quit();
+                System.out.println("quit");
             }
         };
 
-        timer = new Timer("timerForDisconnection");
-        timer.schedule(timerTask, 1000);
+        timer.schedule(timerTask, 200);
     }
 
     public void reset() {
-        timer.cancel();
-        timer.schedule(timerTask, 200);
+        try {
+            System.out.println("ack");
+            timer.cancel();
+            add();
+        }
+        catch (NullPointerException | IllegalStateException e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() {

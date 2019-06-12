@@ -23,8 +23,9 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     private transient String token;
     private transient ClientControllerNetworkInterface clientController;
 
-    public ClientNetworkRMI(ServerRMIInterface controller) throws RemoteException {
+    public ClientNetworkRMI(ServerRMIInterface controller, ClientControllerNetworkInterface clientController) throws RemoteException {
         this.controller = controller;
+        this.clientController = clientController;
     }
 
     //ServerInterface methods
@@ -37,7 +38,12 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     @Override
     public void ping() {
         clientController.reset();
-        controller.pingResponse(token);
+        try {
+            controller.pingResponse(token);
+        }
+        catch (RemoteException e){
+            e.printStackTrace();
+        }
     }
 
     @Override

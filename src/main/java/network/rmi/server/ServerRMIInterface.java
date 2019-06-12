@@ -32,5 +32,5 @@ public interface ServerRMIInterface extends Remote {
 
     GameMapView getMap(String token, String gameMapId) throws RemoteException;
 
-    void pingResponse(String token);
+    void pingResponse(String token) throws RemoteException;
 }

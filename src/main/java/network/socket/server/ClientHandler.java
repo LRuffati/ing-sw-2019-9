@@ -66,6 +66,7 @@ public class ClientHandler implements Runnable{
             Database.get().logout(controller);
             close();
         } catch (Exception e) {
+            e.printStackTrace();
             logger.log(Level.SEVERE, e.getClass().getSimpleName() + " - " + e.getMessage());
         }
     }

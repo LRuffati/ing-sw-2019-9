@@ -30,7 +30,7 @@ public class RMIClientLauncher {
         //TODO: which controller??
         ServerRMIInterface controller = (ServerRMIInterface) registry.lookup("//localhost:1099/controller");
 
-        ClientNetworkRMI client = new ClientNetworkRMI(controller);
+        ClientNetworkRMI client = new ClientNetworkRMI(controller, null);
         client.run();
 
         int num = 10;

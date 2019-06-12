@@ -33,6 +33,7 @@ public class Database {
     private List<String> colors;
     private Set<String> disconnectedToken = new HashSet<>();
     private Set<String> connectedToken = new HashSet<>();
+    private final Object wait = new Object();
 
 
     public void setMainController(MainController mainController){
@@ -183,10 +184,14 @@ public class Database {
     public synchronized void logout(String token){
         if(token == null || !connectedToken.contains(token))
             return;
+
+        synchronized (wait) {
+            connectedToken.remove(token);
+        }
+
         mainController.logout(getUserByToken(token));
 
         networkByToken.remove(token);
-        connectedToken.remove(token);
         disconnectedToken.add(token);
 
         TimerForDisconnection.reset(token);
@@ -211,7 +216,12 @@ public class Database {
     }
 
     public Set<String> getConnectedTokens(){
-        return connectedToken;
+        Set<String> ret = new HashSet<>();
+        synchronized (wait) {
+            for(String s : connectedToken)
+                ret.add(s);
+        }
+        return ret;
     }
 
     public Set<String> getDisconnectedToken() {
