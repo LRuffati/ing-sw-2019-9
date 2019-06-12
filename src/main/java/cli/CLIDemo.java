@@ -1,8 +1,10 @@
 package cli;
 
 import controllerclient.ClientControllerClientInterface;
+import controllerclient.Message;
 import controllerclient.View;
 import controllerresults.ControllerActionResultClient;
+import network.Player;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
@@ -199,7 +201,7 @@ public class CLIDemo implements View {
      * See documentation in the View interface.
      */
     @Override
-    public void chooseTarget(GameMapView gameMap, ControllerActionResultClient elem, List<TargetView> target) {
+    public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId) {
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
         printAppliedTarget(target);
@@ -243,14 +245,14 @@ public class CLIDemo implements View {
 
         List<Integer> l = new ArrayList<>();
         l.add(i);
-        client.pick(elem,l);
+        //client.pick(elem,l);
     }
 
     /**
      * See documentation in the View interface.
      */
     @Override
-    public void chooseAction(ControllerActionResultClient elem, List<ActionView> action) {
+    public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
         System.out.println("Choose your action:\n");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 0;
@@ -272,14 +274,14 @@ public class CLIDemo implements View {
 
         List<Integer> l = new ArrayList<>();
         l.add(i);
-        client.pick(elem,l);
+        //client.pick(elem,l);
     }
 
     /**
      * See documentation in the View interface.
      */
     @Override
-    public void chooseWeapon(ControllerActionResultClient elem, List<WeaponView> weapon) throws RemoteException {
+    public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId){
         System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
@@ -313,16 +315,30 @@ public class CLIDemo implements View {
                 } else l.add(i-1);
             } else break;
         }
+        //client.pick(elem,l);
+    }
 
-        client.pick(elem,l);
+    @Override
+    public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
+
+    }
+
+    @Override
+    public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
+
     }
 
     /**
      * See documentation in the View interface.
      */
     @Override
-    public void rollback() {
+    public void onRollback() {
         System.out.println("Rollback executed.");
+    }
+
+    @Override
+    public void onMessage(Message message) {
+
     }
 
     /**
@@ -361,6 +377,36 @@ public class CLIDemo implements View {
     @Override
     public void loginNotif() {
         joinGame();
+    }
+
+    @Override
+    public void onConnection(Player player, boolean connected, int numOfPlayer) {
+
+    }
+
+    @Override
+    public void onStarting(String map) {
+
+    }
+
+    @Override
+    public void onTimer(int timeToCount) {
+
+    }
+
+    @Override
+    public void onRespawn() {
+
+    }
+
+    @Override
+    public void onTakeback() {
+
+    }
+
+    @Override
+    public void onTerminator() {
+
     }
 
     /**
