@@ -349,12 +349,86 @@ public class CLIDemo implements View {
 
     @Override
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
+        System.out.println("Choose your PowerUp(s):\n0. Exit selection");
+        Iterator<PowerUpView> puIterator = powerUp.iterator();
+        int i = 1;
+        List<Integer> l = new ArrayList<>();
+        while(puIterator.hasNext()){
+            PowerUpView pu = puIterator.next();
+            System.out.println(i + ". " + pu.type().toString());
+            i+=1;
+        }
+        System.out.println("99. Rollback\n100. Restart Selection");
 
+        boolean flag = false;
+
+        while(!flag) {
+            try {
+                i = in.nextInt();
+                if(i==0){
+                    if(l.isEmpty()&&optional){
+                        flag = true;
+                    } else if(l.isEmpty()){
+                        System.out.println("You must choose at least one powerup.");
+                    }
+                } else if(i==99&&!l.isEmpty()){
+                    l.remove(l.size()-1);
+                } else if(i == 100){
+                    l.clear();
+                } else {
+                    l.add(i);
+                    if (l.size()==1 && single) {
+                        flag = true;
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick a powerup typing ONLY his index on the line.");
+            }
+        }
+
+        client.pick(choiceId,l);
     }
 
     @Override
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
+        System.out.println("Choose your weapons:\n0. Exit selection");
+        Iterator<String> strIterator = string.iterator();
+        int i = 1;
+        List<Integer> l = new ArrayList<>();
+        while(strIterator.hasNext()){
+            String str = strIterator.next();
+            System.out.println(i + ". " + str);
+            i+=1;
+        }
+        System.out.println("99. Rollback\n100. Restart Selection");
 
+        boolean flag = false;
+
+        while(!flag) {
+            try {
+                i = in.nextInt();
+                if(i==0){
+                    if(l.isEmpty()&&optional){
+                        flag = true;
+                    } else if(l.isEmpty()){
+                        System.out.println("You must choose at least one string.");
+                    }
+                } else if(i==99&&!l.isEmpty()){
+                    l.remove(l.size()-1);
+                } else if(i == 100){
+                    l.clear();
+                } else {
+                    l.add(i);
+                    if (l.size()==1 && single) {
+                        flag = true;
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick a string typing ONLY his index on the line.");
+            }
+        }
+
+        client.pick(choiceId,l);
     }
 
     /**
@@ -367,7 +441,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onMessage(Message message) {
-
+        //TODO waiting for class Message
     }
 
     /**
@@ -410,32 +484,38 @@ public class CLIDemo implements View {
 
     @Override
     public void onConnection(Player player, boolean connected, int numOfPlayer) {
-
+        if(connected){
+            System.out.println("Player " + player.getUsername() + " just logged in! There are now " + numOfPlayer
+            + " in the game");
+        } else {
+            System.out.println("Player " + player.getUsername() + " just logged out! There are now " + numOfPlayer
+                    + " in the game");
+        }
     }
 
     @Override
     public void onStarting(String map) {
-
+        System.out.println("The game is goin' to start in a moment...");
     }
 
     @Override
     public void onTimer(int timeToCount) {
-
+        System.out.println("From now on you have " + timeToCount + " seconds to choose.");
     }
 
     @Override
     public void onRespawn() {
-
+        System.out.println("You're respawing now...");
     }
 
     @Override
     public void onTakeback() {
-
+        System.out.println("You can use a Takeback Granade now!");
     }
 
     @Override
     public void onTerminator() {
-
+        System.out.println("You can move the Terminator now!");
     }
 
     /**
