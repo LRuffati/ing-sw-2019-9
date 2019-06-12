@@ -233,13 +233,17 @@ public class CLIDemo implements View {
             }
         }
 
-        System.out.println("99. Rollback\n100. Restart Selection");
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         boolean flag = false;
 
         while(!flag) {
             try {
                 i = in.nextInt();
+                if(i==200){
+                    client.rollback();
+                    return;
+                }
                 if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
@@ -282,6 +286,10 @@ public class CLIDemo implements View {
         while(!flag) {
             try {
                 i = in.nextInt();
+                if(i==200){
+                    client.rollback();
+                    return;
+                }
                 if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
@@ -316,13 +324,17 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + wv.name());
             i+=1;
         }
-        System.out.println("99. Rollback\n100. Restart Selection");
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         boolean flag = false;
 
         while(!flag) {
             try {
                 i = in.nextInt();
+                if(i==200){
+                    client.rollback();
+                    return;
+                }
                 if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
@@ -358,13 +370,17 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + pu.type().toString());
             i+=1;
         }
-        System.out.println("99. Rollback\n100. Restart Selection");
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         boolean flag = false;
 
         while(!flag) {
             try {
                 i = in.nextInt();
+                if(i==200){
+                    client.rollback();
+                    return;
+                }
                 if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
@@ -400,13 +416,17 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + str);
             i+=1;
         }
-        System.out.println("99. Rollback\n100. Restart Selection");
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         boolean flag = false;
 
         while(!flag) {
             try {
                 i = in.nextInt();
+                if(i==200){
+                    client.rollback();
+                    return;
+                }
                 if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
