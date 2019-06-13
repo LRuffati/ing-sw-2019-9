@@ -1,6 +1,5 @@
 package network;
 
-import javax.xml.crypto.Data;
 import java.util.*;
 
 public class TimerForDisconnection {
@@ -20,8 +19,7 @@ public class TimerForDisconnection {
 
                 int num = numOfErrors.get(this);
                 if(num>=2) {
-                    System.out.print("NumOfErrors\t" + num + "\t\t");
-                    System.out.println(Database.get().getUserByToken(timerMap.get(this)).getUsername());
+                    System.out.println("NumOfErrors\t" + num + "\t\t");
                 }
 
                 if (numOfErrors.get(this) >= 10) {
@@ -42,12 +40,10 @@ public class TimerForDisconnection {
     public static void reset(String token) {
         for(Map.Entry entry : timerMap.entrySet()) {
             if(entry.getValue().equals(token)) {
-                System.out.println("Reset di\t"+Database.get().getUserByToken(token).getUsername() + "\t\t" + timerMap.get((TimerTask)entry.getKey()).equals(token));
                 numOfErrors.replace((TimerTask)entry.getKey(), 0);
                 return;
             }
         }
-        System.out.println("niente reset");
         /*
         try {
             tokenToTimerMap.get(token).cancel();

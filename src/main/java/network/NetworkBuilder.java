@@ -38,14 +38,22 @@ public class NetworkBuilder {
         TimerTask repeatedTask = new TimerTask() {
             @Override
             public void run() {
-                try {
-                    for(String token : Database.get().getConnectedTokens()) {
-                        Database.get().getNetworkByToken(token).ping();
-                    }
+
+                for (String token : Database.get().getConnectedTokens()) {
+                    Thread thread = new Thread() {
+                        public void run() {
+                            try {
+                                Database.get().getNetworkByToken(token).ping();
+                            } catch (RemoteException | IllegalArgumentException e) {
+                                //e.printStackTrace();
+                                Database.get().logout(token);
+                            }
+                        }
+                    };
+                    thread.start();
+
                 }
-                catch (RemoteException e){
-                    e.getMessage();
-                }
+
             }
         };
 
