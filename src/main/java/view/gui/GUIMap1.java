@@ -1,6 +1,7 @@
 package view.gui;
 
 import board.Coord;
+import gamemanager.GameBuilder;
 import gamemanager.ParserConfiguration;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -12,8 +13,11 @@ import viewclasses.TileView;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -63,22 +67,34 @@ public class GUIMap1 extends JPanel {
 
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException {
+        GameBuilder game = new GameBuilder(5);
+
+        GameMapView mv = game.getMap().generateView(game.getActorList().get(0).pawnID());
+
+        List<TargetView> targetViewList = new ArrayList<>();
+        Collection<TileUID> tileUIDS = new ArrayList<>();
+        tileUIDS.add(mv.getTiles().get(new Coord(1,0)).uid());
+        Collection<DamageableUID> damageableUIDS = new ArrayList<>();
+        targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
+
         frame = new JFrame("frame");
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            frame.setSize(683,920);
+            frame.setSize(777,1046);
         } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
             frame.setSize(392,542);
         }
 
         frame.setResizable(false);
 
-        //frame.add(new GUIMap1());
+        GUIMap1 guiMap1 = new GUIMap1(mv);
+
+        frame.add(guiMap1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //DO NOT USE pack() !!!
         frame.setVisible(true);
 
-
+        guiMap1.clickableButton(targetViewList,"come stai?");
     }
 
 
@@ -90,10 +106,12 @@ public class GUIMap1 extends JPanel {
         }
         Image imgAmmo = tile;
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            imgAmmo = tile.getScaledInstance(tile.getWidth()/2, tile.getHeight()/2, SCALE_SMOOTH);
+            double tilewid = tile.getWidth() / 1.75238;
+            double tilehid = tile.getHeight() / 1.75238;
+            imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
-            double tilewid = 0.58737 * (tile.getWidth() / 2.00000);
-            double tilehid = 0.588 * (tile.getHeight() / 2.00000);
+            double tilewid = 0.58737 * (tile.getWidth() / 1.75238);
+            double tilehid = 0.588 * (tile.getHeight() / 1.75238);
             imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
@@ -111,9 +129,9 @@ public class GUIMap1 extends JPanel {
             ImageIcon pgIcon = new ImageIcon(pgscal);
             ammoButton.setIcon(pgIcon);
             */
-            int input = JOptionPane.showConfirmDialog(label, "You want to move here?", "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            //int input = JOptionPane.showConfirmDialog(label, "You want to move here?", "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
 
-            if(input == JOptionPane.OK_OPTION) System.out.println("Player    moved from    to    ");
+            //if(input == JOptionPane.OK_OPTION) System.out.println("Player    moved from    to    ");
         });
         ammoButton.setContentAreaFilled( false );
         ammoButton.setBorder( null );
@@ -128,7 +146,7 @@ public class GUIMap1 extends JPanel {
      * @param targets is the list of the possible targets.
      * @return a list of selectable coordinates.
      */
-    public List<Coord> getTargetCoordinates(List<TargetView> targets){
+    private List<Coord> getTargetCoordinates(List<TargetView> targets){
         Collection<TileUID> tiles;
         Collection<DamageableUID> actors;
         List<Coord> coords = new ArrayList<>();
@@ -146,4 +164,24 @@ public class GUIMap1 extends JPanel {
         return coords;
     }
 
+    /**
+     * Simple method to set a button based on the action to be applied.
+     * @param question based on the kind of action to be executed.
+     */
+    //TODO to be better implemented
+    public void clickableButton(List<TargetView> targets, String question){
+        List<Coord> coords = getTargetCoordinates(targets);
+        GUIMap1 asd = this;
+        for(Coord coord : coords){
+            for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
+                if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        JOptionPane.showConfirmDialog(asd, question, "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+            }
+        }
+    }
 }
