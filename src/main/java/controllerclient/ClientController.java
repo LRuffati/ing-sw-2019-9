@@ -134,7 +134,9 @@ public class ClientController implements ClientControllerClientInterface, Client
     @Override
     public void quit() {
         try {
+            System.out.println("QUIT");
             network.close();
+
         }
         catch (RemoteException e) {
             logger.log(Level.SEVERE, "Exception in quit", e);
@@ -188,31 +190,37 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     private Timer timer = new Timer();
+    private int signals = 0;
+    private boolean stopped = false;
 
     public void add() {
         timer = new Timer("TimerForDisconnection");
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                stop();
-                quit();
+                signals++;
+                if(signals >= 3)
+                    System.out.println("error\t" + signals);
+                if(signals >= 10) {
+                    System.out.println("BEFOREQUIT");
+                    stop();
+                    quit();
+                    Thread.currentThread().interrupt();
+                }
             }
         };
 
-        timer.schedule(timerTask, 200);
+        timer.schedule(timerTask, 200,500);
     }
 
     public void reset() {
-        try {
-            timer.cancel();
-            add();
-        }
-        catch (NullPointerException | IllegalStateException e) {
-            e.printStackTrace();
+        if(!stopped) {
+            signals = 0;
         }
     }
 
     public void stop() {
+        stopped = true;
         timer.cancel();
     }
 }

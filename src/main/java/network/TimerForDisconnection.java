@@ -1,5 +1,6 @@
 package network;
 
+import javax.xml.crypto.Data;
 import java.util.*;
 
 public class TimerForDisconnection {
@@ -9,14 +10,19 @@ public class TimerForDisconnection {
 
     private TimerForDisconnection(){}
 
-    public static synchronized void add(String token) {
+    public static void add(String token) {
         TimerTask repeatedTask = new TimerTask() {
             @Override
             public void run() {
                 numOfErrors.put(this, numOfErrors.get(this) + 1);
 
+                //System.out.println(Database.get().getUserByToken(timerMap.get(this)).getUsername());
+
                 int num = numOfErrors.get(this);
-                if(num>=2) System.out.println("NumOfErrors\t" + num);
+                if(num>=2) {
+                    System.out.print("NumOfErrors\t" + num + "\t\t");
+                    System.out.println(Database.get().getUserByToken(timerMap.get(this)).getUsername());
+                }
 
                 if (numOfErrors.get(this) >= 10) {
                     Database.get().logout(timerMap.get(this));
@@ -29,17 +35,19 @@ public class TimerForDisconnection {
         timerMap.put(repeatedTask, token);
         tokenToTimerMap.put(token, timer);
         numOfErrors.put(repeatedTask, 0);
-        timer.schedule(repeatedTask, 300,200);
+        timer.schedule(repeatedTask, 300,300);
+        System.out.println("timer\t"+timer+"\n"+"timertask\t"+repeatedTask+"\n"+"token\t"+token+"\n");
     }
 
-    public static synchronized void reset(String token) {
+    public static void reset(String token) {
         for(Map.Entry entry : timerMap.entrySet()) {
             if(entry.getValue().equals(token)) {
+                System.out.println("Reset di\t"+Database.get().getUserByToken(token).getUsername() + "\t\t" + timerMap.get((TimerTask)entry.getKey()).equals(token));
                 numOfErrors.replace((TimerTask)entry.getKey(), 0);
                 return;
             }
         }
-        System.out.println("manca la stringa");
+        System.out.println("niente reset");
         /*
         try {
             tokenToTimerMap.get(token).cancel();
@@ -61,7 +69,7 @@ public class TimerForDisconnection {
         */
     }
 
-    public static synchronized void stop(String token) {
+    public static void stop(String token) {
         if(tokenToTimerMap.containsKey(token)){
             System.out.println("Stopping the timer");
             tokenToTimerMap.get(token).cancel();

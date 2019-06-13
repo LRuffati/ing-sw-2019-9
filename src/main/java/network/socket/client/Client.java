@@ -46,7 +46,7 @@ public class Client {
         try {
             return ((Response) in.readObject());
         } catch (IOException e) {
-        exit(0);//logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
+            exit(0);//logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
         } catch (ClassNotFoundException e) {
             throw new NextResponseException("Wrong deserialization: " + e.getMessage());
         }
@@ -57,15 +57,6 @@ public class Client {
     public void request(Request request) {
         try {
             out.writeObject(request);
-            out.reset();
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
-        }
-    }
-
-    public void request(Object object) {
-        try {
-            out.writeObject(object);
             out.reset();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "exception on network: " + e.getMessage());
