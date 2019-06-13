@@ -48,6 +48,7 @@ public class NetworkBuilder {
                                 //e.printStackTrace();
                                 Database.get().logout(token);
                             }
+                            Thread.currentThread().interrupt();
                         }
                     };
                     thread.start();
