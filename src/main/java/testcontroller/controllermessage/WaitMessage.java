@@ -1,11 +1,10 @@
 package testcontroller.controllermessage;
 
-import board.GameMap;
-import board.Sandbox;
-import genericitems.Tuple;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
+
+import java.util.List;
 
 public class WaitMessage implements ControllerMessage{
     /**
@@ -61,10 +60,10 @@ public class WaitMessage implements ControllerMessage{
      * This makes the choice
      *
      * @param choices the positions of the chosen elements
-     * @return
+     * @return this, since you have to wait
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
+    public ControllerMessage pick(List<Integer> choices) {
         return this;
     }
 }

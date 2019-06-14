@@ -1,13 +1,14 @@
 package testcontroller.controllermessage;
 
-import actions.WeaponUse;
 import actions.utils.ActionPicker;
 import board.Sandbox;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PickActionMessage implements ControllerMessage{
 
@@ -55,11 +56,13 @@ public class PickActionMessage implements ControllerMessage{
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
-        if (choices.length==0){
+    public ControllerMessage pick(List<Integer> choices) {
+        choices =
+                choices.stream().filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
+        if (choices.isEmpty()){
             return fun.apply(-1);
         } else {
-            return fun.apply(choices[0]);
+            return fun.apply(choices.get(0));
         }
     }
 }

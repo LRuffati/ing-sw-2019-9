@@ -95,7 +95,7 @@ public class RollbackMessage implements ControllerMessage {
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
-        return null;
+    public ControllerMessage pick(List<Integer> choices) {
+        return this;
     }
 }
