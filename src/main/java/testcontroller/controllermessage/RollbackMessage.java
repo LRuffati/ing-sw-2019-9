@@ -40,27 +40,7 @@ public class RollbackMessage implements ControllerMessage {
     public Message getMessage() {
         return new Message() {
             @Override
-            public UpdateTypes type() {
-                return UpdateTypes.DESCRIPTION;
-            }
-
-            @Override
-            public String message() {
-                return "Invalid state, roll back one or more actions";
-            }
-
-            @Override
             public List<EffectView> getChanges() {
-                return null;
-            }
-
-            @Override
-            public Sandbox sandbox() {
-                return null;
-            }
-
-            @Override
-            public Integer gameMapIteration() {
                 return null;
             }
         };
