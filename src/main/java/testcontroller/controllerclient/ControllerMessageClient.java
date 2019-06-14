@@ -24,7 +24,7 @@ public class ControllerMessageClient implements ControllerMessage{
 
         this.type = controllerMessage.type();
         this.choiceBoard = controllerMessage.genView();
-        this.sandbox = controllerMessage.sandbox();
+        this.sandbox = controllerMessage.sandboxView();
         this.gameMapHash = controllerMessage.gamemap();
         this.message = controllerMessage.getMessage();
     }
@@ -50,7 +50,7 @@ public class ControllerMessageClient implements ControllerMessage{
     }
 
     @Override
-    public GameMapView sandbox() {
+    public GameMapView sandboxView() {
         return sandbox;
     }
 
