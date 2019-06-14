@@ -42,14 +42,6 @@ public class PickActionMessage implements ControllerMessage{
     }
 
     /**
-     * @return
-     */
-    @Override
-    public Message getMessage() {
-        return null;
-    }
-
-    /**
      * This makes the choice
      *
      * @param choices the positions of the chosen elements

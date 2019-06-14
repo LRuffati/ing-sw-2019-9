@@ -201,32 +201,7 @@ public class Action {
             if (thisTargeter.y.automatic)
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
-                return new PickTargetMessage(choiceMaker, new Message() {
-                    @Override
-                    public UpdateTypes type() {
-                        return UpdateTypes.DESCRIPTION;
-                    }
-
-                    @Override
-                    public String message() {
-                        return "";
-                    }
-
-                    @Override
-                    public List<EffectView> getChanges() {
-                        return null;
-                    }
-
-                    @Override
-                    public Sandbox sandbox() {
-                        return sandbox;
-                    }
-
-                    @Override
-                    public Integer gameMapIteration() {
-                        return null;
-                    }
-                }, sandbox);
+                return new PickTargetMessage(choiceMaker, "Scegli un bersaglio", sandbox);
         } else if (!unresolvedEffects.isEmpty()){
 
             Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();

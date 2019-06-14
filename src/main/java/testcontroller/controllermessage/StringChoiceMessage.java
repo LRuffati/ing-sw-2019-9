@@ -6,6 +6,7 @@ import testcontroller.controllerstates.SlaveControllerState;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StringChoiceMessage implements ControllerMessage {
 
@@ -37,14 +38,6 @@ public class StringChoiceMessage implements ControllerMessage {
     @Override
     public ChoiceBoard genView() {
         return new ChoiceBoard(options, description);
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public Message getMessage() {
-        return null;
     }
 
     /**

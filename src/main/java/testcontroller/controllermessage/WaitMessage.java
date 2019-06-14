@@ -18,24 +18,6 @@ public class WaitMessage implements ControllerMessage{
     }
 
     /**
-     * This generates the ChoiceBoard
-     *
-     * @return
-     */
-    @Override
-    public ChoiceBoard genView() {
-        return null;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public Message getMessage() {
-        return null;
-    }
-
-    /**
      * This makes the choice
      *
      * @param choices the positions of the chosen elements
