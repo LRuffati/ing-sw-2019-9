@@ -1,6 +1,6 @@
 package player;
 
-import actions.ActionBundle;
+import actions.ActionTemplate;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
@@ -329,7 +329,6 @@ public class Actor {
         return Map.copyOf(marks);
     }
 
-    //TODO: delete this method
     /**
      * Needed for tests.
      * @return the map of the game the player is playing.
@@ -375,6 +374,11 @@ public class Actor {
      */
     public void setFrenzy(){
         this.frenzy = true;
+    }
+
+    public void finalFrenzyBegin(boolean afterFirst){
+        //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
+        // next death
     }
 
     /**
@@ -479,7 +483,9 @@ public class Actor {
      * Takes into account the situation of the player
      * @return
      */
-    public List<ActionBundle> getActions() {
+    public List<List<ActionTemplate>> getActions() {
+        //TODO: Implement
+        return null;
     }
 }
 

@@ -20,7 +20,7 @@ public enum SlaveControllerState {
      * While a player is in this state the player whose turn it is receives a WAIT instruction
      * momentarily
      */
-    USETAKEBACK, // I'm using the takeback grenade
+    USETAGBACK, // I'm using the takeback grenade
 
     /**
      * The player decided to use the terminator action

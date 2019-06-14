@@ -4,7 +4,7 @@ import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
 import actions.utils.WeaponChooser;
 import genericitems.Tuple;
-import grabbables.Weapon;
+import grabbables.PowerUp;
 import testcontroller.controllerstates.PickTypes;
 import viewclasses.ActionView;
 import viewclasses.PowerUpView;
@@ -12,7 +12,6 @@ import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * This class contains all the possible choises to be made
@@ -39,6 +38,7 @@ public class ChoiceBoard {
      * TODO: change to something other than string
      */
     public final String description;
+    private int numOfElems;
 
     public ChoiceBoard(ChoiceMaker choiceMaker, String message) {
         Tuple<Boolean, List<TargetView>> tup = choiceMaker.showOptions();
@@ -46,13 +46,8 @@ public class ChoiceBoard {
         optional = tup.x;
         description = message;
         type = PickTypes.TARGET;
-
-        actionViews = null;
-        weaponViews = null;
-        targetViews = tup.y;
-        powerUpViews = null;
-        stringViews = null;
-
+        setNumOfElems(tup.y.size());
+        //TODO: tup.y nella lista giusta, altre a null
     }
 
     public ChoiceBoard(WeaponChooser weaponChooser, String s) {
@@ -61,12 +56,8 @@ public class ChoiceBoard {
         optional = opts.x;
         description = s;
         type = PickTypes.WEAPON;
-
-        actionViews = null;
-        weaponViews = weaponChooser.showOptions().stream().map(Weapon::generateView).collect(Collectors.toList());
-        targetViews = null;
-        powerUpViews = null;
-        stringViews = null;
+        setNumOfElems(weaponChooser.showOptions().size());
+        //TODO: add to the correct list weaponChooser.showOptions()
     }
 
     public ChoiceBoard(ActionPicker actionPicker, String s) {
@@ -74,12 +65,8 @@ public class ChoiceBoard {
         description = s;
         single = true;
         optional = actionPicker.showActionsAvailable().x;
-
-        actionViews = actionPicker.showActionsAvailable().y;
-        weaponViews = null;
-        targetViews = null;
-        powerUpViews = null;
-        stringViews = null;
+        setNumOfElems(actionPicker.showActionsAvailable().y.size());
+        //TODO: add actionpicker.showactionsavailable().y
     }
 
     public ChoiceBoard(List<String> options, String s){
@@ -87,21 +74,40 @@ public class ChoiceBoard {
         description = s;
         single = true;
         optional = false;
+        setNumOfElems(options.size());
+        //TODO: add to list
+    }
 
-        actionViews = null;
-        weaponViews = null;
-        targetViews = null;
-        powerUpViews = null;
-        stringViews = options;
+    private ChoiceBoard(PickTypes type, String description, boolean single, boolean optional){
+        this.type = type;
+        this.description = description;
+        this.single = single;
+        this.optional = optional;
+    }
+
+    public static ChoiceBoard powupChoiceFactory(List<PowerUp> options, String description,
+                                                 boolean single, boolean optional){
+        ChoiceBoard ret = new ChoiceBoard(PickTypes.POWERUP, description, single, optional);
+        ret.setNumOfElems(options.size());
+        //TODO: pass powerups into the right list
+
+        return ret;
     }
 
     /**
      * The lists contain view elements or are null
       */
-    public final List<ActionView> actionViews;
-    public final List<WeaponView> weaponViews;
-    public final List<TargetView> targetViews;
-    public final List<PowerUpView> powerUpViews;
-    public final List<String> stringViews;
+    List<ActionView> actionViews;
+    List<WeaponView> weaponViews;
+    List<TargetView> targetViews;
+    List<PowerUpView> powerUpViews;
+    List<String> stringViews;
 
+    public int getNumOfElems() {
+        return numOfElems;
+    }
+
+    private void setNumOfElems(int numOfElems) {
+        this.numOfElems = numOfElems;
+    }
 }

@@ -1,6 +1,5 @@
 package actions.utils;
 
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import testcontroller.controllermessage.ControllerMessage;
@@ -17,5 +16,5 @@ public interface WeaponChooser {
      */
     Tuple<Boolean, Boolean> params();
     public List<Weapon> showOptions();
-    public ControllerMessage pick(int[] choice);
+    public ControllerMessage pick(List<Integer> choice);
 }

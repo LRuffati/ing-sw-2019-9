@@ -2,19 +2,13 @@ package testcontroller;
 
 import actions.effects.Effect;
 import gamemanager.GameBuilder;
-import gamemanager.ParserConfiguration;
 import network.Database;
-import network.NetworkBuilder;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
 
-import java.awt.*;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 public class MainController {
@@ -27,16 +21,10 @@ public class MainController {
 
     private List<SlaveController> slaveControllerList;
 
-    /**
-     *
-     * @param responsible the SlaveController which started it all (redundant)
-     * @param effects (the list of effects)
-     * @param onResolved (When I finish the list of effects run this function)
-     *                   If I call a slave controller function in between then I will have to
-     *                   call it and pass a runnable that will:
-     * @return
-     */
-<<<<<<< HEAD
+    MainController(){
+        slaveControllerList = new ArrayList<>();
+    }
+
     public void connect(Player player) {
         if(!canConnect())   throw new IllegalArgumentException("Invalid connection request");
 
@@ -162,7 +150,7 @@ public class MainController {
      * @return the SlaveController all further calls by the client need to be addressed to
      */
     public SlaveController bind(Player player, ServerInterface network){
-        SlaveController slave = new SlaveController(player, network);
+        SlaveController slave = new SlaveController(this, player, network);
         slaveControllerList.add(slave);
         return slave;
     }
@@ -174,25 +162,49 @@ public class MainController {
         NetworkBuilder network = new NetworkBuilder(initGame);
     }
 
-    public void resolveEffect(SlaveController responsible, List<Effect> effects,
-                                 Runnable onResolved){
+    /**
+     *
+     * @param responsible the SlaveController which started it all (redundant)
+     * @param effects (the list of effects)
+     * @param onResolved (When I finish the list of effects run this function)
+     *                   If I call a slave controller function in between then I will have to
+     *                   call it and pass a runnable that will:
+     */
+    void resolveEffect(SlaveController responsible, List<Effect> effects,
+                       Runnable onResolved){
         if (effects.isEmpty()){
             new Thread(onResolved).start();
         } else {
             Effect first = effects.get(0);
             List<Effect> next = effects.subList(1, effects.size());
-            Runnable nextOnRes = new Runnable() {
-                @Override
-                public void run() {
-                    MainController.this.resolveEffect(responsible, next, onResolved);
-                }
-            };
-            (new Thread(new Runnable() {
-                @Override
-                public void run() {
-                   first.mergeInGameMap(responsible, nextOnRes);
-                }
-            })).start();
+            Runnable nextOnRes = () -> MainController.this.resolveEffect(responsible, next, onResolved);
+            (new Thread(() -> first.mergeInGameMap(responsible, nextOnRes))).start();
         }
     }
+
+    /**
+     *
+     * @param lastPlayed the player whose turn just ended
+     */
+    public void endTurn(Player lastPlayed){
+        /*
+        0. Riempie la mappa
+        1. Prende tutti i domination points
+        2. Per ognuno se hai fatto danno allora aggiunge un segnalino del colore di Player alla
+        gameBoard e se il player è nella cella gli fa uno di danno (metodi di DominationPointActor)
+        3. Prende tutti i pawn morti
+        4. Crea thread e respawna in ordine tutti
+        5. Alla fine il thread controlla con Scoreboard che non sia iniziata la frenesia finale
+            5a. Frenesia iniziata: Chiama Main.finalFrenzy(nextPlayer)
+            5b. Inizia il main line sul prossimo turno
+         */
+    }
+
+    public void finalFrenzy(Player next){
+        /*
+        1. Chiama su tutti gli actor: finalFrenzyBegin
+
+         */
+    }
+
 }

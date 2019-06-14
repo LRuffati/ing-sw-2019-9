@@ -48,13 +48,15 @@ public interface ControllerMessage {
      * sandbox, if there is no sandbox involved then null
      * @return
      */
-    GameMapView sandbox();
+    GameMapView sandboxView();
 
     /**
      * This makes the choice
      * @param choices the positions of the chosen elements
      * @return
      */
+    //TODO: Add check that all elements are within the bounds of available elements
+    //      and test
     ControllerMessage pick(List<Integer> choices);
 
 }

@@ -3,9 +3,12 @@ package grabbables;
 import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.PowerUpType;
+import player.Actor;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.PowerUpView;
 
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
@@ -23,6 +26,8 @@ public abstract class PowerUp extends Grabbable {
      * @return
      */
     public abstract boolean canUse(List<Effect> lastEffects);
+
+    public abstract ControllerMessage usePowup(Actor pov, Runnable onPowerupFinalized);
 
     /**
      * @return The type of powerUp contained

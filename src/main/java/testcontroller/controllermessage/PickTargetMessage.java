@@ -1,27 +1,25 @@
 package testcontroller.controllermessage;
 
-import actions.targeters.targets.Targetable;
 import actions.utils.ChoiceMaker;
 import board.Sandbox;
-import genericitems.Tuple;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
-import viewclasses.TargetView;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PickTargetMessage implements ControllerMessage{
 
     private final ChoiceBoard options;
-    private final Message message;
     private final Function<Integer, ControllerMessage> fun;
+    private final Sandbox sandbox;
 
-    public PickTargetMessage(ChoiceMaker choiceMaker, Message message) {
-        options = new ChoiceBoard(choiceMaker, message.message());
-        this.message = message;
+    public PickTargetMessage(ChoiceMaker choiceMaker, String message, Sandbox sandbox) {
+        options = new ChoiceBoard(choiceMaker, message);
         fun = choiceMaker::pick;
+        this.sandbox = sandbox;
     }
 
     /**
@@ -45,14 +43,6 @@ public class PickTargetMessage implements ControllerMessage{
     }
 
     /**
-     * @return
-     */
-    @Override
-    public Message getMessage() {
-        return this.message;
-    }
-
-    /**
      * This makes the choice
      *
      * @param choices the positions of the chosen elements
@@ -60,6 +50,7 @@ public class PickTargetMessage implements ControllerMessage{
      */
     @Override
     public ControllerMessage pick(List<Integer> choices) {
+        choices = choices.stream().filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
         if (choices.isEmpty()){
             return fun.apply(-1);
         } else {

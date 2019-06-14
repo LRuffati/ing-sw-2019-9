@@ -18,13 +18,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sandbox {
-    /*
-    Todo:
-    Make the sandbox more functional.
-    Changes:
-        + At creation nothing is a target, the sandbox is just a proxy for the GameMap
-        + Method
-     */
     private final Sandbox father;
 
     private final Map<RoomUID, RoomTarget> roomsTargeted;
@@ -191,7 +184,6 @@ public class Sandbox {
     public Set<TileUID> tilesSeen(TileUID source){
         Collection<TileUID> tilesNear = neighbors(source, true).values();
 
-        //Todo: convert to functional
         HashSet<RoomUID> roomsNeigh = new HashSet<>();
         for (TileUID i: tilesNear){
             roomsNeigh.add(room(i));

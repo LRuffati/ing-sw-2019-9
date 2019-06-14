@@ -2,6 +2,7 @@ package actions.effects;
 
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
+import testcontroller.SlaveController;
 
 public class PayEffect implements Effect{
     private final AmmoAmountUncapped amount;

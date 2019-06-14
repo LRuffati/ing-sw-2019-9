@@ -2,7 +2,6 @@ package testcontroller;
 
 import cli.CLIDemo;
 import gamemanager.ParserConfiguration;
-import genericitems.Tuple;
 import network.ClientInterface;
 import network.Main;
 import network.Player;
@@ -18,9 +17,7 @@ import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllerstates.SlaveControllerState;
 import view.View;
 import view.gui.Framework;
-import viewclasses.ActionView;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -195,7 +192,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             case RESPAWN:
                 view.onRespawn();
                 break;
-            case USETAKEBACK:
+            case USETAGBACK:
                 view.onTakeback();
                 break;
             case TERMINATOR:
@@ -221,7 +218,8 @@ public class ClientController implements ClientControllerClientInterface, Client
                     view.chooseAction(choice.actionViews, choice.single, choice.optional, choice.description, id);
                     break;
                 case TARGET:
-                    view.chooseTarget(choice.targetViews, choice.single, choice.optional, choice.description, controllerMessage.sandbox(), id);
+                    view.chooseTarget(choice.targetViews, choice.single, choice.optional,
+                            choice.description, controllerMessage.sandboxView(), id);
                     break;
                 case WEAPON:
                     view.chooseWeapon(choice.weaponViews, choice.single, choice.optional, choice.description, id);

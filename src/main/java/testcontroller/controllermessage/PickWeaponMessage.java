@@ -8,12 +8,13 @@ import testcontroller.controllerstates.SlaveControllerState;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PickWeaponMessage implements ControllerMessage{
 
     private final ChoiceBoard options;
     private final Message message;
-    private final Function<int[], ControllerMessage> fun;
+    private final Function<List<Integer>, ControllerMessage> fun;
 
 
     public PickWeaponMessage(WeaponChooser weaponChooser, String s, Sandbox sandbox) {
@@ -58,9 +59,8 @@ public class PickWeaponMessage implements ControllerMessage{
      */
     @Override
     public ControllerMessage pick(List<Integer> choices) {
-        int[] intArray = new int[choices.size()];
-        for(int i = 0; i<choices.size(); i++)
-            intArray[i] = choices.get(i);
-        return fun.apply(intArray);
+        choices =
+                choices.stream().filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
+        return fun.apply(choices);
     }
 }

@@ -6,6 +6,7 @@ import testcontroller.controllerstates.SlaveControllerState;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class StringChoiceMessage implements ControllerMessage {
 
@@ -55,6 +56,8 @@ public class StringChoiceMessage implements ControllerMessage {
      */
     @Override
     public ControllerMessage pick(List<Integer> choices) {
+        choices =
+                choices.stream().filter(i -> i>=0 & i<options.size()).collect(Collectors.toList());
         if (choices.isEmpty()) {
             return this;
         } else {
