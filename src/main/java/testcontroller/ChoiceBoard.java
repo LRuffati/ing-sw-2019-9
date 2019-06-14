@@ -38,6 +38,7 @@ public class ChoiceBoard {
      * TODO: change to something other than string
      */
     public final String description;
+    private int numOfElems;
 
     public ChoiceBoard(ChoiceMaker choiceMaker, String message) {
         Tuple<Boolean, List<TargetView>> tup = choiceMaker.showOptions();
@@ -45,6 +46,7 @@ public class ChoiceBoard {
         optional = tup.x;
         description = message;
         type = PickTypes.TARGET;
+        setNumOfElems(tup.y.size());
         //TODO: tup.y nella lista giusta, altre a null
     }
 
@@ -54,6 +56,7 @@ public class ChoiceBoard {
         optional = opts.x;
         description = s;
         type = PickTypes.WEAPON;
+        setNumOfElems(weaponChooser.showOptions().size());
         //TODO: add to the correct list weaponChooser.showOptions()
     }
 
@@ -62,6 +65,7 @@ public class ChoiceBoard {
         description = s;
         single = true;
         optional = actionPicker.showActionsAvailable().x;
+        setNumOfElems(actionPicker.showActionsAvailable().y.size());
         //TODO: add actionpicker.showactionsavailable().y
     }
 
@@ -70,6 +74,7 @@ public class ChoiceBoard {
         description = s;
         single = true;
         optional = false;
+        setNumOfElems(options.size());
         //TODO: add to list
     }
 
@@ -83,6 +88,7 @@ public class ChoiceBoard {
     public static ChoiceBoard powupChoiceFactory(List<PowerUp> options, String description,
                                                  boolean single, boolean optional){
         ChoiceBoard ret = new ChoiceBoard(PickTypes.POWERUP, description, single, optional);
+        ret.setNumOfElems(options.size());
         //TODO: pass powerups into the right list
 
         return ret;
@@ -96,4 +102,12 @@ public class ChoiceBoard {
     List<TargetView> targetViews;
     List<PowerUpView> powerUpViews;
     List<String> stringViews;
+
+    public int getNumOfElems() {
+        return numOfElems;
+    }
+
+    private void setNumOfElems(int numOfElems) {
+        this.numOfElems = numOfElems;
+    }
 }
