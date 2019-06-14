@@ -153,7 +153,7 @@ public class Action {
 
     Se non ho più niente: return la finalLambda.apply(sandbox)
      */
-     ControllerMessage iterate(){
+     public ControllerMessage iterate(){
         if (!targeterTemplates.isEmpty()){
 
             Iterator<Tuple<String, TargeterTemplate>> targetersIter= targeterTemplates.iterator();

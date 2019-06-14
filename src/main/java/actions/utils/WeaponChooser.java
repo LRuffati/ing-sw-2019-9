@@ -16,5 +16,5 @@ public interface WeaponChooser {
      */
     Tuple<Boolean, Boolean> params();
     public List<Weapon> showOptions();
-    public ControllerMessage pick(int[] choice);
+    public ControllerMessage pick(List<Integer> choice);
 }

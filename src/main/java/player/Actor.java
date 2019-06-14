@@ -1,6 +1,6 @@
 package player;
 
-import actions.ActionBundle;
+import actions.ActionTemplate;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;

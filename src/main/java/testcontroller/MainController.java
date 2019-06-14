@@ -2,19 +2,13 @@ package testcontroller;
 
 import actions.effects.Effect;
 import gamemanager.GameBuilder;
-import gamemanager.ParserConfiguration;
 import network.Database;
-import network.NetworkBuilder;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
 
-import java.awt.*;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 public class MainController {
