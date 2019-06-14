@@ -177,9 +177,10 @@ public class Actor {
      */
     public boolean checkAmmo(AmmoAmountUncapped ammoAmount, List<PowerUp> powerUpToPay){
         AmmoAmountUncapped amount = new AmmoAmountUncapped();
-        for(PowerUp p : powerUpToPay){
-            amount = amount.add(p.getAmmo());
-        }
+        if(powerUpToPay != null)
+            for(PowerUp p : powerUpToPay){
+                amount = amount.add(p.getAmmo());
+            }
         amount.add(ammoAvailable);
 
         return ammoAmount.compareTo(amount)>0;
@@ -201,10 +202,11 @@ public class Actor {
      * Consumes all the powerUps, and then reduce the amount of ammoAvailable
      */
     private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
-        for(PowerUp p : powerUpToPay){
-            amount = new AmmoAmount(amount.subtract(p.getAmmo()));
-            gm.discardPowerUp(p);
-        }
+        if(powerUpToPay != null)
+            for(PowerUp p : powerUpToPay){
+                amount = new AmmoAmount(amount.subtract(p.getAmmo()));
+                gm.discardPowerUp(p);
+            }
         ammoAvailable = new AmmoAmount(ammoAvailable.subtract(amount));
     }
 
