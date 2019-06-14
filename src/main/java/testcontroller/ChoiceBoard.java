@@ -4,14 +4,15 @@ import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
 import actions.utils.WeaponChooser;
 import genericitems.Tuple;
+import grabbables.Weapon;
 import testcontroller.controllerstates.PickTypes;
-import uid.TileUID;
 import viewclasses.ActionView;
 import viewclasses.PowerUpView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class contains all the possible choises to be made
@@ -45,7 +46,13 @@ public class ChoiceBoard {
         optional = tup.x;
         description = message;
         type = PickTypes.TARGET;
-        //TODO: tup.y nella lista giusta, altre a null
+
+        actionViews = null;
+        weaponViews = null;
+        targetViews = tup.y;
+        powerUpViews = null;
+        stringViews = null;
+
     }
 
     public ChoiceBoard(WeaponChooser weaponChooser, String s) {
@@ -54,7 +61,12 @@ public class ChoiceBoard {
         optional = opts.x;
         description = s;
         type = PickTypes.WEAPON;
-        //TODO: add to the correct list weaponChooser.showOptions()
+
+        actionViews = null;
+        weaponViews = weaponChooser.showOptions().stream().map(Weapon::generateView).collect(Collectors.toList());
+        targetViews = null;
+        powerUpViews = null;
+        stringViews = null;
     }
 
     public ChoiceBoard(ActionPicker actionPicker, String s) {
@@ -62,7 +74,12 @@ public class ChoiceBoard {
         description = s;
         single = true;
         optional = actionPicker.showActionsAvailable().x;
-        //TODO: add actionpicker.showactionsavailable().y
+
+        actionViews = actionPicker.showActionsAvailable().y;
+        weaponViews = null;
+        targetViews = null;
+        powerUpViews = null;
+        stringViews = null;
     }
 
     public ChoiceBoard(List<String> options, String s){
@@ -70,15 +87,21 @@ public class ChoiceBoard {
         description = s;
         single = true;
         optional = false;
-        //TODO: add to list
+
+        actionViews = null;
+        weaponViews = null;
+        targetViews = null;
+        powerUpViews = null;
+        stringViews = options;
     }
 
     /**
      * The lists contain view elements or are null
       */
-    List<ActionView> actionViews;
-    List<WeaponView> weaponViews;
-    List<TargetView> targetViews;
-    List<PowerUpView> powerUpViews;
-    List<String> stringViews;
+    public final List<ActionView> actionViews;
+    public final List<WeaponView> weaponViews;
+    public final List<TargetView> targetViews;
+    public final List<PowerUpView> powerUpViews;
+    public final List<String> stringViews;
+
 }
