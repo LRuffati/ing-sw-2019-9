@@ -182,6 +182,29 @@ public class MainController {
         }
     }
 
-        }
+    /**
+     *
+     * @param lastPlayed the player whose turn just ended
+     */
+    public void endTurn(Player lastPlayed){
+        /*
+        0. Riempie la mappa
+        1. Prende tutti i domination points
+        2. Per ognuno se hai fatto danno allora aggiunge un segnalino del colore di Player alla
+        gameBoard e se il player è nella cella gli fa uno di danno (metodi di DominationPointActor)
+        3. Prende tutti i pawn morti
+        4. Crea thread e respawna in ordine tutti
+        5. Alla fine il thread controlla con Scoreboard che non sia iniziata la frenesia finale
+            5a. Frenesia iniziata: Chiama Main.finalFrenzy(nextPlayer)
+            5b. Inizia il main line sul prossimo turno
+         */
     }
+
+    public void finalFrenzy(Player next){
+        /*
+        1. Chiama su tutti gli actor: finalFrenzyBegin
+
+         */
+    }
+
 }
