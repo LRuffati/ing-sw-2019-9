@@ -14,7 +14,6 @@ import javax.swing.*;
 @SuppressWarnings("serial")
 public class GUIScoreBoard extends JPanel {
     private static List<Color> DRAWING_COLOR = new ArrayList<>();
-    private static Color FINAL_DRAWING_COLOR;
 
     private List<Integer> skullIndex = new ArrayList<>();
 
@@ -44,7 +43,6 @@ public class GUIScoreBoard extends JPanel {
     public void setSkullIndex(int i, Color color){
         this.skullIndex.add(i);
         DRAWING_COLOR.add(color);
-        FINAL_DRAWING_COLOR = color;
     }
 
     @Override
@@ -57,6 +55,7 @@ public class GUIScoreBoard extends JPanel {
         for(int i = 0; i<skullIndex.size(); i++) {
             g.setColor(DRAWING_COLOR.get(i));
 
+            //TODO modify this with new size of scoreboard image
             g.fillOval((33 + 108 * skullIndex.get(i)) / 2, 91 / 2, 61 / 2, 95 / 2);
         }
 
@@ -65,36 +64,6 @@ public class GUIScoreBoard extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(prefW, prefH);
-    }
-
-    public void drawToBackground() {
-        Graphics g = scoreBoardBuffered.getGraphics();
-        g.setColor(FINAL_DRAWING_COLOR);
-        g.drawRect((30 + 108)/2,91/2,60/2,95/2);
-        g.dispose();
-
-        startPt = null;
-        repaint();
-    }
-
-    private class MyMouseAdapter extends MouseAdapter {
-        @Override
-        public void mouseDragged(MouseEvent mEvt) {
-            currentPt = mEvt.getPoint();
-            GUIScoreBoard.this.repaint();
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent mEvt) {
-            endPt = mEvt.getPoint();
-            currentPt = null;
-            drawToBackground();
-        }
-
-        @Override
-        public void mousePressed(MouseEvent mEvt) {
-            startPt = mEvt.getPoint();
-        }
     }
 
     private static void createAndShowGui() {

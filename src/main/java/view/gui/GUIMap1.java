@@ -24,7 +24,7 @@ import java.util.List;
 
 import static java.awt.Image.SCALE_SMOOTH;
 
-public class GUIMap1 extends JPanel {
+public class GUIMap1 extends JPanel implements GUIMap{
 
     private static final String SRC = ParserConfiguration.parsePath("GuiDirectoryPath") + "/";
 
@@ -59,7 +59,7 @@ public class GUIMap1 extends JPanel {
 
         System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 
-        setLayout(new GridLayout());
+        setLayout(new BorderLayout());
         add(label);
 
         label.setSize(new Dimension(682,920));
