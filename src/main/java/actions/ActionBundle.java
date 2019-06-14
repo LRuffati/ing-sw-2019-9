@@ -16,58 +16,40 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ActionBundle implements ActionPicker {
-    private final DamageableUID pov;
     private boolean finalized;
     private final List<ActionTemplate> actionsPossible;
-    private final GameMap map;
     private final Sandbox sandboxFromMap;
 
-    private List<Effect> effects;
+    private Function<Tuple<Sandbox, Map<String, Targetable>>,
+            ControllerMessage> finalizer;
 
-    private final Function<Thread, Function<Tuple<Sandbox, Map<String, Targetable>>,
-            ControllerMessage>> finalizer;
-    private Thread thread;
-
-    public ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
-        this.actionsPossible = actions;
+    public ActionBundle(Sandbox sandbox, List<ActionTemplate> actions,
+                        Function<List<Effect>, ControllerMessage> finalize){
+                this.actionsPossible = actions;
         finalized = false;
-        this.map = map;
-        this.pov = caller;
-        this.sandboxFromMap = map.createSandbox(pov);
-        finalizer = thread -> tup -> { // This will be called once the action is complete
-            /*
-            Check if finalized, else create a PickStringMessage and return it
-            */
-            Sandbox sandbox = tup.x;
-            if (this.finalized) return new WaitMessage();
+        this.sandboxFromMap = sandbox;
+        finalizer = tup -> {
+            Sandbox sandboxReturned = tup.x;
+            List<Effect> effectsHistory = sandboxReturned.getEffectsHistory();
+
+            if (this.isFinalized())
+                return new WaitMessage();
             else {
-                Function<Integer, ControllerMessage> func = i -> {
-                    this.finalized = true;
-                    this.effects = sandbox.getEffectsHistory();
+                // Function to confirm
+                Function<Integer, ControllerMessage> confirmation =
+                        integer -> {
+                            if (!integer.equals(0)){
+                                return new RollbackMessage("Effettua i cambiamenti desiderati");
+                            }
+                            this.finalized = true;
+                            return finalize.apply(effectsHistory);
+                        };
 
-                    //TODO: write the actual function
-                    /*
-                    1. Setta lo slaveController in modalità wait
-                    2. Fa' partire un nuovo thread
-                    3. Restituisce Wait alla rete
-
-                    Il thread:
-                    1. Passa la lista di effetti al MainController e termina, se il MainController
-                    restituisce un false allora:
-                        1. Ripulisce gli effect in action bundle
-                        2. Resetta la flag finalized
-                        3. Resetta controller timer
-                        4. Rimette in slavecontroller il ControllerMessage precedente
-                     */
-
-                    return new WaitMessage();
-                };
-            List<String> pass = new ArrayList<>();
-            pass.add(0, "Sì confermo l'azione");
-            pass.add(1, "No, voglio modificare qualcosa");
-            return new StringChoiceMessage(pass, "Vuoi confermare l'azione o modificare", func);
-        }
-
+                List<String> pass = new ArrayList<>();
+                pass.add(0, "Sì confermo l'azione");
+                pass.add(1, "No, voglio modificare qualcosa");
+                return new StringChoiceMessage(pass, "Vuoi confermare l'azione o modificare", confirmation);
+            }
         };
     }
 
@@ -78,15 +60,13 @@ public class ActionBundle implements ActionPicker {
 
     @Override
     public ControllerMessage pickAction(int choice) {
-        if (choice<0 || choice>=actionsPossible.size()){
-            return new PickActionMessage(this, "", sandboxFromMap);
+        if (choice<0){
+            return new PickActionMessage(this, "Devi effettuare un'azione", sandboxFromMap);
         }
-        Sandbox sandbox = map.createSandbox(pov);
+        Sandbox sandbox = new Sandbox(sandboxFromMap, List.of());
         ActionTemplate chosen = actionsPossible.get(choice);
-        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(pov)),
-                finalizer.apply(thread));
-        thread = null; // I should create finalizer only once, if multiple accesses are happening
-        // it's a mistake
+        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(sandbox.pov)),
+                finalizer);
         return action.iterate();
     }
 
