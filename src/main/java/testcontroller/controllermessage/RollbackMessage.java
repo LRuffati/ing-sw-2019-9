@@ -68,16 +68,6 @@ public class RollbackMessage implements ControllerMessage {
     }
 
     /**
-     * Returns the game map linked to this action and the revision at which it had been generated
-     *
-     * @return
-     */
-    @Override
-    public Tuple<GameMap, Integer> gamemap() {
-        return null;
-    }
-
-    /**
      * If the elements refer to a sandbox rather than to the gamemap this returns the correct
      * sandbox, if there is no sandbox involved then null
      *

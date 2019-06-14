@@ -48,7 +48,7 @@ public interface ControllerMessage {
      * sandbox, if there is no sandbox involved then null
      * @return
      */
-    GameMapView sandbox();
+    GameMapView sandboxView();
 
     /**
      * This makes the choice
