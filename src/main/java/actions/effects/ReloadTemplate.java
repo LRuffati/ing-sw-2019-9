@@ -86,16 +86,4 @@ class ReloadEffect implements Effect{
         newW.put(weapon, Boolean.TRUE);
         return newW;
     }
-
-    /**
-     * @param next
-     * @param pov
-     * @param gameMap
-     * @param finalize
-     * @return
-     */
-    @Override
-    public ControllerMainLineResultServer mergeInGameMap(List<Effect> next, Actor pov, GameMap gameMap, Runnable<ControllerMainLineResultServer> finalize) {
-        return null;
-    }
 }

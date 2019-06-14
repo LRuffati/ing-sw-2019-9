@@ -329,7 +329,6 @@ public class Actor {
         return Map.copyOf(marks);
     }
 
-    //TODO: delete this method
     /**
      * Needed for tests.
      * @return the map of the game the player is playing.

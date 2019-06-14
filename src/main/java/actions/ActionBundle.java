@@ -3,13 +3,9 @@ package actions;
 import actions.effects.Effect;
 import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
-import board.GameMap;
 import board.Sandbox;
 import genericitems.Tuple;
 import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllermessage.PickActionMessage;
-import testcontroller.controllermessage.StringChoiceMessage;
-import testcontroller.controllermessage.WaitMessage;
 import uid.DamageableUID;
 import viewclasses.ActionView;
 
@@ -75,10 +71,6 @@ public class ActionBundle implements ActionPicker {
         };
     }
 
-    public void setThread(Thread thread){
-        this.thread = thread;
-    }
-
     @Override
     public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
         return new Tuple<>(false, actionsPossible.stream().map(ActionTemplate::generateView).collect(Collectors.toList()));
@@ -100,9 +92,5 @@ public class ActionBundle implements ActionPicker {
 
     public boolean isFinalized(){
         return finalized;
-    }
-
-    public List<Effect> getEffects() {
-        return new ArrayList<>(effects);
     }
 }

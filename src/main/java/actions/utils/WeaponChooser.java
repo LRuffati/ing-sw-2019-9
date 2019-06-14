@@ -1,6 +1,5 @@
 package actions.utils;
 
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import testcontroller.controllermessage.ControllerMessage;
