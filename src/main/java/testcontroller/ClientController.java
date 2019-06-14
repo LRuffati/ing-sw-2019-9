@@ -195,7 +195,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             case RESPAWN:
                 view.onRespawn();
                 break;
-            case USETAKEBACK:
+            case USETAGBACK:
                 view.onTakeback();
                 break;
             case TERMINATOR:
