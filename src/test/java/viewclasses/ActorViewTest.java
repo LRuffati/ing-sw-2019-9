@@ -1,6 +1,5 @@
 package viewclasses;
 
-import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.Coord;
 import board.GameMap;
@@ -22,7 +21,6 @@ class ActorViewTest {
     private GameBuilder gameBuilder;
     private GameMap map;
     private List<Actor> actors;
-
 
     @BeforeEach
     void setup(){
@@ -86,5 +84,26 @@ class ActorViewTest {
 
         assertEquals(1, view1.loadedWeapon().size());
         assertNull(view2.loadedWeapon());
+
+
+        assertEquals(2,map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).weapons().size());
+        assertNull(map.generateView(act1.pawnID()).getPosition(new Coord(1,1)).ammoCard());
+    }
+
+
+    @Test
+    void testTile() {
+        Actor act1 = actors.get(0);
+        Actor act2 = actors.get(1);
+        ActorView view1 = act1.pawn().generateView(map.generateView(act1.pawnID()), true);
+        ActorView view2 = act2.pawn().generateView(map.generateView(act1.pawnID()), false);
+
+        assertFalse(map.generateView(act1.pawnID()).getPosition(new Coord(0,0)).spawnPoint());
+        assertTrue(map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).spawnPoint());
+
+        assertEquals(3,map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).weapons().size());
+        assertNotNull(map.generateView(act1.pawnID()).getPosition(new Coord(1,1)).ammoCard());
+
+        assertEquals(map.getTile(map.getPosition(new Coord(1,0))).getColor(), map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).color());
     }
 }
