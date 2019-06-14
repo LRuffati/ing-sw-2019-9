@@ -1,19 +1,28 @@
 package testcontroller;
 
-import actions.Action;
 import actions.ActionBundle;
+import actions.ActionTemplate;
 import actions.effects.Effect;
+import actions.effects.ReloadTemplate;
+import actions.targeters.targets.BasicTarget;
+import actions.targeters.targets.Targetable;
+import actions.utils.ChoiceMaker;
+import actions.utils.PowerUpType;
+import board.Sandbox;
+import genericitems.Tuple;
 import grabbables.PowerUp;
 import network.Player;
 import network.ServerInterface;
+import org.jetbrains.annotations.Contract;
 import player.Actor;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllermessage.PickPowerupMessage;
-import testcontroller.controllermessage.WaitMessage;
+import testcontroller.controllermessage.*;
+import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.TargetView;
 
-import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -47,25 +56,21 @@ public class SlaveController {
     private ServerInterface network;
     private ControllerMessage currentMessage;
     public final Actor self;
+    public final MainController main;
 
-
-    public SlaveController(Player player, ServerInterface network) {
+    public SlaveController(MainController main, Player player, ServerInterface network) {
         this.player = player;
         this.network = network;
         this.currentMessage = new WaitMessage();
         this.self = player.getActor();
+        this.main = main;
     }
 
     /**
      * This function sets in motion the main turn line
-     *
-     * @param onEndTurn The action to perform once I don't have anything else to do
-     * @return
      */
-    public boolean startMainAction(Runnable onEndTurn){
-        List<ActionBundle> turnActions = self.getActions(); //Non include il reload
-        this.currentMessage = setPowUps(List.of(), turnActions);
-        return true;
+    public void startMainAction(){
+        this.currentMessage = setPowUps(new ArrayList<>(),self.getActions());
     }
 
     /**
@@ -74,36 +79,110 @@ public class SlaveController {
      * The result makes you pick powerups, then resolves them and the finalizer returns a
      * PickActionMessage(nextActs.get(0)), if nextActs is empty then it starts the reload instead
      *
-     * @param lastEffects
-     * @param nextActs
-     * @return
+     * @param lastEffects The effects I need to filter the powerupList by
+     * @param nextActs Each list will create an actionTemplate
+     * @return the action that should be executed next
      */
-    protected ControllerMessage setPowUps(List<Effect> lastEffects, List<ActionBundle> nextActs){
+    private ControllerMessage setPowUps(List<Effect> lastEffects,
+                                      List<List<ActionTemplate>> nextActs){
+
+        // Which powerups can I use
         List<PowerUp> pows = self.getPowerUp().stream()
                                     .filter(i->i.canUse(lastEffects))
                                     .collect(Collectors.toList());
 
-        /*TODO: create finalizer for the powerups, from last to first (if nextacts isn't empty):
-                n) Put thread in actionBundle and sets slaveController to pickActionMessage(actionb)
-                n-1) Create thread with the final action of calling setPowerUps with the tail of
-                nextActs and the effects
-                n-2) Apply effects to the Main and passes last two actions as a finalizer
-                ...
-                2) Returns a pickTarget for the second
-                1) Returns a pickTarget for the first powerup
-        * */
-        new PickPowerupMessage(pows, )
+        Sandbox sandbox = self.getGm().createSandbox(self.pawnID());
+
+        Function<Sandbox, ControllerMessage> reloadMerger = // Will take the effects in
+                // sandbox and
+                sandbox1 -> { // merge them into MainController
+                    List<Effect> effects = sandbox1.getEffectsHistory();
+                    this.currentMessage = new WaitMessage();
+                    Runnable onResolved = () -> this.main.endTurn(this.player);
+                    new Thread(()-> this.main.resolveEffect(this, effects, onResolved)
+                        ).start();
+                    return new WaitMessage();
+        };
+
+        // Used if I'll have to reload next
+        ControllerMessage reloadMessage = new ReloadTemplate().spawn(Map.of(), sandbox, reloadMerger);
+
+        // Used if I might run an actionbundle after
+        Function<List<List<ActionTemplate>>, Function<List<Effect>, ControllerMessage>> bundleFinalizer =
+                bundlesTail -> effectList -> {
+                    this.currentMessage = new WaitMessage();
+
+                    Runnable onResolved = () -> {
+                        this.currentMessage = this.setPowUps(effectList, bundlesTail);
+                    };
+
+                    new Thread(() -> main.resolveEffect(this, effectList, onResolved)).start();
+
+                    return new WaitMessage();
+                };
+
+        List<List<ActionTemplate>> tail = nextActs.subList(1, nextActs.size());
+        ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
+        ControllerMessage actionMessage = new PickActionMessage(action, "Scegli un'azione", sandbox);
+
+        if ((pows.isEmpty()) & (nextActs.isEmpty())){ // No powUp available, only reload left
+            return reloadMessage;
+
+        } else if ((pows.isEmpty()) & !nextActs.isEmpty()){ // No powerups but ActionBundle
+            // available
+            //TODO: finalizer of action bundle calls setPowUps with the effect list and the tail
+            // of nextActs
+            return actionMessage;
+
+        } else { // Powerups and then reload
+            //TODO: powerup finalizer calls this function with the same effectlist and the same
+            // nextActs
+            Function<List<PowerUp>, ControllerMessage> onPowupPick =
+                    list -> {
+                        if (list.isEmpty()) {
+                            if (nextActs.isEmpty()) {
+                                return reloadMessage;
+                            } else {
+                                return actionMessage;
+                            }
+                        } else {
+                            //3. Call this function with same params
+                            Runnable onApplied = () -> this.currentMessage =
+                                    this.setPowUps(lastEffects, nextActs);
+                            //2. Apply powerup
+                            return list.get(0).usePowup(self, onApplied);
+                        }
+                    };
+            return new PickPowerupMessage(SlaveControllerState.MAIN, pows, onPowupPick,
+                    "Scegli un powerup da usare", true);
+        }
     }
 
     /**
      * This function is invoked when the player needs to respawn
      *
-     * @param cardstotake the number of powerups that you need to pickup, on the first round it
-     *                    should be two, on subsequent rounds 1
+     * It is called by the Main controller after it already picked the two cards from the deck
+     *
      * @return
      */
-    public boolean startRespawn(int cardstotake, Runnable onRespawned){
-        return false;
+    public void startRespawn(Consumer<PowerUp> onRespawned){
+        List<PowerUp> powups = new ArrayList<>(self.getPowerUp());
+
+        Function<List<PowerUp>, ControllerMessage> onPick =
+                list -> {
+                    new Thread(()-> {
+                        onRespawned.accept(list.get(0));
+                    }).start();
+                    return new WaitMessage();
+                };
+
+        this.currentMessage = new PickPowerupMessage(
+                SlaveControllerState.RESPAWN,
+                powups,
+                onPick,
+                "Scegli lo spawn point",
+                true
+                );
     }
 
     /**
@@ -111,10 +190,65 @@ public class SlaveController {
      * takeback grenades in his stack
      *
      * @param offender The player which caused the damage
-     * @return
+     * @param onFinished Tells the Main whether the player will use the tagback grenade and which
+     *                  one. The provider should make sure it is only used once
      */
-    public boolean startTagback(Actor offender, Runnable onFinished){
-        return false;
+    public void startTagback(Actor offender, Consumer<Optional<PowerUp>> onFinished){
+        Sandbox sandbox = self.getGm().createSandbox(self.pawnID());
+        BasicTarget other = sandbox.getBasic(offender.pawnID());
+
+        if (other.seen(sandbox, sandbox.getBasic(self.pawnID()), false)){
+            List<PowerUp> tagbacks =
+                    self.getPowerUp().stream().filter(powerUp -> powerUp.getType().equals(PowerUpType.TAGBACKGRANADE)).collect(Collectors.toList());
+
+            if (tagbacks.isEmpty()) {
+                onFinished.accept(Optional.empty());
+                return;
+            }
+
+            ControllerMessage powerupPicker =
+                    new PickPowerupMessage(SlaveControllerState.USETAGBACK,
+                            tagbacks, list -> {
+                        if (list.isEmpty()) {
+                            onFinished.accept(Optional.empty());
+                        } else {
+                            onFinished.accept(Optional.of(list.get(0)));
+                        }
+                        return new WaitMessage();
+                    }, "Scegli quale tagback usare", true);
+
+            ChoiceMaker choiceMaker = new ChoiceMaker() {
+                @Override
+                public void giveTargets(String targetId, List<TargetView> possibilities,
+                                        Function<Integer, Targetable> action){
+                    // Since targets aren't added by a targeter but provided at creation this
+                    // method is unnecessary
+                }
+
+                @Override
+                public Tuple<Boolean, List<TargetView>> showOptions() {
+                    return new Tuple<>(true,
+                            List.of(other.generateView(sandbox)));
+                }
+
+                @Override
+                public ControllerMessage pick(int choice) {
+                    if (choice<0){
+                        onFinished.accept(Optional.empty());
+                        return new WaitMessage();
+                    } else {
+                        return powerupPicker;
+                    }
+                }
+            };
+
+            this.currentMessage = new PickTargetMessage(choiceMaker,
+                    "Vuoi dare un marchio a questo giocatore?", sandbox);
+
+        } else {
+            onFinished.accept(Optional.empty());
+        }
+
     }
 
     /**
@@ -136,7 +270,7 @@ public class SlaveController {
      * value doesn't change until a new command is available (meaning the
      */
     public ControllerMessage getInstruction(){
-        return null;
+        return currentMessage;
     }
 
 
