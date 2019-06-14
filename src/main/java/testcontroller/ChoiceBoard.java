@@ -4,8 +4,8 @@ import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
 import actions.utils.WeaponChooser;
 import genericitems.Tuple;
+import grabbables.PowerUp;
 import testcontroller.controllerstates.PickTypes;
-import uid.TileUID;
 import viewclasses.ActionView;
 import viewclasses.PowerUpView;
 import viewclasses.TargetView;
@@ -71,6 +71,21 @@ public class ChoiceBoard {
         single = true;
         optional = false;
         //TODO: add to list
+    }
+
+    private ChoiceBoard(PickTypes type, String description, boolean single, boolean optional){
+        this.type = type;
+        this.description = description;
+        this.single = single;
+        this.optional = optional;
+    }
+
+    public static ChoiceBoard powupChoiceFactory(List<PowerUp> options, String description,
+                                                 boolean single, boolean optional){
+        ChoiceBoard ret = new ChoiceBoard(PickTypes.POWERUP, description, single, optional);
+        //TODO: pass powerups into the right list
+
+        return ret;
     }
 
     /**
