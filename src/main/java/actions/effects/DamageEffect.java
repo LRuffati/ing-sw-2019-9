@@ -6,6 +6,7 @@ public class DamageEffect implements Effect{
     private final DamageableUID uid;
     private final int amount;
 
+    //TODO: mirino non converte marchi in punti danno !!
     DamageEffect(DamageableUID uid, int amount){
 
         this.uid = uid;

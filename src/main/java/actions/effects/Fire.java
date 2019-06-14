@@ -44,7 +44,7 @@ public class Fire implements EffectTemplate {
             }
 
             @Override
-            public ControllerMessage pick(int[] choice){
+            public ControllerMessage pick(List<Integer> choice){
                 if (choice[0] < 0 || choice[0] >= loadedWeapon.size()){
                     return new PickWeaponMessage(this, "", sandbox);
                 } else {

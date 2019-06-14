@@ -4,11 +4,9 @@ import actions.targeters.targets.Targetable;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.WeaponChooser;
-import board.GameMap;
 import board.Sandbox;
 import genericitems.Tuple;
 import grabbables.Weapon;
-import player.Actor;
 import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllermessage.PickWeaponMessage;
 import testcontroller.controllermessage.RollbackMessage;
@@ -20,8 +18,7 @@ import java.util.stream.Collectors;
 public class ReloadTemplate implements EffectTemplate{
 
     public ControllerMessage spawn(Map<String, Targetable> targets, Sandbox sandbox,
-                                   Function<Sandbox,
-            ControllerMessage> consumer){
+                                   Function<Sandbox, ControllerMessage> consumer){
         //1. Genera WeaponChooser
 
         List<Tuple<AmmoAmount, Weapon>> scariche =
@@ -30,6 +27,7 @@ public class ReloadTemplate implements EffectTemplate{
                         .filter(i->!i.x)
                         .map(i-> new Tuple<>(i.y.getReloadCost(), i.y))
                         .collect(Collectors.toList());
+
         WeaponChooser chooser = new WeaponChooser() {
 
             /**
@@ -47,10 +45,12 @@ public class ReloadTemplate implements EffectTemplate{
             }
 
             @Override
-            public ControllerMessage pick(int[] choice) {
+            public ControllerMessage pick(List<Integer> choice) {
                 AmmoAmountUncapped tot = new AmmoAmount();
                 List<Effect> reloaded = new ArrayList<>();
-
+                if (choice.isEmpty()){
+                    return consumer.apply(sandbox);
+                }
                 for(int i: choice){
                     tot.add(scariche.get(i).x);
                     reloaded.add(new ReloadEffect(scariche.get(i).y));
