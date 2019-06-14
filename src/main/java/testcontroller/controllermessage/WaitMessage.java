@@ -1,11 +1,11 @@
 package testcontroller.controllermessage;
 
-import board.GameMap;
-import board.Sandbox;
-import genericitems.Tuple;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.GameMapView;
+
+import java.util.List;
 
 public class WaitMessage implements ControllerMessage{
     /**
@@ -42,7 +42,7 @@ public class WaitMessage implements ControllerMessage{
      * @return
      */
     @Override
-    public Tuple<GameMap, Integer> gamemap() {
+    public String gamemap() {
         return null;
     }
 
@@ -53,7 +53,7 @@ public class WaitMessage implements ControllerMessage{
      * @return
      */
     @Override
-    public Sandbox sandbox() {
+    public GameMapView sandbox() {
         return null;
     }
 
@@ -64,7 +64,7 @@ public class WaitMessage implements ControllerMessage{
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
+    public ControllerMessage pick(List<Integer> choices) {
         return this;
     }
 }

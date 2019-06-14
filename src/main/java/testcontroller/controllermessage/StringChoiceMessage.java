@@ -54,11 +54,11 @@ public class StringChoiceMessage implements ControllerMessage {
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
-        if (choices.length<1) {
+    public ControllerMessage pick(List<Integer> choices) {
+        if (choices.isEmpty()) {
             return this;
         } else {
-            return picker.apply(choices[0]);
+            return picker.apply(choices.get(0));
         }
     }
 }

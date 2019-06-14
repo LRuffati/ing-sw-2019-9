@@ -59,11 +59,11 @@ public class PickTargetMessage implements ControllerMessage{
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
-        if (choices.length < 1){
+    public ControllerMessage pick(List<Integer> choices) {
+        if (choices.isEmpty()){
             return fun.apply(-1);
         } else {
-            return fun.apply(choices[0]);
+            return fun.apply(choices.get(0));
         }
     }
 }

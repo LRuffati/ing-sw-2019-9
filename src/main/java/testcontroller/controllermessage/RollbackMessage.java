@@ -1,12 +1,11 @@
 package testcontroller.controllermessage;
 
-import board.GameMap;
 import board.Sandbox;
-import genericitems.Tuple;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
 import testcontroller.controllerstates.UpdateTypes;
+import viewclasses.GameMapView;
 
 import java.util.List;
 
@@ -73,7 +72,7 @@ public class RollbackMessage implements ControllerMessage {
      * @return
      */
     @Override
-    public Tuple<GameMap, Integer> gamemap() {
+    public String gamemap() {
         return null;
     }
 
@@ -84,7 +83,7 @@ public class RollbackMessage implements ControllerMessage {
      * @return
      */
     @Override
-    public Sandbox sandbox() {
+    public GameMapView sandbox() {
         return null;
     }
 
@@ -95,7 +94,7 @@ public class RollbackMessage implements ControllerMessage {
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
+    public ControllerMessage pick(List<Integer> choices) {
         return null;
     }
 }

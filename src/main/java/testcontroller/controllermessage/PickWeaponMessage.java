@@ -57,7 +57,10 @@ public class PickWeaponMessage implements ControllerMessage{
      * @return
      */
     @Override
-    public ControllerMessage pick(int[] choices) {
-        return fun.apply(choices);
+    public ControllerMessage pick(List<Integer> choices) {
+        int[] intArray = new int[choices.size()];
+        for(int i = 0; i<choices.size(); i++)
+            intArray[i] = choices.get(i);
+        return fun.apply(intArray);
     }
 }
