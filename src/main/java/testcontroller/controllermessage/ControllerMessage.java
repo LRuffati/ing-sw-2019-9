@@ -55,6 +55,8 @@ public interface ControllerMessage {
      * @param choices the positions of the chosen elements
      * @return
      */
+    //TODO: Add check that all elements are within the bounds of available elements
+    //      and test
     ControllerMessage pick(List<Integer> choices);
 
 }

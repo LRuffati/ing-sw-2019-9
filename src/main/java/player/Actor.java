@@ -376,6 +376,11 @@ public class Actor {
         this.frenzy = true;
     }
 
+    public void finalFrenzyBegin(boolean afterFirst){
+        //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
+        // next death
+    }
+
     /**
      *
      * @return True iif the player is dead
@@ -478,7 +483,9 @@ public class Actor {
      * Takes into account the situation of the player
      * @return
      */
-    public List<ActionBundle> getActions() {
+    public List<List<ActionTemplate>> getActions() {
+        //TODO: Implement
+        return null;
     }
 }
 

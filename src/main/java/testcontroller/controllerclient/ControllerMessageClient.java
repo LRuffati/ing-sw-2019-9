@@ -54,9 +54,9 @@ public class ControllerMessageClient implements ControllerMessage{
         return sandbox;
     }
 
-    //todo: come fare questo?
     @Override
     public ControllerMessage pick(List<Integer> choices) {
+        //FIXME: call the network method, example: return network.pick(id, choices)
         return null;
     }
 
