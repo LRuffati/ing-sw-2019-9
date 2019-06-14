@@ -17,7 +17,6 @@ public class ParserMapTest {
         try {
             map =  GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path")
                     , 0, new Tuple3<>(null,null,null));
-            //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
         }
         catch (FileNotFoundException e){
             System.exit(-100);

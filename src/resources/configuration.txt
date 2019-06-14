@@ -2,8 +2,8 @@
 -ammoTilePath
 src/resources/ammoTile.txt
 
-#weaponPath
-src/resources/weapon.txt
+-weaponPath
+src/resources/weapons.txt
 
 -powerUpPath
 src/resources/powerUp.txt

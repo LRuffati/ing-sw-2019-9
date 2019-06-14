@@ -91,8 +91,7 @@ public class ParserWeapon {
                     }
 
                     reloadWeapon = new AmmoAmount(amountGiven);
-                    System.out.println("\n" + "Costo arma: " + buyWeapon.toString() + "\n" + "Ricarica arma: " +
-                            reloadWeapon.toString() + "\n");
+                    //System.out.println("\n" + "Costo arma: " + buyWeapon.toString() + "\n" + "Ricarica arma: " + reloadWeapon.toString() + "\n");
                     break;
 
                 case "nomeWeapon:":

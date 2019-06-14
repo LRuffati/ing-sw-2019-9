@@ -102,13 +102,11 @@ public class GameBuilder {
                 : new Deck<>(ParserPowerUp.parse(powerUpPath));
     }
 
-    private Deck<Weapon> parserWeapon(String weaponPath) {
-        return null;
-        /*
+    private Deck<Weapon> parserWeapon(String weaponPath) throws FileNotFoundException {
         return weaponPath==null
                 ? new Deck<>(ParserWeapon.parse(ParserConfiguration.parsePath("weaponPath")))
                 : new Deck<>(ParserWeapon.parse(weaponPath));
-        */
+
     }
 
     private List<Actor> buildActor(GameMap map) {

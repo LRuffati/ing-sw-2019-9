@@ -35,6 +35,7 @@ class newGameMapTest {
                     mapPath, null, powerPath, ammoPath, 3);
         }
         catch (FileNotFoundException e){
+            e.printStackTrace();
         }
         map = builder.getMap();
         ammoCardDeck = builder.getDeckOfAmmoCard();
@@ -182,7 +183,10 @@ class newGameMapTest {
     @Test
     void emptyGrabbableTest(){
         for(TileUID t : map.allTiles()){
-            assertTrue(map.getGrabbable(t).isEmpty());
+            if(map.getTile(t).spawnPoint())
+                assertEquals(3, map.getGrabbable(t).size());
+            else
+                assertEquals(1, map.getGrabbable(t).size());
         }
     }
 

@@ -87,7 +87,7 @@ public class GameMap {
         tileUIDMap.values().forEach(x -> x.setMap(this));
 
         //TODO: create weapon cards
-        // refill();
+         refill();
 
         this.damageableUIDMap = buildPawn(this, numOfPlayer);
 
@@ -319,6 +319,8 @@ public class GameMap {
      */
     public void refill(){
         //TODO: test this method, needs also weapon management
+        if(deckOfWeapon == null || deckOfAmmoCard == null)
+            return;
         for(TileUID tile : allTiles()){
             if(getTile(tile).spawnPoint())
                 deckOfWeapon.take(3 - getGrabbable(tile).size())

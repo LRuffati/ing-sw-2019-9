@@ -7,7 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,14 +30,14 @@ class ParserAmmoTest {
         }
     }
 
-    void setup2(){
+    private void setup2(){
         String path = "src/test/java/gamemanager/TileTest";
         try {
             ammoCardCollection = ParserAmmoTile.parse(path);
             ammoCardDeck = new GameBuilder(null, null, null, path, 1).getDeckOfAmmoCard();
         }
         catch (FileNotFoundException e){
-            System.out.println(e.getStackTrace());
+            e.printStackTrace();
         }
     }
 
@@ -48,6 +51,18 @@ class ParserAmmoTest {
     @Test
     void test(){
         assertEquals(36, ammoCardCollection.size());
+
+        int size = 0;
+        List<AmmoCard> list = new ArrayList<>();
+        while(ammoCardDeck.hasNext()){
+            size++;
+            list.add(ammoCardDeck.next());
+        }
+        assertEquals(36-(12-2-3), size);
+
+        for(AmmoCard ammoCard : list)
+            ammoCardDeck.discard(ammoCard);
+
 
         AmmoCard card = ammoCardDeck.next();
         assertTrue(ammoCardDeck.isPicked(card));
@@ -68,13 +83,15 @@ class ParserAmmoTest {
     void testAmmoCardGetter(){
         setup2();
         assertEquals(2, ammoCardCollection.size());
+;
+        int n = 0;
+        while(ammoCardDeck.hasNext()){
+            n++;
+            ammoCardDeck.next();
+        }
+        System.out.println(n);
 
-        AmmoCard c1 = ammoCardDeck.next();
-        AmmoCard c2 = ammoCardDeck.next();
-        assertFalse(c1.getAmmoAmount().compareTo(c2.getAmmoAmount()) > 0);
-        assertNotEquals(c1.getNumOfPowerUp(), c2.getNumOfPowerUp());
-
-        assertNotEquals(c1,c2);
+        assertThrows(NoSuchElementException.class, () -> ammoCardDeck.next());
     }
 
     @AfterAll
