@@ -49,6 +49,7 @@ public class ParserPowerUp {
                 type = getType(sLine.next());
                 col = getCol(sLine.next());
                 if(type != null && col != null){
+                    //todo: devo creare il powerUp ma non posso istanziare la classe astratta
                     powerUpCollection.add(new PowerUp(type, new AmmoAmount(Map.of(col,1))));
                 }
 
