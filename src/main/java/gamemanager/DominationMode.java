@@ -63,6 +63,8 @@ public class DominationMode extends Scoreboard{
                             x -> Collections.frequency(list, x)
                     ));
             int i = 0;
+            FIXME
+            //FIXME: possible bug in this, seems to take only one
             for(Actor actor : scoreSet.descendingSet()){
                 scoreSet.clear();
                 scoreSet.addAll(spawnTracker.get(i));
