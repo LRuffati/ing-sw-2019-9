@@ -63,6 +63,7 @@ public class SlaveController {
         this.network = network;
         this.currentMessage = new WaitMessage(List.of());
         this.main = main;
+        player.getActor().bindSlave(this);
     }
 
     /**

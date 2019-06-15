@@ -538,5 +538,9 @@ public class Actor {
         //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
         // next death
     }
+
+    public void bindSlave(SlaveController slaveController) {
+        this.slaveController = slaveController;
+    }
 }
 
