@@ -45,8 +45,7 @@ public class DamageEffect implements Effect{
 
     @Override
     public String effectString(Actor pov) {
-        return String.format("%s ha dato %d danni a %s", pov.name(), amount,
-                pov.getGm().getPawn(uid).getActor().name());
-
+        return String.format("%s ha dato %d danni a %s", pov.pawn().getUsername(), amount,
+                pov.getGm().getPawn(uid).getActor().pawn().getUsername());
     }
 }
