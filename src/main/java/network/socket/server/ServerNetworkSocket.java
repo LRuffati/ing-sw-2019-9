@@ -74,15 +74,15 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     }
 
     @Override
-    public void onDisconnection(Player player) {
+    public void onDisconnection(Player player, int numOfPlayer) {
         if(checkConnection(token))
-            clientHandler.respond(new OnConnection(player, false));
+            clientHandler.respond(new OnConnection(player, false, numOfPlayer));
     }
 
     @Override
-    public void onConnection(Player player) {
+    public void onConnection(Player player, int numOfPlayer) {
         if(checkConnection(token))
-            clientHandler.respond(new OnConnection(player, true));
+            clientHandler.respond(new OnConnection(player, true, numOfPlayer));
     }
 
 

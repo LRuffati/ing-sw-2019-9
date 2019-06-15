@@ -8,10 +8,12 @@ public class OnConnection implements Response {
 
     public final Player playerConnected;
     public final boolean connected;
+    public final int numOfPlayer;
 
-    public OnConnection(Player player, boolean connected) {
+    public OnConnection(Player player, boolean connected, int numOfPlayer) {
         this.playerConnected = player;
         this.connected = connected;
+        this.numOfPlayer = numOfPlayer;
     }
 
     @Override

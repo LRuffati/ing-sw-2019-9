@@ -283,12 +283,12 @@ public class SlaveController {
 
 
 
-    void onConnection(Player player) {
-        network.onConnection(player);
+    void onConnection(Player player, int numOfPlayer) {
+        network.onConnection(player, numOfPlayer);
     }
 
-    void onDisconnection(Player player) {
-        network.onDisconnection(player);
+    void onDisconnection(Player playerint, int numOfPlayer) {
+        network.onDisconnection(player, numOfPlayer);
     }
 
     void onStarting(String map) {

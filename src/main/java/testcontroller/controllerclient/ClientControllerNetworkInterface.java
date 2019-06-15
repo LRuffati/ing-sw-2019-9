@@ -13,7 +13,7 @@ public interface ClientControllerNetworkInterface {
 
     void onControllerMessage(ControllerMessage controllerMessage);
 
-    void onConnection(Player player, boolean connection);
+    void onConnection(Player player, boolean connection, int numOfPlayer);
     void onStarting(String map);
     void onTimer(int ms);
 

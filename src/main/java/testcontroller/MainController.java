@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 public class MainController {
 
+    private final int MIN_PLAYER = 3;
+
     private int numOfPlayer;
 
     private Timer timerForStarting;
@@ -80,7 +82,7 @@ public class MainController {
      */
     public void logout(Player player) {
         numOfPlayer--;
-        notifyDisconnection(player);
+        notifyDisconnection(numOfPlayer, player);
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
                 timerClose();
@@ -89,15 +91,15 @@ public class MainController {
         }
     }
 
-    private void notifyConnection(int n, Player player){
+    private void notifyConnection(int num, Player player){
         for(SlaveController slaveController : slaveControllerList)
-            slaveController.onConnection(player);
+            slaveController.onConnection(player, num);
         System.out.println(player);
     }
 
-    private void notifyDisconnection(Player player) {
+    private void notifyDisconnection(int numOfPlayer, Player player) {
         for(SlaveController slaveController : slaveControllerList)
-            slaveController.onDisconnection(player);
+            slaveController.onDisconnection(player, numOfPlayer);
         System.out.println("Disconnection of\n" + player);
     }
 

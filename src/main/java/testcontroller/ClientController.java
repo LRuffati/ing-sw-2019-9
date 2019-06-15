@@ -300,8 +300,8 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void onConnection(Player player, boolean connection) {
-        view.onConnection(player, connection);
+    public void onConnection(Player player, boolean connection, int numOfPlayer) {
+        view.onConnection(player, connection, numOfPlayer);
     }
 
 

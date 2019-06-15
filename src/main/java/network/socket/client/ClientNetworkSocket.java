@@ -19,14 +19,12 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private final Client client;
     private Thread receiver;
 
-    private View view;
     private ClientControllerNetworkInterface clientController;
 
 
-    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController, View view){
+    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController){
         this.client = client;
         this.clientController = clientController;
-        this.view = view;
         run();
     }
 
@@ -217,17 +215,17 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(OnConnection response) {
-        clientController.onConnection(response.playerConnected, response.connected);
+        clientController.onConnection(response.playerConnected, response.connected, response.numOfPlayer);
     }
 
     @Override
     public void handle(OnStarting response) {
-        view.onStarting(response.mapName);
+        clientController.onStarting(response.mapName);
     }
 
     @Override
     public void handle(OnTimer response) {
-        view.onTimer(response.timeToWait);
+        clientController.onTimer(response.timeToWait);
     }
 
     @Override

@@ -24,8 +24,8 @@ public interface ServerInterface {
 
 
 
-    void onConnection(Player player);
-    void onDisconnection(Player player);
+    void onConnection(Player player, int numOfPlayer);
+    void onDisconnection(Player player, int numOfPlayer);
 
     void onStarting(String map);
     void onTimer(int ms);
