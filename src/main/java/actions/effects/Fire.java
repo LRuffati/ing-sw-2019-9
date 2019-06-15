@@ -7,6 +7,8 @@ import board.Sandbox;
 import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import player.Actor;
+import testcontroller.SlaveController;
 import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllermessage.PickActionMessage;
 import testcontroller.controllermessage.PickWeaponMessage;
@@ -45,14 +47,14 @@ public class Fire implements EffectTemplate {
 
             @Override
             public ControllerMessage pick(List<Integer> choice){
-                if (choice[0] < 0 || choice[0] >= loadedWeapon.size()){
+                if (choice.get(0) < 0 || choice.get(0) >= loadedWeapon.size()){
                     return new PickWeaponMessage(this, "", sandbox);
                 } else {
-                    Weapon weapUsed = loadedWeapon.get(choice[0]);
+                    Weapon weapUsed = loadedWeapon.get(choice.get(0));
                     List<Effect> effects = List.of(new Effect() {
                         @Override
-                        public EffectType type() {
-                            return null;
+                        public EffectType type(){
+                            return EffectType.FIRE;
                         }
 
                         @Override
@@ -61,11 +63,25 @@ public class Fire implements EffectTemplate {
                             updated.put(weapUsed, Boolean.FALSE);
                             return updated;
                         }
+
+                        /**
+                         * @param pov
+                         * @param finalize contains all the instructions to run after the end of the effect. Contains
+                         */
+                        @Override
+                        public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+                            pov.getSelf().drop(weapUsed);
+                        }
+
+                        @Override
+                        public String effectString(Actor pov) {
+                            return String.format("%s ha usato %s", pov.name(), weapUsed.getName());
+                        }
                     });
                     Sandbox newSandbox = new Sandbox(sandbox, effects);
 
                     WeaponUse action = new WeaponUse(weapUsed,newSandbox, consumer);
-                    return new PickActionMessage(action,"", sandbox);
+                    return new PickActionMessage(action,"", sandbox,List.of());
                 }
             }
         };

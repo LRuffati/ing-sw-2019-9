@@ -5,6 +5,7 @@ import board.Sandbox;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.GameMapView;
 
 import java.util.List;
 import java.util.function.Function;
@@ -40,6 +41,30 @@ public class PickTargetMessage implements ControllerMessage{
     @Override
     public ChoiceBoard genView() {
         return options;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Message getMessage() {
+        return new Message() {
+            @Override
+            public List<String> getChanges() {
+                return List.of();
+            }
+        };
+    }
+
+    /**
+     * If the elements refer to a sandbox rather than to the gamemap this returns the correct
+     * sandbox, if there is no sandbox involved then null
+     *
+     * @return
+     */
+    @Override
+    public GameMapView sandboxView() {
+        return sandbox.generateView();
     }
 
     /**

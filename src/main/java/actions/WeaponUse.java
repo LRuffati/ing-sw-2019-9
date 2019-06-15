@@ -82,7 +82,7 @@ public class WeaponUse implements ActionPicker {
             return finalizer.apply(sandbox);
         } else if (0<=choice && choice<availableActions.size()){
             action = availableActions.get(choice);
-        } else return new RollbackMessage();
+        } else return new RollbackMessage("Devi scegliere un'azione valida");
 
         final List<String> updatedActions = new LinkedList<>(previousActions);
         updatedActions.add(action.x);
@@ -90,7 +90,7 @@ public class WeaponUse implements ActionPicker {
                 tup -> {
                     WeaponUse weaponUseNew= new WeaponUse(WeaponUse.this, tup.x, tup.y,
                             updatedActions);
-                    return new PickActionMessage(weaponUseNew,"", sandbox);
+                    return new PickActionMessage(weaponUseNew,"", sandbox, List.of());
                 };
         Action nextAction = new Action(sandbox, action.y, existingTargets, fun);
         return nextAction.iterate();

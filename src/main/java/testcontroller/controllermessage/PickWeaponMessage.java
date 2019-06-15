@@ -5,6 +5,7 @@ import board.Sandbox;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.GameMapView;
 
 import java.util.List;
 import java.util.function.Function;
@@ -15,12 +16,14 @@ public class PickWeaponMessage implements ControllerMessage{
     private final ChoiceBoard options;
     private final Message message;
     private final Function<List<Integer>, ControllerMessage> fun;
+    private final GameMapView sandboxView;
 
 
     public PickWeaponMessage(WeaponChooser weaponChooser, String s, Sandbox sandbox) {
         options = new ChoiceBoard(weaponChooser, s);
         fun = weaponChooser::pick;
         message = null;
+        sandboxView = sandbox.generateView();
     }
 
     /**
@@ -49,6 +52,17 @@ public class PickWeaponMessage implements ControllerMessage{
     @Override
     public Message getMessage() {
         return null;
+    }
+
+    /**
+     * If the elements refer to a sandbox rather than to the gamemap this returns the correct
+     * sandbox, if there is no sandbox involved then null
+     *
+     * @return
+     */
+    @Override
+    public GameMapView sandboxView() {
+        return sandboxView;
     }
 
     /**

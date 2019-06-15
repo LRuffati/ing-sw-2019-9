@@ -197,6 +197,12 @@ public class MainController {
         }
     }
 
+    private void broadcastEffectMessage(String effectString) {
+        for (SlaveController i: slaveControllerList){
+            i.addNotification(effectString);
+        }
+    }
+
     /**
      *
      * @param lastPlayed the player whose turn just ended
@@ -228,7 +234,7 @@ public class MainController {
             getGameMap().getTile(t).endTurn(lastPlayed);
         }
         for (DamageableUID uid: getGameMap().getDamageable()){
-            if (getGameMap().getPawn(uid).getActor().endTurn()){
+            if (getGameMap().getPawn(uid).getActor().endTurn(lastPlayed, scoreboard)){
                 dead.add(uid);
             }
         }

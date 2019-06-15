@@ -6,6 +6,7 @@ import actions.effects.Effect;
 import actions.effects.ReloadTemplate;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
+import actions.utils.AmmoAmountUncapped;
 import actions.utils.ChoiceMaker;
 import actions.utils.PowerUpType;
 import board.Sandbox;
@@ -55,11 +56,12 @@ public class SlaveController {
     private ServerInterface network;
     private ControllerMessage currentMessage;
     public final MainController main;
+    private List<String> notificationList;
 
     public SlaveController(MainController main, Player player, ServerInterface network) {
         this.player = player;
         this.network = network;
-        this.currentMessage = new WaitMessage();
+        this.currentMessage = new WaitMessage(List.of());
         this.main = main;
     }
 
@@ -95,10 +97,10 @@ public class SlaveController {
                 // sandbox and
                 sandbox1 -> { // merge them into MainController
                     List<Effect> effects = sandbox1.getEffectsHistory();
-                    this.currentMessage = new WaitMessage();
+                    this.currentMessage = new WaitMessage(List.of());
                     Runnable onResolved = () -> this.main.endTurn(this.getSelf());
                     new Thread(()-> this.main.resolveEffect(this, effects, onResolved)).start();
-                    return new WaitMessage();
+                    return new WaitMessage(List.of());
         };
 
         // Used if I'll have to reload next
@@ -107,18 +109,19 @@ public class SlaveController {
         // Used if I might run an actionbundle after
         Function<List<List<ActionTemplate>>, Function<List<Effect>, ControllerMessage>> bundleFinalizer =
                 bundlesTail -> effectList -> {
-                    this.currentMessage = new WaitMessage();
+                    this.currentMessage = new WaitMessage(List.of());
 
                     Runnable onResolved = () -> this.currentMessage = this.setPowUps(effectList, bundlesTail);
 
                     new Thread(() -> main.resolveEffect(this, effectList, onResolved)).start();
 
-                    return new WaitMessage();
+                    return new WaitMessage(List.of());
                 };
 
         List<List<ActionTemplate>> tail = nextActs.subList(1, nextActs.size());
         ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
-        ControllerMessage actionMessage = new PickActionMessage(action, "Scegli un'azione", sandbox);
+        ControllerMessage actionMessage = new PickActionMessage(action, "Scegli un'azione",
+                sandbox, getNotifications());
 
         if ((pows.isEmpty()) & (nextActs.isEmpty())){ // No powUp available, only reload left
             return reloadMessage;
@@ -145,8 +148,14 @@ public class SlaveController {
                         }
                     };
             return new PickPowerupMessage(SlaveControllerState.MAIN, pows, onPowupPick,
-                    "Scegli un powerup da usare", true);
+                    "Scegli un powerup da usare", true, getNotifications());
         }
+    }
+
+    private List<String> getNotifications() {
+        List<String> notifs = List.copyOf(notificationList);
+        notificationList.clear();
+        return notifs;
     }
 
     /**
@@ -162,7 +171,7 @@ public class SlaveController {
                     new Thread(()-> {
                         onRespawned.accept(list.get(0));
                     }).start();
-                    return new WaitMessage();
+                    return new WaitMessage(List.of());
                 };
 
         this.currentMessage = new PickPowerupMessage(
@@ -170,7 +179,8 @@ public class SlaveController {
                 powups,
                 onPick,
                 "Scegli lo spawn point",
-                true
+                true,
+                List.of()
                 );
     }
 
@@ -203,8 +213,8 @@ public class SlaveController {
                         } else {
                             onFinished.accept(Optional.of(list.get(0)));
                         }
-                        return new WaitMessage();
-                    }, "Scegli quale tagback usare", true);
+                        return new WaitMessage(List.of());
+                    }, "Scegli quale tagback usare", true, getNotifications());
 
             ChoiceMaker choiceMaker = new ChoiceMaker() {
                 @Override
@@ -224,7 +234,7 @@ public class SlaveController {
                 public ControllerMessage pick(int choice) {
                     if (choice<0){
                         onFinished.accept(Optional.empty());
-                        return new WaitMessage();
+                        return new WaitMessage(List.of());
                     } else {
                         return powerupPicker;
                     }
@@ -259,7 +269,16 @@ public class SlaveController {
      * value doesn't change until a new command is available (meaning the
      */
     public ControllerMessage getInstruction(){
-        return currentMessage;
+        ControllerMessage mess = currentMessage;
+        if (mess.type().equals(SlaveControllerState.WAIT)) {
+            List<String> old = new ArrayList<>(mess.getMessage().getChanges());
+            old.addAll(getNotifications());
+            currentMessage = new WaitMessage(List.of());
+            return new WaitMessage(old);
+        }
+
+
+        else return mess;
     }
 
 
@@ -282,5 +301,9 @@ public class SlaveController {
 
     public Actor getSelf() {
         return player.getActor();
+    }
+
+    public void addNotification(String effectString) {
+        this.notificationList.add(effectString);
     }
 }

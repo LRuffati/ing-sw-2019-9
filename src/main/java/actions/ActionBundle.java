@@ -33,7 +33,7 @@ public class ActionBundle implements ActionPicker {
             List<Effect> effectsHistory = sandboxReturned.getEffectsHistory();
 
             if (this.isFinalized())
-                return new WaitMessage();
+                return new WaitMessage(List.of());
             else {
                 // Function to confirm
                 Function<Integer, ControllerMessage> confirmation =
@@ -48,7 +48,8 @@ public class ActionBundle implements ActionPicker {
                 List<String> pass = new ArrayList<>();
                 pass.add(0, "Sì confermo l'azione");
                 pass.add(1, "No, voglio modificare qualcosa");
-                return new StringChoiceMessage(pass, "Vuoi confermare l'azione o modificare", confirmation);
+                return new StringChoiceMessage(pass, "Vuoi confermare l'azione o modificare",
+                        confirmation, sandboxReturned);
             }
         };
     }
@@ -61,7 +62,7 @@ public class ActionBundle implements ActionPicker {
     @Override
     public ControllerMessage pickAction(int choice) {
         if (choice<0){
-            return new PickActionMessage(this, "Devi effettuare un'azione", sandboxFromMap);
+            return new PickActionMessage(this, "Devi effettuare un'azione", sandboxFromMap,List.of());
         }
         Sandbox sandbox = new Sandbox(sandboxFromMap, List.of());
         ActionTemplate chosen = actionsPossible.get(choice);

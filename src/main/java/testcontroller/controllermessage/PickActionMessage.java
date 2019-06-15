@@ -6,6 +6,7 @@ import board.Sandbox;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.GameMapView;
 
 import java.util.List;
 import java.util.function.Function;
@@ -15,11 +16,15 @@ public class PickActionMessage implements ControllerMessage{
 
     private final ChoiceBoard options;
     private final Function<Integer, ControllerMessage> fun;
+    private final List<String> message;
+    private final GameMapView sandboxView;
 
-    public PickActionMessage(ActionPicker actionPicker, String s, Sandbox sandbox) {
+    public PickActionMessage(ActionPicker actionPicker, String s, Sandbox sandbox,
+                             List<String> notifications) {
         options = new ChoiceBoard(actionPicker, s);
         fun = actionPicker::pickAction;
-
+        this.message = notifications;
+        this.sandboxView = sandbox.generateView();
     }
 
     /**
@@ -40,6 +45,30 @@ public class PickActionMessage implements ControllerMessage{
     @Override
     public ChoiceBoard genView() {
         return options;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Message getMessage() {
+        return new Message() {
+            @Override
+            public List<String> getChanges() {
+                return message;
+            }
+        };
+    }
+
+    /**
+     * If the elements refer to a sandbox rather than to the gamemap this returns the correct
+     * sandbox, if there is no sandbox involved then null
+     *
+     * @return
+     */
+    @Override
+    public GameMapView sandboxView() {
+        return sandboxView;
     }
 
     /**

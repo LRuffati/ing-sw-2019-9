@@ -1,6 +1,5 @@
 package actions.utils;
 
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
 import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.ActionView;

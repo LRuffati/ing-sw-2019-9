@@ -1,6 +1,7 @@
 package actions.effects;
 
 import player.Actor;
+import testcontroller.SlaveController;
 import uid.DamageableUID;
 
 public class MarkEffect implements Effect{
@@ -14,15 +15,21 @@ public class MarkEffect implements Effect{
 
     @Override
     public EffectType type() {
-        return null;
+        return EffectType.MARK;
     }
+    }
+        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    @Override
+     * @param finalize contains all the instructions to run after the end of the effect. Contains
+     * @param pov
+    /**
+
+     */
 
     @Override
     public String effectString(Actor pov) {
-        return String.format("%s ha subito %d marchi da %s",
-                pov.pawn().getUsername(),
-                amount,
-                pov.getGm().getPawn(uid).getUsername()
-        );
+        return String.format("%s ha dato %d marchi a %s", pov.name(), amount,
+                pov.getGm().getPawn(uid).getActor().name());
     }
 }

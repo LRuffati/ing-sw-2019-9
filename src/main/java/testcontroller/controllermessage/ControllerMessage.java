@@ -38,12 +38,6 @@ public interface ControllerMessage {
     Message getMessage();
 
     /**
-     * Returns the hash of the game map linked to this action and the revision at which it had been generated
-     * @return
-     */
-    String gamemap();
-
-    /**
      * If the elements refer to a sandbox rather than to the gamemap this returns the correct
      * sandbox, if there is no sandbox involved then null
      * @return
