@@ -151,11 +151,4 @@ public class MainController {
         timerForStarting.schedule(task, time);
         timerRunning = true;
     }
-
-
-    public static void main(String[] str) {
-
-        MainController initGame = new MainController();
-        NetworkBuilder network = new NetworkBuilder(initGame);
-    }
 }
