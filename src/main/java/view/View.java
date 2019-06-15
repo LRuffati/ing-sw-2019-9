@@ -88,8 +88,9 @@ public interface View {
      * This notification is used when a player logs in or logs out the game
      * @param player The player that logged-in or out
      * @param connected True if the player logged in, False if the player logged out
+     * @param numOfPlayer How many players already logged in
      */
-    void onConnection(Player player, boolean connected);
+    void onConnection(Player player, boolean connected, int numOfPlayer);
 
     /**
      * Method used to notify that the game is starting

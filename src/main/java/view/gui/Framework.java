@@ -1,9 +1,9 @@
 package view.gui;
 
-import controllerclient.ClientControllerClientInterface;
-import controllerclient.Message;
-import controllerclient.View;
+import testcontroller.Message;
+import view.View;
 import network.Player;
+import testcontroller.controllerclient.ClientControllerClientInterface;
 import viewclasses.*;
 
 import javax.swing.*;
@@ -25,8 +25,6 @@ public class Framework implements View {
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
-
-
     }
 
     private static void createAndShowGUI(ClientControllerClientInterface controller) {
@@ -166,8 +164,6 @@ public class Framework implements View {
     public void onTerminator() {
 
     }
-
-
 
     public void quit(JFrame frame) {
         if (quitConfirmed(frame)) {

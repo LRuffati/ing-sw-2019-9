@@ -1,16 +1,14 @@
 package cli;
 
-import controllerclient.ClientControllerClientInterface;
-import controllerclient.Message;
-import controllerclient.View;
-import controllerresults.ControllerActionResultClient;
+import testcontroller.Message;
+import testcontroller.controllerclient.ClientControllerClientInterface;
+import view.View;
 import network.Player;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.*;
 
