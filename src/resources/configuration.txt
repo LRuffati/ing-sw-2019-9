@@ -31,6 +31,9 @@ src/resources/gui
 -scoreAfterFrenzy
 2,1,1,1
 
+-scoreSpawnTracker
+8,6,4,2,1
+
 -numOfDeaths
 8
 

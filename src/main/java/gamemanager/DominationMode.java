@@ -31,7 +31,9 @@ public class DominationMode extends Scoreboard{
             = Arrays.stream(ParserConfiguration.parse("scoreAfterFrenzy").split(","))
             .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
 
-    private final List<Integer> pointForSpawnTracker = new ArrayList<>(List.of(8,6,4,2,1));
+    private final List<Integer> pointForSpawnTracker
+            = Arrays.stream(ParserConfiguration.parse("scoreSpawnTracker").split(","))
+            .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
 
 
 
@@ -52,22 +54,22 @@ public class DominationMode extends Scoreboard{
     }
 
 
-    public void addSpawnTrackerPoint(int index, Actor actor) {
-        spawnTracker.get(index).add(actor);
+    public void addSpawnTrackerPoint(Color color, Actor actor) {
+        spawnTracker.get(color).add(actor);
     }
 
     public void addPointsAtEndGame() {
-        for(List list : spawnTracker.values()) {
-            TreeSet<Actor> scoreSet = new TreeSet<>
+        TreeSet<Actor> scoreSet;
+        for(List<Actor> list : spawnTracker.values()) {
+            scoreSet = new TreeSet<>
                     (Comparator.comparing(
                             x -> Collections.frequency(list, x)
                     ));
+            scoreSet.addAll(list);
             int i = 0;
-            FIXME
             //FIXME: possible bug in this, seems to take only one
+            //todo: should be solved, da testare per sicurezza
             for(Actor actor : scoreSet.descendingSet()){
-                scoreSet.clear();
-                scoreSet.addAll(spawnTracker.get(i));
                 actor.addPoints(pointForSpawnTracker.get(i));
                 i++;
             }
