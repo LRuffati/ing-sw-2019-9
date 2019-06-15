@@ -98,10 +98,10 @@ public class ClientController implements ClientControllerClientInterface, Client
      * Method used by the View to notify its presence. Once the view is connected all the messages are sent to her.
      * @param view The view that want to receive the messages.
      */
+    @Override
     public void attachView(View view) {
         this.view = view;
     }
-
 
     @Override
     public void login(String username, String password, String color) {

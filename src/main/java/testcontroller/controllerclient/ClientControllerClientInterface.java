@@ -1,5 +1,6 @@
 package testcontroller.controllerclient;
 
+import view.View;
 import viewclasses.GameMapView;
 
 import java.util.List;
