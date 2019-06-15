@@ -95,13 +95,12 @@ public class DominationMode extends Scoreboard{
      */
     public Actor claimWinner() {
         Actor maxA = null;
-        for(Actor a : actorList){
-            if(maxA == null || a.getPoints()>maxA.getPoints())   maxA = a;
+        for (Actor a : actorList) {
+            if (maxA == null || a.getPoints() > maxA.getPoints()) maxA = a;
         }
         return maxA;
-    public boolean finalFrenzy() {
-        return numOfDeaths >= maxDeaths || spawnTracker.stream().filter(x -> x.size() == 8).count() >= 2;
     }
+
 
     /**
      * Add to the @points attribute of every player (in the class actor) the points gain from a kill.
