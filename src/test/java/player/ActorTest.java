@@ -9,8 +9,6 @@ import gamemanager.GameBuilder;
 import grabbables.AmmoCard;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import uid.GrabbableUID;
-import uid.TileUID;
 
 import java.io.FileNotFoundException;
 import java.lang.invoke.WrongMethodTypeException;
@@ -120,7 +118,7 @@ class ActorTest {
 
         Pietro.move(map.getPosition(new Coord(0,0)));
 
-        Pietro.addDamage(melo,2);
+        Pietro.damage(melo,2);
         assertTrue(Pietro.getDamageTaken().contains(melo));
         assertEquals(2, Pietro.getDamageTaken().size());
         assertFalse(Pietro.isDead());
@@ -128,7 +126,7 @@ class ActorTest {
         Pietro.addMark(melo.pawnID(), 1);
         assertEquals(1, Pietro.getMarks().get(melo.pawnID()));
 
-        Pietro.addDamage(melo, 3);
+        Pietro.damage(melo, 3);
         assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
         assertEquals(6, Pietro.getDamageTaken().size());
 
@@ -137,7 +135,7 @@ class ActorTest {
 
 
         Pietro.addMark(melo.pawnID(), 3);
-        Pietro.addDamage(melo, 5);
+        Pietro.damage(melo, 5);
         assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
         assertEquals(Pietro.hp()+1, Pietro.getDamageTaken().size());
         assertTrue(Pietro.isDead());
@@ -151,7 +149,7 @@ class ActorTest {
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
         Pietro.addMark(melo.pawnID(), 2);
-        Pietro.addDamage(melo, 0);
+        Pietro.damage(melo, 0);
         assertEquals(2, Pietro.getMarks().get(melo.pawnID()));
         assertEquals(0, Pietro.getDamageTaken().size());
     }
@@ -162,8 +160,8 @@ class ActorTest {
         Actor a2 = actorList.get(1);
         Actor a3 = actorList.get(2);
 
-        a1.addDamage(a2,1);
-        a1.addDamage(a3,2);
+        a1.damage(a2,1);
+        a1.damage(a3,2);
         assertEquals(3, a1.getDamageTaken().size());
         a1.addMark(a2.pawnID(), 2);
         a1.addMark(a3.pawnID(), 3);
@@ -171,23 +169,23 @@ class ActorTest {
         assertEquals(2, a1.getMarks().get(a2.pawnID()));
         assertEquals(3, a1.getMarks().get(a3.pawnID()));
 
-        a1.addDamage(a3, 1);
+        a1.damage(a3, 1);
         assertEquals(2, a1.getMarks().get(a2.pawnID()));
         assertEquals(0, a1.getMarks().get(a3.pawnID()));
         assertEquals(7, a1.getDamageTaken().size());
 
-        a1.addDamage(a2, 1);
+        a1.damage(a2, 1);
         assertEquals(0, a1.getMarks().get(a2.pawnID()));
         assertEquals(0, a1.getMarks().get(a3.pawnID()));
         assertEquals(10, a1.getDamageTaken().size());
 
         assertTrue(a1.isDead());
 
-        a1.addDamage(a2, 1);
+        a1.damage(a2, 1);
         assertEquals(a1.hp()+1, a1.getDamageTaken().size());
         assertTrue(a1.isDead());
 
-        a1.addDamage(a2, 3);
+        a1.damage(a2, 3);
         assertEquals(a1.hp()+1, a1.getDamageTaken().size());
     }
 
@@ -205,7 +203,7 @@ class ActorTest {
         assertEquals(map.getPosition(new Coord(0,2)), melo.getPawn().getTile());
 
         assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
-        Pietro.addDamage(actorList.get(1), 10);
+        Pietro.damage(actorList.get(1), 10);
         assertFalse(Pietro.getDamageTaken().isEmpty());
 
         Pietro.respawn(YELLOW);

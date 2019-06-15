@@ -250,11 +250,26 @@ public class Actor {
     }
 
     /**
-     * Damage the player
+     * Damages the player without applying the Marks
      * @param shooter the attacker
      * @param numOfDmg number of damage points
      */
-    public void addDamage(Actor shooter, int numOfDmg){
+    public void damageRaw(Actor shooter, int numOfDmg) {
+        for(int i=0; i<numOfDmg; i++){
+            if(damageTaken.size() <= HP){
+                damagedBy.add(shooter);
+                shooter.damagedPlayer.add(this);
+                damageTaken.add(shooter);
+            }
+        }
+    }
+
+    /**
+     * Damages the player, and applies all the Marks that can be applied
+     * @param shooter the attacker
+     * @param numOfDmg number of damage points
+     */
+    public void damage(Actor shooter, int numOfDmg){
         for(int i=0; i<numOfDmg; i++){
             getDMG(shooter);
         }
@@ -283,6 +298,7 @@ public class Actor {
             marks.put(shooter.pawnID, 0);
         }
     }
+
 
     /**
      * Method needed in the Scoreboard class.
@@ -372,17 +388,6 @@ public class Actor {
         return new HashSet<>(damagedBy);
     }
 
-    /**
-     * Set the attribute frenzy to true.
-     */
-    public void setFrenzy(){
-        this.frenzy = true;
-    }
-
-    public void beginFF(boolean afterFirst){
-        //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
-        // next death
-    }
 
     /**
      *
@@ -482,17 +487,37 @@ public class Actor {
         return powerUps;
     }
 
+
+
     /**
      * Takes into account the situation of the player
      * @return
      */
     public List<List<ActionTemplate>> getActions() {
         //TODO: Implement
-        return null;
     }
 
-    public void setLastInFrenzy() {
-        lastInFrenzy = true;
+    public void setLastInFrenzy(boolean lastInFrenzy) {
+        this.lastInFrenzy = lastInFrenzy;
+    }
+
+    public boolean isLastInFrenzy() {
+        return lastInFrenzy;
+    }
+
+    /**
+     * Set the attribute frenzy to true.
+     */
+    public void setFrenzy(){
+        this.frenzy = true;
+        //todo continue setFrenzy
+    }
+
+    public void beginFF(boolean afterFirst){
+        if(damageTaken.size() == 0)
+            setFrenzy();
+        //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
+        // next death
     }
 }
 
