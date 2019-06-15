@@ -120,6 +120,9 @@ public class GameBuilder {
         List<Actor> actors = new ArrayList<>();
         boolean firstPlayer = true;
         for(DamageableUID pawnID : map.getDamageable()){
+            //FIXME: make it so it doesn't catch in the middle also the controlPoints, could
+            // work by using a visitor and a method on Pawn. Otherwise create Actors first and
+            // pawns later
             Actor actor = new Actor(map, pawnID, firstPlayer);
             actor.setBinding();
             actors.add(actor);
