@@ -7,11 +7,16 @@ import testcontroller.ChoiceBoard;
 import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
 import testcontroller.controllerstates.UpdateTypes;
+import viewclasses.GameMapView;
 
 import java.util.List;
 
 public class RollbackMessage implements ControllerMessage {
+    private final List<String> message;
+
     public RollbackMessage(String message) {
+        //This class only notifies an error, needs only and a message to show
+        this.message = List.of(message);
     }
 
     /**
@@ -24,7 +29,41 @@ public class RollbackMessage implements ControllerMessage {
         return SlaveControllerState.ROLLBACK;
     }
 
-   /**
+    /**
+     * This generates the ChoiceBoard
+     *
+     * @return
+     */
+    @Override
+    public ChoiceBoard genView() {
+        return null;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public Message getMessage() {
+        return new Message() {
+            @Override
+            public List<String> getChanges() {
+                return message;
+            }
+        };
+    }
+
+    /**
+     * If the elements refer to a sandbox rather than to the gamemap this returns the correct
+     * sandbox, if there is no sandbox involved then null
+     *
+     * @return
+     */
+    @Override
+    public GameMapView sandboxView() {
+        return null;
+    }
+
+    /**
      * This makes the choice
      *
      * @param choices the positions of the chosen elements

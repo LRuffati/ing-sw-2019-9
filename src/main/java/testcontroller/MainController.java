@@ -197,6 +197,12 @@ public class MainController {
         }
     }
 
+    private void broadcastEffectMessage(String effectString) {
+        for (SlaveController i: slaveControllerList){
+            i.addNotification(effectString);
+        }
+    }
+
     /**
      *
      * @param lastPlayed the player whose turn just ended

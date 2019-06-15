@@ -16,12 +16,16 @@ public class PickPowerupMessage implements ControllerMessage {
     private final ChoiceBoard choiceBoard;
     private final boolean optional;
     private final boolean single;
+    private final List<String> message;
+    private final List<PowerUp> originalPowup;
 
     public PickPowerupMessage(SlaveControllerState state, List<PowerUp> options,
                               Function<List<PowerUp>, ControllerMessage> choicesAction, String description,
-                              boolean single){
+                              boolean single, List<String> notifications){
         this.type = state;
         this.choicesAction = choicesAction;
+        this.message = notifications;
+        this.originalPowup = List.copyOf(options);
 
         switch (state){
             case RESPAWN:
@@ -68,6 +72,30 @@ public class PickPowerupMessage implements ControllerMessage {
     }
 
     /**
+     * @return
+     */
+    @Override
+    public Message getMessage() {
+        return new Message() {
+            @Override
+            public List<String> getChanges() {
+                return message;
+            }
+        };
+    }
+
+    /**
+     * If the elements refer to a sandbox rather than to the gamemap this returns the correct
+     * sandbox, if there is no sandbox involved then null
+     *
+     * @return
+     */
+    @Override
+    public GameMapView sandboxView() {
+        return null; // Powerups are never chosen from within a sandbox
+    }
+
+    /**
      * This makes the choice
      *
      * @param choices the positions of the chosen elements
@@ -77,7 +105,7 @@ public class PickPowerupMessage implements ControllerMessage {
     public ControllerMessage pick(List<Integer> choices) {
         int lenOpts = choiceBoard.getNumOfElems();
         List<PowerUp> powChoices = choices.stream().filter(i-> i>0 & i<lenOpts)
-                                    .map(i-> choiceBoard.getPowerUps().get(i))
+                                    .map(originalPowup::get)
                                     .collect(Collectors.toList());
         if (!optional & choices.isEmpty()){
             return this;
