@@ -10,7 +10,6 @@ import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
-import java.awt.image.DataBuffer;
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -20,6 +19,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     private final ClientHandler clientHandler;
     private String token;
+    private Player player;
 
     public ServerNetworkSocket(ClientHandler clientHandler){
         this.clientHandler = clientHandler;

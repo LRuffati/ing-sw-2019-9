@@ -6,8 +6,6 @@ import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
 import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

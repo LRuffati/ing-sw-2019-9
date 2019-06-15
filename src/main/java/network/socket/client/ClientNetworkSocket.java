@@ -7,10 +7,8 @@ import network.exception.InvalidLoginException;
 import network.socket.messages.*;
 import testcontroller.controllermessage.ControllerMessage;
 import view.View;
-import viewclasses.GameMapView;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**

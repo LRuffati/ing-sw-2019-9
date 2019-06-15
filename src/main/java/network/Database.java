@@ -1,7 +1,7 @@
 package network;
 
-import controller.MainController;
-import controller.SlaveController;
+import testcontroller.MainController;
+import testcontroller.SlaveController;
 import network.exception.InvalidLoginException;
 import uid.DamageableUID;
 
