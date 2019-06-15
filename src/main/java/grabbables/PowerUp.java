@@ -23,11 +23,20 @@ public abstract class PowerUp extends Grabbable {
      * Gets the list of effects which were played prior to this call and tells if I can use the
      * powerup
      * @param lastEffects
-     * @return
+     * @return true if the effect can be used, false otherwise
      */
     public abstract boolean canUse(List<Effect> lastEffects);
 
-    public abstract ControllerMessage usePowup(Actor pov, Runnable onPowerupFinalized);
+    /**
+     *
+     * @param pov the actor using the powerup (if this not in pov.powerups then onPowerupFinalized)
+     * @param lastEffects effects prior to this powerup (used for targeting scope)
+     * @param onPowerupFinalized the function to call once the effects have been merged in Main
+     * @return the controller message to show the user
+     */
+    public abstract ControllerMessage usePowup(Actor pov,
+                                               List<Effect> lastEffects,
+                                               Runnable onPowerupFinalized);
 
     /**
      * @return The type of powerUp contained
