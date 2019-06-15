@@ -1,7 +1,6 @@
 package actions.effects;
 
 import actions.utils.AmmoAmountUncapped;
-import board.GameMap;
 import grabbables.Weapon;
 import player.Actor;
 import testcontroller.SlaveController;
@@ -9,7 +8,6 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public interface Effect {
@@ -48,8 +46,9 @@ public interface Effect {
      * @param pov
      * @param finalize contains all the instructions to run after the end of the effect. Contains
      *                also the list of effects still to apply
-     * @return
      */
-    boolean mergeInGameMap(SlaveController pov,
-                           Runnable finalize);
+    void mergeInGameMap(SlaveController pov,
+                        Runnable finalize);
+
+    String effectString(Actor pov);
 }

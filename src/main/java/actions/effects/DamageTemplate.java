@@ -27,7 +27,7 @@ public class DamageTemplate implements EffectTemplate {
 
         List<Effect> effects = targets.get(targetId).getSelectedPawns(sandbox).stream()
                 .filter(i -> !i.equals(targets.get("self").getSelectedPawns(sandbox).iterator().next()))
-                .map(i->new DamageEffect(i, amount))
+                .map(i->new DamageEffect(i, amount, false))
                 .collect(Collectors.toList());
 
         return consumer.apply(new Sandbox(sandbox, effects));

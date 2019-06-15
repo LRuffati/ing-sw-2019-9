@@ -178,6 +178,7 @@ public class MainController {
             Effect first = effects.get(0);
             List<Effect> next = effects.subList(1, effects.size());
             Runnable nextOnRes = () -> MainController.this.resolveEffect(responsible, next, onResolved);
+            broadcastEffectMessage(first.effectString(responsible.getSelf()));
             (new Thread(() -> first.mergeInGameMap(responsible, nextOnRes))).start();
         }
     }
