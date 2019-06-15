@@ -28,6 +28,7 @@ public class Actor {
     private static final int HP = ParserConfiguration.parseInt("Hp");
     private static final int MAX_WEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
     private static final int MAX_PUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
+    private boolean lastInFrenzy;
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
@@ -69,6 +70,8 @@ public class Actor {
 
         this.damagedBy = new HashSet<>();
         this.damagedPlayer = new HashSet<>();
+
+        this.lastInFrenzy = false;
 
         this.turn = false;
     }
@@ -376,7 +379,7 @@ public class Actor {
         this.frenzy = true;
     }
 
-    public void finalFrenzyBegin(boolean afterFirst){
+    public void beginFF(boolean afterFirst){
         //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
         // next death
     }
@@ -486,6 +489,10 @@ public class Actor {
     public List<List<ActionTemplate>> getActions() {
         //TODO: Implement
         return null;
+    }
+
+    public void setLastInFrenzy() {
+        lastInFrenzy = true;
     }
 }
 

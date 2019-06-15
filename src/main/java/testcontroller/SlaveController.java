@@ -13,7 +13,6 @@ import genericitems.Tuple;
 import grabbables.PowerUp;
 import network.Player;
 import network.ServerInterface;
-import org.jetbrains.annotations.Contract;
 import player.Actor;
 import testcontroller.controllermessage.*;
 import testcontroller.controllerstates.SlaveControllerState;
@@ -55,14 +54,12 @@ public class SlaveController {
     private Player player;
     private ServerInterface network;
     private ControllerMessage currentMessage;
-    public final Actor self;
     public final MainController main;
 
     public SlaveController(MainController main, Player player, ServerInterface network) {
         this.player = player;
         this.network = network;
         this.currentMessage = new WaitMessage();
-        this.self = player.getActor();
         this.main = main;
     }
 
@@ -70,7 +67,8 @@ public class SlaveController {
      * This function sets in motion the main turn line
      */
     public void startMainAction(){
-        this.currentMessage = setPowUps(new ArrayList<>(),self.getActions());
+        //TODO: if player is disconnected here I call directly endTurn
+        this.currentMessage = setPowUps(new ArrayList<>(), getSelf().getActions());
     }
 
     /**
@@ -87,20 +85,19 @@ public class SlaveController {
                                       List<List<ActionTemplate>> nextActs){
 
         // Which powerups can I use
-        List<PowerUp> pows = self.getPowerUp().stream()
+        List<PowerUp> pows = getSelf().getPowerUp().stream()
                                     .filter(i->i.canUse(lastEffects))
                                     .collect(Collectors.toList());
 
-        Sandbox sandbox = self.getGm().createSandbox(self.pawnID());
+        Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
 
         Function<Sandbox, ControllerMessage> reloadMerger = // Will take the effects in
                 // sandbox and
                 sandbox1 -> { // merge them into MainController
                     List<Effect> effects = sandbox1.getEffectsHistory();
                     this.currentMessage = new WaitMessage();
-                    Runnable onResolved = () -> this.main.endTurn(this.player);
-                    new Thread(()-> this.main.resolveEffect(this, effects, onResolved)
-                        ).start();
+                    Runnable onResolved = () -> this.main.endTurn(this.getSelf());
+                    new Thread(()-> this.main.resolveEffect(this, effects, onResolved)).start();
                     return new WaitMessage();
         };
 
@@ -112,9 +109,7 @@ public class SlaveController {
                 bundlesTail -> effectList -> {
                     this.currentMessage = new WaitMessage();
 
-                    Runnable onResolved = () -> {
-                        this.currentMessage = this.setPowUps(effectList, bundlesTail);
-                    };
+                    Runnable onResolved = () -> this.currentMessage = this.setPowUps(effectList, bundlesTail);
 
                     new Thread(() -> main.resolveEffect(this, effectList, onResolved)).start();
 
@@ -130,13 +125,9 @@ public class SlaveController {
 
         } else if ((pows.isEmpty()) & !nextActs.isEmpty()){ // No powerups but ActionBundle
             // available
-            //TODO: finalizer of action bundle calls setPowUps with the effect list and the tail
-            // of nextActs
             return actionMessage;
 
         } else { // Powerups and then reload
-            //TODO: powerup finalizer calls this function with the same effectlist and the same
-            // nextActs
             Function<List<PowerUp>, ControllerMessage> onPowupPick =
                     list -> {
                         if (list.isEmpty()) {
@@ -150,7 +141,7 @@ public class SlaveController {
                             Runnable onApplied = () -> this.currentMessage =
                                     this.setPowUps(lastEffects, nextActs);
                             //2. Apply powerup
-                            return list.get(0).usePowup(self, onApplied);
+                            return list.get(0).usePowup(getSelf(), lastEffects, onApplied);
                         }
                     };
             return new PickPowerupMessage(SlaveControllerState.MAIN, pows, onPowupPick,
@@ -162,11 +153,9 @@ public class SlaveController {
      * This function is invoked when the player needs to respawn
      *
      * It is called by the Main controller after it already picked the two cards from the deck
-     *
-     * @return
      */
     public void startRespawn(Consumer<PowerUp> onRespawned){
-        List<PowerUp> powups = new ArrayList<>(self.getPowerUp());
+        List<PowerUp> powups = new ArrayList<>(getSelf().getPowerUp());
 
         Function<List<PowerUp>, ControllerMessage> onPick =
                 list -> {
@@ -194,12 +183,12 @@ public class SlaveController {
      *                  one. The provider should make sure it is only used once
      */
     public void startTagback(Actor offender, Consumer<Optional<PowerUp>> onFinished){
-        Sandbox sandbox = self.getGm().createSandbox(self.pawnID());
+        Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
         BasicTarget other = sandbox.getBasic(offender.pawnID());
 
-        if (other.seen(sandbox, sandbox.getBasic(self.pawnID()), false)){
+        if (other.seen(sandbox, sandbox.getBasic(getSelf().pawnID()), false)){
             List<PowerUp> tagbacks =
-                    self.getPowerUp().stream().filter(powerUp -> powerUp.getType().equals(PowerUpType.TAGBACKGRANADE)).collect(Collectors.toList());
+                    getSelf().getPowerUp().stream().filter(powerUp -> powerUp.getType().equals(PowerUpType.TAGBACKGRANADE)).collect(Collectors.toList());
 
             if (tagbacks.isEmpty()) {
                 onFinished.accept(Optional.empty());
@@ -289,5 +278,9 @@ public class SlaveController {
 
     void onTimer(int ms) {
         network.onTimer(ms);
+    }
+
+    public Actor getSelf() {
+        return player.getActor();
     }
 }
