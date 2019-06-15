@@ -1,20 +1,22 @@
 package testcontroller;
 
 import cli.CLIDemo;
-import controllerresults.ControllerActionResultClient;
 import gamemanager.ParserConfiguration;
-import genericitems.Tuple;
 import network.ClientInterface;
-import network.Main;
+import network.Player;
 import network.exception.InvalidLoginException;
 import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
+import testcontroller.controllerclient.ClientControllerClientInterface;
+import testcontroller.controllerclient.ClientControllerNetworkInterface;
+import testcontroller.controllerclient.ControllerMessageClient;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllerstates.SlaveControllerState;
+import view.View;
 import view.gui.Framework;
-import viewclasses.ActionView;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -49,7 +51,6 @@ public class ClientController implements ClientControllerClientInterface, Client
     private TimerTask repeatedTask;
     private Timer timerForPolling;
     private boolean polling;
-
 
     /**
      * Builder of the class. This generates the View (cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
@@ -259,9 +260,6 @@ public class ClientController implements ClientControllerClientInterface, Client
         };
         timerForPolling = new Timer("TimerForPolling");
     }
-
-    @Override
-    public void restartSelection() {
 
     private void setPolling(boolean value) {
         if(polling != value)

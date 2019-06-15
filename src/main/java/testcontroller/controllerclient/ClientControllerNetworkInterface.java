@@ -16,4 +16,7 @@ public interface ClientControllerNetworkInterface {
     void onConnection(Player player, boolean connection);
     void onStarting(String map);
     void onTimer(int ms);
+
+
+    void reset();
 }
