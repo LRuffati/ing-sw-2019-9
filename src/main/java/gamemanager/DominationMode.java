@@ -2,7 +2,9 @@ package gamemanager;
 
 import player.Actor;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -10,7 +12,12 @@ import java.util.stream.Collectors;
  */
 
 public class DominationMode extends Scoreboard{
-    private ArrayList<ArrayList<Actor>> spawnTracker;
+    private Map<Color, List<Actor>> spawnTracker;
+
+    public void addTrack(Color color){
+        spawnTracker.put(color, new ArrayList<>());
+    }
+
     private ArrayList<Map<Actor, Integer>> skullBox;
     private int maxDeaths;
     private int numOfDeaths;
@@ -37,14 +44,11 @@ public class DominationMode extends Scoreboard{
         this.maxDeaths = numOfdeaths;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();
-        this.spawnTracker = new ArrayList<>();
-        spawnTracker.add(new ArrayList<>());
-        spawnTracker.add(new ArrayList<>());
-        spawnTracker.add(new ArrayList<>());
+        this.spawnTracker = new HashMap<>();
     }
 
     public boolean finalFrenzy() {
-        return numOfDeaths >= maxDeaths || spawnTracker.stream().filter(x -> x.size() == 8).count() >= 2;
+        return numOfDeaths >= maxDeaths || spawnTracker.values().stream().filter(x -> x.size() == 8).count() >= 2;
     }
 
 
@@ -53,7 +57,7 @@ public class DominationMode extends Scoreboard{
     }
 
     public void addPointsAtEndGame() {
-        for(ArrayList list : spawnTracker) {
+        for(List list : spawnTracker.values()) {
             TreeSet<Actor> scoreSet = new TreeSet<>
                     (Comparator.comparing(
                             x -> Collections.frequency(list, x)
