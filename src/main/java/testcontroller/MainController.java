@@ -1,14 +1,25 @@
 package testcontroller;
 
 import actions.effects.Effect;
+import board.GameMap;
+import board.Tile;
 import gamemanager.GameBuilder;
+import gamemanager.Scoreboard;
+import grabbables.PowerUp;
 import network.Database;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
+import uid.DamageableUID;
+import uid.TileUID;
 
+import javax.swing.plaf.ActionMapUIResource;
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 
 public class MainController {
@@ -18,11 +29,16 @@ public class MainController {
     private Timer timerForStarting;
     private boolean timerRunning = false;
     private boolean gameStarted = false;
+    private Scoreboard scoreboard;
+
+    private GameMap gameMap;
 
     private List<SlaveController> slaveControllerList;
+    private Map<DamageableUID, SlaveController> slaveMap;
 
     MainController(){
         slaveControllerList = new ArrayList<>();
+        slaveMap = new HashMap<>(5);
     }
 
     public void connect(Player player) {
@@ -52,6 +68,7 @@ public class MainController {
      * @return True iif the game is not started and the number of player is below the maximum
      */
     public boolean canConnect() {
+        //TODO: allow reconnection on crash (could be a token such as username|hash(password)
         return numOfPlayer<5 && !gameStarted;
     }
 
@@ -69,7 +86,7 @@ public class MainController {
             if(timerRunning)
                 timerClose();
             if(gameStarted)
-                terminateGame();
+                endGame();
         }
     }
 
@@ -155,8 +172,6 @@ public class MainController {
         return slave;
     }
 
-
-
     public static void main(String[] str) {
         MainController initGame = new MainController();
         NetworkBuilder network = new NetworkBuilder(initGame);
@@ -206,6 +221,14 @@ public class MainController {
         1. Chiama su tutti gli actor: finalFrenzyBegin
 
          */
+
     }
 
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    private void setGameMap(GameMap gameMap) {
+        this.gameMap = gameMap;
+    }
 }
