@@ -1,13 +1,11 @@
 package network;
 
-import controller.MainController;
 import gamemanager.ParserConfiguration;
 import network.rmi.RMIServerLauncher;
-import network.rmi.server.ServerNetworkRMI;
 import network.socket.SocketServerLauncher;
+import testcontroller.MainController;
 
 import java.io.IOException;
-import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 import java.util.Timer;

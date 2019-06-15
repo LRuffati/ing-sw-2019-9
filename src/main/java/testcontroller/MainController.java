@@ -7,13 +7,13 @@ import gamemanager.GameBuilder;
 import gamemanager.Scoreboard;
 import grabbables.PowerUp;
 import network.Database;
+import network.NetworkBuilder;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 
-import javax.swing.plaf.ActionMapUIResource;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -68,7 +68,6 @@ public class MainController {
      * @return True iif the game is not started and the number of player is below the maximum
      */
     public boolean canConnect() {
-        //TODO: allow reconnection on crash (could be a token such as username|hash(password)
         return numOfPlayer<5 && !gameStarted;
     }
 

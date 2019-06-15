@@ -3,7 +3,6 @@ package network;
 import testcontroller.MainController;
 import testcontroller.SlaveController;
 import network.exception.InvalidLoginException;
-import uid.DamageableUID;
 
 import java.rmi.server.UID;
 import java.util.*;
@@ -66,14 +65,6 @@ public class Database {
         return network;
     }
 
-    public ServerInterface getNetwordByDamageableUid(DamageableUID uid){
-        for(String token : connectedToken) {
-            if(getUserByToken(token).getUid().equals(uid))
-                return getNetworkByToken(token);
-        }
-        throw new IllegalArgumentException("Invalid uid");
-    }
-
     public synchronized SlaveController getControllerByToken(String token){
         SlaveController controller = controllerByToken.get(token);
         if(controller == null)
@@ -126,7 +117,9 @@ public class Database {
         }
         colors.remove(color);
 
-        controllerByToken.put(token, mainController.connect(user));
+
+        controllerByToken.put(token, mainController.bind(user, network));
+        mainController.connect(user);
 
         synchronized (wait) {
             connectedToken.add(token);
@@ -169,25 +162,6 @@ public class Database {
 
 
         return token;
-    }
-
-    /**
-     * This method is used to allow a Client to permanently quit the game.
-     * It frees the Username and Color, so the Client can not reconnect later
-     * @param token The token of the caller.
-     */
-    public synchronized void quit(String token) {
-        System.out.println("quit request");
-        logout(token);
-
-        /*colors.add(getUserByToken(token).getColor());
-        usersByToken.remove(token);
-        networkByToken.remove(token);
-
-        connectedToken.remove(token);
-        disconnectedToken.remove(token);
-
-        TimerForDisconnection.stop(token);*/
     }
 
     /**
