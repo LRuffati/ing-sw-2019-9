@@ -7,6 +7,7 @@ import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
 import gamemanager.ParserConfiguration;
+import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
@@ -537,6 +538,15 @@ public class Actor {
             setFrenzy();
         //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
         // next death
+    }
+
+    public boolean endTurn(Actor player, Scoreboard scoreboard){
+        if(player.isDead()){
+            scoreboard.score(player);
+            //TODO don't know if using respawn() method and if check for final frenzy
+            return true;
+        }
+        return false;
     }
 }
 

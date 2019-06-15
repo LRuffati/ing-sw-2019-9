@@ -2,6 +2,7 @@ package board;
 import grabbables.AmmoCard;
 import grabbables.Grabbable;
 import grabbables.Weapon;
+import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
@@ -228,5 +229,13 @@ public class Tile{
             tileView.setWeapons(weapon);
 
         return tileView;
+    }
+
+    public boolean endTurn(Actor player){
+        map.refill();
+        if(spawnPoint && player.pawn().getTile().equals(tileID)){
+            return true;
+        }
+        return false;
     }
 }

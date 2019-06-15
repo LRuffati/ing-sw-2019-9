@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import gamemanager.GameBuilder;
-import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
