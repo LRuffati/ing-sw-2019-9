@@ -4,11 +4,13 @@ import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.PowerUpType;
 import board.Tile;
+import exception.AmmoException;
 import player.Actor;
 import testcontroller.controllermessage.ControllerMessage;
 import uid.TileUID;
 import viewclasses.PowerUpView;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -80,6 +82,13 @@ public abstract class PowerUp extends Grabbable {
     }
 
     public TileUID spawnLocation(Set<Tile> tiles){
-
+        for(Tile tile:tiles){
+            try {
+                if(tile.getColor().equals(ammo.getOnlyColor())) return tile.getTileID();
+            } catch (AmmoException e) {
+                System.out.println("ammo è vuota");
+            }
+        }
+        return null;
     }
 }

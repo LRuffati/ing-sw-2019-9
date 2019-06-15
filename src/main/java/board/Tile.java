@@ -238,4 +238,8 @@ public class Tile{
         }
         return false;
     }
+
+    public TileUID getTileID() {
+        return tileID;
+    }
 }
