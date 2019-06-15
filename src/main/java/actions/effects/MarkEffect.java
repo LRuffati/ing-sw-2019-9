@@ -17,19 +17,18 @@ public class MarkEffect implements Effect{
     public EffectType type() {
         return EffectType.MARK;
     }
-    }
-        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
-    @Override
-     * @param finalize contains all the instructions to run after the end of the effect. Contains
-     * @param pov
-    /**
-
-     */
-
-    @Override
-    public String effectString(Actor pov) {
-        return String.format("%s ha dato %d marchi a %s", pov.name(), amount,
-                pov.getGm().getPawn(uid).getActor().name());
-    }
 }
+        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+@Override
+     * @param finalize contains all the instructions to run after the end of the effect. Contains
+        * @param pov
+/**
+ */
+
+@Override
+public String effectString(Actor pov) {
+        return String.format("%s ha dato %d marchi a %s", pov.name(), amount,
+        pov.getGm().getPawn(uid).getActor().name());
+        }
+        }
