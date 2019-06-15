@@ -33,12 +33,8 @@ public class ObjectMap {
         if(choices == null) return false;
         if(!choiceBoard.optional && choices.isEmpty()) return false;
         if(choiceBoard.single && choices.size() > 1) return false;
-        int max = 0;
-        if(choiceBoard.stringViews != null) max = choiceBoard.stringViews.size();
-        if(choiceBoard.powerUpViews != null) max = choiceBoard.powerUpViews.size();
-        if(choiceBoard.targetViews!= null) max = choiceBoard.targetViews.size();
-        if(choiceBoard.weaponViews != null) max = choiceBoard.weaponViews.size();
-        if(choiceBoard.actionViews != null) max = choiceBoard.actionViews.size();
+
+        int max = choiceBoard.getNumOfElems();
         for(int choice : choices)
             if(choice < 0 || choice >= max)
                 return false;
