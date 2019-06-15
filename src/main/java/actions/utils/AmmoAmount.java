@@ -1,8 +1,10 @@
 package actions.utils;
 
+import exception.AmmoException;
 import gamemanager.ParserConfiguration;
 import org.jetbrains.annotations.*;
 
+import java.awt.*;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -81,5 +83,23 @@ public class AmmoAmount extends AmmoAmountUncapped implements Comparable<AmmoAmo
         return "RED:" + getAmounts().get(AmmoColor.RED)
                 +" BLUE:" + getAmounts().get(AmmoColor.BLUE)
                 +" YELLOW:" + getAmounts().get(AmmoColor.YELLOW);
+    }
+
+    /**
+     * To be used when only one of the three type of ammo is not zero.
+     * @return the color of the type of ammo which amount is more than zero.
+     */
+    public Color getOnlyColor() throws AmmoException {
+        if(getAmounts().get(AmmoColor.YELLOW)+getAmounts().get(AmmoColor.RED)+getAmounts().get(AmmoColor.BLUE)>0) {
+            if (getAmounts().get(AmmoColor.YELLOW) == 0 && getAmounts().get(AmmoColor.RED) == 0) {
+                return Color.BLUE;
+            } else if (getAmounts().get(AmmoColor.YELLOW) == 0 && getAmounts().get(AmmoColor.BLUE) == 0) {
+                return Color.RED;
+            } else if (getAmounts().get(AmmoColor.RED) == 0 && getAmounts().get(AmmoColor.BLUE) == 0) {
+                return Color.YELLOW;
+            }
+        }
+        throw new AmmoException("Non ci sono munizioni");
+
     }
 }
