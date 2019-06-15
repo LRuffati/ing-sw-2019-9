@@ -11,7 +11,7 @@ Returns true if any
 Adds the given amount of damage by the given player. damageRaw is to be called by PowerUps and 
 doesn't trigger the conversion of marks into damages  
 After all operations run Runnable to resume the effect resolution
-+ `bool endTurn(Actor)`  
++ `bool endTurn(Actor,Scoreboard)`  
 If the player has been killed update the Scoreboard and reset the board. If the game is in final 
 frenzy mode the reset switches the board. Return true if player needs to respawn
 + `void drawPowerupRaw(int)`  

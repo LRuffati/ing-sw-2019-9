@@ -110,4 +110,10 @@ public class ChoiceBoard {
     private void setNumOfElems(int numOfElems) {
         this.numOfElems = numOfElems;
     }
+
+    public List<PowerUpView> getPowerUps() {
+        if (powerUpViews==null){
+            return List.of();
+        } else return List.copyOf(powerUpViews);
+    }
 }
