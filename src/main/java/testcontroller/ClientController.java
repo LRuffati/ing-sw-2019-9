@@ -1,5 +1,4 @@
-package controllerclient;
-
+package testcontroller;
 
 import cli.CLIDemo;
 import controllerresults.ControllerActionResultClient;
@@ -18,7 +17,6 @@ import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
 import java.io.IOException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -28,6 +26,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * This class is the class which interacts directly with the user, in the distributed system
+ * It'll be separated from the other parts of the controlle by the network layer
+ *
+ *
  * This class is used to store the data needed to the client and to send him notification.
  * This is the only access used by the View to receive messages and to query the Server.
  */
@@ -37,10 +39,16 @@ public class ClientController implements ClientControllerClientInterface, Client
     private View view;
     private ClientInterface network;
 
+
+    private Deque<ControllerMessage> stack;
+    private Map<String, GameMapView> gameMapViewMap;
+
+    private String currentGameMap;
     private GameMapView gameMap;
 
-    private Deque<ControllerActionResultClient> stack;
-    private Map<String, GameMapView> gameMapViewMap;
+    private TimerTask repeatedTask;
+    private Timer timerForPolling;
+    private boolean polling;
 
 
     /**
@@ -78,6 +86,8 @@ public class ClientController implements ClientControllerClientInterface, Client
 
         stack = new ArrayDeque<>();
         gameMapViewMap = new HashMap<>();
+
+        initPolling();
 
         //Main.register(network);
         //Main.run(network);
@@ -136,7 +146,6 @@ public class ClientController implements ClientControllerClientInterface, Client
         try {
             System.out.println("QUIT");
             network.close();
-
         }
         catch (RemoteException e) {
             logger.log(Level.SEVERE, "Exception in quit", e);
@@ -144,37 +153,132 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
 
-    private GameMapView getMap(TargetView targetView) throws RemoteException {
-        String mapUid = targetView.getGameMapViewId();
-        if(!gameMapViewMap.containsKey(mapUid)) {
-            GameMapView mapView = network.getMap(mapUid);
-            gameMapViewMap.put(mapUid, mapView);
+    @Override
+    public void pick(String id, List<Integer> choices) {
+        network.pick(id, choices);
+    }
 
-            return mapView;
+    @Override
+    public void restartSelection() {
+        ControllerMessage first = stack.getFirst();
+        stack.clear();
+        gameMapViewMap.clear();
+        elaborate(first);
+    }
+
+    @Override
+    public void rollback() {
+        stack.pop();
+        elaborate(stack.pop());
+    }
+
+    @Override
+    public void onControllerMessage(ControllerMessage controllerMessage) {
+        elaborate(controllerMessage);
+    }
+
+    private void elaborate(ControllerMessage controllerMessage) {
+        if(controllerMessage.getMessage() != null) {
+            view.onMessage(controllerMessage.getMessage());
         }
-        return gameMapViewMap.get(mapUid);
+
+        if(!currentGameMap.equals(controllerMessage.gamemap())) {
+            currentGameMap = controllerMessage.gamemap();
+            network.getMap();
+        }
+
+        if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
+            stack.clear();
+            if (!polling) {
+                setPolling(true);
+                view.terminated();
+            }
+        }
+        else {
+            stack.push(controllerMessage);
+            if(polling)    setPolling(false);
+        }
+
+
+        switch (controllerMessage.type()) {
+            case MAIN:
+                break;
+            case RESPAWN:
+                view.onRespawn();
+                break;
+            case USETAGBACK:
+                view.onTakeback();
+                break;
+            case TERMINATOR:
+                view.onTerminator();
+                break;
+            case ROLLBACK:
+                view.onRollback();
+                rollback();
+                break;
+
+                default:
+                    break;
+        }
+
+        ChoiceBoard choice = controllerMessage.genView();
+        String id = ((ControllerMessageClient)controllerMessage).id;
+        if(choice!= null) {
+            switch (choice.type) {
+                case STRING:
+                    view.chooseString(choice.stringViews, choice.single, choice.optional, choice.description, id);
+                    break;
+                case ACTION:
+                    view.chooseAction(choice.actionViews, choice.single, choice.optional, choice.description, id);
+                    break;
+                case TARGET:
+                    view.chooseTarget(choice.targetViews, choice.single, choice.optional,
+                            choice.description, controllerMessage.sandboxView(), id);
+                    break;
+                case WEAPON:
+                    view.chooseWeapon(choice.weaponViews, choice.single, choice.optional, choice.description, id);
+                    break;
+                case POWERUP:
+                    view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional, choice.description, id);
+                    break;
+
+                    default:
+                        break;
+            }
+        }
+
     }
 
 
-
-    @Override
-    public void pick(String id, List<Integer> choices) {
-
+    private void initPolling() {
+        repeatedTask = new TimerTask() {
+            public void run() {
+                System.out.println("Polling");
+                network.poll();
+            }
+        };
+        timerForPolling = new Timer("TimerForPolling");
     }
 
     @Override
     public void restartSelection() {
 
+    private void setPolling(boolean value) {
+        if(polling != value)
+            if(value) {
+                timerForPolling.scheduleAtFixedRate(repeatedTask, 0, 2000);
+            }
+            else {
+                timerForPolling.cancel();
+            }
+        polling = value;
     }
 
-    @Override
-    public void rollback() {
 
-    }
 
     @Override
     public GameMapView getMap() {
-        return null;
+        return gameMap;
     }
 
 
@@ -184,6 +288,22 @@ public class ClientController implements ClientControllerClientInterface, Client
     public void updateMap(GameMapView gameMap) {
         this.gameMap = gameMap;
         view.updateMap(gameMap);
+    }
+
+    @Override
+    public void onStarting(String map) {
+        setPolling(true);
+        view.onStarting(map);
+    }
+
+    @Override
+    public void onTimer(int ms) {
+        view.onTimer(ms);
+    }
+
+    @Override
+    public void onConnection(Player player, boolean connection) {
+        view.onConnection(player, connection);
     }
 
 

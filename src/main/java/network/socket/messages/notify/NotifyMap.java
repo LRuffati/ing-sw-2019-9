@@ -1,5 +1,7 @@
-package network.socket.messages;
+package network.socket.messages.notify;
 
+import network.socket.messages.Response;
+import network.socket.messages.ResponseHandler;
 import viewclasses.GameMapView;
 
 public class NotifyMap implements Response {

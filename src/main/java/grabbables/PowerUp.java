@@ -1,10 +1,21 @@
 package grabbables;
 
+import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.PowerUpType;
+import board.Tile;
+import exception.AmmoException;
+import player.Actor;
+import testcontroller.controllermessage.ControllerMessage;
+import uid.TileUID;
 import viewclasses.PowerUpView;
 
-public class PowerUp extends Grabbable {
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Function;
+
+public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
     private final AmmoAmount ammo;
 
@@ -12,6 +23,25 @@ public class PowerUp extends Grabbable {
         this.type = type;
         this.ammo = ammo;
     }
+
+    /**
+     * Gets the list of effects which were played prior to this call and tells if I can use the
+     * powerup
+     * @param lastEffects
+     * @return true if the effect can be used, false otherwise
+     */
+    public abstract boolean canUse(List<Effect> lastEffects);
+
+    /**
+     *
+     * @param pov the actor using the powerup (if this not in pov.powerups then onPowerupFinalized)
+     * @param lastEffects effects prior to this powerup (used for targeting scope)
+     * @param onPowerupFinalized the function to call once the effects have been merged in Main
+     * @return the controller message to show the user
+     */
+    public abstract ControllerMessage usePowup(Actor pov,
+                                               List<Effect> lastEffects,
+                                               Runnable onPowerupFinalized);
 
     /**
      * @return The type of powerUp contained
@@ -49,5 +79,16 @@ public class PowerUp extends Grabbable {
         powerUpView.setType(type);
         powerUpView.setUid(super.getId());
         return powerUpView;
+    }
+
+    public TileUID spawnLocation(Set<Tile> tiles){
+        for(Tile tile:tiles){
+            try {
+                if(tile.getColor().equals(ammo.getOnlyColor())) return tile.getTileID();
+            } catch (AmmoException e) {
+                System.out.println("ammo è vuota");
+            }
+        }
+        return null;
     }
 }

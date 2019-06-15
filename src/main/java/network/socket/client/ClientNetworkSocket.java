@@ -1,17 +1,16 @@
 package network.socket.client;
 
-import controllerclient.ClientControllerNetworkInterface;
-import controllerresults.ControllerActionResultClient;
-import genericitems.Tuple;
+import network.socket.messages.notify.*;
+import testcontroller.controllerclient.ClientControllerNetworkInterface;
 import network.ClientInterface;
 import network.exception.InvalidLoginException;
 import network.socket.messages.*;
-import viewclasses.ActionView;
+import testcontroller.controllermessage.ControllerMessage;
+import view.View;
 import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -22,12 +21,14 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private final Client client;
     private Thread receiver;
 
+    private View view;
     private ClientControllerNetworkInterface clientController;
 
 
-    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController){
+    public ClientNetworkSocket(Client client, ClientControllerNetworkInterface clientController, View view){
         this.client = client;
         this.clientController = clientController;
+        this.view = view;
         run();
     }
 
@@ -119,61 +120,26 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     /**
-     * @param type 0 for pickTarg, 1 for pickWeapon, 2 for pickAction
      * @param chooserId Id of the chosen container
      * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
      */
-    private ControllerActionResultClient pick(int type, String chooserId, List<Integer> choice){
-        client.request(new PickRequest(type, chooserId, choice));
+    @Override
+    public ControllerMessage pick(String chooserId, List<Integer> choice){
+        client.request(new PickRequest(chooserId, choice));
         sync();
         return ClientContext.get().getPickElement();
     }
 
-    @Override
-    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) {
-        return pick(0, choiceMakerId, List.of(choice));
-    }
 
     @Override
-    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) {
-        return pick(1, weaponChooserId, choice);
+    public void getMap() {
+        client.request(new GetMapRequest());
     }
 
     @Override
-    public ControllerActionResultClient pickAction(String actionChooserId, int choice) {
-        return pick(2, actionChooserId, List.of(choice));
+    public void poll() {
+        client.request(new PollRequest());
     }
-
-    private void showOptions(int type, String chooserId){
-        client.request(new ShowOptionsRequest(ClientContext.get().getToken(), type, chooserId));
-        sync();
-    }
-
-    @Override
-    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) {
-        showOptions(0, choiceMakerId);
-        return ClientContext.get().getShowOptionsTarget();
-    }
-
-    @Override
-    public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
-        showOptions(1, weaponChooserId);
-        return ClientContext.get().getShowOptionsWeapon();
-    }
-
-    @Override
-        public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
-        showOptions(2, actionPickerId);
-        return ClientContext.get().getShowOptionsAction();
-    }
-
-    @Override
-    public GameMapView getMap(String gameMapId) {
-        client.request(new GetMapRequest(gameMapId));
-        sync();
-        return ClientContext.get().getGameMapView();
-    }
-
 
     //ClientHandler methods
 
@@ -227,12 +193,6 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public void handle(ShowOptionsResponse response) {
-        ClientContext.get().setShowOptions(response.result);
-        desync();
-    }
-
-    @Override
     public void handle(ExceptionResponse response) {
         //TODO: restituire il messaggio al controller
         //TODO: throw error message
@@ -241,8 +201,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(GetMapResponse response) {
-        ClientContext.get().setGameMapView(response.gameMapView);
-        desync();
+        clientController.updateMap(response.gameMapView);
     }
 
 
@@ -257,4 +216,25 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     public void handle(NotifyMap response) {
         clientController.updateMap(response.gameMap);
     }
+
+    @Override
+    public void handle(OnConnection response) {
+        view.onConnection(response.playerConnected, response.connected);
+    }
+
+    @Override
+    public void handle(OnStarting response) {
+        view.onStarting(response.mapName);
+    }
+
+    @Override
+    public void handle(OnTimer response) {
+        view.onTimer(response.timeToWait);
+    }
+
+    @Override
+    public void handle(PollResponse response) {
+        clientController.onControllerMessage(response.controllerMessage);
+    }
+
 }

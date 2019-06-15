@@ -1,6 +1,8 @@
-package network.socket.messages;
+package network.socket.messages.notify;
 
 import network.socket.StatusCode;
+import network.socket.messages.Response;
+import network.socket.messages.ResponseHandler;
 
 public class TextResponse implements Response {
     public final String content;

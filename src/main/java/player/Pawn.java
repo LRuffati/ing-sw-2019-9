@@ -130,6 +130,9 @@ public class Pawn {
         this.username = username;
     }
 
+    public String getUsername() {
+        return username;
+    }
 
     public ActorView generateView(GameMapView gameMapView, boolean pointOfView) {
 

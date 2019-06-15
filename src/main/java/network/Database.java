@@ -74,6 +74,13 @@ public class Database {
         throw new IllegalArgumentException("Invalid uid");
     }
 
+    public synchronized SlaveController getControllerByToken(String token){
+        SlaveController controller = controllerByToken.get(token);
+        if(controller == null)
+            throw new IllegalArgumentException("Invalid token " + token);
+        return controller;
+    }
+
     /**
      * This method associates the connection with the player.
      * If the username and the color are not used by other players it generates an unique token and a new user.
@@ -114,6 +121,8 @@ public class Database {
             usersByUsername.put(token, user);
             networkByToken.put(token, network);
             usersByToken.put(token, user);
+
+            network.setToken(token);
         }
         colors.remove(color);
 
@@ -235,5 +244,9 @@ public class Database {
 
     public Collection<Player> getPlayers() {
         return usersByToken.values();
+    }
+
+    public Collection<SlaveController> getSlaveControllers() {
+        return controllerByToken.values();
     }
 }

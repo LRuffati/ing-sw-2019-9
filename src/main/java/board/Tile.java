@@ -2,6 +2,7 @@ package board;
 import grabbables.AmmoCard;
 import grabbables.Grabbable;
 import grabbables.Weapon;
+import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
@@ -32,6 +33,14 @@ public class Tile{
         this.spawnPoint = spawnPoint;
 
         grabbableSet = new HashSet<>();
+
+        /*
+        If it's a spawnpoint in domination mode create a Pawn with an actor and link to the actor
+        also from this class.
+        Endturn will damage the player if needed and then check with actor to update scoreboard
+         */
+
+
     }
 
     /**
@@ -54,7 +63,7 @@ public class Tile{
     /**
      * The UID of the cell
      */
-    private final TileUID tileID;
+    public final TileUID tileID;
 
     /**
      * List of Grabbable elements (Weapon, TileCard)
@@ -146,7 +155,7 @@ public class Tile{
      * Returns the RoomUID where the Tile is
      * @return The RoomUID that contains the Tile
      */
-    protected RoomUID getRoom(){
+    public RoomUID getRoom(){
         return roomID;
     }
 
@@ -172,9 +181,6 @@ public class Tile{
     public boolean spawnPoint(){
         return this.spawnPoint;
     }
-
-
-
 
     TileView generateView(GameMapView gameMapView) {
         TileView tileView = new TileView();
@@ -223,5 +229,17 @@ public class Tile{
             tileView.setWeapons(weapon);
 
         return tileView;
+    }
+
+    public boolean endTurn(Actor player){
+        map.refill();
+        if(spawnPoint && player.pawn().getTile().equals(tileID)){
+            return true;
+        }
+        return false;
+    }
+
+    public TileUID getTileID() {
+        return tileID;
     }
 }

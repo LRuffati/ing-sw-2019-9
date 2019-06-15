@@ -1,14 +1,12 @@
 package network.socket.messages;
 
-import controllerresults.ControllerActionResultClient;
+import testcontroller.controllermessage.ControllerMessage;
 
 public class PickResponse implements Response {
 
-    public final int type;
-    public final ControllerActionResultClient result;
+    public final ControllerMessage result;
 
-    public PickResponse(int type, ControllerActionResultClient result){
-        this.type = type;
+    public PickResponse(ControllerMessage result){
         this.result = result;
     }
 

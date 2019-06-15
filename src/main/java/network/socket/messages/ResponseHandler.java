@@ -15,13 +15,17 @@ public interface ResponseHandler {
     void handle(TextResponse response);
 
     void handle(PickResponse response);
-    void handle(ShowOptionsResponse response);
 
     void handle(GetMapResponse response);
 
 
 
+    void handle(PollResponse response);
     void handle(NotifyMap response);
 
     void handle(PingRequest request);
+
+    void handle(OnTimer response);
+    void handle(OnConnection response);
+    void handle(OnStarting response);
 }

@@ -2,12 +2,17 @@ package network;
 
 import viewclasses.GameMapView;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
  * Methods called from outside the package from the server-side.
  */
 public interface ServerInterface {
+
+    void setToken(String token);
+
+
 
     void sendUpdate(String str) throws RemoteException;
 
@@ -16,6 +21,14 @@ public interface ServerInterface {
     void ping() throws RemoteException;
 
     void nofifyMap(GameMapView gameMap) throws RemoteException;
+
+
+
+    void onConnection(Player player);
+    void onDisconnection(Player player);
+
+    void onStarting(String map);
+    void onTimer(int ms);
 
 
     /**

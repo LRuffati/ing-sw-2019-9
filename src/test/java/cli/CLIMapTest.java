@@ -2,7 +2,7 @@ package cli;
 
 import board.Coord;
 import board.GameMap;
-import controllerclient.ClientController;
+import testcontroller.ClientController;
 import gamemanager.GameBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

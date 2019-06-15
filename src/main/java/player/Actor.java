@@ -1,11 +1,13 @@
 package player;
 
+import actions.ActionTemplate;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
 import board.GameMap;
 import exception.AmmoException;
 import gamemanager.ParserConfiguration;
+import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
@@ -27,6 +29,7 @@ public class Actor {
     private static final int HP = ParserConfiguration.parseInt("Hp");
     private static final int MAX_WEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
     private static final int MAX_PUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
+    private boolean lastInFrenzy;
     private int points;
     private int numOfDeaths;
     private ArrayList<Actor> damageTaken;
@@ -69,6 +72,8 @@ public class Actor {
         this.damagedBy = new HashSet<>();
         this.damagedPlayer = new HashSet<>();
 
+        this.lastInFrenzy = false;
+
         this.turn = false;
     }
 
@@ -94,6 +99,25 @@ public class Actor {
      */
     public void move(TileUID tile) {
         pawn().move(tile);
+    }
+
+    /**
+     * This method discards a powerUp without checking if the player own the card
+     * @param powerUp the powerUp that need to be discarded
+     */
+    public void discardPowerUp(PowerUp powerUp) {
+        powerUps.remove(powerUp);
+        gm.discardPowerUp(powerUp);
+    }
+
+    /**
+     * This metohd picks up a certain amount of power Ups, without check of validity
+     * @param num the number of powerUp
+     * @param num the number of powerUp
+     */
+    public void drawPowerUpRaw(int num) {
+        for(int i=0; i<num; i++)
+            powerUps.add(gm.pickUpPowerUp());
     }
 
     /**
@@ -248,11 +272,26 @@ public class Actor {
     }
 
     /**
-     * Damage the player
+     * Damages the player without applying the Marks
      * @param shooter the attacker
      * @param numOfDmg number of damage points
      */
-    public void addDamage(Actor shooter, int numOfDmg){
+    public void damageRaw(Actor shooter, int numOfDmg) {
+        for(int i=0; i<numOfDmg; i++){
+            if(damageTaken.size() <= HP){
+                damagedBy.add(shooter);
+                shooter.damagedPlayer.add(this);
+                damageTaken.add(shooter);
+            }
+        }
+    }
+
+    /**
+     * Damages the player, and applies all the Marks that can be applied
+     * @param shooter the attacker
+     * @param numOfDmg number of damage points
+     */
+    public void damage(Actor shooter, int numOfDmg){
         for(int i=0; i<numOfDmg; i++){
             getDMG(shooter);
         }
@@ -281,6 +320,7 @@ public class Actor {
             marks.put(shooter.pawnID, 0);
         }
     }
+
 
     /**
      * Method needed in the Scoreboard class.
@@ -330,7 +370,6 @@ public class Actor {
         return Map.copyOf(marks);
     }
 
-    //TODO: delete this method
     /**
      * Needed for tests.
      * @return the map of the game the player is playing.
@@ -371,12 +410,6 @@ public class Actor {
         return new HashSet<>(damagedBy);
     }
 
-    /**
-     * Set the attribute frenzy to true.
-     */
-    public void setFrenzy(){
-        this.frenzy = true;
-    }
 
     /**
      *
@@ -474,6 +507,48 @@ public class Actor {
      */
     public Collection<PowerUp> getPowerUp() {
         return powerUps;
+    }
+
+
+
+    /**
+     * Takes into account the situation of the player
+     * @return
+     */
+    public List<List<ActionTemplate>> getActions() {
+        //TODO: Implement
+    }
+
+    public void setLastInFrenzy() {
+        this.lastInFrenzy = true;
+    }
+
+    public boolean isLastInFrenzy() {
+        return lastInFrenzy;
+    }
+
+    /**
+     * Set the attribute frenzy to true.
+     */
+    public void setFrenzy(){
+        this.frenzy = true;
+        //todo continue setFrenzy
+    }
+
+    public void beginFF(boolean afterFirst){
+        if(damageTaken.size() == 0)
+            setFrenzy();
+        //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
+        // next death
+    }
+
+    public boolean endTurn(Actor player, Scoreboard scoreboard){
+        if(player.isDead()){
+            scoreboard.score(player);
+            //TODO don't know if using respawn() method and if check for final frenzy
+            return true;
+        }
+        return false;
     }
 }
 

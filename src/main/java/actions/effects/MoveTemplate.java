@@ -2,7 +2,7 @@ package actions.effects;
 
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
-import controllerresults.ControllerActionResultServer;
+import testcontroller.controllermessage.ControllerMessage;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -24,7 +24,8 @@ public class MoveTemplate implements EffectTemplate{
     }
 
     @Override
-    public ControllerActionResultServer spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox, ControllerActionResultServer> consumer) {
+    public ControllerMessage spawn(Map<String, Targetable> targets, Sandbox sandbox,
+                                              Function<Sandbox, ControllerMessage> consumer) {
         if (!targets.containsKey(target))
             return consumer.apply(sandbox);
         if (!targets.containsKey(destination))

@@ -1,6 +1,6 @@
 package view.gui;
 
-import controllerclient.ClientControllerClientInterface;
+import testcontroller.controllerclient.ClientControllerClientInterface;
 import network.Player;
 
 import javax.swing.*;

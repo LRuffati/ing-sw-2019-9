@@ -3,11 +3,9 @@ package actions;
 import actions.effects.Effect;
 import actions.targeters.targets.Targetable;
 import actions.utils.ActionPicker;
-import board.GameMap;
 import board.Sandbox;
-import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResultServer;
 import genericitems.Tuple;
+import testcontroller.controllermessage.*;
 import uid.DamageableUID;
 import viewclasses.ActionView;
 
@@ -18,41 +16,43 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ActionBundle implements ActionPicker {
-    private final DamageableUID pov;
     private boolean finalized;
     private final List<ActionTemplate> actionsPossible;
-    private final GameMap map;
     private final Sandbox sandboxFromMap;
 
-    private List<Effect> effects;
+    private Function<Tuple<Sandbox, Map<String, Targetable>>,
+            ControllerMessage> finalizer;
 
-    private final Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerActionResultServer> finalizer;
-
-    public ActionBundle(GameMap map, List<ActionTemplate> actions, DamageableUID caller){
-        this.actionsPossible = actions;
+    public ActionBundle(Sandbox sandbox, List<ActionTemplate> actions,
+                        Function<List<Effect>, ControllerMessage> finalize){
+                this.actionsPossible = actions;
         finalized = false;
-        this.map = map;
-        this.pov = caller;
-        this.sandboxFromMap = map.createSandbox(pov);
-        finalizer = tup -> { // This will be called once the action is complete
-            /*
-            Objective:
-                Add all the effects to ActionBundle
-                Return TERMINATED
-                The controller will read a Terminated, will know to look for the original
-                ActionBundle and will proceed to apply to the game map, as well as getting the
-                necessary info for the GRAB and PAY effects
-             */
-            Sandbox sandbox = tup.x;
-            if (this.finalized) return new ControllerActionResultServer(ActionResultType.ALREADYTERMINATED,"", sandbox);
+        this.sandboxFromMap = sandbox;
+        finalizer = tup -> {
+            Sandbox sandboxReturned = tup.x;
+            List<Effect> effectsHistory = sandboxReturned.getEffectsHistory();
+
+            if (this.isFinalized())
+                return new WaitMessage(List.of());
             else {
-                this.finalized = true;
-                this.effects = sandbox.getEffectsHistory();
-                return new ControllerActionResultServer(ActionResultType.TERMINATED,"", sandbox);
+                // Function to confirm
+                Function<Integer, ControllerMessage> confirmation =
+                        integer -> {
+                            if (!integer.equals(0)){
+                                return new RollbackMessage("Effettua i cambiamenti desiderati");
+                            }
+                            this.finalized = true;
+                            return finalize.apply(effectsHistory);
+                        };
+
+                List<String> pass = new ArrayList<>();
+                pass.add(0, "Sì confermo l'azione");
+                pass.add(1, "No, voglio modificare qualcosa");
+                return new StringChoiceMessage(pass, "Vuoi confermare l'azione o modificare",
+                        confirmation, sandboxReturned);
             }
         };
     }
-
 
     @Override
     public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
@@ -60,21 +60,18 @@ public class ActionBundle implements ActionPicker {
     }
 
     @Override
-    public ControllerActionResultServer pickAction(int choice) {
-        if (choice<0 || choice>=actionsPossible.size()){
-            return new ControllerActionResultServer(this, "", sandboxFromMap);
+    public ControllerMessage pickAction(int choice) {
+        if (choice<0){
+            return new PickActionMessage(this, "Devi effettuare un'azione", sandboxFromMap,List.of());
         }
-        Sandbox sandbox = map.createSandbox(pov);
+        Sandbox sandbox = new Sandbox(sandboxFromMap, List.of());
         ActionTemplate chosen = actionsPossible.get(choice);
-        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(pov)), finalizer);
+        Action action = new Action(sandbox, chosen, Map.of("self", sandbox.getBasic(sandbox.pov)),
+                finalizer);
         return action.iterate();
     }
 
     public boolean isFinalized(){
         return finalized;
-    }
-
-    public List<Effect> getEffects() {
-        return new ArrayList<>(effects);
     }
 }

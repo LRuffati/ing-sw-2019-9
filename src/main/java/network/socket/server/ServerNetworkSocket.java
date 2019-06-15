@@ -4,10 +4,13 @@ import network.*;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
+import network.socket.messages.notify.*;
+import testcontroller.controllerclient.ControllerMessageClient;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
-import java.rmi.RemoteException;
-
+import java.awt.image.DataBuffer;
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -16,7 +19,7 @@ import java.rmi.RemoteException;
 public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     private final ClientHandler clientHandler;
-    private Player player;
+    private String token;
 
     public ServerNetworkSocket(ClientHandler clientHandler){
         this.clientHandler = clientHandler;
@@ -26,6 +29,11 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     private boolean checkConnection(String token) {
         return Database.get().getConnectedTokens().contains(token);
+    }
+
+    @Override
+    public void setToken(String token) {
+        this.token = token;
     }
 
 
@@ -50,6 +58,33 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     public void nofifyMap(GameMapView gameMap) {
         clientHandler.respond(new NotifyMap(gameMap));
     }
+
+
+
+    @Override
+    public void onTimer(int ms) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnTimer(ms));
+    }
+
+    @Override
+    public void onStarting(String map) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnStarting(map));
+    }
+
+    @Override
+    public void onDisconnection(Player player) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnConnection(player, false));
+    }
+
+    @Override
+    public void onConnection(Player player) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnConnection(player, true));
+    }
+
 
     //RequestHandler methods
 
@@ -121,50 +156,24 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         return new MirrorResponse(request.num);
     }
 
+    @Override
+    public Response handle(PollRequest request) {
+        ControllerMessage msg = Database.get().getControllerByToken(token).getInstruction();
+        if(!msg.type().equals(SlaveControllerState.WAIT))
+            msg = ObjectMap.get().init(msg);
+        else
+            msg = new ControllerMessageClient(msg, null);
+        return new PollResponse(msg);
+    }
+
 
     @Override
     public Response handle(PickRequest request) {
-        String choosedId = request.chooserId;
-        int[] choice = request.choice;
-        if(choice.length < 1) {
-            //todo: return error
-        }
-        switch (request.type){
-            case 0:
-                return new PickResponse(0, ObjectMap.get().pickTarg(choosedId, choice[0]));
-            case 1:
-                return new PickResponse(1, ObjectMap.get().pickWeapon(choosedId, choice));
-            case 2:
-                return new PickResponse(2, ObjectMap.get().pickAction(choosedId, choice[0]));
-
-                default:
-                    //todo: return error
-        }
-        return new PickResponse(-1, null);
+        return new PickResponse(ObjectMap.get().pick(token, request.choiceId, request.choices));
     }
-
-    @Override
-    public Response handle(ShowOptionsRequest request) {
-        if(!checkConnection(request.token))
-            return new ExceptionResponse(new InvalidTokenException());
-        String choosedId = request.chooserId;
-        switch (request.type){
-            case 0:
-                return new ShowOptionsResponse(0, ObjectMap.get().showOptionsTarget(choosedId), null, null);
-            case 1:
-                return new ShowOptionsResponse(1, null, ObjectMap.get().showOptionsWeapon(choosedId), null);
-            case 2:
-                return new ShowOptionsResponse(2, null, null, ObjectMap.get().showOptionsAction(choosedId));
-
-                default:
-                    //todo: return error
-        }
-        return new ShowOptionsResponse(-1,null,null,null);
-    }
-
 
     @Override
     public Response handle(GetMapRequest request) {
-        return new GetMapResponse(ObjectMap.get().showGameMap(request.gameMapId));
+        return new GetMapResponse(Database.get().getControllerByToken(token).sendMap());
     }
 }

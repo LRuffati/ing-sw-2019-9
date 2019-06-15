@@ -1,24 +1,16 @@
 package network;
 
-import actions.utils.ActionPicker;
-import actions.utils.ChoiceMaker;
-import actions.utils.WeaponChooser;
-import board.Sandbox;
-import controllerresults.ActionResultType;
-import controllerresults.ControllerActionResultClient;
-import controllerresults.ControllerActionResultServer;
-import genericitems.Tuple;
-import grabbables.Weapon;
-import viewclasses.ActionView;
-import viewclasses.GameMapView;
-import viewclasses.TargetView;
-import viewclasses.WeaponView;
+
+import testcontroller.ChoiceBoard;
+import testcontroller.controllerclient.ControllerMessageClient;
+import testcontroller.controllermessage.ControllerMessage;
+import testcontroller.controllerstates.SlaveControllerState;
 
 import java.rmi.server.UID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+
 
 public class ObjectMap {
 
@@ -27,84 +19,56 @@ public class ObjectMap {
         return ourInstance;
     }
 
-    private Map<String, ChoiceMaker> choiceMakerMap;
-    private Map<String, WeaponChooser> weaponChooserMap;
-    private Map<String, ActionPicker> actionPickerMap;
-    private Map<String, Sandbox> sandboxMap;
+    private Map<String, ControllerMessage> choiceMap = new HashMap<>();
 
-    private ObjectMap() {
-        choiceMakerMap = new HashMap<>();
-        weaponChooserMap = new HashMap<>();
-        actionPickerMap = new HashMap<>();
-        sandboxMap = new HashMap<>();
-    }
+    private ObjectMap() {}
 
     public void clearChache(){
-        choiceMakerMap.clear();
-        actionPickerMap.clear();
-        weaponChooserMap.clear();
-        sandboxMap.clear();
+        choiceMap.clear();
+    }
+
+
+    private boolean checkPick(ControllerMessage controllerMessage, List<Integer> choices) {
+        ChoiceBoard choiceBoard = controllerMessage.genView();
+        if(choices == null) return false;
+        if(!choiceBoard.optional && choices.isEmpty()) return false;
+        if(choiceBoard.single && choices.size() > 1) return false;
+
+        int max = choiceBoard.getNumOfElems();
+        for(int choice : choices)
+            if(choice < 0 || choice >= max)
+                return false;
+        return true;
     }
 
     private String newID(){
         return new UID().toString();
     }
 
-    private ControllerActionResultClient handlePick(ControllerActionResultServer controllerActionResultServer){
-
+    private ControllerMessage handlePick(ControllerMessage controllerMessage) {
         String id = newID();
+        choiceMap.put(id, controllerMessage);
 
-        ControllerActionResultClient ret = new ControllerActionResultClient(controllerActionResultServer, id);
+        if(controllerMessage.type().equals(SlaveControllerState.WAIT))
+            clearChache();
 
-        sandboxMap.put(newID(), controllerActionResultServer.sandbox);
-
-        if(controllerActionResultServer.type == ActionResultType.PICKTARGET)
-            choiceMakerMap.put(id, controllerActionResultServer.choiceMaker);
-        if(controllerActionResultServer.type == ActionResultType.PICKWEAPON)
-            weaponChooserMap.put(id, controllerActionResultServer.weaponChooser);
-        if(controllerActionResultServer.type == ActionResultType.PICKACTION)
-            actionPickerMap.put(id, controllerActionResultServer.actionPicker);
-
-        //TODO: TERMINATED/ROLLBACK ??
-
-        return ret;
+        return new ControllerMessageClient(controllerMessage, id);
     }
 
-    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) {
-        if(!choiceMakerMap.containsKey(choiceMakerId)) {
-            //todo: return ??
+    public ControllerMessage pick(String token, String choiceId, List<Integer> choices) {
+        if(!choiceMap.containsKey(choiceId)) {
+            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction(), null);
         }
-        return handlePick(choiceMakerMap.get(choiceMakerId).pick(choice));
-    }
-    public ControllerActionResultClient pickWeapon(String weaponChooserId, int[] choice) {
-        if(!weaponChooserMap.containsKey(weaponChooserId)){
-            //todo: return ?
-        }
-        return handlePick(weaponChooserMap.get(weaponChooserId).pick(choice));
-    }
-    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) {
-        return pickWeapon(weaponChooserId, choice.stream().mapToInt(Integer::intValue).toArray());
-    }
-    public ControllerActionResultClient pickAction(String actionPickerId, int choice) {
-        if(!actionPickerMap.containsKey(actionPickerId)){
-            //todo: return ?
-        }
-        return handlePick(actionPickerMap.get(actionPickerId).pickAction(choice));
+        ControllerMessage message = choiceMap.get(choiceId);
+        if(checkPick(message, choices))
+            return handlePick(choiceMap.get(choiceId).pick(choices));
+        else
+            return message;
     }
 
-
-    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) {
-        return choiceMakerMap.get(choiceMakerId).showOptions();
+    public ControllerMessage init(ControllerMessage controllerMessage) {
+        String id = newID();
+        choiceMap.put(id, controllerMessage);
+        return new ControllerMessageClient(controllerMessage, id);
     }
-    public List<WeaponView> showOptionsWeapon(String weaponChooserId) {
-        return weaponChooserMap.get(weaponChooserId).showOptions().stream().map(Weapon::generateView).collect(Collectors.toList());
-    }
-    public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) {
-        return actionPickerMap.get(actionPickerId).showActionsAvailable();
-    }
-
-    public GameMapView showGameMap(String gameMapId) {
-        return sandboxMap.get(gameMapId).generateView();
-    }
-
 }

@@ -12,11 +12,11 @@ import java.io.Serializable;
 public class Player implements Serializable {
     private transient Actor actor;
     private String username;
-    private String password;
+    private transient String password;
     private String color;
     private boolean gameMaster;
     private DamageableUID uid;
-    private String token;
+    private transient String token;
 
     private ServerInterface serverInterface;
 

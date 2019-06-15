@@ -12,9 +12,10 @@ public interface RequestHandler {
     Response handle(ReconnectRequest request);
 
     Response handle(PickRequest request);
-    Response handle(ShowOptionsRequest request);
 
     Response handle(GetMapRequest request);
+
+    Response handle(PollRequest request);
 
     Response handle(PingResponse response);
 }

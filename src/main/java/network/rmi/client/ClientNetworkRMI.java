@@ -1,11 +1,10 @@
 package network.rmi.client;
 
-import controllerclient.ClientControllerNetworkInterface;
-import controllerresults.ControllerActionResultClient;
-import genericitems.Tuple;
+import network.Player;
+import testcontroller.controllerclient.ClientControllerNetworkInterface;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
-import viewclasses.ActionView;
+import testcontroller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
@@ -27,6 +26,9 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         this.controller = controller;
         this.clientController = clientController;
     }
+
+    @Override
+    public void setToken(String token) {}
 
     //ServerInterface methods
 
@@ -57,6 +59,29 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     public void nofifyMap(GameMapView gameMap) {
         clientController.updateMap(gameMap);
     }
+
+
+    @Override
+    public void onConnection(Player player) {
+        clientController.onConnection(player, true);
+    }
+
+    @Override
+    public void onDisconnection(Player player) {
+        clientController.onConnection(player, false);
+    }
+
+    @Override
+    public void onStarting(String map) {
+        clientController.onStarting(map);
+    }
+
+    @Override
+    public void onTimer(int ms) {
+        clientController.onTimer(ms);
+    }
+
+
 
     //ClientInterface methods
 
@@ -90,41 +115,23 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
 
 
+    @Override
+    public ControllerMessage pick(String choiceId, List<Integer> choices) throws RemoteException {
+        return controller.pick(token, choiceId, choices);
+    }
+
 
     @Override
-    public ControllerActionResultClient pickTarg(String choiceMakerId, int choice) throws RemoteException {
-        return controller.pickTarget(token, choiceMakerId, choice);
+    public void getMap() throws RemoteException{
+        controller.getMap(token);
     }
 
     @Override
-    public ControllerActionResultClient pickWeapon(String weaponChooserId, List<Integer> choice) throws RemoteException {
-        return controller.pickWeapon(token, weaponChooserId, choice);
+    public void poll() throws RemoteException {
+        ControllerMessage message = controller.poll(token);
+        clientController.onControllerMessage(message);
     }
 
-    @Override
-    public ControllerActionResultClient pickAction(String actionChooserId, int choice) throws RemoteException {
-        return controller.pickAction(token, actionChooserId, choice);
-    }
-
-    @Override
-    public Tuple<Boolean, List<TargetView>> showOptionsTarget(String choiceMakerId) throws RemoteException {
-        return controller.showOptionsTarget(token, choiceMakerId);
-    }
-
-    @Override
-    public List<WeaponView> showOptionsWeapon(String weaponChooserId) throws RemoteException {
-        return controller.showOptionsWeapon(token, weaponChooserId);
-    }
-
-    @Override
-    public Tuple<Boolean, List<ActionView>> showOptionsAction(String actionPickerId) throws RemoteException {
-        return controller.showOptionsAction(token, actionPickerId);
-    }
-
-    @Override
-    public GameMapView getMap(String gameMapId) throws RemoteException{
-        return controller.getMap(token, gameMapId);
-    }
 
 
 
