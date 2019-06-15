@@ -101,6 +101,25 @@ public class Actor {
     }
 
     /**
+     * This method discards a powerUp without checking if the player own the card
+     * @param powerUp the powerUp that need to be discarded
+     */
+    public void discardPowerUp(PowerUp powerUp) {
+        powerUps.remove(powerUp);
+        gm.discardPowerUp(powerUp);
+    }
+
+    /**
+     * This metohd picks up a certain amount of power Ups, without check of validity
+     * @param num the number of powerUp
+     * @param num the number of powerUp
+     */
+    public void drawPowerUpRaw(int num) {
+        for(int i=0; i<num; i++)
+            powerUps.add(gm.pickUpPowerUp());
+    }
+
+    /**
      * Checks if in the player's tile there is the grabbable item.
      * Picks up the weapon or the ammoTile, adds all the necessary ammo and powerUps
      * @param ammoCard is the ammoCard element that the player want to pick up
@@ -497,8 +516,8 @@ public class Actor {
         //TODO: Implement
     }
 
-    public void setLastInFrenzy(boolean lastInFrenzy) {
-        this.lastInFrenzy = lastInFrenzy;
+    public void setLastInFrenzy() {
+        this.lastInFrenzy = true;
     }
 
     public boolean isLastInFrenzy() {
