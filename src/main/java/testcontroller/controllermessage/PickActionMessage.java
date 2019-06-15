@@ -1,5 +1,6 @@
 package testcontroller.controllermessage;
 
+import actions.WeaponUse;
 import actions.utils.ActionPicker;
 import board.Sandbox;
 import testcontroller.ChoiceBoard;

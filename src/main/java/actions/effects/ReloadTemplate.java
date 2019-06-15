@@ -7,6 +7,7 @@ import actions.utils.WeaponChooser;
 import board.Sandbox;
 import genericitems.Tuple;
 import grabbables.Weapon;
+import player.Actor;
 import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllermessage.PickWeaponMessage;
 import testcontroller.controllermessage.RollbackMessage;
@@ -85,5 +86,13 @@ class ReloadEffect implements Effect{
         Map<Weapon, Boolean> newW = new HashMap<>(oldWeapons);
         newW.put(weapon, Boolean.TRUE);
         return newW;
+    }
+
+    @Override
+    public String effectString(Actor pov) {
+        return String.format("%s ha ricaricato %s",
+                pov.pawn().getUsername(),
+                weapon.getName()
+        );
     }
 }
