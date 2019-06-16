@@ -50,10 +50,8 @@ class ActorTest {
             assertTrue(Pietro.getMarks().isEmpty());
             assertEquals(map, Pietro.getGm());
 
-            assertFalse(Pietro.isTurn());
-
-            assertEquals(Pietro.getPawn(), Pietro.getGm().getPawn(Pietro.getPawn().getDamageableUID()));
-            assertEquals(Pietro, Pietro.getPawn().getActor());
+            assertEquals(Pietro.pawn(), Pietro.getGm().getPawn(Pietro.pawn().getDamageableUID()));
+            assertEquals(Pietro, Pietro.pawn().getActor());
         }
 
         int n = 0;
@@ -66,21 +64,19 @@ class ActorTest {
     @Test
     void moveTest() {
         Actor Pietro = actorList.get(0);
-        Pietro.setTurn(true);
         Pietro.move(map.getPosition(new Coord(1,2)));
-        assertEquals(map.getPosition(new Coord(1,2)), Pietro.getPawn().getTile());
+        assertEquals(map.getPosition(new Coord(1,2)), Pietro.pawn().getTile());
         Pietro.setFrenzy();
         Coord c = new Coord(2,3);
         Pietro.move(map.getPosition(c));
-        assertEquals(map.getPosition(c), Pietro.getPawn().getTile());
+        assertEquals(map.getPosition(c), Pietro.pawn().getTile());
     }
 
     @Test
     void unconditionalMovement() {
         Actor Pietro = actorList.get(0);
-        Pietro.setTurn(false);
         Pietro.move(map.getPosition(new Coord(1,1)));
-        assertEquals(map.getPosition(new Coord(1,1)), Pietro.getPawn().getTile());
+        assertEquals(map.getPosition(new Coord(1,1)), Pietro.pawn().getTile());
     }
 
     @Test
@@ -197,10 +193,10 @@ class ActorTest {
         melo.respawn(AmmoColor.BLUE);
 
         assertTrue(map.getTile(map.getPosition(new Coord(2,3))).spawnPoint());
-        assertTrue(map.getTile(Pietro.getPawn().getTile()).spawnPoint());
+        assertTrue(map.getTile(Pietro.pawn().getTile()).spawnPoint());
 
-        assertEquals(map.getPosition(new Coord(2,3)), Pietro.getPawn().getTile());
-        assertEquals(map.getPosition(new Coord(0,2)), melo.getPawn().getTile());
+        assertEquals(map.getPosition(new Coord(2,3)), Pietro.pawn().getTile());
+        assertEquals(map.getPosition(new Coord(0,2)), melo.pawn().getTile());
 
         assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
         Pietro.damage(actorList.get(1), 10);
@@ -214,8 +210,6 @@ class ActorTest {
     void ammoPickUpTest(){
         AmmoCard am = new AmmoCard(new AmmoAmount(),0);
         Actor Pietro = actorList.get(0);
-        assertThrows(WrongMethodTypeException.class, () -> Pietro.pickUp(am), "It's not your turn");
-        Pietro.setTurn(true);
         //TODO put the ammocard in a tile and check if the player grabs it.
     }
 }

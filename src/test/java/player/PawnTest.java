@@ -9,8 +9,6 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.io.FileNotFoundException;
-import java.lang.reflect.InaccessibleObjectException;
-import java.security.InvalidParameterException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +54,7 @@ class PawnTest {
 
     @Test
     void moveTest() throws NoSuchFieldException {
-        pietro = actorList.get(0).getPawn();
+        pietro = actorList.get(0).pawn();
         TileUID tomove;
         final TileUID finalTomove;
         finalTomove = map.getPosition(new Coord(0,0));
@@ -77,7 +75,7 @@ class PawnTest {
 
     @Test
     void deadPawnTest(){
-        pietro = actorList.get(0).getPawn();
+        pietro = actorList.get(0).pawn();
         for(TileUID t : map.allTiles())
             assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
 
