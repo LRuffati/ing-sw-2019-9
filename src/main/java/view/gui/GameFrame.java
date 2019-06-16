@@ -44,4 +44,12 @@ public class GameFrame extends JFrame {
 
         new GameFrame(mv);
     }
+
+    public OutputBox getOutputBox() {
+        return outputBox;
+    }
+
+    public GUIMap1 getMap() {
+        return map;
+    }
 }

@@ -1,4 +1,4 @@
-package cli;
+package view.cli;
 
 import testcontroller.Message;
 import testcontroller.controllerclient.ClientControllerClientInterface;
@@ -142,7 +142,7 @@ public class CLIDemo implements View {
     }
 
     /**
-     * Print the event "Player user uses powerUp pu" on the cli.
+     * Print the event "Player user uses powerUp pu" on the view.cli.
      */
     public void addPowerUpNotYou(ActorView user, PowerUpView pu){
         System.out.println(user.getAnsi() + "Player " + user.name() + " is using " + pu.type().toString());
@@ -241,8 +241,7 @@ public class CLIDemo implements View {
                 if(i==200){
                     client.rollback();
                     return;
-                }
-                if(i==0){
+                } else if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
                     } else if(l.isEmpty()){
@@ -287,8 +286,7 @@ public class CLIDemo implements View {
                 if(i==200){
                     client.rollback();
                     return;
-                }
-                if(i==0){
+                }else if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
                     } else if(l.isEmpty()){
@@ -378,8 +376,7 @@ public class CLIDemo implements View {
                 if(i==200){
                     client.rollback();
                     return;
-                }
-                if(i==0){
+                } else if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
                     } else if(l.isEmpty()){
@@ -424,8 +421,7 @@ public class CLIDemo implements View {
                 if(i==200){
                     client.rollback();
                     return;
-                }
-                if(i==0){
+                }else if(i==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
                     } else if(l.isEmpty()){

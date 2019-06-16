@@ -1,6 +1,6 @@
 package testcontroller;
 
-import cli.CLIDemo;
+import view.cli.CLIDemo;
 import gamemanager.ParserConfiguration;
 import network.ClientInterface;
 import network.Player;
@@ -53,7 +53,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     private boolean polling;
 
     /**
-     * Builder of the class. This generates the View (cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
+     * Builder of the class. This generates the View (view.cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
      * @param socket true if a socket connection is required. False if a RMI connection is required
      * @param cli true if Cli is required. False is Gui is required
      * @param networkAddress Contains the address used by the Network to connect with the Server

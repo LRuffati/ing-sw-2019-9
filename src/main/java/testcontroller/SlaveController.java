@@ -342,8 +342,10 @@ public class SlaveController {
                     // accettare più richieste a parte "getInstruction" 2. Aspetto qualche
                     // secondo nel caso avesse appena terminato. 3. Ricontrollo currentMessage e
                     // faccio le mie cose se è uguale
-                    network.interrupt();
-                    main.notifyTimeout(this);
+
+                    //TODO @LORENZO timeout da sistemare qui
+                    //network.interrupt();
+                    //main.notifyTimeout(this);
 
                 }
             }).start();
