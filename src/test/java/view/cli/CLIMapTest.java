@@ -1,4 +1,4 @@
-package cli;
+package view.cli;
 
 import board.Coord;
 import board.GameMap;
