@@ -1,6 +1,7 @@
 package actions.effects;
 
 import player.Actor;
+import testcontroller.SlaveController;
 import uid.TileUID;
 
 public class GrabEffect implements Effect {
@@ -15,6 +16,11 @@ public class GrabEffect implements Effect {
     @Override
     public EffectType type() {
         return EffectType.GRAB;
+    }
+
+    @Override
+    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+
     }
 
 

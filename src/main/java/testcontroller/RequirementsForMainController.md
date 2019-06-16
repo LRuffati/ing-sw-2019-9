@@ -43,4 +43,4 @@ actor.pawn().getUsername() per ora. se si vuole aggiungere anche all'actor boh o
 ## GameMap
 
 ## Powerup
-+ `TileUID spawnLocation(Set<Tile>)`  
++ `TileUID spawnLocation(Set<Tile>)`  DONE

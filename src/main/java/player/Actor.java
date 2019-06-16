@@ -517,6 +517,7 @@ public class Actor {
      */
     public List<List<ActionTemplate>> getActions() {
         //TODO: Implement
+        return new ArrayList<>();
     }
 
     public void setLastInFrenzy() {
@@ -550,5 +551,7 @@ public class Actor {
         }
         return false;
     }
+
+    //TODO Hardcodare diverse liste di azioni in base alle esigenze della playerboard
 }
 

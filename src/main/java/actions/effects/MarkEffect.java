@@ -17,14 +17,30 @@ public class MarkEffect implements Effect{
     public EffectType type() {
         return EffectType.MARK;
     }
+
+    @Override
+    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+
+    }
+
+    @Override
+    public String effectString(Actor pov) {
+        return null;
+    }
 }
-        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+
+//TODO
+
+/*
+
+pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+
 public void mergeInGameMap(SlaveController pov, Runnable finalize) {
 @Override
      * @param finalize contains all the instructions to run after the end of the effect. Contains
         * @param pov
 /**
- */
+
 
 @Override
 public String effectString(Actor pov) {
@@ -32,3 +48,5 @@ public String effectString(Actor pov) {
         pov.getGm().getPawn(uid).getActor().name());
         }
         }
+
+*/

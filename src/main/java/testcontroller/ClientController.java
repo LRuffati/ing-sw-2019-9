@@ -156,7 +156,11 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void pick(String id, List<Integer> choices) {
-        network.pick(id, choices);
+        try {
+            network.pick(id, choices);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -255,7 +259,11 @@ public class ClientController implements ClientControllerClientInterface, Client
         repeatedTask = new TimerTask() {
             public void run() {
                 System.out.println("Polling");
-                network.poll();
+                try {
+                    network.poll();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         };
         timerForPolling = new Timer("TimerForPolling");

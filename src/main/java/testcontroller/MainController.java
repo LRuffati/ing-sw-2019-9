@@ -33,6 +33,8 @@ public class MainController {
     private boolean gameStarted = false;
     private Scoreboard scoreboard;
 
+    private GameBuilder game;
+
     private GameMap gameMap;
 
     private List<SlaveController> slaveControllerList;
@@ -287,7 +289,7 @@ public class MainController {
         DamageableUID head = dead.get(0);
         List<DamageableUID> tail = dead.subList(1,dead.size());
 
-        slaveMap.get(head).getSelf().drawPowerupRaw(cards);
+        slaveMap.get(head).getSelf().drawPowerUpRaw(cards);
 
         Consumer<PowerUp> onRespawned =
                 powerUp -> {
@@ -299,7 +301,7 @@ public class MainController {
                                     .filter(Tile::spawnPoint)
                                     .collect(Collectors.toSet());
                     TileUID destination = powerUp.spawnLocation(spawns);
-                    respawnedActor.discardPowerup(powerUp);
+                    respawnedActor.discardPowerUp(powerUp);
                     respawnedActor.getPawn().move(destination);
                     startRespawn(tail, cards, onAllRespawned);
                 };
