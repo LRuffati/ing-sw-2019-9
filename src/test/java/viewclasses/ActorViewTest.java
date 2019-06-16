@@ -45,7 +45,6 @@ class ActorViewTest {
 
         act1.addDamage(act2, 2);
         act1.addPoints(10);
-        act1.setTurn(true);
         act1.move(map.getPosition(new Coord(0,0)));
         act1.pickUp((AmmoCard)map.getGrabbable(map.getPosition(new Coord(0,0))).iterator().next());
         act1.move(map.getPosition(new Coord(1,1)));
@@ -58,7 +57,7 @@ class ActorViewTest {
             //Weapon weapon = (Weapon)map.getGrabbable(map.getPosition(new Coord(1,0))).iterator().next();
             //System.out.println(act1.getAmmo() + "\n" + weapon.getBuyCost() + "\n" + act1.getPowerUp().size());
             act1.pickUp((Weapon) map.getGrabbable(map.getPosition(new Coord(1,0))).iterator().next(),
-                    null, null);
+                    null);
         }
         catch (AmmoException e){
             e.printStackTrace();

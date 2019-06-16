@@ -54,7 +54,7 @@ public class Pawn {
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
     void setBinding(Actor player){
-        if(this.actor == null && player.getPawn().actor == null) {
+        if(this.actor == null && player.pawn().actor == null) {
             this.actor = player;
         }
     }

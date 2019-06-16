@@ -127,8 +127,6 @@ public class Actor {
      */
     public void pickUp(AmmoCard ammoCard){
         TileUID tile = pawn().getTile();
-        if(!turn)
-            throw new WrongMethodTypeException("It's not your turn");
         if(!gm.getGrabbable(tile).contains(ammoCard))
             throw new InvalidParameterException("There isn't this item here");
 
@@ -146,17 +144,13 @@ public class Actor {
      * Picks up the weapon and discard all the weapon and powerUps
      * @param weapon is the weapon that the player want to pick up
      * @param weaponToDiscard contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
-     * @param powerUpToPay the powerUps that the player want to use to pay the weapon
-     * @throws AmmoException if the Ammo amount is not sufficient
      */
-    public void pickUp(Weapon weapon, Weapon weaponToDiscard, List<PowerUp> powerUpToPay) throws AmmoException{
+    public void pickUp(Weapon weapon, Weapon weaponToDiscard){
         TileUID tile = pawn().getTile();
         if(!turn)
             throw new WrongMethodTypeException("It's not your turn");
         if(!gm.getGrabbable(tile).contains(weapon))
             throw new InvalidParameterException("There isn't this item here");
-        if(!checkAmmo(weapon.getBuyCost(), powerUpToPay))
-            throw new AmmoException("Not enough ammo available");
 
         if((loadedWeapon.size() + unloadedWeapon.size()) >= MAX_WEAPON) {
             if(weaponToDiscard == null)
@@ -172,7 +166,6 @@ public class Actor {
         }
 
         loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, weapon));
-        pay(weapon.getBuyCost(), powerUpToPay);
     }
 
     /**
@@ -180,15 +173,12 @@ public class Actor {
      * @param weapon is the weapon to be reloaded.
      * @throws AmmoException if the player doesn't have enough ammo
      */
-    public void reloadWeapon(Weapon weapon, List<PowerUp> powerUpToPay) throws AmmoException{
+    public void reloadWeapon(Weapon weapon) throws AmmoException{
         if(!unloadedWeapon.contains(weapon) && !loadedWeapon.contains(weapon))
             throw new InvalidParameterException("This actor has not this weapon");
         if(!unloadedWeapon.contains(weapon))
             throw new InvalidParameterException("This weapon is already loaded");
-        if(!checkAmmo(weapon.getReloadCost(), powerUpToPay))
-            throw new AmmoException("Not enough ammo available");
 
-        pay(weapon.getReloadCost(), powerUpToPay);
         unloadedWeapon.remove(weapon);
         loadedWeapon.add(weapon);
     }
@@ -236,39 +226,10 @@ public class Actor {
 
     /**
      *
-     * @return the pawn bound to the player.
-     */
-    public Pawn getPawn() {
-        return pawn();
-    }
-
-    /**
-     *
-     * @return true if the actor turn has started and it's not finished yet.
-     */
-    public boolean isTurn(){
-        return turn;
-    }
-
-    /**
-     *
      * @return the points actually owned by the player.
      */
     public int getPoints() {
         return points;
-    }
-
-    /**
-     * Needed to end and start a player turn.
-     * At the end of the turn clear damagedPlayer and damagedBy Sets
-     * @param turn true to start the turn, false to end it.
-     */
-    public void setTurn(Boolean turn) {
-        if(!turn){
-            damagedPlayer.clear();
-            damagedBy.clear();
-        }
-        this.turn = turn;
     }
 
     /**
@@ -297,6 +258,10 @@ public class Actor {
         }
     }
 
+    public void damageBreaking(Actor shooter, int numOfDmg, Runnable onResolved){
+        //TODO
+    }
+
     /**
      * Add the attacker who damaged the player on his playerboard.
      * Adds the shooter to the attacked's damagedBy Set
@@ -312,7 +277,7 @@ public class Actor {
             damageTaken.add(shooter);
         }
 
-        if(marks.containsKey(shooter.getPawn().getDamageableUID())) {
+        if(marks.containsKey(shooter.pawn().getDamageableUID())) {
             for (int i = 0; i < marks.get(shooter.pawnID); i++) {
                 if (damageTaken.size() <= HP)
                     damageTaken.add(shooter);

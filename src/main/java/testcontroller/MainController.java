@@ -29,6 +29,8 @@ public class MainController {
     private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
+    public int timeoutTime;
+
     private int numOfPlayer;
 
     private Timer timerForStarting;
@@ -44,6 +46,7 @@ public class MainController {
 
     MainController(){
         slaveControllerList = new ArrayList<>();
+        timeoutTime = 30;
         slaveMap = new HashMap<>(MAX_PLAYER);
     }
 
@@ -204,7 +207,7 @@ public class MainController {
      *                   If I call a slave controller function in between then I will have to
      *                   call it and pass a runnable that will:
      */
-    void resolveEffect(SlaveController responsible, List<Effect> effects,
+    public void resolveEffect(SlaveController responsible, List<Effect> effects,
                        Runnable onResolved){
         if (effects.isEmpty()){
             new Thread(onResolved).start();
@@ -319,7 +322,7 @@ public class MainController {
                                     .collect(Collectors.toSet());
                     TileUID destination = powerUp.spawnLocation(spawns);
                     respawnedActor.discardPowerUp(powerUp);
-                    respawnedActor.getPawn().move(destination);
+                    respawnedActor.pawn().move(destination);
                     startRespawn(tail, cards, onAllRespawned);
                 };
         slaveMap.get(head).startRespawn(onRespawned);

@@ -74,7 +74,7 @@ public class Fire implements EffectTemplate {
 
                         @Override
                         public String effectString(Actor pov) {
-                            return String.format("%s ha usato %s", pov.getPawn().getUsername(), weapUsed.getName());
+                            return String.format("%s ha usato %s", pov.pawn().getUsername(), weapUsed.getName());
                         }
                     });
                     Sandbox newSandbox = new Sandbox(sandbox, effects);

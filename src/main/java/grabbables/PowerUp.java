@@ -6,6 +6,7 @@ import actions.utils.PowerUpType;
 import board.Tile;
 import exception.AmmoException;
 import player.Actor;
+import testcontroller.SlaveController;
 import testcontroller.controllermessage.ControllerMessage;
 import uid.TileUID;
 import viewclasses.PowerUpView;
@@ -37,7 +38,7 @@ public abstract class PowerUp extends Grabbable {
      * @param onPowerupFinalized the function to call once the effects have been merged in Main
      * @return the controller message to show the user
      */
-    public abstract ControllerMessage usePowup(Actor pov,
+    public abstract ControllerMessage usePowup(SlaveController pov,
                                                List<Effect> lastEffects,
                                                Runnable onPowerupFinalized);
 
@@ -90,10 +91,20 @@ public abstract class PowerUp extends Grabbable {
         return null;
     }
 
-}
-
-class PUFactory{
     public static PowerUp powerUpFactory(PowerUpType type, AmmoAmount ammo){
-        //TODO @LORENZO
+        PowerUp ret=null;
+        switch (type){
+            case NEWTON:
+                break;
+            case TELEPORTER:
+                ret = new Teleporter(ammo);
+                break;
+            case TAGBACKGRANADE:
+                break;
+            case TARGETINGSCOPE:
+                break;
+        }
+        return ret;
     }
+
 }

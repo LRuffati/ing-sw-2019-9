@@ -85,7 +85,7 @@ public class DominationMode extends Scoreboard{
         if(victim.getDamageTaken().size()>10 && victim.getDamageTaken().get(11)!= null) {
             //todo: aggiungere punto al track giusto
             //TODO: probably should't be done here
-            victim.addMark(killer.getPawn().getDamageableUID(), 1);
+            victim.addMark(killer.pawn().getDamageableUID(), 1);
         }
         skullBox.add(Map.of(killer, numPoints));
         numOfDeaths++;

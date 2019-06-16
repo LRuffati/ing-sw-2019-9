@@ -36,7 +36,7 @@ class CLIMapTest {
         }
         map = builder.getMap();
         actorList = builder.getActorList();
-        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
         /*try {
             client = new ClientController(true,true,"localhost");
         } catch (NotBoundException | IOException e) {
@@ -53,7 +53,7 @@ class CLIMapTest {
 
     @Test
     void searchTest(){
-        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
         CLIMap map = new CLIMap(gmv);
         assert(map.searchCharacter('s').getX()==11);
         assert(map.searchCharacter('s').getY()==1);
@@ -75,7 +75,7 @@ class CLIMapTest {
 
     @Test
     void movePlayersTest(){
-        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
         CLIMap map = new CLIMap(gmv);
         Iterator<ActorView> iterator = gmv.players().iterator();
         map.moveActor(iterator.next(), new Coord(0,0));

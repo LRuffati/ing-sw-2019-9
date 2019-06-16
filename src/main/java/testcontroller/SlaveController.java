@@ -6,7 +6,6 @@ import actions.effects.Effect;
 import actions.effects.ReloadTemplate;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
-import actions.utils.AmmoAmountUncapped;
 import actions.utils.ChoiceMaker;
 import actions.utils.PowerUpType;
 import board.Sandbox;
@@ -17,6 +16,7 @@ import network.ServerInterface;
 import player.Actor;
 import testcontroller.controllermessage.*;
 import testcontroller.controllerstates.SlaveControllerState;
+import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
 import java.util.*;
@@ -57,12 +57,15 @@ public class SlaveController {
     private ControllerMessage currentMessage;
     public final MainController main;
     private List<String> notificationList;
+    private Runnable onTimeout;
+    private int timeoutWindow;
 
     public SlaveController(MainController main, Player player, ServerInterface network) {
         this.player = player;
         this.network = network;
-        this.currentMessage = new WaitMessage(List.of());
+        this.setCurrentMessage(new WaitMessage(List.of()));
         this.main = main;
+        this.timeoutWindow = main.timeoutTime;
     }
 
     /**
@@ -70,7 +73,10 @@ public class SlaveController {
      */
     public void startMainAction(){
         //TODO: if player is disconnected here I call directly endTurn
-        this.currentMessage = setPowUps(new ArrayList<>(), getSelf().getActions());
+        this.onTimeout = () -> {
+            main.endTurn(getSelf());
+        };
+        this.setCurrentMessage(setPowUps(new ArrayList<>(), getSelf().getActions()));
     }
 
     /**
@@ -96,8 +102,8 @@ public class SlaveController {
         Function<Sandbox, ControllerMessage> reloadMerger = // Will take the effects in
                 // sandbox and
                 sandbox1 -> { // merge them into MainController
+                    this.setCurrentMessage(new WaitMessage(List.of()));
                     List<Effect> effects = sandbox1.getEffectsHistory();
-                    this.currentMessage = new WaitMessage(List.of());
                     Runnable onResolved = () -> this.main.endTurn(this.getSelf());
                     new Thread(()-> this.main.resolveEffect(this, effects, onResolved)).start();
                     return new WaitMessage(List.of());
@@ -109,9 +115,9 @@ public class SlaveController {
         // Used if I might run an actionbundle after
         Function<List<List<ActionTemplate>>, Function<List<Effect>, ControllerMessage>> bundleFinalizer =
                 bundlesTail -> effectList -> {
-                    this.currentMessage = new WaitMessage(List.of());
+                    this.setCurrentMessage(new WaitMessage(List.of()));
 
-                    Runnable onResolved = () -> this.currentMessage = this.setPowUps(effectList, bundlesTail);
+                    Runnable onResolved = () -> this.setCurrentMessage(this.setPowUps(effectList, bundlesTail));
 
                     new Thread(() -> main.resolveEffect(this, effectList, onResolved)).start();
 
@@ -141,10 +147,9 @@ public class SlaveController {
                             }
                         } else {
                             //3. Call this function with same params
-                            Runnable onApplied = () -> this.currentMessage =
-                                    this.setPowUps(lastEffects, nextActs);
+                            Runnable onApplied = () -> this.setCurrentMessage(this.setPowUps(lastEffects, nextActs));
                             //2. Apply powerup
-                            return list.get(0).usePowup(getSelf(), lastEffects, onApplied);
+                            return list.get(0).usePowup(this, lastEffects, onApplied);
                         }
                     };
             return new PickPowerupMessage(SlaveControllerState.MAIN, pows, onPowupPick,
@@ -168,20 +173,25 @@ public class SlaveController {
 
         Function<List<PowerUp>, ControllerMessage> onPick =
                 list -> {
+                    this.setCurrentMessage(new WaitMessage(List.of()));
                     new Thread(()-> {
                         onRespawned.accept(list.get(0));
                     }).start();
                     return new WaitMessage(List.of());
                 };
 
-        this.currentMessage = new PickPowerupMessage(
+        // If timeout is triggered I should spawn in a random location
+        // onRespawned is blocking so I should start it in a thread
+        this.onTimeout = () -> new Thread(() -> onRespawned.accept(powups.get(0))).start();
+
+        this.setCurrentMessage(new PickPowerupMessage(
                 SlaveControllerState.RESPAWN,
                 powups,
                 onPick,
                 "Scegli lo spawn point",
                 true,
                 List.of()
-                );
+                ));
     }
 
     /**
@@ -190,7 +200,7 @@ public class SlaveController {
      *
      * @param offender The player which caused the damage
      * @param onFinished Tells the Main whether the player will use the tagback grenade and which
-     *                  one. The provider should make sure it is only used once
+     *                  one. The provider should make sure it is only used once. Blocking
      */
     public void startTagback(Actor offender, Consumer<Optional<PowerUp>> onFinished){
         Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
@@ -241,8 +251,9 @@ public class SlaveController {
                 }
             };
 
-            this.currentMessage = new PickTargetMessage(choiceMaker,
-                    "Vuoi dare un marchio a questo giocatore?", sandbox);
+            this.onTimeout = () -> new Thread( () -> onFinished.accept(Optional.empty())).start();
+            this.setCurrentMessage(new PickTargetMessage(choiceMaker,
+                    "Vuoi dare un marchio a questo giocatore?", sandbox));
 
         } else {
             onFinished.accept(Optional.empty());
@@ -269,11 +280,11 @@ public class SlaveController {
      * value doesn't change until a new command is available (meaning the
      */
     public ControllerMessage getInstruction(){
-        ControllerMessage mess = currentMessage;
+        ControllerMessage mess = getCurrentMessage();
         if (mess.type().equals(SlaveControllerState.WAIT)) {
             List<String> old = new ArrayList<>(mess.getMessage().getChanges());
             old.addAll(getNotifications());
-            currentMessage = new WaitMessage(List.of());
+            setCurrentMessage(new WaitMessage(List.of()));
             return new WaitMessage(old);
         }
 
@@ -307,5 +318,39 @@ public class SlaveController {
         this.notificationList.add(effectString);
     }
 
-    //TODO @LORENZO AGGIUNGERE METODO sendMap() che restituisca una GameMapView
+    /**
+     * This is called by the network (acting as a proxy for the client) to provide a view of the
+     * game Map
+     * @return the view of the gameMap from the point of view of the associated player
+     */
+    public GameMapView sendMap(){
+        return main.getGameMap().generateView(player.getUid());
+    }
+
+    public ControllerMessage getCurrentMessage() {
+        return currentMessage;
+    }
+
+    public void setCurrentMessage(ControllerMessage currentMessage) {
+        this.currentMessage = currentMessage;
+        if (!currentMessage.type().equals(SlaveControllerState.WAIT)){
+            new Thread(()->{
+                try {
+                    Thread.sleep(timeoutWindow*1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (this.currentMessage.equals(currentMessage)){
+                    //FIXME: gestire il caso in cui il timer scade subito dopo che il client ha
+                    // fatto pick per finalizzare l'azione quindi: 1. Dico alla rete di non
+                    // accettare più richieste a parte "getInstruction" 2. Aspetto qualche
+                    // secondo nel caso avesse appena terminato. 3. Ricontrollo currentMessage e
+                    // faccio le mie cose se è uguale
+                    network.interrupt();
+                    main.notifyTimeout(this);
+
+                }
+            }).start();
+        }
+    }
 }
