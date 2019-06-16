@@ -4,6 +4,7 @@ import actions.effects.Effect;
 import board.GameMap;
 import board.Tile;
 import gamemanager.GameBuilder;
+import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import grabbables.PowerUp;
 import network.Database;
@@ -24,7 +25,9 @@ import java.util.stream.Collectors;
 
 public class MainController {
 
-    private final int MIN_PLAYER = 3;
+    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     private int numOfPlayer;
 
@@ -33,16 +36,28 @@ public class MainController {
     private boolean gameStarted = false;
     private Scoreboard scoreboard;
 
-    private GameBuilder game;
-
     private GameMap gameMap;
+    private GameBuilder game;
 
     private List<SlaveController> slaveControllerList;
     private Map<DamageableUID, SlaveController> slaveMap;
 
     MainController(){
         slaveControllerList = new ArrayList<>();
-        slaveMap = new HashMap<>(5);
+        slaveMap = new HashMap<>(MAX_PLAYER);
+    }
+
+    private void checkGameStart() {
+        if(numOfPlayer < MIN_PLAYER || gameStarted)
+            return;
+        if(numOfPlayer == MAX_PLAYER) {
+            timerClose();
+            startGame();
+        }
+        if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
+            timerStart(TIME_BEFORE_STARTING);
+            notifyTimer(TIME_BEFORE_STARTING);
+        }
     }
 
     public void connect(Player player) {
@@ -72,7 +87,7 @@ public class MainController {
      * @return True iif the game is not started and the number of player is below the maximum
      */
     public boolean canConnect() {
-        return numOfPlayer<5 && !gameStarted;
+        return numOfPlayer<MAX_PLAYER && !gameStarted;
     }
 
     /**
@@ -118,6 +133,9 @@ public class MainController {
     private void startGame() {
         gameStarted = true;
         createGame();
+
+        this.scoreboard = game.getScoreboard();
+
         for (SlaveController i: slaveControllerList){
             slaveMap.put(i.getSelf().pawnID(), i);
         }
@@ -125,7 +143,7 @@ public class MainController {
         //todo notify inizio gioco
     }
 
-    private GameBuilder createGame() {
+    private void createGame() {
         try {
             game = new GameBuilder(numOfPlayer);
             Iterator<Actor> actorList = game.getActorList().iterator();
@@ -140,7 +158,6 @@ public class MainController {
         catch (FileNotFoundException | NoSuchFieldException | IllegalAccessException e){
             e.printStackTrace();
         }
-        return game;
     }
 
 
