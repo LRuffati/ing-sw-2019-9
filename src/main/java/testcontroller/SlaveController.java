@@ -306,4 +306,6 @@ public class SlaveController {
     public void addNotification(String effectString) {
         this.notificationList.add(effectString);
     }
+
+    //TODO @LORENZO AGGIUNGERE METODO sendMap() che restituisca una GameMapView
 }

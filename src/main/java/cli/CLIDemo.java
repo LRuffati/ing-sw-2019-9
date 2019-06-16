@@ -459,7 +459,9 @@ public class CLIDemo implements View {
 
     @Override
     public void onMessage(Message message) {
-        System.out.println(message.getStr());
+        for(String str : message.getChanges()){
+            System.out.println(str);
+        }
     }
 
     /**

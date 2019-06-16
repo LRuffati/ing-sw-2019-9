@@ -4,7 +4,7 @@ import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 
-public class MarkEffect implements Effect{
+public class MarkEffect implements Effect {
     private final int amount;
     private final DamageableUID uid;
 
@@ -21,15 +21,14 @@ public class MarkEffect implements Effect{
     @Override
     public void mergeInGameMap(SlaveController pov, Runnable finalize) {
         pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+        finalize.run();
     }
 
     @Override
     public String effectString(Actor pov) {
-        return String.format("%s ha dato %d marchi a %s", pov.name(), amount,
-                pov.getGm().getPawn(uid).getActor().name());
+        return String.format("%s ha dato %d marchi a %s",
+                pov.getGm().getPawn(pov.pawnID()).getUsername(),
+                amount,
+                pov.getGm().getPawn(uid).getUsername());
     }
 }
-
-
-
-

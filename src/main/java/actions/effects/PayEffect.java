@@ -4,6 +4,7 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
 import player.Actor;
+import testcontroller.SlaveController;
 
 public class PayEffect implements Effect{
     private final AmmoAmountUncapped amount;
@@ -24,6 +25,11 @@ public class PayEffect implements Effect{
     @Override
     public AmmoAmountUncapped newAmmoAvailable(AmmoAmountUncapped old) {
         return old.subtract(amount);
+    }
+
+    @Override
+    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+
     }
 
 

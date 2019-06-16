@@ -10,10 +10,8 @@ import testcontroller.controllermessage.ControllerMessage;
 import uid.TileUID;
 import viewclasses.PowerUpView;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Function;
 
 public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
@@ -90,5 +88,12 @@ public abstract class PowerUp extends Grabbable {
             }
         }
         return null;
+    }
+
+}
+
+class PUFactory{
+    public static PowerUp powerUpFactory(PowerUpType type, AmmoAmount ammo){
+        //TODO @LORENZO
     }
 }

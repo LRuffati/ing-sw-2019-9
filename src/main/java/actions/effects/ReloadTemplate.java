@@ -8,6 +8,7 @@ import board.Sandbox;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import player.Actor;
+import testcontroller.SlaveController;
 import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllermessage.PickWeaponMessage;
 import testcontroller.controllermessage.RollbackMessage;
@@ -86,6 +87,11 @@ class ReloadEffect implements Effect{
         Map<Weapon, Boolean> newW = new HashMap<>(oldWeapons);
         newW.put(weapon, Boolean.TRUE);
         return newW;
+    }
+
+    @Override
+    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+
     }
 
     @Override
