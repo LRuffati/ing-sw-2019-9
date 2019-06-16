@@ -28,7 +28,7 @@ public class CLIMain {
         }
         map = builder.getMap();
         actorList = builder.getActorList();
-        gmv = map.generateView(actorList.get(0).getPawn().getDamageableUID());
+        gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
         try {
             client = new ClientController(true,true,"localhost");
         } catch (NotBoundException | IOException e) {

@@ -35,7 +35,7 @@ public class MoveTemplate implements EffectTemplate{
         TileUID dest = targets.get(destination).getSelectedTiles(sandbox).iterator().next();
         List<Effect> movesEffs = new ArrayList<>();
         for (DamageableUID t: mossi){
-            //TODO: movesEffs.add(new MoveEffect(t, dest));
+            movesEffs.add(new MoveEffect(t,dest));
         }
 
         return consumer.apply(new Sandbox(sandbox, movesEffs));

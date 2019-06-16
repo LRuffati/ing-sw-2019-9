@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 public class MainController {
 
     private final int MIN_PLAYER = 3;
+    public int timeoutTime;
 
     private int numOfPlayer;
 
@@ -43,6 +44,7 @@ public class MainController {
     MainController(){
         slaveControllerList = new ArrayList<>();
         slaveMap = new HashMap<>(5);
+        timeoutTime = 30;
     }
 
     public void connect(Player player) {
@@ -187,7 +189,7 @@ public class MainController {
      *                   If I call a slave controller function in between then I will have to
      *                   call it and pass a runnable that will:
      */
-    void resolveEffect(SlaveController responsible, List<Effect> effects,
+    public void resolveEffect(SlaveController responsible, List<Effect> effects,
                        Runnable onResolved){
         if (effects.isEmpty()){
             new Thread(onResolved).start();
@@ -302,7 +304,7 @@ public class MainController {
                                     .collect(Collectors.toSet());
                     TileUID destination = powerUp.spawnLocation(spawns);
                     respawnedActor.discardPowerUp(powerUp);
-                    respawnedActor.getPawn().move(destination);
+                    respawnedActor.pawn().move(destination);
                     startRespawn(tail, cards, onAllRespawned);
                 };
         slaveMap.get(head).startRespawn(onRespawned);

@@ -37,9 +37,10 @@ public class DamageEffect implements Effect{
     @Override
     public void mergeInGameMap(SlaveController pov, Runnable finalize) {
         if (raw){
-            pov.getSelf().getGm().getPawn(uid).getActor().damageRaw(pov.getSelf(), amount, finalize);
+            pov.getSelf().getGm().getPawn(uid).getActor().damageRaw(pov.getSelf(), amount);
         } else {
-            pov.getSelf().getGm().getPawn(uid).getActor().damage(pov.getSelf(), amount, finalize);
+            pov.getSelf().getGm().getPawn(uid).getActor().damageBreaking(pov.getSelf(), amount,
+                    finalize);
         }
     }
 
