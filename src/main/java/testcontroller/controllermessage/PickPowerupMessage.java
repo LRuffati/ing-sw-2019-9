@@ -104,7 +104,9 @@ public class PickPowerupMessage implements ControllerMessage {
     @Override
     public ControllerMessage pick(List<Integer> choices) {
         int lenOpts = choiceBoard.getNumOfElems();
-        List<PowerUp> powChoices = choices.stream().filter(i-> i>0 & i<lenOpts)
+        List<PowerUp> powChoices = choices.stream()
+                        .distinct()
+                        .filter(i-> i>0 & i<lenOpts)
                                     .map(originalPowup::get)
                                     .collect(Collectors.toList());
         if (!optional & choices.isEmpty()){
