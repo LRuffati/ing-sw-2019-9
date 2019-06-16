@@ -49,7 +49,7 @@ public class WeaponUse implements ActionPicker {
 
     public WeaponUse(WeaponUse previous, Sandbox sandboxNew,
                      Map<String, Targetable> existingTargets, List<String> previousActions){
-        //TODO: gestire i contemporary
+        //TODO: @PRIORITY@ gestire i contemporary
         finalizer = previous.finalizer;
         sandbox = sandboxNew;
         this.existingTargets = existingTargets;

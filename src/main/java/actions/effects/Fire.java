@@ -40,7 +40,6 @@ public class Fire implements EffectTemplate {
 
             @Override
             public List<Weapon> showOptions() {
-                //TODO convertire a view
                 return new ArrayList<>(loadedWeapon);
             }
 

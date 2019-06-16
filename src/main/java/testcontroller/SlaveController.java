@@ -72,7 +72,6 @@ public class SlaveController {
      * This function sets in motion the main turn line
      */
     public void startMainAction(){
-        //TODO: if player is disconnected here I call directly endTurn
         this.onTimeout = () -> {
             main.endTurn(getSelf());
         };
@@ -288,11 +287,8 @@ public class SlaveController {
             return new WaitMessage(old);
         }
 
-
         else return mess;
     }
-
-
 
     void onConnection(Player player, int numOfPlayer) {
         network.onConnection(player, numOfPlayer);
@@ -336,7 +332,7 @@ public class SlaveController {
         if (!currentMessage.type().equals(SlaveControllerState.WAIT)){
             new Thread(()->{
                 try {
-                    Thread.sleep(timeoutWindow*1000);
+                    Thread.sleep(timeoutWindow*(long)1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

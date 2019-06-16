@@ -37,7 +37,6 @@ public class ChoiceBoard {
 
     /**
      * This provides a human readable description of the choice being made
-     * TODO: change to something other than string
      */
     public final String description;
     private int numOfElems;

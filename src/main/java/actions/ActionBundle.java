@@ -24,11 +24,15 @@ public class ActionBundle implements ActionPicker {
 
     public ActionBundle(Sandbox sandbox, List<ActionTemplate> actions,
                         Function<List<Effect>, ControllerMessage> finalize){
-                this.actionsPossible = actions;
+
+        this.actionsPossible = actions;
+
         finalized = false;
         this.sandboxFromMap = sandbox;
+
         finalizer = tup -> {
             Sandbox sandboxReturned = tup.x;
+
             List<Effect> effectsHistory = sandboxReturned.getEffectsHistory();
 
             if (this.isFinalized())

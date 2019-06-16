@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * TODO: gestire il caso in cui il target sia opzionale o unico
- * TODO: generare la nuova azione e restituire la risposta per il controller
  */
 public interface ChoiceMaker {
     /**

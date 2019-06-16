@@ -9,8 +9,6 @@ public class DamageEffect implements Effect{
     private final int amount;
     private final boolean raw;
 
-    //TODO: mirino non converte marchi in punti danno !!
-
     /**
      *
      * @param uid the damaged actor
