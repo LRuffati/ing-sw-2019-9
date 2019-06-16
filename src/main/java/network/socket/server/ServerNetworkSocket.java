@@ -159,11 +159,11 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     @Override
     public Response handle(PollRequest request) {
         ControllerMessage msg = Database.get().getControllerByToken(token).getInstruction();
-        if(!msg.type().equals(SlaveControllerState.WAIT))
-            msg = ObjectMap.get().init(msg);
-        else
-            msg = new ControllerMessageClient(msg, null);
+
+        msg = ObjectMap.get().poll(token, msg);
         return new PollResponse(msg);
+
+
     }
 
 

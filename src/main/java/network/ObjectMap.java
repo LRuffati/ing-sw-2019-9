@@ -7,9 +7,7 @@ import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllerstates.SlaveControllerState;
 
 import java.rmi.server.UID;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class ObjectMap {
@@ -19,12 +17,38 @@ public class ObjectMap {
         return ourInstance;
     }
 
+
+    /**
+     * This Map contains the ControllerMessage associated with each String identifier
+     */
     private Map<String, ControllerMessage> choiceMap = new HashMap<>();
+    /**
+     * This Map contains all the ControllerMessages identifier associated with each Token
+     */
+    private Map<String, List<String>> choicesForPlayer = new HashMap<>();
+
+    private Set<String> canNotSend = new HashSet<>();
 
     private ObjectMap() {}
 
-    public void clearChache(){
-        choiceMap.clear();
+
+    private void clearChache(String token){
+        if(choicesForPlayer.get(token) == null)
+            return;
+        for(String controllerMessageID : choicesForPlayer.get(token))
+            choiceMap.remove(controllerMessageID);
+        choicesForPlayer.remove(token);
+    }
+
+    private String put(String token, ControllerMessage controllerMessage) {
+        String id = newID();
+        choiceMap.put(id, controllerMessage);
+        if(choicesForPlayer.containsKey(token))
+            choicesForPlayer.get(token).add(id);
+        else
+            choicesForPlayer.put(token, List.of(id));
+
+        return id;
     }
 
 
@@ -45,30 +69,72 @@ public class ObjectMap {
         return new UID().toString();
     }
 
-    private ControllerMessage handlePick(ControllerMessage controllerMessage) {
-        String id = newID();
-        choiceMap.put(id, controllerMessage);
 
+
+    private ControllerMessage handlePick(ControllerMessage controllerMessage, String token) {
+
+        String id = put(token, controllerMessage);
         if(controllerMessage.type().equals(SlaveControllerState.WAIT))
-            clearChache();
+            clearChache(token);
 
         return new ControllerMessageClient(controllerMessage, id);
     }
 
+
+    /**
+     * This method handles the pick requests of the clients.
+     * First of all it checks if the Client can make the pick, and then if che choice is valid.
+     * If the client is not blocked the next ControllerMessage is sent, otherwise the client will receive a WAIT message.
+     * @param token token of the client
+     * @param choiceId id of the ControllerMessage
+     * @param choices A List containing all the element chosen
+     * @return A rollback if the choice is not valid, a WAIT if the client can't do the action or if the client is blocked, the next ControllerMessage otherwise
+     */
     public ControllerMessage pick(String token, String choiceId, List<Integer> choices) {
-        if(!choiceMap.containsKey(choiceId)) {
-            return new ControllerMessageClient(Database.get().getControllerByToken(token).getInstruction(), null);
+        if(!choiceMap.containsKey(choiceId)
+                || !choicesForPlayer.containsKey(token)
+                || !choicesForPlayer.get(token).contains(choiceId) ) {
+            return new ControllerMessageClient();
         }
         ControllerMessage message = choiceMap.get(choiceId);
         if(checkPick(message, choices))
-            return handlePick(choiceMap.get(choiceId).pick(choices));
+            message = handlePick(message.pick(choices), token);
+        else
+            message = new ControllerMessageClient(message, choiceId, SlaveControllerState.ROLLBACK);
+
+        if(canNotSend.contains(token))
+            return new ControllerMessageClient();
         else
             return message;
     }
 
-    public ControllerMessage init(ControllerMessage controllerMessage) {
-        String id = newID();
-        choiceMap.put(id, controllerMessage);
-        return new ControllerMessageClient(controllerMessage, id);
+
+    /**
+     * This method handles the poll request.
+     * First of all it removes the client from the set of blocked.
+     * If the message is a WAIT one it sends a new wait message
+     * Otherwise it adds the message to the list of available messages
+     * @param token tje token of the caller
+     * @param controllerMessage a message given by SlaveController
+     * @return a controllerMessage that contains the next action
+     */
+    public ControllerMessage poll(String token, ControllerMessage controllerMessage) {
+        canNotSend.remove(token);
+        if(! controllerMessage.type().equals(SlaveControllerState.WAIT)) {
+            String id = put(token, controllerMessage);
+            return new ControllerMessageClient(controllerMessage, id);
+        }
+        else
+            return new ControllerMessageClient(controllerMessage, null);
+    }
+
+
+    /**
+     * This methods add the token to the blackList and removes all the ControllerMessages already associated
+     * @param token the token of the player
+     */
+    public void clearCacheAndBlock(String token) {
+        clearChache(token);
+        canNotSend.add(token);
     }
 }
