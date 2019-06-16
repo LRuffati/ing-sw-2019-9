@@ -15,7 +15,6 @@ public class ControllerMessageClient implements ControllerMessage{
     private SlaveControllerState type;
     private ChoiceBoard choiceBoard;
     private Message message;
-    private String gameMapHash;
     private GameMapView sandbox;
 
 
@@ -27,6 +26,25 @@ public class ControllerMessageClient implements ControllerMessage{
         this.sandbox = controllerMessage.sandboxView();
         this.message = controllerMessage.getMessage();
     }
+
+    public ControllerMessageClient() {
+        this.id = null;
+
+        this.type = SlaveControllerState.WAIT;
+        this.choiceBoard = null;
+        this.message = null;
+        this.sandbox = null;
+    }
+
+    public ControllerMessageClient(ControllerMessage controllerMessage, String id, SlaveControllerState state) {
+        this.id = id;
+
+        this.type = state;
+        this.choiceBoard = controllerMessage.genView();
+        this.sandbox = controllerMessage.sandboxView();
+        this.message = controllerMessage.getMessage();
+    }
+
 
     @Override
     public SlaveControllerState type() {
@@ -53,5 +71,6 @@ public class ControllerMessageClient implements ControllerMessage{
         //FIXME: call the network method, example: return network.pick(id, choices)
         return null;
     }
+
 
 }
