@@ -43,7 +43,7 @@ class ActorViewTest {
         act2.pawn().setUsername("Giocatore due");
 
 
-        act1.addDamage(act2, 2);
+        act1.damage(act2, 2);
         act1.addPoints(10);
         act1.move(map.getPosition(new Coord(0,0)));
         act1.pickUp((AmmoCard)map.getGrabbable(map.getPosition(new Coord(0,0))).iterator().next());
@@ -52,16 +52,11 @@ class ActorViewTest {
         act1.move(map.getPosition(new Coord(2,2)));
         act1.pickUp((AmmoCard)map.getGrabbable(map.getPosition(new Coord(2,2))).iterator().next());
 
-        try {
-            act1.move(map.getPosition(new Coord(1,0)));
-            //Weapon weapon = (Weapon)map.getGrabbable(map.getPosition(new Coord(1,0))).iterator().next();
-            //System.out.println(act1.getAmmo() + "\n" + weapon.getBuyCost() + "\n" + act1.getPowerUp().size());
-            act1.pickUp((Weapon) map.getGrabbable(map.getPosition(new Coord(1,0))).iterator().next(),
-                    null);
-        }
-        catch (AmmoException e){
-            e.printStackTrace();
-        }
+        act1.move(map.getPosition(new Coord(1,0)));
+        //Weapon weapon = (Weapon)map.getGrabbable(map.getPosition(new Coord(1,0))).iterator().next();
+        //System.out.println(act1.getAmmo() + "\n" + weapon.getBuyCost() + "\n" + act1.getPowerUp().size());
+         act1.pickUp((Weapon) map.getGrabbable(map.getPosition(new Coord(1,0))).iterator().next(),
+                 null);
 
 
 
