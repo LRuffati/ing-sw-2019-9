@@ -74,7 +74,9 @@ public class PickWeaponMessage implements ControllerMessage{
     @Override
     public ControllerMessage pick(List<Integer> choices) {
         choices =
-                choices.stream().filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
+                choices.stream()
+                        .distinct()
+                        .filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
         return fun.apply(choices);
     }
 }

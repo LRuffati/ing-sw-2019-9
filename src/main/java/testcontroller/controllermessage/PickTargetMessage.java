@@ -75,7 +75,9 @@ public class PickTargetMessage implements ControllerMessage{
      */
     @Override
     public ControllerMessage pick(List<Integer> choices) {
-        choices = choices.stream().filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
+        choices = choices.stream()
+                        .distinct()
+                        .filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
         if (choices.isEmpty()){
             return fun.apply(-1);
         } else {
