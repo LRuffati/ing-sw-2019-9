@@ -48,6 +48,8 @@ public class Actor {
     private Set<Actor> damagedPlayer;
     //TODO: is this necessary?
     private Set<Actor> damagedBy;
+    private boolean flipBoard = false;
+    private boolean afterFirst;
 
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
@@ -424,6 +426,9 @@ public class Actor {
      * @throws InvalidParameterException if the actor is not dead.
      */
     public void respawn(AmmoColor color){
+        if (frenzy)
+            flipBoard=true;
+
         if(pawn().getTile() != gm.getEmptyTile() && !isDead())
             throw new InvalidParameterException("The player is not dead");
 
@@ -481,8 +486,12 @@ public class Actor {
      * @return
      */
     public List<List<ActionTemplate>> getActions() {
-        //TODO: Implement
-        return new ArrayList<>();
+        if (!frenzy){
+            return ActionTemplateOptions.getActionsStandard(damageTaken.size());
+        } else {
+            return ActionTemplateOptions.getFrenzyActions(!afterFirst, flipBoard,
+                    damageTaken.size());
+        }
     }
 
     public void setLastInFrenzy() {
@@ -493,19 +502,12 @@ public class Actor {
         return lastInFrenzy;
     }
 
-    /**
-     * Set the attribute frenzy to true.
-     */
-    public void setFrenzy(){
-        this.frenzy = true;
-        //todo continue setFrenzy
-    }
-
     public void beginFF(boolean afterFirst){
-        if(damageTaken.size() == 0)
-            setFrenzy();
-        //TODO: implement FF, if doesn't have any damage switch ActionTemplates, else wait for
-        // next death
+        if(damageTaken.isEmpty())
+            this.flipBoard = true;
+
+        frenzy = true;
+        this.afterFirst = afterFirst;
     }
 
     public boolean endTurn(Actor player, Scoreboard scoreboard){
@@ -517,6 +519,9 @@ public class Actor {
         return false;
     }
 
-    //TODO @LORENZO Hardcodare diverse liste di azioni in base alle esigenze della playerboard
+    public void drop(Weapon weapUsed) {
+        //TODO
+    }
+
 }
 
