@@ -552,6 +552,6 @@ public class Actor {
         return false;
     }
 
-    //TODO Hardcodare diverse liste di azioni in base alle esigenze della playerboard
+    //TODO @LORENZO Hardcodare diverse liste di azioni in base alle esigenze della playerboard
 }
 
