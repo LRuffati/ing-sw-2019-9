@@ -27,6 +27,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.lang.System.exit;
+
 /**
  * This class is the class which interacts directly with the user, in the distributed system
  * It'll be separated from the other parts of the controlle by the network layer
@@ -43,9 +45,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     private Deque<ControllerMessage> stack;
-    private Map<String, GameMapView> gameMapViewMap;
 
-    private String currentGameMap;
     private GameMapView gameMap;
 
     private TimerTask repeatedTask;
@@ -86,7 +86,6 @@ public class ClientController implements ClientControllerClientInterface, Client
         view.loginNotif();
 
         stack = new ArrayDeque<>();
-        gameMapViewMap = new HashMap<>();
 
         initPolling();
 
@@ -120,7 +119,6 @@ public class ClientController implements ClientControllerClientInterface, Client
                         RemoteException e) {
                     logger.log(Level.SEVERE, "Exception in login (register)", e);
                 }
-                Thread.currentThread().interrupt();
             }
 
         };
@@ -129,17 +127,24 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void login(String username, String password) {
-        try {
-            network.reconnect(username, password);
-            view.loginResponse(true, false, false);
-            add();
-        }
-        catch (InvalidLoginException e) {
-            view.loginResponse(false, e.wrongUsername, e.wrongColor);
-        }
-        catch (RemoteException e) {
-            logger.log(Level.SEVERE, "Exception in login (reconnect)", e);
-        }
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                super.run();
+                try {
+                    network.reconnect(username, password);
+                    view.loginResponse(true, false, false);
+                    add();
+                }
+                catch (InvalidLoginException e) {
+                    view.loginResponse(false, e.wrongUsername, e.wrongColor);
+                }
+                catch (RemoteException e) {
+                    logger.log(Level.SEVERE, "Exception in login (reconnect)", e);
+                }
+            }
+        };
+        thread.start();
     }
 
     @Override
@@ -147,9 +152,11 @@ public class ClientController implements ClientControllerClientInterface, Client
         try {
             System.out.println("QUIT");
             network.close();
+            exit(0);
         }
         catch (RemoteException e) {
             logger.log(Level.SEVERE, "Exception in quit", e);
+            quitForDisconnection();
         }
     }
 
@@ -160,6 +167,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             network.pick(id, choices);
         } catch (RemoteException e) {
             e.printStackTrace();
+            quitForDisconnection();
         }
     }
 
@@ -167,7 +175,6 @@ public class ClientController implements ClientControllerClientInterface, Client
     public void restartSelection() {
         ControllerMessage first = stack.getFirst();
         stack.clear();
-        gameMapViewMap.clear();
         elaborate(first);
     }
 
@@ -187,10 +194,14 @@ public class ClientController implements ClientControllerClientInterface, Client
             view.onMessage(controllerMessage.getMessage());
         }
 
-        if(!currentGameMap.equals(controllerMessage.gamemap())) {
-            currentGameMap = controllerMessage.gamemap();
-            network.getMap();
-        }
+        if(controllerMessage.sandboxView() == null)
+            try {
+                network.getMap();
+            }
+            catch (RemoteException e) {
+                quitForDisconnection();
+            }
+
 
         if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
             stack.clear();
@@ -228,28 +239,39 @@ public class ClientController implements ClientControllerClientInterface, Client
 
         ChoiceBoard choice = controllerMessage.genView();
         String id = ((ControllerMessageClient)controllerMessage).id;
-        if(choice!= null) {
-            switch (choice.type) {
-                case STRING:
-                    view.chooseString(choice.stringViews, choice.single, choice.optional, choice.description, id);
-                    break;
-                case ACTION:
-                    view.chooseAction(choice.actionViews, choice.single, choice.optional, choice.description, id);
-                    break;
-                case TARGET:
-                    view.chooseTarget(choice.targetViews, choice.single, choice.optional,
-                            choice.description, controllerMessage.sandboxView(), id);
-                    break;
-                case WEAPON:
-                    view.chooseWeapon(choice.weaponViews, choice.single, choice.optional, choice.description, id);
-                    break;
-                case POWERUP:
-                    view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional, choice.description, id);
-                    break;
+        if(choice != null) {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    super.run();
+                    switch (choice.type) {
+                        case STRING:
+                            view.chooseString(choice.stringViews, choice.single, choice.optional,
+                                    choice.description, id);
+                            break;
+                        case ACTION:
+                            view.chooseAction(choice.actionViews, choice.single, choice.optional,
+                                    choice.description, id);
+                            break;
+                        case TARGET:
+                            view.chooseTarget(choice.targetViews, choice.single, choice.optional,
+                                    choice.description, controllerMessage.sandboxView(), id);
+                            break;
+                        case WEAPON:
+                            view.chooseWeapon(choice.weaponViews, choice.single, choice.optional,
+                                    choice.description, id);
+                            break;
+                        case POWERUP:
+                            view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional,
+                                    choice.description, id);
+                            break;
 
-                    default:
-                        break;
-            }
+                        default:
+                            break;
+                    }
+                }
+            };
+            thread.start();
         }
 
     }
@@ -263,6 +285,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                     network.poll();
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                    quitForDisconnection();
                 }
             }
         };
@@ -272,7 +295,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     private void setPolling(boolean value) {
         if(polling != value)
             if(value) {
-                timerForPolling.scheduleAtFixedRate(repeatedTask, 0, 2000);
+                timerForPolling.scheduleAtFixedRate(repeatedTask, 1000, 5000);
             }
             else {
                 timerForPolling.cancel();
@@ -330,7 +353,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 if(signals >= 10) {
                     System.out.println("BEFOREQUIT");
                     stop();
-                    quit();
+                    quitForDisconnection();
                     Thread.currentThread().interrupt();
                 }
             }
@@ -348,5 +371,11 @@ public class ClientController implements ClientControllerClientInterface, Client
     public void stop() {
         stopped = true;
         timer.cancel();
+    }
+
+
+    private void quitForDisconnection() {
+        System.out.println("quit for disconnection");
+        exit(0);
     }
 }
