@@ -7,6 +7,7 @@ import network.socket.messages.Response;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -37,9 +38,10 @@ public class ClientHandler implements Runnable{
         stop = false;
     }
 
-    void respond(Response response){
+    synchronized void respond(Response response){
         try{
             out.writeObject(response);
+            out.flush();
             out.reset();
         }
         catch (SocketException e) {
@@ -47,6 +49,7 @@ public class ClientHandler implements Runnable{
             Database.get().logout(controller);
         }
         catch (IOException e) {
+            e.printStackTrace();
             logger.log(Level.SEVERE, "IO - " + e.getMessage());
         }
     }
@@ -64,8 +67,13 @@ public class ClientHandler implements Runnable{
         } catch (SocketException | SocketTimeoutException e) {
             System.out.println("Soft quit");
             //TODO: notify controller too?
+            e.printStackTrace();
             Database.get().logout(controller);
             close();
+        }
+        catch (OptionalDataException e) {
+            e.printStackTrace();
+            System.out.println(e.eof+"\t\t"+e.length);
         } catch (Exception e) {
             e.printStackTrace();
             logger.log(Level.SEVERE, e.getClass().getSimpleName() + " - " + e.getMessage());

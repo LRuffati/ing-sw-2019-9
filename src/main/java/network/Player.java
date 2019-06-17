@@ -18,7 +18,7 @@ public class Player implements Serializable {
     private DamageableUID uid;
     private transient String token;
 
-    private ServerInterface serverInterface;
+    private transient ServerInterface serverInterface;
 
     private boolean onLine;
 
