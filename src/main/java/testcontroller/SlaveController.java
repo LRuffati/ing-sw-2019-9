@@ -11,6 +11,7 @@ import actions.utils.PowerUpType;
 import board.Sandbox;
 import genericitems.Tuple;
 import grabbables.PowerUp;
+import network.Database;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
@@ -19,6 +20,7 @@ import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -160,6 +162,7 @@ public class SlaveController {
         List<String> notifs = List.copyOf(notificationList);
         notificationList.clear();
         return notifs;
+
     }
 
     /**
@@ -291,19 +294,39 @@ public class SlaveController {
     }
 
     void onConnection(Player player, int numOfPlayer) {
-        network.onConnection(player, numOfPlayer);
+        try {
+            network.onConnection(player, numOfPlayer);
+        }
+        catch (RemoteException e) {
+            Database.get().logout(this.player.getToken());
+        }
     }
 
-    void onDisconnection(Player playerint, int numOfPlayer) {
-        network.onDisconnection(player, numOfPlayer);
+    void onDisconnection(Player player, int numOfPlayer) {
+        try {
+            network.onDisconnection(player, numOfPlayer);
+        }
+        catch (RemoteException e) {
+            Database.get().logout(this.player.getToken());
+        }
     }
 
     void onStarting(String map) {
-        network.onStarting(map);
+            try {
+                network.onStarting(map);
+            }
+            catch (RemoteException e) {
+                Database.get().logout(this.player.getToken());
+            }
     }
 
     void onTimer(int ms) {
-        network.onTimer(ms);
+            try {
+                network.onTimer(ms);
+            }
+            catch (RemoteException e) {
+                Database.get().logout(this.player.getToken());
+        }
     }
 
     public Actor getSelf() {

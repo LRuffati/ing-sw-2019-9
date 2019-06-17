@@ -90,10 +90,16 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
 
     @Override
-    public void getMap(String token) throws RemoteException {
-        checkConnection(token);
-        Database d = Database.get();
-        d.getNetworkByToken(token).nofifyMap(d.getControllerByToken(token).sendMap());
+    public void getMap(String token) {
+        try {
+            checkConnection(token);
+            Database d = Database.get();
+            d.getNetworkByToken(token).nofifyMap(d.getControllerByToken(token).sendMap());
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+            Database.get().logout(token);
+        }
     }
 
     @Override

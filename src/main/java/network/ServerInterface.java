@@ -8,9 +8,9 @@ import java.rmi.RemoteException;
 /**
  * Methods called from outside the package from the server-side.
  */
-public interface ServerInterface {
+public interface ServerInterface extends Remote {
 
-    void setToken(String token);
+    void setToken(String token) throws RemoteException;
 
 
 
@@ -24,11 +24,11 @@ public interface ServerInterface {
 
 
 
-    void onConnection(Player player, int numOfPlayer);
-    void onDisconnection(Player player, int numOfPlayer);
+    void onConnection(Player player, int numOfPlayer) throws RemoteException;
+    void onDisconnection(Player player, int numOfPlayer) throws RemoteException;
 
-    void onStarting(String map);
-    void onTimer(int ms);
+    void onStarting(String map) throws RemoteException;
+    void onTimer(int ms) throws RemoteException;
 
 
     /**
