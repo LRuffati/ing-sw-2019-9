@@ -1,5 +1,7 @@
 package view.cli;
 
+import board.Coord;
+import player.Actor;
 import testcontroller.Message;
 import testcontroller.controllerclient.ClientControllerClientInterface;
 import view.View;
@@ -551,21 +553,83 @@ public class CLIDemo implements View {
         } else {
             System.out.println(">> There is a spawn point for ammunition in the tile.\n");
         }
-
+        int i = 0;
         if(t.players().isEmpty()){
             System.out.println(">> There are no players in the tile.");
         } else {
             System.out.println(">> The following players are in the tile: ");
             for(ActorView a: t.players()){
-                System.out.println(" +" + a.getAnsi() + a.name());
+                System.out.println(i + ". " + a.getAnsi() + a.name());
+                i++;
+            }
+            System.out.println(">> If you want more information about a player, type his name now. Otherwise type" +
+                    "anything else.");
+            String ans = in.next();
+            for(Map.Entry<ActorView,Character> actor : climap.getPlayers().entrySet()){
+                if(ans.equalsIgnoreCase(actor.getKey().name())){
+                    playerInfo(actor.getKey());
+                }
             }
         }
     }
 
-    public void weaponInfo(WeaponView w){
-        System.out.println("The reload cost of the " + w.name() + " is " + w.reloadCost().toString());
-        System.out.println("The purchase cost of the " + w.name() + " is " + w.buyCost().toString());
-        //TODO gestire azioni effettuabili dall'arma
+    public void playerInfo(ActorView player){
+        System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
+                (player.getHP()-player.damageTaken().size()) + "HP left.");
+        System.out.println("\n>> He's got the following loaded weapons: ");
+        int i = 0;
+        for(WeaponView w : player.getLoadedWeapon()){
+            System.out.println(i + ". " + w.name());
+            i++;
+        }
+        System.out.println("\n>> He's got the following unloaded weapons: ");
+        for(WeaponView w : player.getUnloadedWeapon()){
+            System.out.println(i + ". " + w.name());
+            i++;
+        }
+        System.out.println("\n>> He's got the following powerUps: ");
+        for(PowerUpView w : player.getPowerUp()){
+            System.out.println(i + ". " + w.type());
+            i++;
+        }
+    }
+
+    public void askInfo(){
+        System.out.println(">> 1. Players");
+        System.out.println(">> 2. Tiles");
+        int i;
+        switch (in.next().toLowerCase()){
+            case("players"):
+            case("1"):
+                i = 0;
+                for(Map.Entry<ActorView,Character> actor : climap.getPlayers().entrySet()){
+                    System.out.println(i + ". " + actor.getKey().name());
+                }
+
+                for(Map.Entry<ActorView,Character> actor : climap.getPlayers().entrySet()){
+                    if(in.next().equalsIgnoreCase(actor.getKey().name())){
+                        playerInfo(actor.getKey());
+                    }
+                }
+
+                break;
+            case("tiles"):
+            case("2"):
+                i = 0;
+                for(TileView tile : climap.getMp().allTiles()){
+                    System.out.println(i + ". " + climap.getMp().getCoord(tile));
+                }
+
+                for(TileView tile : climap.getMp().allTiles()){
+                    if(in.nextLine().equalsIgnoreCase(climap.getMp().getCoord(tile).toString())){
+                        tileInfo(tile);
+                    }
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 
     public void endGame(){

@@ -31,7 +31,23 @@ public class ActorView implements Serializable {
     private List<WeaponView> loadedWeapon;
     private List<WeaponView> unloadedWeapon;
     private List<PowerUpView> powerUp;
+    private static final int HP = 5;
 
+    public int getHP(){
+        return HP;
+    }
+
+    public List<WeaponView> getLoadedWeapon() {
+        return loadedWeapon;
+    }
+
+    public List<WeaponView> getUnloadedWeapon() {
+        return unloadedWeapon;
+    }
+
+    public List<PowerUpView> getPowerUp() {
+        return powerUp;
+    }
 
     public ActorView(){
         loadedWeapon = new ArrayList<>();
