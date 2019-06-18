@@ -76,5 +76,9 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
         return new AmmoAmountUncapped(newMap);
     }
 
-    public String toString();
+    public String toString(){
+        return "RED:" + getAmounts().get(AmmoColor.RED)
+                +" BLUE:" + getAmounts().get(AmmoColor.BLUE)
+                +" YELLOW:" + getAmounts().get(AmmoColor.YELLOW);
+    }
 }

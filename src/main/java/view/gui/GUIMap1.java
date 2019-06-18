@@ -100,6 +100,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
 
 
     private void setTile(JLabel label, String path, Color tileColor, Coord coord){
+        int i = 1;
         try {
             tile = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -107,8 +108,8 @@ public class GUIMap1 extends JPanel implements GUIMap{
         }
         Image imgAmmo = tile;
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            double tilewid = tile.getWidth() / 1.75238;
-            double tilehid = tile.getHeight() / 1.75238;
+            double tilewid = (tile.getWidth() / 1.75238) / i;
+            double tilehid = (tile.getHeight() / 1.75238) / i;
             imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
             double tilewid = 0.58737 * (tile.getWidth() / 1.75238);

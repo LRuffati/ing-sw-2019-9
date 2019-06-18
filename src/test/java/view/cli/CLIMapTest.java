@@ -30,7 +30,7 @@ class CLIMapTest {
         String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 5);
+                    null, null, null, tilePath, 5);
         }
         catch (FileNotFoundException ignored){
         }
