@@ -18,26 +18,18 @@ public class GUIScoreBoard extends JPanel {
     private List<Integer> skullIndex = new ArrayList<>();
 
     private BufferedImage scoreBoardBuffered;
-    private Image img;
-    private Point startPt = null;
-    private Point endPt = null;
-    private Point currentPt = null;
-    private int prefW;
-    private int prefH;
 
     public GUIScoreBoard() throws IOException {
         scoreBoardBuffered = ImageIO.read(new File("src/resources/gui/ScoreBoardScaled.png"));
-        img = scoreBoardBuffered.getScaledInstance(scoreBoardBuffered.getWidth()/3,scoreBoardBuffered.getHeight()/3,Image.SCALE_SMOOTH);
 
-        setSkullIndex(8,Color.red);
-        setSkullIndex(6, Color.YELLOW);
-        setSkullIndex(3, Color.YELLOW);
-        setSkullIndex(4, Color.YELLOW);
+        setSkullIndex(0,Color.red);
+        setSkullIndex(1,Color.green);
+        setSkullIndex(7,Color.yellow);
 
         Graphics g = scoreBoardBuffered.getGraphics();
         g.drawImage(scoreBoardBuffered, 0, 0, this);
         g.dispose();
-
+        setSize(new Dimension(300,300));
     }
 
     public void setSkullIndex(int i, Color color){
@@ -56,15 +48,11 @@ public class GUIScoreBoard extends JPanel {
             g.setColor(DRAWING_COLOR.get(i));
 
             //TODO modify this with new size of scoreboard image
-            g.fillOval((33 + 108 * skullIndex.get(i)) / 2, 91 / 2, 61 / 2, 95 / 2);
+            g.fillOval((50 + 161 * skullIndex.get(i)) / 2, 140 / 2, 80 / 2, 150 / 2);
         }
 
     }
 
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(prefW, prefH);
-    }
 
     private static void createAndShowGui() {
         GUIScoreBoard mainPanel = null;
@@ -79,7 +67,7 @@ public class GUIScoreBoard extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.pack();
-        frame.setSize(new Dimension(500,145));
+        frame.setSize(new Dimension(1000,1000));
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
     }

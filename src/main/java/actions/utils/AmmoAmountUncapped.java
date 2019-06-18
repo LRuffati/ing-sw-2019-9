@@ -98,9 +98,6 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
             returnS = returnS.concat(String.format("ROSSO: %d, ", red));
 
         returnS=returnS.substring(0, returnS.length()-2);
-
-        return "RED:" + getAmounts().get(AmmoColor.RED)
-                +" BLUE:" + getAmounts().get(AmmoColor.BLUE)
-                +" YELLOW:" + getAmounts().get(AmmoColor.YELLOW);
+	return returnS;
     }
 }

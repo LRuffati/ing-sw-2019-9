@@ -294,26 +294,31 @@ public class Framework implements View {
 
     @Override
     public void onMessage(Message message) {
-
+        for(String str : message.getChanges()){
+            game.getOutputBox().writeOnOutput(str);
+        }
     }
 
     @Override
     public void onRespawn() {
-
+        game.getOutputBox().writeOnOutput("You're respawing now...");
     }
 
     @Override
     public void onRollback() {
+        game.getOutputBox().writeOnOutput("Rollback executed.");
 
     }
 
     @Override
     public void onTakeback() {
+        game.getOutputBox().writeOnOutput("You can use a Takeback Granade now!");
 
     }
 
     @Override
     public void onTerminator() {
+        game.getOutputBox().writeOnOutput("You can move the Terminator now!");
 
     }
 

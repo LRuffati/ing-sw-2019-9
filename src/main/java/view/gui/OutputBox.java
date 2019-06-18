@@ -19,6 +19,7 @@ public class OutputBox extends JPanel {
         setBackground(Color.yellow);
         setSize(new Dimension(300,400));
         setPreferredSize(new Dimension(300,400));
+        setLayout(new BorderLayout());
     }
 
     public static void main(String[] args){
