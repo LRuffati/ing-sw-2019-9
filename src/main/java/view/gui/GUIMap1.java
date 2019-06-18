@@ -77,6 +77,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
         tileUIDS.add(mv.getTiles().get(new Coord(1,0)).uid());
         Collection<DamageableUID> damageableUIDS = new ArrayList<>();
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
+        targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
 
         frame = new JFrame("frame");
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
@@ -94,7 +95,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
         //DO NOT USE pack() !!!
         frame.setVisible(true);
 
-        guiMap1.clickableButton(targetViewList,"come stai?");
+        guiMap1.clickableButton(targetViewList,"come stai?",true,false);
     }
 
 
@@ -169,19 +170,50 @@ public class GUIMap1 extends JPanel implements GUIMap{
      * @param question based on the kind of action to be executed.
      */
     //TODO to be better implemented
-    public void clickableButton(List<TargetView> targets, String question){
+    public List<Integer> clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
         List<Coord> coords = getTargetCoordinates(targets);
-        GUIMap1 asd = this;
+        GUIMap1 map = this;
+        List<Integer> indexList = new ArrayList<>();
+        final boolean[] flag = {true};
         for(Coord coord : coords){
             for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
                 if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
-                        JOptionPane.showConfirmDialog(asd, question, "asd", JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+                        while(flag[0]){
+
+                            String res = JOptionPane.showInputDialog(map, question + " Type 'stop' to stop.", "TIME TO CHOOSE", JOptionPane.QUESTION_MESSAGE);
+
+
+                            if(res.equalsIgnoreCase("stop")){
+
+                                if(!optional && indexList.isEmpty()){
+                                    JOptionPane.showMessageDialog(map,"You must choose at least one number!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                                } else flag[0] = false;
+                            } else {
+                                while(isNotNumeric(res)){
+                                    res = JOptionPane.showInputDialog(map, "You must type just the number!", "ERROR", JOptionPane.QUESTION_MESSAGE);
+                                }
+                                indexList.add(Integer.parseInt(res));
+                            }
+
+                            if(single && indexList.size()==1) flag[0] = false;
+
+                        }
                     }
                 });
             }
+        }
+        return indexList;
+    }
+
+    private static boolean isNotNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return false;
+        } catch(NumberFormatException e){
+            return true;
         }
     }
 }

@@ -28,4 +28,8 @@ public class OutputBox extends JPanel {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
+
+    public void writeOnOutput(String str){
+        screenPane.setText(str);
+    }
 }

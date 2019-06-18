@@ -4,6 +4,7 @@ import testcontroller.MainController;
 import testcontroller.SlaveController;
 import network.exception.InvalidLoginException;
 
+import java.rmi.RemoteException;
 import java.rmi.server.UID;
 import java.util.*;
 
@@ -113,7 +114,13 @@ public class Database {
             networkByToken.put(token, network);
             usersByToken.put(token, user);
 
-            network.setToken(token);
+            try {
+                network.setToken(token);
+            }
+            catch (RemoteException e) {
+                e.printStackTrace();
+                logout(token);
+            }
         }
         colors.remove(color);
 

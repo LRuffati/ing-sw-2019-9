@@ -138,6 +138,7 @@ public class MainController {
         createGame();
 
         this.scoreboard = game.getScoreboard();
+        this.gameMap = game.getMap();
 
         for (SlaveController i: slaveControllerList){
             slaveMap.put(i.getSelf().pawnID(), i);

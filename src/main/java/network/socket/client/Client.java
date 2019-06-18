@@ -34,6 +34,7 @@ public class Client {
         this.socket = new Socket(host, port);
         out = new ObjectOutputStream(socket.getOutputStream());
         in = new ObjectInputStream(socket.getInputStream());
+
     }
 
     public void close() throws IOException {
@@ -54,9 +55,10 @@ public class Client {
         return null;
     }
 
-    public void request(Request request) {
+    public synchronized void request(Request request) {
         try {
             out.writeObject(request);
+            out.flush();
             out.reset();
         } catch (IOException e) {
             logger.log(Level.SEVERE, "exception on network: " + e.getMessage());

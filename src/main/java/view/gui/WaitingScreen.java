@@ -58,13 +58,13 @@ public class WaitingScreen extends JFrame {
 
     public void onConnection(Player player, boolean connected) {
         appendToPane(messageArea, String.format("%s %s", player.getUsername(), connected ? "connected" : "disconnected"), Color.black);
-        if(connected)
+        /*if(connected)
             playerList.add(new GifPane());
         else
             playerList.remove(playerList.size());
 
         revalidate();
-        repaint();
+        repaint();*/
     }
 
     public void onTimer(int timeToCount) {

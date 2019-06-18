@@ -6,9 +6,10 @@ import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class ControllerMessageClient implements ControllerMessage{
+public class ControllerMessageClient implements ControllerMessage, Serializable {
 
     public final String id;
 

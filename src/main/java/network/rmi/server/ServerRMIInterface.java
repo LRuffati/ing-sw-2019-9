@@ -3,7 +3,6 @@ package network.rmi.server;
 import network.ServerInterface;
 import network.exception.InvalidLoginException;
 import testcontroller.controllermessage.ControllerMessage;
-import viewclasses.GameMapView;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

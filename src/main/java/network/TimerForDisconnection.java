@@ -15,11 +15,9 @@ public class TimerForDisconnection {
             public void run() {
                 numOfErrors.put(this, numOfErrors.get(this) + 1);
 
-                //System.out.println(Database.get().getUserByToken(timerMap.get(this)).getUsername());
-
                 int num = numOfErrors.get(this);
                 if(num>=2) {
-                    System.out.println("NumOfErrors\t" + num + "\t\t");
+                    System.out.println("NumOfErrors\t" + num + "\t\t" + Database.get().getUserByToken(token).getUsername());
                 }
 
                 if (numOfErrors.get(this) >= 10) {
@@ -33,7 +31,7 @@ public class TimerForDisconnection {
         timerMap.put(repeatedTask, token);
         tokenToTimerMap.put(token, timer);
         numOfErrors.put(repeatedTask, 0);
-        timer.schedule(repeatedTask, 300,300);
+        timer.schedule(repeatedTask, 300,500);
         System.out.println("timer\t"+timer+"\n"+"timertask\t"+repeatedTask+"\n"+"token\t"+token+"\n");
     }
 

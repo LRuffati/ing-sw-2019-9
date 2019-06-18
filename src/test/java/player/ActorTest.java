@@ -1,3 +1,4 @@
+/*
 package player;
 
 
@@ -213,3 +214,6 @@ class ActorTest {
         //TODO put the ammocard in a tile and check if the player grabs it.
     }
 }
+
+
+ */

@@ -5,9 +5,10 @@ import testcontroller.Message;
 import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class WaitMessage implements ControllerMessage{
+public class WaitMessage implements ControllerMessage, Serializable {
 
     private final Message message;
 
