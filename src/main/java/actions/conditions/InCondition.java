@@ -6,7 +6,7 @@ import actions.targeters.targets.Targetable;
 import board.Sandbox;
 
 /**
- * Pointlike (in SuperTile)
+ * Checks that the target is contained in the given source
  */
 public class InCondition implements Condition {
     /**
@@ -24,9 +24,8 @@ public class InCondition implements Condition {
     }
 
     /**
-     * @param target the target being filtered
-     * @param checker the filter
-     * @return the result of the check
+     * @param target has to be a pointlike
+     * @param checker has to be a SuperTile
      */
     @Override
     public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {

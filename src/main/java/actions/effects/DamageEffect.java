@@ -4,9 +4,17 @@ import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 
+/**
+ * Deals a certain amount of damage to the actor of the given pawn
+ */
 public class DamageEffect implements Effect{
+
     private final DamageableUID uid;
     private final int amount;
+
+    /**
+     * If true don't trigger the tagback grenade on application
+     */
     private final boolean raw;
 
     /**
@@ -27,11 +35,6 @@ public class DamageEffect implements Effect{
         return EffectType.DAMAGE;
     }
 
-    /**
-     * @param pov
-     * @param finalize contains all the instructions to run after the end of the effect. Contains
-     *                 also the list of effects still to apply
-     */
     @Override
     public void mergeInGameMap(SlaveController pov, Runnable finalize) {
         if (raw){

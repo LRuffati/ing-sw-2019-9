@@ -15,21 +15,24 @@ import java.util.Map;
 
 public interface Effect {
 
+    /**
+     *
+     * @return the type of the effect
+     */
     EffectType type();
 
     /**
      * Sandbox updating method
-     * @param oldWeapons
-     * @return
+     * @param oldWeapons the weapons previously owned by the player
+     * @return a new updated weaponMap
      */
     default Map<Weapon, Boolean> newWeapons(Map<Weapon, Boolean> oldWeapons){
         return new HashMap<>(oldWeapons);
     }
 
     /**
-     * Sandbox updating
-     * @param old
-     * @return
+     * @param old the old location map
+     * @return an updated location map
      */
     default Map<DamageableUID, TileUID> newLocations(Map<DamageableUID, TileUID> old){
         return new HashMap<>(old);
@@ -46,13 +49,18 @@ public interface Effect {
 
     /**
      *
-     * @param pov
-     * @param finalize contains all the instructions to run after the end of the effect. Contains
-     *                also the list of effects still to apply
+     * @param pov the SlaveController linked to the player enacting the effect
+     * @param finalize contains all the instructions to run after the end of the effect. Including
+     *                also the list of effects still to apply. Will be just called, not in a thread
      */
     void mergeInGameMap(SlaveController pov,
                         Runnable finalize);
 
+    /**
+     *
+     * @param pov the actor of the player who caused the effect
+     * @return a string representation of the effect
+     */
     String effectString(Actor pov);
 
     /**

@@ -3,11 +3,12 @@ package actions.conditions;
 import actions.targeters.interfaces.PointLike;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
+import org.jetbrains.annotations.Contract;
 
 import java.util.stream.Collectors;
 
 /**
- * Checked for the condition target (distant () pointlike)
+ * Tests for a distance from the given source
  */
 public class DistantCondition implements Condition {
     /**
@@ -32,12 +33,12 @@ public class DistantCondition implements Condition {
 
 
     /**
-     *
      * @param min the minimum (included) number of steps
      * @param max the maximum (included) number of steps
      * @param logical true if I don't want to go through walls
      * @param negated true if I'm interested in targets further or closer than the range
      */
+    @Contract(pure = true)
     public DistantCondition(int min, int max, boolean logical, boolean negated){
 
         this.min = min;
@@ -47,9 +48,7 @@ public class DistantCondition implements Condition {
     }
 
     /**
-     * @param target the target being filtered
-     * @param checker the filter
-     * @return the result of the check
+     * @param checker has to be a PointLike target
      */
     @Override
     public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {

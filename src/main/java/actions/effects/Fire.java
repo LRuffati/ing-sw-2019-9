@@ -16,6 +16,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This effect is to beused when you want to fire a weapon during the turn.
+ * It makes you choose the weapon you want to use, changes the sandbox to make it unavailable and
+ * then hands the process over to the WeaponUse
+ */
 public class Fire implements EffectTemplate {
 
     public Fire(){
@@ -62,10 +67,6 @@ public class Fire implements EffectTemplate {
                             return updated;
                         }
 
-                        /**
-                         * @param pov
-                         * @param finalize contains all the instructions to run after the end of the effect. Contains
-                         */
                         @Override
                         public void mergeInGameMap(SlaveController pov, Runnable finalize) {
                             pov.getSelf().drop(weapUsed);
@@ -79,10 +80,11 @@ public class Fire implements EffectTemplate {
                     Sandbox newSandbox = new Sandbox(sandbox, effects);
 
                     WeaponUse action = new WeaponUse(weapUsed,newSandbox, consumer);
-                    return new PickActionMessage(action,"", sandbox,List.of());
+                    return new PickActionMessage(action,"Scegli un'azione da eseguire", sandbox,
+                            List.of());
                 }
             }
         };
-        return new PickWeaponMessage(chooser,"", sandbox);
+        return new PickWeaponMessage(chooser,"Scegli un'arma da usare", sandbox);
     }
 }

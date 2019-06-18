@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * target (... &amp; reaches selector)
+ * checks that the target can reach the source in the given amount of moves
  */
 public class ReachesCondition implements Condition {
     /**
@@ -38,18 +38,20 @@ public class ReachesCondition implements Condition {
         this.max = max;
         this.negate = negate;
     }
+
     /**
-     * @param target the target being filtered
-     * @param checker the filter
-     * @return the result of the check
+     * @param target should be PointLike
      */
     @Override
     public boolean checkTarget(Sandbox sandbox, Targetable target,  Targetable checker) {
-        if (!(checker instanceof PointLike)){
+        if (!(target instanceof PointLike)){
             throw new IllegalArgumentException("Expecting a PointLike checker");
         }
-        return negate ^ ((PointLike) checker).reachableSelector(sandbox, min,max)
-                .parallelStream().map(i -> target.getSelectedTiles(sandbox).contains(i))
-                .collect(Collectors.toSet()).contains(Boolean.TRUE);
+        return negate ^ ((PointLike) target).reachableSelector(sandbox, min,max).stream()
+                .anyMatch(tileUID -> checker.getSelectedTiles(sandbox).contains(tileUID));
+                /*
+                1. get all tiles reachable by the target in the given moves
+                2. check that source is in it
+                 */
     }
 }

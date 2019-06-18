@@ -6,7 +6,7 @@ import actions.targeters.targets.Targetable;
 import board.Sandbox;
 
 /**
- * target (... &amp; seen checker)
+ * Checks whether a target is seen by the checker or not
  */
 public class SeenCondition implements Condition {
     /**
@@ -24,9 +24,8 @@ public class SeenCondition implements Condition {
 
     /**
      *
-     * @param target the target being filtered
-     * @param checker the filter
-     * @return the result of the check
+     * @param target should be a Visible
+     * @param checker should be a PointLike
      */
     @Override
     public boolean checkTarget(Sandbox sandbox, Targetable target, Targetable checker) {

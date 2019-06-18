@@ -15,7 +15,7 @@ public interface EffectTemplate {
      * @param targets all targets previously acquired
      * @param sandbox the latest sandbox
      * @param consumer this action provides the information on what to do with the modified sandbox
-     * @return a ControllerMessage
+     * @return the controller message resulting from applying the updated sandbox to consumer
      */
     ControllerMessage spawn(Map<String, Targetable> targets, Sandbox sandbox, Function<Sandbox,
             ControllerMessage> consumer);

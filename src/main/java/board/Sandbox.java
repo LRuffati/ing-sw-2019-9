@@ -100,6 +100,10 @@ public class Sandbox {
         return updatedAmmoAvailable;
     }
 
+    /**
+     *
+     * @return the list of effects that cause this sandbox to differ from GameMap
+     */
     public List<Effect> getEffectsHistory() {
         return new ArrayList<>(effectsHistory);
     }
@@ -118,10 +122,10 @@ public class Sandbox {
      * Returns the tiles in the manhattan circle of radius given centered on a tile
      * If radius is 0 return a set with only the tile given
      * If less than 0 return an empty set
-     * @param centre
-     * @param radius
+     * @param centre the tileUID from which to compute the circle
+     * @param radius the radius
      * @param logical go through walls or not
-     * @return
+     * @return the set of tileUID withing radius steps from centre
      */
     public Set<TileUID> circle(TileUID centre, int radius, boolean logical){
         HashSet<TileUID> retVal = new HashSet<>();
@@ -129,13 +133,13 @@ public class Sandbox {
         HashSet<TileUID> border;
 
         if (radius<0) return retVal;
+
         retVal.add(centre);
         int rad = 0;
 
         while (rad<radius){
-            border = new HashSet<>();
             //1. Find the border
-            border.addAll(retVal);
+            border = new HashSet<>(retVal);
             border.removeAll(interior);
             //2. Find neighbors of the border
             for (TileUID i: border){
@@ -150,17 +154,19 @@ public class Sandbox {
 
     /**
      * Returns all the pawns (player or domination points) contained in the tile
-     * @param tile
-     * @return
+     * @param tile the tile I want to check
+     * @return all players or control points in the tile
      */
     public Collection<DamageableUID> containedPawns(TileUID tile){
-        return map.getDamageable().stream().filter(i -> tile(i).equals(tile)).collect(Collectors.toCollection(ArrayList::new));
+        return map.getDamageable().stream()
+                .filter(i -> tile(i).equals(tile))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     /**
      * Returns the room containing the tile
-     * @param tile
-     * @return
+     * @param tile the tile in question
+     * @return the RoomUID of the containing room
      */
     public RoomUID room(TileUID tile){
         return map.room(tile);
@@ -168,13 +174,19 @@ public class Sandbox {
 
     /**
      * Returns the room containing the pawn
-     * @param pawn
-     * @return
+     * @param pawn the pawn in question
+     * @return the room containing the pawn
      */
     public RoomUID room(DamageableUID pawn){
+        // Use sandbox method because player might have moved
         return map.room(tile(pawn));
     }
 
+    /**
+     *
+     * @param pawn the pawn I want to know the location of
+     * @return the TileUID of the pawn's location
+     */
     public TileUID tile(DamageableUID pawn){
         if (updatedLocations.containsKey(pawn))
             return updatedLocations.get(pawn);
@@ -190,6 +202,11 @@ public class Sandbox {
         return map.tilesInRoom(room);
     }
 
+    /**
+     *
+     * @param source the tile from which the observation is made
+     * @return the tileUid of all tiles visible from the source
+     */
     public Set<TileUID> tilesSeen(TileUID source){
         Collection<TileUID> tilesNear = neighbors(source, true).values();
 
@@ -206,26 +223,36 @@ public class Sandbox {
         return visible;
     }
 
+    /**
+     *
+     * @return all the tiles in the sandbox
+     */
     public Set<TileUID> allTiles(){
         return map.allTiles();
     }
 
+    /**
+     *
+     * @param roomUID the room uid
+     * @return the target representing the room
+     */
     public RoomTarget getRoom(RoomUID roomUID) {
-        if (roomsTargeted.containsKey(roomUID)) return roomsTargeted.get(roomUID);
-        else {
-            RoomTarget targ =  new RoomTarget(roomUID);
-            roomsTargeted.put(roomUID, targ);
-            return roomsTargeted.get(roomUID);
-        }
+        if (!roomsTargeted.containsKey(roomUID))
+            roomsTargeted.put(roomUID, new RoomTarget(roomUID));
+
+        return roomsTargeted.get(roomUID);
     }
 
+    /**
+     *
+     * @param tileUID the Tile UID
+     * @return the target representing the Tile
+     */
     public TileTarget getTile(TileUID tileUID) {
-        if (tilesTargeted.containsKey(tileUID)) return  tilesTargeted.get(tileUID);
-        else {
-            TileTarget targ = new TileTarget(tileUID);
-            tilesTargeted.put(tileUID, targ);
-            return tilesTargeted.get(tileUID);
-        }
+        if (!tilesTargeted.containsKey(tileUID))
+            tilesTargeted.put(tileUID, new TileTarget(tileUID));
+
+        return  tilesTargeted.get(tileUID);
     }
 
     public BasicTarget getBasic(DamageableUID targetUID){
@@ -237,6 +264,10 @@ public class Sandbox {
         }
     }
 
+    /**
+     *
+     * @return all weapons owned by the player and their availability
+     */
     public List<Tuple<Boolean,Weapon>> getArsenal(){
         List<Tuple<Boolean, Weapon>> ret = new ArrayList<>();
         for (Weapon i: map.getPawn(pov).getActor().getLoadedWeapon()){

@@ -57,11 +57,14 @@ public class ReloadTemplate implements EffectTemplate{
                     tot.add(scariche.get(i).x);
                     reloaded.add(new ReloadEffect(scariche.get(i).y));
                 }
-                if (new AmmoAmountUncapped(sandbox.updatedAmmoAvailable.getAmounts()).compareTo(tot)<0){
+                if (new AmmoAmountUncapped(sandbox.getUpdatedTotalAmmoAvailable().getAmounts()).compareTo(tot)<0){
                     return new RollbackMessage("Not enough ammo");
                 } else {
-                    reloaded.add(new PayEffect(tot));
-                    return consumer.apply(new Sandbox(sandbox, reloaded));
+                    //1. Create sandbox with reloads effect
+                    Sandbox reloadedSandbox = new Sandbox(sandbox, reloaded);
+                    EffectTemplate payTemplate = new PayTemplate(tot);
+                    return payTemplate.spawn(targets, sandbox, consumer::apply);
+
                 }
             }
         };

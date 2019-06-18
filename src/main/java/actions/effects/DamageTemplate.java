@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Gives a certain amound of damage to all BasicTargets targeted by a Target
+ */
 public class DamageTemplate implements EffectTemplate {
 
     private final String targetId;

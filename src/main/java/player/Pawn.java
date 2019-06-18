@@ -31,8 +31,8 @@ public class Pawn {
     private String username = "";
 
     /**
-     * The constructor will assign, from the respective classes, a Tile identifier and a Damageable identifier defined
-     * as UID.
+     * The constructor will assign, from the respective classes, a Tile identifier and a
+     * Damageable identifier defined as UID.
      */
     public Pawn(DamageableUID damageableUID, TileUID position, GameMap map){
         this.tile = position;
@@ -54,19 +54,10 @@ public class Pawn {
      * @param player must be unbounded, otherwise it will throw an AlreadyBoundedPlayer exception.
      */
     void setBinding(Actor player){
-        if(this.actor == null && player.pawn().actor == null) {
+        if((this.actor == null) & (player.pawn().actor == null)) {
             this.actor = player;
         }
     }
-
-    /*
-    protected void setBinding(Actor player) throws AlreadyBoundedActorException{
-        if(player.getPawn().actor != null){
-            throw new AlreadyBoundedActorException("thie actor is already bounded");
-        }
-        if(actor == null && player.getPawn().actor == null) this.actor = player;
-    }
-    */
 
     /**
      * To move the pawn in a selected tile.
@@ -130,10 +121,20 @@ public class Pawn {
         this.username = username;
     }
 
+    /**
+     *
+     * @return a string representation of the username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     *
+     * @param gameMapView the gameMap connected to the ActorView
+     * @param pointOfView if false hide non public information
+     * @return a view of the actor
+     */
     public ActorView generateView(GameMapView gameMapView, boolean pointOfView) {
 
         ActorView actorView = new ActorView();
@@ -177,10 +178,22 @@ public class Pawn {
         return actorView;
     }
 
-
+    /**
+     *
+     * @param gameMapView
+     * @param pawn
+     * @return
+     */
     private ActorView getActorView(GameMapView gameMapView, DamageableUID pawn){
         return getActorView(gameMapView, map.getPawn(pawn).getActor());
     }
+
+    /**
+     *
+     * @param gameMapView
+     * @param actor
+     * @return
+     */
     private ActorView getActorView(GameMapView gameMapView, Actor actor){
         for(ActorView actorView : gameMapView.players()) {
             if (actor.pawnID().equals(actorView.uid())) {

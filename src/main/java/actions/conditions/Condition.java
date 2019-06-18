@@ -5,10 +5,10 @@ import board.Sandbox;
 
 public interface Condition {
     /**
-     *
-     * @param target the target being filtered
-     * @param checker the filter
-     * @return the result of the check
+     * @param sandbox the sandbox in which to test the condition
+     * @param target the target being tested
+     * @param checker the source of the check
+     * @return true if target is valid
      */
     //TODO: check that the overloading works as intended, test using a List<Condition> containing
     // conditions of different types, such as DistantCondition and SeenCondition
