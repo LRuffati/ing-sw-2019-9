@@ -2,12 +2,17 @@ package actions.targeters.targets;
 
 import actions.targeters.interfaces.*;
 import board.Sandbox;
+import board.Tile;
+import grabbables.Weapon;
 import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.TargetView;
 
+import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -79,20 +84,6 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
     public Set<TileUID> tilesSeen(Sandbox sandbox) {
         if (sandbox == null) throw new NullPointerException();
         return sandbox.tilesSeen(location(sandbox));
-    }
-
-    /**
-     * @see PointLike#reachedSelector(Sandbox, int)
-     * @param radius the number of moves it takes at most to reach the cells being returned
-     * @return a set of cells at most radius moves distant from this
-     */
-    @Override
-    public Set<DamageableUID> reachedSelector(Sandbox sandbox, int radius) {
-        if (sandbox == null) throw new NullPointerException();
-        return distanceSelector(sandbox, radius, true).stream() // All the TileUID within range
-                .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
-                .filter(i->sandbox.getBasic(i).reachableSelector(sandbox, radius).contains(this.location(sandbox))) // Only the BasicTargets which can reach "this"
-                .collect(Collectors.toSet());
     }
 
     /**

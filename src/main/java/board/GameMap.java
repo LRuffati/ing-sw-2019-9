@@ -186,6 +186,7 @@ public class GameMap {
      *
      * @return A Set containing all the Tiles in the map
      */
+    // TODO: Test this doesn't include the null tile
     public Set<TileUID> allTiles(){
         HashSet<TileUID> ret = new HashSet<>();
         for(Map.Entry t : tileUIDMap.entrySet()){
