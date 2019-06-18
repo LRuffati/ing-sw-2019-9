@@ -7,6 +7,7 @@ import actions.targeters.targets.TileTarget;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import genericitems.Tuple;
+import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.RoomUID;
@@ -24,12 +25,6 @@ public class Sandbox {
     private final Map<TileUID, TileTarget> tilesTargeted;
     private final Map<DamageableUID, BasicTarget> pawnsTargeted;
 
-    /*
-        Manage changes, relevant effects:
-         + move: DamageableUID, TileUID
-         + reload and fire: Weapon, boolean
-         +
-         */
     private final List<Effect> effectsHistory;
     private final Map<DamageableUID, TileUID> updatedLocations;
     private final Map<Weapon, Boolean> updatedWeapons;
@@ -255,13 +250,17 @@ public class Sandbox {
         return  tilesTargeted.get(tileUID);
     }
 
+    /**
+     *
+     * @param targetUID the UID of a Pawn or domination point
+     * @return a BasicTarget
+     */
     public BasicTarget getBasic(DamageableUID targetUID){
-        if (pawnsTargeted.containsKey(targetUID)) return pawnsTargeted.get(targetUID);
-        else {
-            BasicTarget targ = BasicTarget.basicFactory(map.getPawn(targetUID));
-            pawnsTargeted.put(targetUID, targ);
-            return pawnsTargeted.get(targetUID);
-        }
+        if (!pawnsTargeted.containsKey(targetUID))
+            pawnsTargeted.put(targetUID, map.getPawn(targetUID).targetFactory());
+
+        return pawnsTargeted.get(targetUID);
+
     }
 
     /**

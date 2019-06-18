@@ -16,7 +16,7 @@ import java.util.HashSet;
  */
 public class DominationPointTarget extends BasicTarget {
 
-    DominationPointTarget(DamageableUID target) {
+    public DominationPointTarget(DamageableUID target) {
         super(target);
     }
 

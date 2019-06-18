@@ -37,7 +37,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
      * during the map creation
      * @param target the UID of the Pawn I'm cloning
      */
-    BasicTarget(@NotNull DamageableUID target){
+    public BasicTarget(@NotNull DamageableUID target){
         selfUID = target;
     }
 
@@ -49,19 +49,7 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     @NotNull
     @Contract("_ -> new")
     public static BasicTarget basicFactory(@NotNull Pawn target){
-        return new BasicTarget(target.getDamageableUID());
-    }
-
-    /**
-     * Creates a new target template from a DominationPoint
-     * @param target the pawn
-     * @return the DominationPointTarget
-     */
-    @NotNull
-    @Contract("_ -> new")
-    // TODO: test this, implement visitor pattern if needed
-    public static BasicTarget basicFactory(@NotNull DominationPoint target){
-        return new DominationPointTarget(target.damageableUID);
+        return target.targetFactory();
     }
 
     /*
@@ -122,19 +110,6 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     public Set<TileUID> distanceSelector(Sandbox sandbox, int radius, boolean logical) {
         if (sandbox == null) throw new AssertionError();
         return sandbox.circle(sandbox.tile(selfUID), radius, logical);
-    }
-
-    /**
-     * @param radius the amount of maximum allowed steps
-     * @return the set of Pawns which can reach this target in at most radius steps
-     */
-    @Override
-    public Set<DamageableUID> reachedSelector(Sandbox sandbox, int radius) {
-        return distanceSelector(sandbox, radius, true).stream() // All the TileUID within range
-                .flatMap(i-> sandbox.containedPawns(i).stream()) // All the BasicTargets (UID) in the tileUIDs above
-                .filter(i->sandbox.getBasic(i).reachableSelector(sandbox, radius).contains(sandbox.tile(selfUID))) //
-                // Only the BasicTargets which can reach "this"
-                .collect(Collectors.toSet());
     }
 
     /*

@@ -1,4 +1,5 @@
 package player;
+import actions.targeters.targets.BasicTarget;
 import board.GameMap;
 import grabbables.PowerUp;
 import grabbables.Weapon;
@@ -201,5 +202,13 @@ public class Pawn {
             }
         }
         return null;
+    }
+
+    /**
+     *
+     * @return a BasicTarget
+     */
+    public BasicTarget targetFactory() {
+        return new BasicTarget(damageableUID);
     }
 }
