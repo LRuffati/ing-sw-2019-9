@@ -3,6 +3,7 @@ package testcontroller.controllermessage;
 import grabbables.PowerUp;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
+import testcontroller.SlaveController;
 import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
@@ -49,6 +50,23 @@ public class PickPowerupMessage implements ControllerMessage {
                 this.single = true;
                 this.optional = true;
         }
+    }
+
+    /**
+     * Only to pay
+     * @param options
+     */
+    public PickPowerupMessage(List<PowerUp> options,
+                              Function<List<PowerUp>, ControllerMessage> choicesAction,
+                              boolean optional,
+                              ChoiceBoard choiceBoard){
+        this.choicesAction = choicesAction;
+        this.optional = optional;
+        this.choiceBoard = choiceBoard;
+        type = SlaveControllerState.MAIN;
+        single = false;
+        message = List.of();
+        originalPowup = options;
     }
 
     /**

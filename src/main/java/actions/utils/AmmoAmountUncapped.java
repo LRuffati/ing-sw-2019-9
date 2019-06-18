@@ -31,8 +31,14 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
         return new EnumMap<>(amounts);
     }
 
+    /**
+     *
+     * @param o the other ammoamount
+     * @return 1 if I can use "this" to pay "o", -1 otherwise
+     */
     @Override
     public int compareTo(@NotNull AmmoAmountUncapped o) { // If this can pay o (t>o) then 1 else -1
+        //Test
         for (AmmoColor i: AmmoColor.values()){
             if (getAmounts().get(i)<o.getAmounts().get(i)){
                 return -1;
@@ -69,4 +75,6 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
         }
         return new AmmoAmountUncapped(newMap);
     }
+
+    public String toString();
 }

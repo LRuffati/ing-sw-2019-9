@@ -34,11 +34,8 @@ public class Sandbox {
     private final Map<DamageableUID, TileUID> updatedLocations;
     private final Map<Weapon, Boolean> updatedWeapons;
 
-    public AmmoAmountUncapped getUpdatedAmmoAvailable() {
-        return updatedAmmoAvailable;
-    }
-
-    public final AmmoAmountUncapped updatedAmmoAvailable;
+    private final List<PowerUp> usedPowerups;
+    private final AmmoAmount updatedAmmoAvailable; //Excludes powerups
 
     public final DamageableUID pov;
     private final GameMap map;
@@ -54,10 +51,11 @@ public class Sandbox {
         this.effectsHistory = new ArrayList<>();
         this.updatedLocations = new HashMap<>();
         this.updatedWeapons = new HashMap<>();
+        this.updatedAmmoAvailable = map.getPawn(pov).getActor().getAmmo();
+        this.usedPowerups = new ArrayList<>();
 
         this.map = map;
         this.pov = pov;
-        this.updatedAmmoAvailable = map.getPawn(pov).getActor().getTotalAmmo();
 
         this.father = null;
         this.uid = new UID().toString();
@@ -73,15 +71,19 @@ public class Sandbox {
 
         Map<Weapon, Boolean> weaponsTemp = new HashMap<>(parent.updatedWeapons);
         Map<DamageableUID, TileUID> tempLocs = new HashMap<>(parent.updatedLocations);
-        AmmoAmountUncapped ammoTemp = parent.updatedAmmoAvailable;
+        AmmoAmount ammoTemp = parent.getUpdatedAmmoAvailable();
+        List<PowerUp> powupTemp = parent.usedPowerups;
         for (Effect i: effects){
             weaponsTemp = i.newWeapons(weaponsTemp);
             tempLocs = i.newLocations(tempLocs);
             ammoTemp = i.newAmmoAvailable(ammoTemp);
+            powupTemp = i.newUsedPowUp(powupTemp);
         }
+
         this.updatedWeapons = weaponsTemp;
         this.updatedLocations = tempLocs;
         this.updatedAmmoAvailable = ammoTemp;
+        this.usedPowerups = powupTemp;
 
         this.father = parent;
         this.effectsHistory = new ArrayList<>(father.effectsHistory);
@@ -90,6 +92,13 @@ public class Sandbox {
         this.uid = new UID().toString();
     }
 
+    /**
+     *
+     * @return the ammo available exclusively in the form of ammo cubes
+     */
+    public AmmoAmount getUpdatedAmmoAvailable() {
+        return updatedAmmoAvailable;
+    }
 
     public List<Effect> getEffectsHistory() {
         return new ArrayList<>(effectsHistory);
@@ -241,7 +250,17 @@ public class Sandbox {
         return ret;
     }
 
-
+    /**
+     *
+     * @return a list of PowerUps available to the user to pay for actions
+     */
+    public List<PowerUp> powerUpsAvailable(){
+        List<PowerUp> ret = new ArrayList<>();
+        for (PowerUp p: map.getPawn(pov).getActor().getPowerUp()){
+            if (!usedPowerups.contains(p)) ret.add(p);
+        }
+        return ret;
+    }
 
     /**
      * This method generates a TargetView (TileView) given a TileUID
@@ -249,26 +268,27 @@ public class Sandbox {
     public TargetView generateTargetView(TileUID tileUID) {
         return new TargetView(uid, null, List.of(tileUID));
     }
+
     /**
      * This method generates a TargetView (TileListView) given a Collection of TileUid
      */
     public TargetView generateTargetView(Collection<TileUID> tiles) {
         return new TargetView(uid, null, tiles);
     }
+
     /**
      * This method generates a TargetView (ActorView) given a DamageableUID
      */
     public TargetView generateTargetView(DamageableUID damageableUID) {
         return new TargetView(uid, List.of(damageableUID), null);
     }
+
     /**
      * This method generates a TargetView (ActorListView) given a Collection of DamageableUID
      */
     public TargetView generateTargetView(Set<DamageableUID> targets) {
         return new TargetView(uid, targets, null);
     }
-
-    
 
     /**
      * This method generates a GameMapView of the current Sandbox.
@@ -294,7 +314,7 @@ public class Sandbox {
             tileView.setPlayers(players);
         }
 
-        gameMapView.you().setAmmo(new AmmoAmount(updatedAmmoAvailable));
+        gameMapView.you().setAmmo(new AmmoAmount(getUpdatedTotalAmmoAvailable()));
 
         gameMapView.you().setLoadedWeapon(getArsenal().stream()
                 .filter(i -> i.x == Boolean.TRUE)
@@ -306,5 +326,17 @@ public class Sandbox {
                 .collect(Collectors.toList()));
 
         return gameMapView;
+    }
+
+    /**
+     * @return get the total ammo, obtained by summing powerups to cubes
+     */
+    public AmmoAmountUncapped getUpdatedTotalAmmoAvailable() {
+        AmmoAmountUncapped cubes = new AmmoAmountUncapped(updatedAmmoAvailable.getAmounts());
+        AmmoAmountUncapped pows = new AmmoAmountUncapped();
+        for (PowerUp p: powerUpsAvailable()){
+            pows.add(new AmmoAmountUncapped(p.getAmmo().getAmounts()));
+        }
+        return cubes.add(pows);
     }
 }

@@ -215,16 +215,23 @@ public class Actor {
     }
 
     /**
-     * Consumes all the powerUps, and then reduce the amount of ammoAvailable
+     * Check if the powerup is owned by the player and discard it
+     * @param p the powerup
      */
-    private void pay(AmmoAmount amount, List<PowerUp> powerUpToPay){
-        if(powerUpToPay != null)
-            for(PowerUp p : powerUpToPay){
-                amount = new AmmoAmount(amount.subtract(p.getAmmo()));
-                gm.discardPowerUp(p);
-            }
+    public void pay(PowerUp p){
+        if (getPowerUp().contains(p)){
+            gm.discardPowerUp(p);
+        }
+    }
+
+    /**
+     * Pay the given amount using the ammocubes
+     * @param amount the amount to be paid
+     */
+    public void pay(AmmoAmount amount){
         ammoAvailable = new AmmoAmount(ammoAvailable.subtract(amount));
     }
+
 
     /**
      *

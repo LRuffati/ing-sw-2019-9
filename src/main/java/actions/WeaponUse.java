@@ -41,7 +41,7 @@ public class WeaponUse implements ActionPicker {
                 weapon.getActions().entrySet().stream().filter(i->i.getValue()
                         .actionAvailable(existingTargets
                                 ,previousActions,
-                                new AmmoAmount(sandbox.updatedAmmoAvailable.getAmounts())))
+                                new AmmoAmount(sandbox.getUpdatedTotalAmmoAvailable().getAmounts())))
                         .map(e -> new Tuple<>(e.getKey(),e.getValue())).collect(Collectors.toList());
         canStop = false;
 
@@ -60,7 +60,7 @@ public class WeaponUse implements ActionPicker {
                 weapon.getActions().entrySet().stream().filter(i->i.getValue()
                         .actionAvailable(existingTargets
                                 ,previousActions,
-                                new AmmoAmount(sandbox.updatedAmmoAvailable.getAmounts())))
+                                new AmmoAmount(sandbox.getUpdatedTotalAmmoAvailable().getAmounts())))
                         .map(e -> new Tuple<>(e.getKey(),e.getValue())).collect(Collectors.toList());
 
         canStop = availableActions.stream().noneMatch(i->i.x.equals("main"));

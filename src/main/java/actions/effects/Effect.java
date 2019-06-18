@@ -1,6 +1,8 @@
 package actions.effects;
 
+import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
+import grabbables.PowerUp;
 import grabbables.Weapon;
 import player.Actor;
 import testcontroller.SlaveController;
@@ -8,6 +10,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface Effect {
@@ -34,10 +37,10 @@ public interface Effect {
 
     /**
      * Sandbox updating
-     * @param old
-     * @return
+     * @param old the old amount of ammo available to the player, includes powerups
+     * @return the updated amount
      */
-    default AmmoAmountUncapped newAmmoAvailable(AmmoAmountUncapped old){
+    default AmmoAmount newAmmoAvailable(AmmoAmount old){
         return old;
     }
 
@@ -51,4 +54,13 @@ public interface Effect {
                         Runnable finalize);
 
     String effectString(Actor pov);
+
+    /**
+     * Used for paying and just for paying
+     * @param old the powerups used prior to this effect
+     * @return old with the just used powerup added
+     */
+    default List<PowerUp> newUsedPowUp(List<PowerUp> old){
+        return old;
+    }
 }
