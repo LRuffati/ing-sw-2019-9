@@ -76,5 +76,31 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
         return new AmmoAmountUncapped(newMap);
     }
 
-    public String toString();
+    @Override
+    public String toString() {
+
+        int blue = amounts.getOrDefault(AmmoColor.BLUE,0);
+        int yellow = amounts.getOrDefault(AmmoColor.YELLOW,0);
+        int red = amounts.getOrDefault(AmmoColor.RED,0);
+
+        if ((blue+yellow+red)==0)
+            return "0";
+
+        String returnS = "";
+
+        if (blue>0)
+            returnS = returnS.concat(String.format("BLU: %d, ", blue));
+
+        if (yellow>0)
+            returnS = returnS.concat(String.format("GIALLO: %d, ", yellow));
+
+        if (red>0)
+            returnS = returnS.concat(String.format("ROSSO: %d, ", red));
+
+        returnS=returnS.substring(0, returnS.length()-2);
+
+        return "RED:" + getAmounts().get(AmmoColor.RED)
+                +" BLUE:" + getAmounts().get(AmmoColor.BLUE)
+                +" YELLOW:" + getAmounts().get(AmmoColor.YELLOW);
+    }
 }

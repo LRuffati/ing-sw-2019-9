@@ -78,13 +78,6 @@ public class AmmoAmount extends AmmoAmountUncapped implements Comparable<AmmoAmo
         return new EnumMap<>(amounts);
     }
 
-    @Override
-    public String toString() {
-        return "RED:" + getAmounts().get(AmmoColor.RED)
-                +" BLUE:" + getAmounts().get(AmmoColor.BLUE)
-                +" YELLOW:" + getAmounts().get(AmmoColor.YELLOW);
-    }
-
     /**
      * To be used when only one of the three type of ammo is not zero.
      * @return the color of the type of ammo which amount is more than zero.
