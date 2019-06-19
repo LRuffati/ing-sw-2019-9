@@ -28,7 +28,8 @@ public class GrabEffect implements Effect {
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
 
     }
 

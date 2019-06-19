@@ -65,7 +65,7 @@ public class ReloadTemplate implements EffectTemplate{
                     //1. Create sandbox with reloads effect
                     Sandbox reloadedSandbox = new Sandbox(sandbox, reloaded);
                     EffectTemplate payTemplate = new PayTemplate(tot);
-                    return payTemplate.spawn(targets, sandbox, consumer::apply);
+                    return payTemplate.spawn(targets, sandbox, consumer);
 
                 }
             }
@@ -95,12 +95,17 @@ class ReloadEffect implements Effect{
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
-
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster){
+        try {
+            pov.getSelf().reloadWeapon(weapon);
+        } catch (AmmoException e) {
+            e.printStackTrace();
+        }
+        broadcaster.accept(effectString(pov.getSelf()));
     }
 
-    @Override
-    public String effectString(Actor pov) {
+    String effectString(Actor pov) {
         return String.format("%s ha ricaricato %s",
                 pov.pawn().getUsername(),
                 weapon.getName()

@@ -22,8 +22,10 @@ public class PayWithPowUpEffect implements Effect{
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
         pov.getSelf().pay(powerup);
+        broadcaster.accept(effectString(pov.getSelf()));
         finalize.run();
     }
 
@@ -34,8 +36,7 @@ public class PayWithPowUpEffect implements Effect{
         return newL;
     }
 
-    @Override
-    public String effectString(Actor pov) {
+    String effectString(Actor pov) {
         return String.format("%s paga scartando %s", pov.pawn().getUsername(), powerup.toString());
     }
 }

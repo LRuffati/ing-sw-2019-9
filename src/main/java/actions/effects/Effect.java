@@ -53,14 +53,8 @@ public interface Effect {
      *                also the list of effects still to apply. Will be just called, not in a thread
      */
     void mergeInGameMap(SlaveController pov,
-                        Runnable finalize);
-
-    /**
-     *
-     * @param pov the actor of the player who caused the effect
-     * @return a string representation of the effect
-     */
-    String effectString(Actor pov);
+                        Runnable finalize,
+                        Consumer<String> broadcaster);
 
     /**
      * Used for paying and just for paying

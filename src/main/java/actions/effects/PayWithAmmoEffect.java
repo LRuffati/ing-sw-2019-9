@@ -20,7 +20,9 @@ public class PayWithAmmoEffect implements Effect {
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
+        broadcaster.accept(effectString(pov.getSelf()));
         pov.getSelf().pay(new AmmoAmount(amountToPay));
         finalize.run();
     }
@@ -29,8 +31,7 @@ public class PayWithAmmoEffect implements Effect {
         return new AmmoAmount(old.subtract(amountToPay));
     }
 
-    @Override
-    public String effectString(Actor pov) {
+    String effectString(Actor pov) {
         return String.format("%s paga %s usando cubi", pov.pawn().getUsername(),
                 amountToPay.toString());
     }

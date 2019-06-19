@@ -21,13 +21,14 @@ public class MarkEffect implements Effect {
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
+        broadcaster.accept(effectString(pov.getSelf()));
         pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
         finalize.run();
     }
 
-    @Override
-    public String effectString(Actor pov) {
+    String effectString(Actor pov) {
         return String.format("%s ha dato %d marchi a %s",
                 pov.getGm().getPawn(pov.pawnID()).getUsername(),
                 amount,
