@@ -7,6 +7,8 @@ import network.Player;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
+
+import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.time.Duration;
@@ -569,6 +571,11 @@ public class CLIDemo implements View {
                 }
             }
         }
+        System.out.println("Type anything.");
+        if(in.next()!=null){
+            clearScreen();
+            getPrintedMap();
+        }
     }
 
     public void playerInfo(ActorView player){
@@ -590,9 +597,16 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + w.type());
             i++;
         }
+        System.out.println("Type anything.");
+        if(in.next()!=null){
+            clearScreen();
+            getPrintedMap();
+        }
     }
 
     public void askInfo(){
+        clearScreen();
+        getPrintedMap();
         System.out.println(">> 1. Players");
         System.out.println(">> 2. Tiles");
         int i;
@@ -642,5 +656,10 @@ public class CLIDemo implements View {
                 "                                                                                                                                                       $$\\   $$ |              $$\\   $$ |\n" +
                 "                                                                                                                                                       \\$$$$$$  |              \\$$$$$$  |\n" +
                 "                                                                                                                                                        \\______/                \\______/ ");
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     }
 }
