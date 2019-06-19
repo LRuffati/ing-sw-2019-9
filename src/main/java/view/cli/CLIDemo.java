@@ -8,7 +8,6 @@ import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
 
-import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.time.Duration;
@@ -18,6 +17,8 @@ public class CLIDemo implements View {
     private static CLIMap climap;
     private Scanner in = new Scanner(System.in);
     private ClientControllerClientInterface client;
+    private boolean inputTake = true;
+
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
@@ -93,7 +94,15 @@ public class CLIDemo implements View {
         client.login(username,password,color);
     }
 
+    public void infoThread(){
 
+        new Thread(()-> {
+            while (inputTake) {
+                if(in.next().equalsIgnoreCase("info")){
+                    askInfo();
+                }
+            }}).start();
+    }
 
 
     /**
@@ -102,35 +111,7 @@ public class CLIDemo implements View {
      * @param timeLeft is the timer (in seconds) that starts when there are three players that joined the game.
      */
     public void waitForStart(int timeLeft){
-        //TODO da gestire con le informazioni giuste da controller
-        boolean flag = true;
-        while(climap.getPlayers().size()<3) {
-            if (flag) {
-                System.out.println("Wait for other players to join the game.");
-                flag = false;
-            }
-        }
-        while(climap.getPlayers().size()<5){
-            for(Map.Entry<ActorView, Character> entry: climap.getPlayers().entrySet()){
-                if(entry.getKey().firstPlayer()){
-                    System.out.println(entry.getKey().name() + ", you can start the game whenever you want by typing" +
-                            "'p'. Otherwise the game will start in " + timeLeft + " seconds.");
-                    Timer timer = new Timer();
-                    TimerTask timerTask;
-                    //TODO controllare come far dare l'input al giocare prima che il tempo sia finito.
-                    timer.schedule(
-                            new TimerTask() {
-                                @Override
-                                public void run() {
-                                    return;
-                                }
-                            },timeLeft
-                    );
-                    if(in.nextLine().equalsIgnoreCase("p")) return;
-                }
-            }
-
-        }
+        System.out.println("Wait for other players to join the game.");
     }
 
     public void quitGame(){
@@ -202,6 +183,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId) {
+        inputTake = false;
         List<Integer> l = new ArrayList<>();
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
@@ -261,6 +243,7 @@ public class CLIDemo implements View {
         }
 
         client.pick(choiceId,l);
+        inputTake = true;
     }
 
     /**
@@ -268,6 +251,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
+        inputTake = false;
         List<Integer> l = new ArrayList<>();
         System.out.println("Choose your action(s):\n0. Exit selection");
         Iterator<ActionView> actionIterator = action.iterator();
@@ -306,6 +290,7 @@ public class CLIDemo implements View {
         }
 
         client.pick(choiceId,l);
+        inputTake = true;
     }
 
     /**
@@ -313,6 +298,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId){
+        inputTake = false;
         System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
@@ -355,10 +341,12 @@ public class CLIDemo implements View {
         }
 
         client.pick(choiceId,l);
+        inputTake = true;
     }
 
     @Override
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
+        inputTake = false;
         System.out.println("Choose your PowerUp(s):\n0. Exit selection");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
@@ -400,10 +388,12 @@ public class CLIDemo implements View {
         }
 
         client.pick(choiceId,l);
+        inputTake = true;
     }
 
     @Override
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
+        inputTake = false;
         System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
@@ -445,6 +435,7 @@ public class CLIDemo implements View {
         }
 
         client.pick(choiceId,l);
+        inputTake = true;
     }
 
     /**
@@ -514,11 +505,13 @@ public class CLIDemo implements View {
     @Override
     public void onStarting(String map) {
         System.out.println("The game is goin' to start in a moment...");
+        infoThread();
     }
 
     @Override
     public void onTimer(int timeToCount) {
         System.out.println("From now on you have " + timeToCount + " seconds to choose.");
+        waitForStart(timeToCount);
     }
 
     @Override
@@ -542,6 +535,7 @@ public class CLIDemo implements View {
      * @param t to get the info from.
      */
     public void tileInfo(TileView t){
+        inputTake = false;
         System.out.print("\n>> The tile belongs to the ");
         System.out.print(t.getAnsi() + t.color().toString() + " room\n");
         if(t.spawnPoint()){
@@ -576,9 +570,11 @@ public class CLIDemo implements View {
             clearScreen();
             getPrintedMap();
         }
+        inputTake = true;
     }
 
     public void playerInfo(ActorView player){
+        inputTake = false;
         System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
         System.out.println("\n>> He's got the following loaded weapons: ");
@@ -602,9 +598,11 @@ public class CLIDemo implements View {
             clearScreen();
             getPrintedMap();
         }
+        inputTake = true;
     }
 
     public void askInfo(){
+        inputTake = false;
         clearScreen();
         getPrintedMap();
         System.out.println(">> 1. Players");
@@ -642,6 +640,7 @@ public class CLIDemo implements View {
             default:
                 break;
         }
+        inputTake = true;
     }
 
     public void endGame(){
