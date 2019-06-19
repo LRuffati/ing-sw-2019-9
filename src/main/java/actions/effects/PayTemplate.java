@@ -1,17 +1,13 @@
 package actions.effects;
 
 import actions.targeters.targets.Targetable;
-import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import board.Sandbox;
 import grabbables.PowerUp;
 import testcontroller.ChoiceBoard;
-import testcontroller.Message;
 import testcontroller.controllermessage.ControllerMessage;
 import testcontroller.controllermessage.PickPowerupMessage;
 import testcontroller.controllermessage.RollbackMessage;
-import testcontroller.controllerstates.SlaveControllerState;
-import viewclasses.GameMapView;
 
 import java.util.ArrayList;
 import java.util.List;

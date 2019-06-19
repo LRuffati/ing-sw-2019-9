@@ -4,6 +4,8 @@ import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 
+import java.util.function.Consumer;
+
 public class MarkEffect implements Effect {
     private final int amount;
     private final DamageableUID uid;

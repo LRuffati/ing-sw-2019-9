@@ -5,10 +5,7 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import viewclasses.WeaponView;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Weapon extends Grabbable{
     private AmmoAmount buyCost;

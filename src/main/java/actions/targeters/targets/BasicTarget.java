@@ -7,7 +7,6 @@ import actions.targeters.interfaces.Visible;
 import board.Sandbox;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import player.DominationPoint;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This target primarily identifies an individual Pawn, be it a player controlled pawn, a terminator, a turret or a

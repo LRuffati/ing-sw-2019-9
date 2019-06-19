@@ -2,14 +2,10 @@ package actions.utils;
 
 import exception.AmmoException;
 import gamemanager.ParserConfiguration;
-import org.jetbrains.annotations.*;
 
 import java.awt.*;
 import java.util.EnumMap;
 import java.util.Map;
-
-import static java.lang.Integer.max;
-import static java.lang.Integer.min;
 
 /**
  * This class represents a fixed ammunition amount, it can represent a cost or the amount available to the player

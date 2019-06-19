@@ -6,6 +6,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class MoveEffect implements Effect {
 

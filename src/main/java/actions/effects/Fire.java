@@ -13,6 +13,7 @@ import testcontroller.controllermessage.PickActionMessage;
 import testcontroller.controllermessage.PickWeaponMessage;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

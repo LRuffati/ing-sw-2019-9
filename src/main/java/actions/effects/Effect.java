@@ -1,10 +1,8 @@
 package actions.effects;
 
 import actions.utils.AmmoAmount;
-import actions.utils.AmmoAmountUncapped;
 import grabbables.PowerUp;
 import grabbables.Weapon;
-import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -12,6 +10,7 @@ import uid.TileUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public interface Effect {
 

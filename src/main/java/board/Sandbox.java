@@ -7,6 +7,7 @@ import actions.targeters.targets.TileTarget;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import genericitems.Tuple;
+import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;

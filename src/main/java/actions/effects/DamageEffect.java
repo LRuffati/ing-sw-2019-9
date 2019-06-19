@@ -4,6 +4,8 @@ import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 
+import java.util.function.Consumer;
+
 /**
  * Deals a certain amount of damage to the actor of the given pawn
  */

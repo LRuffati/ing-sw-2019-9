@@ -5,6 +5,8 @@ import actions.utils.AmmoAmountUncapped;
 import player.Actor;
 import testcontroller.SlaveController;
 
+import java.util.function.Consumer;
+
 public class PayWithAmmoEffect implements Effect {
     private final AmmoAmountUncapped amountToPay;
 
