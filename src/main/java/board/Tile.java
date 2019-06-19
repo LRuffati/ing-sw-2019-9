@@ -119,7 +119,7 @@ public class Tile{
      *
      * @return A Set containing all the Grabbable elements
      */
-    protected Set<Grabbable> getGrabbable(){
+     public Set<Grabbable> getGrabbable(){
         return new HashSet<>(grabbableSet);
     }
 

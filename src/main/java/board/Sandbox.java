@@ -370,4 +370,21 @@ public class Sandbox {
         }
         return cubes.add(pows);
     }
+
+    public boolean canGrab(){
+        TileUID position = tile(pov);
+        Tile posTile = map.getTile(position);
+        boolean ret = true;
+
+        if (posTile.spawnPoint()){
+            Set<Weapon> weaps = posTile.getGrabbable().stream()
+                    .map(Grabbable::getWeapon)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toSet());
+            ret =
+                    weaps.stream()
+                            .anyMatch(i->getUpdatedTotalAmmoAvailable().compareTo(i.getBuyCost())>0);
+        }
+        return ret;
+    }
 }
