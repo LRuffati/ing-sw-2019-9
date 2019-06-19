@@ -1,7 +1,5 @@
 package view.cli;
 
-import board.Coord;
-import player.Actor;
 import testcontroller.Message;
 import testcontroller.controllerclient.ClientControllerClientInterface;
 import view.View;
