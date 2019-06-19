@@ -38,6 +38,9 @@ public class Weapon extends Grabbable{
         this.weaponID = name;
     }
 
+    public Set<Weapon> getWeapon(){
+        return Set.of(this);
+    }
 
     public String getName() {
         return name;

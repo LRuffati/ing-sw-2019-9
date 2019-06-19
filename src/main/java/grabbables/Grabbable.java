@@ -34,4 +34,16 @@ public abstract class Grabbable {
         return uid.hashCode();
     }
 
+    public int getNumOfPowerUp(){
+        return 0;
+    }
+
+    public AmmoAmount getAmmoAmount() {
+        return new AmmoAmount();
+    }
+
+    public Set<Weapon> getWeapon(){
+        return Set.of();
+    }
+
 }

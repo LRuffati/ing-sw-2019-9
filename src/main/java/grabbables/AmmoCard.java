@@ -26,6 +26,7 @@ public class AmmoCard extends Grabbable {
     /**
      * @return The amount of ammo contained in the Card
      */
+    @Override
     public AmmoAmount getAmmoAmount() {
         return ammoAmount;
     }
@@ -33,6 +34,7 @@ public class AmmoCard extends Grabbable {
     /**
      * @return The number of PowerUps available in the card
      */
+    @Override
     public int getNumOfPowerUp() {
         return numOfPowerUp;
     }
