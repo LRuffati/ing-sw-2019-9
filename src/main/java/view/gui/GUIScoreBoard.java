@@ -19,7 +19,9 @@ public class GUIScoreBoard extends JPanel {
 
     private BufferedImage scoreBoardBuffered;
 
+
     public GUIScoreBoard() throws IOException {
+
         scoreBoardBuffered = ImageIO.read(new File("src/resources/gui/ScoreBoardScaled.png"));
 
         setSkullIndex(0,Color.red);
@@ -29,7 +31,7 @@ public class GUIScoreBoard extends JPanel {
         Graphics g = scoreBoardBuffered.getGraphics();
         g.drawImage(scoreBoardBuffered, 0, 0, this);
         g.dispose();
-        setSize(new Dimension(300,300));
+        setLayout(new BorderLayout());
     }
 
     public void setSkullIndex(int i, Color color){

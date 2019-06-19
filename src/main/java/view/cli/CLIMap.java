@@ -285,4 +285,12 @@ public class CLIMap {
     public Map<ActorView, Character> getPlayers() {
         return players;
     }
+
+    public GameMapView getMp() {
+        return mp;
+    }
+
+    public Map<Character, Coord> getPlayerPos() {
+        return playerPos;
+    }
 }

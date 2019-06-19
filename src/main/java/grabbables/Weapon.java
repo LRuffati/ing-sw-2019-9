@@ -1,11 +1,8 @@
 package grabbables;
 
 import actions.ActionTemplate;
-import actions.WeaponUse;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
-import board.GameMap;
-import uid.DamageableUID;
 import viewclasses.WeaponView;
 
 import java.util.Collection;
