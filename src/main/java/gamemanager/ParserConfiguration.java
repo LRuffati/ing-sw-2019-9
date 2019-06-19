@@ -22,7 +22,8 @@ public class ParserConfiguration {
     public static String parse(String configuration) {
         Logger logger = Logger.getLogger(ParserConfiguration.class.getName());
         Scanner scanner;
-        String configurationFile = "src" + File.separator + "resources" + File.separator + "configuration.txt";
+
+        String configurationFile = ClassLoader.getSystemResource("configuration.txt").getFile();
         String toSearch = configuration.toLowerCase();
 
         try {
