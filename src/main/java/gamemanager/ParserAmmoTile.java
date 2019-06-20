@@ -35,11 +35,14 @@ public class  ParserAmmoTile {
         Scanner scanner;
         Scanner sLine;
 
+        scanner = new Scanner(ClassLoader.getSystemResourceAsStream(path));
+        /*
         try {
             scanner = new Scanner(new File(path));
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("File AmmoTile not found");
         }
+        */
 
         while (scanner.hasNextLine()){
             numOfPowerUp = 0;

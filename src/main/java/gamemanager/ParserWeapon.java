@@ -33,11 +33,12 @@ public class ParserWeapon {
         int weaponCount = 0;
 
 
-        try{
+        scanner = new Scanner(ClassLoader.getSystemResourceAsStream(path));
+        /*try{
             scanner = new Scanner(new File(path));
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("File Weapons not found");
-        }
+        }*/
 
         while(scanner.hasNextLine()){
             String weaponId = null;

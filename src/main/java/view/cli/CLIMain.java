@@ -18,23 +18,22 @@ public class CLIMain {
         ClientController client = null;
         List<Actor> actorList;
         GameBuilder builder = null;
-        String tilePath = "src/resources/ammoTile.txt";
-        String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 5);
+                    null, null, null, null, 5);
         }
         catch (FileNotFoundException ignored){
         }
         map = builder.getMap();
         actorList = builder.getActorList();
         gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
-        try {
+        /*try {
             client = new ClientController(true,true,"localhost");
         } catch (NotBoundException | IOException e) {
             e.printStackTrace();
-        }
+        }*/
         CLIDemo demo = new CLIDemo(client);
+        demo.updateMap(gmv);
         demo.endGame();
     }
 }

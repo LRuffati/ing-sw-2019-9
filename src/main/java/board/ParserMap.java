@@ -36,12 +36,15 @@ class ParserMap {
 
         String str;
         Scanner scanner;
+        scanner = new Scanner(ClassLoader.getSystemResourceAsStream(path));
+        /*
         try{
             scanner = new Scanner(new File(path));
         }
         catch (FileNotFoundException e){
             throw new FileNotFoundException("File not found");
         }
+        */
 
         while(scanner.hasNext()){
             str = scanner.nextLine();
