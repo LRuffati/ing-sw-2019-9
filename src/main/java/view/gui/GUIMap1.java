@@ -83,7 +83,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
             frame.setSize(777,1046);
         } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
-            frame.setSize(392,542);
+            frame.setSize(542,744);
         }
 
         frame.setResizable(false);
@@ -100,7 +100,6 @@ public class GUIMap1 extends JPanel implements GUIMap{
 
 
     private void setTile(JLabel label, String path, Color tileColor, Coord coord){
-        int i = 1;
         try {
             tile = ImageIO.read(new File(path));
         } catch (IOException e) {
@@ -108,12 +107,12 @@ public class GUIMap1 extends JPanel implements GUIMap{
         }
         Image imgAmmo = tile;
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
-            double tilewid = (tile.getWidth() / 1.75238) / i;
-            double tilehid = (tile.getHeight() / 1.75238) / i;
+            double tilewid = (tile.getWidth() / 1.75238);
+            double tilehid = (tile.getHeight() / 1.75238);
             imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         } else if (Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0) {
-            double tilewid = 0.58737 * (tile.getWidth() / 1.75238);
-            double tilehid = 0.588 * (tile.getHeight() / 1.75238);
+            double tilewid = 0.711458 * (tile.getWidth() / 1.75238);
+            double tilehid = 0.711111 * (tile.getHeight() / 1.75238);
             imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
