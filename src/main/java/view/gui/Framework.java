@@ -67,6 +67,11 @@ public class Framework implements View {
         login.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         login.addWindowListener(new WindowEventHandler());
         login.setVisible(true);
+
+        waitingScreen = new WaitingScreen(this);
+        waitingScreen.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        waitingScreen.addWindowListener(new WindowEventHandler());
+        waitingScreen.setVisible(false);
     }
 
 
@@ -287,9 +292,9 @@ public class Framework implements View {
         changeFrameFlag = true;
         waitingScreen.dispatchEvent(new WindowEvent(waitingScreen, WindowEvent.WINDOW_CLOSING));
 
-        //game = new GUIMap1();
-        //game.addWindowListener(new WindowEventHandler());
-        game.setVisible(true);
+        /*game = new GUIMap1();
+        game.addWindowListener(new WindowEventHandler());
+        game.setVisible(true);*/
     }
 
     @Override
