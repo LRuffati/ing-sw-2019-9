@@ -41,6 +41,10 @@ public class MainController {
     private GameMap gameMap;
     private GameBuilder game;
 
+    /**
+     * The list of slave controllers, in the order of their turns, randomised from slaveMap
+     * values at game creation.
+     */
     private List<SlaveController> slaveControllerList;
     private Map<DamageableUID, SlaveController> slaveMap;
 
@@ -145,6 +149,12 @@ public class MainController {
         }
         notifyStarting(game.getMapName());
         //todo notify inizio gioco
+
+        slaveControllerList = new ArrayList<>(slaveMap.values());
+        Collections.shuffle(slaveControllerList);
+
+        slaveControllerList.get(0).
+
     }
 
     private void createGame() {

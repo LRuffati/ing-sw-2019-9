@@ -77,10 +77,12 @@ public class SlaveController {
      * This function sets in motion the main turn line
      */
     public void startMainAction(){
-        this.onTimeout = () -> {
-            main.endTurn(getSelf());
-        };
+        this.onTimeout = () -> new Thread(() -> main.endTurn(getSelf())).start();
         this.setCurrentMessage(setPowUps(new ArrayList<>(), getSelf().getActions()));
+    }
+
+    protected void setFirst(boolean first){
+        getSelf().getFirstPlayer()
     }
 
     /**
