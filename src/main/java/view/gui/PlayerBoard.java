@@ -25,10 +25,11 @@ public class PlayerBoard extends JPanel {
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
         initializeBoards();
         setYourBoards(color);
-        drawBoard(yourNormalBoard);
         changeBoard = new JButton(nextPlayerIcon);
         changeBoard.setContentAreaFilled(false);
         setChangeBoard();
+        drawBoard(yourNormalBoard);
+
         add(changeBoard);
     }
 
@@ -114,7 +115,7 @@ public class PlayerBoard extends JPanel {
     private static void createAndShowGui() {
         PlayerBoard mainPanel = null;
         try {
-            mainPanel = new PlayerBoard(Color.PINK);
+            mainPanel = new PlayerBoard(Color.BLUE);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);
