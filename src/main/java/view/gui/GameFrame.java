@@ -46,7 +46,11 @@ public class GameFrame extends JFrame {
         sndPanel.add(outputBox, BorderLayout.SOUTH);
 
         add(sndPanel);
-        setSize(1538,1045);
+        if(Toolkit.getDefaultToolkit().getScreenSize().getHeight()==1080){
+            setSize(1538,1045);
+        } else {
+            setSize(1094,743);
+        }
         setVisible(true);
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
