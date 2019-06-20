@@ -12,13 +12,13 @@ powerUp.txt
 map1.txt
 
 -map2Path
-src/resources/map1.txt
+map2.txt
 
 -map3Path
-src/resources/map1.txt
+map3.txt
 
 -map4Path
-src/resources/map1.txt
+map4.txt
 
 -GuiDirectoryPath
 src/resources/gui
