@@ -1,5 +1,8 @@
 package view.gui;
 
+import viewclasses.GameMapView;
+import viewclasses.WeaponView;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +13,7 @@ import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Dictionary;
 
 public class PlayerBoard extends JPanel {
 
@@ -21,17 +25,19 @@ public class PlayerBoard extends JPanel {
     private BufferedImage nextPlayerBuffered;
     private ImageIcon nextPlayerIcon;
     private JButton changeBoard;
+    private BufferedImage[] showedWeaponCards = new BufferedImage[3];
+    private GameMapView gmv;
 
-    public PlayerBoard(Color color) throws IOException {
+    public PlayerBoard(Color color, GameMapView gmv) throws IOException {
+        this.gmv = gmv;
         nextPlayerBuffered = ImageIO.read(new File("src/resources/gui/PlayerBoards/nextPlayer.png"));
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
         initializeBoards();
-        setYourBoards(color);
+        setYourBoards(Color.green);
         changeBoard = new JButton(nextPlayerIcon);
         changeBoard.setContentAreaFilled(false);
-        setChangeBoard();
         drawBoard(yourNormalBoard);
-
+        setChangeBoard();
         add(changeBoard);
     }
 
@@ -49,6 +55,17 @@ public class PlayerBoard extends JPanel {
                 }
             }
         });
+    }
+
+
+    private void setYourWeapons(){
+        int i = 0;
+        for(WeaponView weapon : gmv.you().getLoadedWeapon()){
+            showedWeaponCards[i] = weapon.card();
+        }
+        for(WeaponView weapon : gmv.you().getUnloadedWeapon()){
+            showedWeaponCards[i] = weapon.card();
+        }
     }
 
     private void setYourBoards(Color color){
@@ -141,7 +158,7 @@ public class PlayerBoard extends JPanel {
     private static void createAndShowGui() {
         PlayerBoard mainPanel = null;
         try {
-            mainPanel = new PlayerBoard(Color.BLUE);
+            mainPanel = new PlayerBoard(Color.BLUE, new GameMapView());
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);
