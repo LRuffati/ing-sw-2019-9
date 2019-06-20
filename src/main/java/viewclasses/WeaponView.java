@@ -45,11 +45,6 @@ public class WeaponView implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-        try {
-            setCard();
-        } catch (IOException e) {
-            System.out.println("Problema con immagini delle carte.");
-        }
     }
 
     public void setBuyCost(AmmoAmount buyCost) {
