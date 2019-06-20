@@ -4,6 +4,8 @@ import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 
+import java.util.function.Consumer;
+
 /**
  * Deals a certain amount of damage to the actor of the given pawn
  */
@@ -36,17 +38,19 @@ public class DamageEffect implements Effect{
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
+        broadcaster.accept(effectString(pov.getSelf()));
         if (raw){
             pov.getSelf().getGm().getPawn(uid).getActor().damageRaw(pov.getSelf(), amount);
         } else {
             pov.getSelf().getGm().getPawn(uid).getActor().damageBreaking(pov.getSelf(), amount,
                     finalize);
         }
+
     }
 
-    @Override
-    public String effectString(Actor pov) {
+    String effectString(Actor pov) {
         return String.format("%s ha dato %d danni a %s", pov.pawn().getUsername(), amount,
                 pov.getGm().getPawn(uid).getActor().pawn().getUsername());
     }

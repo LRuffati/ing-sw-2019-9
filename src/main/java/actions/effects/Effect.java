@@ -1,10 +1,8 @@
 package actions.effects;
 
 import actions.utils.AmmoAmount;
-import actions.utils.AmmoAmountUncapped;
 import grabbables.PowerUp;
 import grabbables.Weapon;
-import player.Actor;
 import testcontroller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -12,6 +10,7 @@ import uid.TileUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public interface Effect {
 
@@ -54,14 +53,8 @@ public interface Effect {
      *                also the list of effects still to apply. Will be just called, not in a thread
      */
     void mergeInGameMap(SlaveController pov,
-                        Runnable finalize);
-
-    /**
-     *
-     * @param pov the actor of the player who caused the effect
-     * @return a string representation of the effect
-     */
-    String effectString(Actor pov);
+                        Runnable finalize,
+                        Consumer<String> broadcaster);
 
     /**
      * Used for paying and just for paying

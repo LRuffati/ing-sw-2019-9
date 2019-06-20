@@ -5,10 +5,7 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import viewclasses.WeaponView;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class Weapon extends Grabbable{
     private AmmoAmount buyCost;
@@ -41,6 +38,9 @@ public class Weapon extends Grabbable{
         this.weaponID = name;
     }
 
+    public Set<Weapon> getWeapon(){
+        return Set.of(this);
+    }
 
     public String getName() {
         return name;

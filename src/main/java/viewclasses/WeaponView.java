@@ -5,6 +5,10 @@ import actions.utils.AmmoColor;
 import uid.GrabbableUID;
 
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -17,6 +21,7 @@ public class WeaponView implements Serializable {
     private Map<AmmoColor, Integer> reloadCost;
     private Map<AmmoColor, Integer> buyCost;
     private GrabbableUID uid;
+    private BufferedImage card;
 
     public WeaponView(){
         name = "";
@@ -40,6 +45,11 @@ public class WeaponView implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+        try {
+            setCard();
+        } catch (IOException e) {
+            System.out.println("Problema con immagini delle carte.");
+        }
     }
 
     public void setBuyCost(AmmoAmount buyCost) {
@@ -52,6 +62,30 @@ public class WeaponView implements Serializable {
 
     public void setUid(GrabbableUID uid) {
         this.uid = uid;
+    }
+
+    public BufferedImage card() {
+        return card;
+    }
+
+    private void setCard() throws IOException {
+        switch (name.toLowerCase()){
+            case("martello ionico"):
+                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_022.png"));
+                break;
+
+            case("spada ionica"):
+                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_023.png"));
+                break;
+
+            case("cyberguanto"):
+                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_024.png"));
+                break;
+
+            default:
+                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_02.png"));
+                break;
+        }
     }
 }
 

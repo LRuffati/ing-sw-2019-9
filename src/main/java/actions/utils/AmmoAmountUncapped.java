@@ -79,9 +79,10 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
     @Override
     public String toString() {
 
-        int blue = amounts.getOrDefault(AmmoColor.BLUE,0);
-        int yellow = amounts.getOrDefault(AmmoColor.YELLOW,0);
-        int red = amounts.getOrDefault(AmmoColor.RED,0);
+        Map<AmmoColor, Integer> ams = getAmounts();
+        int blue = ams.getOrDefault(AmmoColor.BLUE,0);
+        int yellow = ams.getOrDefault(AmmoColor.YELLOW,0);
+        int red = ams.getOrDefault(AmmoColor.RED,0);
 
         if ((blue+yellow+red)==0)
             return "0";

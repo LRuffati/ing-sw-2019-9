@@ -7,6 +7,7 @@ import actions.targeters.targets.TileTarget;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import genericitems.Tuple;
+import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
@@ -368,5 +369,22 @@ public class Sandbox {
             pows.add(new AmmoAmountUncapped(p.getAmmo().getAmounts()));
         }
         return cubes.add(pows);
+    }
+
+    public boolean canGrab(){
+        TileUID position = tile(pov);
+        Tile posTile = map.getTile(position);
+        boolean ret = true;
+
+        if (posTile.spawnPoint()){
+            Set<Weapon> weaps = posTile.getGrabbable().stream()
+                    .map(Grabbable::getWeapon)
+                    .flatMap(Set::stream)
+                    .collect(Collectors.toSet());
+            ret =
+                    weaps.stream()
+                            .anyMatch(i->getUpdatedTotalAmmoAvailable().compareTo(i.getBuyCost())>0);
+        }
+        return ret;
     }
 }

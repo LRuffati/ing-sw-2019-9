@@ -6,6 +6,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class MoveEffect implements Effect {
 
@@ -41,13 +42,14 @@ public class MoveEffect implements Effect {
      * @param finalize contains all the instructions to run after the end of the effect. Contains
      */
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
         pov.getSelf().getGm().getPawn(pawn).move(dest);
+        broadcaster.accept(effectString(pov.getSelf()));
         finalize.run();
     }
 
-    @Override
-    public String effectString(Actor pov) {
+    String effectString(Actor pov) {
         String message;
         if (pov.pawnID().equals(this.pawn))
             message = String.format("%s si è spostato", pov.pawn().getUsername());

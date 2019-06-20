@@ -1,12 +1,8 @@
 package actions.conditions;
 
 import actions.targeters.interfaces.PointLike;
-import actions.targeters.interfaces.SuperTile;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
-
-import java.util.stream.Collectors;
-
 
 /**
  * checks that the target can reach the source in the given amount of moves

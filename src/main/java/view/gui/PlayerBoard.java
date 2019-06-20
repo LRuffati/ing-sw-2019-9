@@ -1,13 +1,19 @@
 package view.gui;
 
+import viewclasses.GameMapView;
+import viewclasses.WeaponView;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Dictionary;
 
 public class PlayerBoard extends JPanel {
 
@@ -19,15 +25,18 @@ public class PlayerBoard extends JPanel {
     private BufferedImage nextPlayerBuffered;
     private ImageIcon nextPlayerIcon;
     private JButton changeBoard;
+    private BufferedImage[] showedWeaponCards = new BufferedImage[3];
+    private GameMapView gmv;
 
-    public PlayerBoard(Color color) throws IOException {
+    public PlayerBoard(Color color, GameMapView gmv) throws IOException {
+        this.gmv = gmv;
         nextPlayerBuffered = ImageIO.read(new File("src/resources/gui/PlayerBoards/nextPlayer.png"));
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
         initializeBoards();
-        setYourBoards(color);
-        drawBoard(yourNormalBoard);
+        setYourBoards(Color.green);
         changeBoard = new JButton(nextPlayerIcon);
         changeBoard.setContentAreaFilled(false);
+        drawBoard(yourNormalBoard);
         setChangeBoard();
         add(changeBoard);
     }
@@ -46,6 +55,17 @@ public class PlayerBoard extends JPanel {
                 }
             }
         });
+    }
+
+
+    private void setYourWeapons(){
+        int i = 0;
+        for(WeaponView weapon : gmv.you().getLoadedWeapon()){
+            showedWeaponCards[i] = weapon.card();
+        }
+        for(WeaponView weapon : gmv.you().getUnloadedWeapon()){
+            showedWeaponCards[i] = weapon.card();
+        }
     }
 
     private void setYourBoards(Color color){
@@ -92,6 +112,30 @@ public class PlayerBoard extends JPanel {
         frenzyBoards[2] = ImageIO.read(new File("src/resources/gui/PlayerBoards/greenF.png"));
         frenzyBoards[3] = ImageIO.read(new File("src/resources/gui/PlayerBoards/pinkF.png"));
         frenzyBoards[4] = ImageIO.read(new File("src/resources/gui/PlayerBoards/yellowF.png"));
+        if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
+            normalBoards[0] = scaleImage(normalBoards[0]);
+            normalBoards[1] = scaleImage(normalBoards[1]);
+            normalBoards[2] = scaleImage(normalBoards[2]);
+            normalBoards[3] = scaleImage(normalBoards[3]);
+            normalBoards[4] = scaleImage(normalBoards[4]);
+            frenzyBoards[0] = scaleImage(frenzyBoards[0]);
+            frenzyBoards[1] = scaleImage(frenzyBoards[1]);
+            frenzyBoards[2] = scaleImage(frenzyBoards[2]);
+            frenzyBoards[3] = scaleImage(frenzyBoards[3]);
+            frenzyBoards[4] = scaleImage(frenzyBoards[4]);
+
+        }
+    }
+
+    private BufferedImage scaleImage(BufferedImage toScale){
+        int w = toScale.getWidth();
+        int h = toScale.getHeight();
+        BufferedImage scaled = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        AffineTransform at = new AffineTransform();
+        at.scale(0.711458, 0.711111);
+        AffineTransformOp scaleOp =
+                new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        return scaleOp.filter(toScale, scaled);
     }
 
     private void drawBoard(BufferedImage image){
@@ -114,7 +158,7 @@ public class PlayerBoard extends JPanel {
     private static void createAndShowGui() {
         PlayerBoard mainPanel = null;
         try {
-            mainPanel = new PlayerBoard(Color.PINK);
+            mainPanel = new PlayerBoard(Color.BLUE, new GameMapView());
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(-1);
@@ -124,6 +168,7 @@ public class PlayerBoard extends JPanel {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().add(mainPanel);
         frame.pack();
+
         frame.setSize(new Dimension(1000,1000));
         frame.setLocationByPlatform(true);
         frame.setVisible(true);

@@ -8,16 +8,17 @@ import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
 
-import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.time.Duration;
 import java.util.*;
+import java.util.function.Consumer;
 
 public class CLIDemo implements View {
     private static CLIMap climap;
     private Scanner in = new Scanner(System.in);
     private ClientControllerClientInterface client;
+    private boolean inputTake = true;
+    private CommandParser commandParser;
+
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
@@ -27,8 +28,6 @@ public class CLIDemo implements View {
         greetings();
 
     }
-
-    public void setClimap(GameMapView gmv){climap = new CLIMap(gmv);}
 
     /**
      * Method to be called from other classes. Intended to make the CLIMap class not called from other classes.
@@ -93,6 +92,15 @@ public class CLIDemo implements View {
         client.login(username,password,color);
     }
 
+    private void scanThread(){
+        commandParser = new CommandParser(this);
+        new Thread(()-> {
+            while (inputTake) {
+                String string = in.nextLine();
+                commandParser.parseCommand(string);
+            }}).start();
+    }
+
 
 
 
@@ -101,39 +109,11 @@ public class CLIDemo implements View {
      * more players in the same game and the firstPlayer decides do start or the timer elapses.
      * @param timeLeft is the timer (in seconds) that starts when there are three players that joined the game.
      */
-    public void waitForStart(int timeLeft){
-        //TODO da gestire con le informazioni giuste da controller
-        boolean flag = true;
-        while(climap.getPlayers().size()<3) {
-            if (flag) {
-                System.out.println("Wait for other players to join the game.");
-                flag = false;
-            }
-        }
-        while(climap.getPlayers().size()<5){
-            for(Map.Entry<ActorView, Character> entry: climap.getPlayers().entrySet()){
-                if(entry.getKey().firstPlayer()){
-                    System.out.println(entry.getKey().name() + ", you can start the game whenever you want by typing" +
-                            "'p'. Otherwise the game will start in " + timeLeft + " seconds.");
-                    Timer timer = new Timer();
-                    TimerTask timerTask;
-                    //TODO controllare come far dare l'input al giocare prima che il tempo sia finito.
-                    timer.schedule(
-                            new TimerTask() {
-                                @Override
-                                public void run() {
-                                    return;
-                                }
-                            },timeLeft
-                    );
-                    if(in.nextLine().equalsIgnoreCase("p")) return;
-                }
-            }
-
-        }
+    private void waitForStart(int timeLeft){
+        System.out.println("Wait for other players to join the game.");
     }
 
-    public void quitGame(){
+    private void quitGame(){
         System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
                 "want to go back.");
         if(in.nextLine().equalsIgnoreCase("y")){
@@ -197,12 +177,41 @@ public class CLIDemo implements View {
 
     }
 
+    private void choicer(boolean optional, boolean single, String choiceId, String type){
+        List<Integer> l = new ArrayList<>();
+        boolean flag = false;
+        int j;
+        while(!flag) {
+            try {
+                j = in.nextInt();
+                if(j==200){
+                    client.rollback();
+                    return;
+                } else if(j==0){
+                    if(l.isEmpty()&&optional){
+                        flag = true;
+                    } else if(l.isEmpty()){
+                        System.out.println("You must choose at least one " + type +".");
+                    }
+                } else {
+                    l.add(j);
+                    if (l.size()==1 && single) {
+                        flag = true;
+                    }
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Please, pick a + " + type + " typing ONLY his index on the line.");
+            }
+        }
+
+        client.pick(choiceId,l);
+    }
+
     /**
      * See documentation in the View interface.
      */
     @Override
     public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId) {
-        List<Integer> l = new ArrayList<>();
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
         printAppliedTarget(target);
@@ -235,32 +244,10 @@ public class CLIDemo implements View {
 
         System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
-        boolean flag = false;
+        Consumer<String> consumer =
+                string -> choicer(optional, single, choiceId, "target");
 
-        while(!flag) {
-            try {
-                i = in.nextInt();
-                if(i==200){
-                    client.rollback();
-                    return;
-                } else if(i==0){
-                    if(l.isEmpty()&&optional){
-                        flag = true;
-                    } else if(l.isEmpty()){
-                        System.out.println("You must choose at least one target.");
-                    }
-                } else {
-                    l.add(i);
-                    if (l.size()==1 && single) {
-                        flag = true;
-                    }
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please, pick a target typing ONLY his index on the line.");
-            }
-        }
-
-        client.pick(choiceId,l);
+        commandParser.bind(consumer);
     }
 
     /**
@@ -268,7 +255,6 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
-        List<Integer> l = new ArrayList<>();
         System.out.println("Choose your action(s):\n0. Exit selection");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 0;
@@ -279,33 +265,10 @@ public class CLIDemo implements View {
 
         System.out.println("99. Rollback\n100. Restart Selection");
 
+        Consumer<String> consumer =
+                string -> choicer(optional, single, choiceId, "action");
 
-        boolean flag = false;
-
-        while(!flag) {
-            try {
-                i = in.nextInt();
-                if(i==200){
-                    client.rollback();
-                    return;
-                }else if(i==0){
-                    if(l.isEmpty()&&optional){
-                        flag = true;
-                    } else if(l.isEmpty()){
-                        System.out.println("You must choose at least one action.");
-                    }
-                } else {
-                    l.add(i);
-                    if (l.size()==1 && single) {
-                        flag = true;
-                    }
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please, pick an action typing ONLY his index on the line.");
-            }
-        }
-
-        client.pick(choiceId,l);
+        commandParser.bind(consumer);
     }
 
     /**
@@ -316,7 +279,6 @@ public class CLIDemo implements View {
         System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
-        List<Integer> l = new ArrayList<>();
         while(weaponIterator.hasNext()){
             WeaponView wv = weaponIterator.next();
             System.out.println(i + ". " + wv.name());
@@ -324,37 +286,9 @@ public class CLIDemo implements View {
         }
         System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
-        boolean flag = false;
-
-        while(!flag) {
-            try {
-                i = in.nextInt();
-                if(i==200){
-                    client.rollback();
-                    return;
-                }
-                if(i==0){
-                    if(l.isEmpty()&&optional){
-                        flag = true;
-                    } else if(l.isEmpty()){
-                        System.out.println("You must choose at least one weapon.");
-                    }
-                } else if(i==99&&!l.isEmpty()){
-                    l.remove(l.size()-1);
-                } else if(i == 100){
-                    l.clear();
-                } else {
-                    l.add(i);
-                    if (l.size()==1 && single) {
-                        flag = true;
-                    }
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please, pick a weapon typing ONLY his index on the line.");
-            }
-        }
-
-        client.pick(choiceId,l);
+        Consumer<String> consumer =
+                string -> choicer(optional, single, choiceId, "weapon");
+        commandParser.bind(consumer);
     }
 
     @Override
@@ -362,7 +296,6 @@ public class CLIDemo implements View {
         System.out.println("Choose your PowerUp(s):\n0. Exit selection");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
-        List<Integer> l = new ArrayList<>();
         while(puIterator.hasNext()){
             PowerUpView pu = puIterator.next();
             System.out.println(i + ". " + pu.type().toString());
@@ -370,36 +303,10 @@ public class CLIDemo implements View {
         }
         System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
-        boolean flag = false;
+        Consumer<String> consumer =
+                string -> choicer(optional, single, choiceId, "power up");
 
-        while(!flag) {
-            try {
-                i = in.nextInt();
-                if(i==200){
-                    client.rollback();
-                    return;
-                } else if(i==0){
-                    if(l.isEmpty()&&optional){
-                        flag = true;
-                    } else if(l.isEmpty()){
-                        System.out.println("You must choose at least one powerup.");
-                    }
-                } else if(i==99&&!l.isEmpty()){
-                    l.remove(l.size()-1);
-                } else if(i == 100){
-                    l.clear();
-                } else {
-                    l.add(i);
-                    if (l.size()==1 && single) {
-                        flag = true;
-                    }
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please, pick a powerup typing ONLY his index on the line.");
-            }
-        }
-
-        client.pick(choiceId,l);
+        commandParser.bind(consumer);
     }
 
     @Override
@@ -407,7 +314,6 @@ public class CLIDemo implements View {
         System.out.println("Choose your weapons:\n0. Exit selection");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
-        List<Integer> l = new ArrayList<>();
         while(strIterator.hasNext()){
             String str = strIterator.next();
             System.out.println(i + ". " + str);
@@ -415,36 +321,10 @@ public class CLIDemo implements View {
         }
         System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
-        boolean flag = false;
+        Consumer<String> consumer =
+                stringa -> choicer(optional, single, choiceId, "string");
 
-        while(!flag) {
-            try {
-                i = in.nextInt();
-                if(i==200){
-                    client.rollback();
-                    return;
-                }else if(i==0){
-                    if(l.isEmpty()&&optional){
-                        flag = true;
-                    } else if(l.isEmpty()){
-                        System.out.println("You must choose at least one string.");
-                    }
-                } else if(i==99&&!l.isEmpty()){
-                    l.remove(l.size()-1);
-                } else if(i == 100){
-                    l.clear();
-                } else {
-                    l.add(i);
-                    if (l.size()==1 && single) {
-                        flag = true;
-                    }
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please, pick a string typing ONLY his index on the line.");
-            }
-        }
-
-        client.pick(choiceId,l);
+        commandParser.bind(consumer);
     }
 
     /**
@@ -514,11 +394,13 @@ public class CLIDemo implements View {
     @Override
     public void onStarting(String map) {
         System.out.println("The game is goin' to start in a moment...");
+        scanThread();
     }
 
     @Override
     public void onTimer(int timeToCount) {
         System.out.println("From now on you have " + timeToCount + " seconds to choose.");
+        waitForStart(timeToCount);
     }
 
     @Override
@@ -661,5 +543,28 @@ public class CLIDemo implements View {
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+    }
+}
+
+class CommandParser{
+
+    private Consumer<String> strings;
+    private CLIDemo cliDemo;
+
+    CommandParser(CLIDemo cliDemo){
+        this.cliDemo = cliDemo;
+    }
+
+    void bind(Consumer<String> strings){
+        this.strings = strings;
+    }
+
+    void parseCommand(String str){
+        if(strings!=null){
+            strings.accept(str);
+            strings = null;
+        } else {
+            cliDemo.askInfo();
+        }
     }
 }

@@ -2,10 +2,8 @@ package actions.targeters.interfaces;
 
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
-import uid.DamageableUID;
 import uid.TileUID;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface PointLike extends Targetable {

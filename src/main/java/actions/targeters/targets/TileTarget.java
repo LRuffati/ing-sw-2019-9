@@ -2,19 +2,13 @@ package actions.targeters.targets;
 
 import actions.targeters.interfaces.*;
 import board.Sandbox;
-import board.Tile;
-import grabbables.Weapon;
 import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.TargetView;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * This class represents a Tile in the sandbox as well as a tile being targeted

@@ -1,8 +1,13 @@
 package actions.effects;
 
+
 import player.Actor;
 import testcontroller.SlaveController;
 import uid.TileUID;
+
+
+import java.util.function.Consumer;
+
 
 public class GrabEffect implements Effect {
     private final TileUID cell;
@@ -19,12 +24,13 @@ public class GrabEffect implements Effect {
     }
 
     @Override
-    public void mergeInGameMap(SlaveController pov, Runnable finalize) {
+    public void mergeInGameMap(SlaveController pov, Runnable finalize,
+                               Consumer<String> broadcaster) {
 
     }
 
 
-    @Override
+
     public String effectString(Actor pov) {
         return String.format("%s ha raccolto %s",
                 pov.pawn().getUsername(),
