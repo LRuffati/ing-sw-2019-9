@@ -71,6 +71,7 @@ public class SlaveController {
         this.setCurrentMessage(new WaitMessage(List.of()));
         this.main = main;
         this.timeoutWindow = main.timeoutTime;
+        player.getActor().bindSlave(this);
     }
 
     /**

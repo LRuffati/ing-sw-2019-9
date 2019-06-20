@@ -530,5 +530,9 @@ public class Actor {
         //TODO
     }
 
+
+    public void bindSlave(SlaveController slaveController) {
+        this.slaveController = slaveController;
+    }
 }
 
