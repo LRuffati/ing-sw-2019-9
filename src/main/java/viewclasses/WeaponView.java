@@ -69,23 +69,25 @@ public class WeaponView implements Serializable {
     }
 
     private void setCard() throws IOException {
+        String path;
         switch (name.toLowerCase()){
             case("martello ionico"):
-                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_022.png"));
+                path = "gui/Cards/AD_weapons_IT_022.png";
                 break;
 
             case("spada ionica"):
-                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_023.png"));
+                path = "gui/Cards/AD_weapons_IT_023.png";
                 break;
 
             case("cyberguanto"):
-                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_024.png"));
+                path = "gui/Cards/AD_weapons_IT_024.png";
                 break;
 
             default:
-                card = ImageIO.read(new File("src/resources/gui/Cards/AD_weapons_IT_02.png"));
+                path = "gui/Cards/AD_weapons_IT_02.png";
                 break;
         }
+        card = ImageIO.read(ClassLoader.getSystemResourceAsStream(path));
     }
 }
 
