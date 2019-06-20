@@ -51,6 +51,6 @@ public class ParserMapTest {
 
     @Test
     void invalidPathTest(){
-        assertThrows(FileNotFoundException.class , () -> ParserMap.parseMap("invalidPath"));
+        assertThrows(NullPointerException.class , () -> ParserMap.parseMap("invalidPath"));
     }
 }

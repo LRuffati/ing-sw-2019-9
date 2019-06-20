@@ -29,7 +29,7 @@ class AmmoCardTest {
         AmmoAmount am = new AmmoAmount();
         int numOfPu = 1;
         AmmoCard ac = new AmmoCard(am, numOfPu);
-        assertEquals("RED:0 BLUE:0 YELLOW:0 POWERUP:1", ac.toString());
+        assertEquals("0 POWERUP:1", ac.toString());
     }
 
     //TODO Last two tests to be deleted due to useless overrides.
