@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  */
 public class DamageEffect implements Effect{
 
-    private final DamageableUID uid;
+    public final DamageableUID uid;
     private final int amount;
 
     /**
@@ -25,7 +25,7 @@ public class DamageEffect implements Effect{
      * @param amount the amount of damage
      * @param raw if true use a function which doesn't trigger the tagback grenade
      */
-    DamageEffect(DamageableUID uid, int amount, boolean raw){
+    public DamageEffect(DamageableUID uid, int amount, boolean raw){
 
         this.uid = uid;
         this.amount = amount;
@@ -44,7 +44,7 @@ public class DamageEffect implements Effect{
         if (raw){
             pov.getSelf().getGm().getPawn(uid).getActor().damageRaw(pov.getSelf(), amount);
         } else {
-            pov.getSelf().getGm().getPawn(uid).getActor().damageBreaking(pov.getSelf(), amount,
+            pov.getSelf().getGm().getPawn(uid).getActor().damageBreaking(pov, amount,
                     finalize);
         }
 

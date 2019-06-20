@@ -29,9 +29,11 @@ public class MarkEffect implements Effect {
     }
 
     String effectString(Actor pov) {
-        return String.format("%s ha dato %d marchi a %s",
+        return String.format(
+                "%s ha dato %d marchi a %s",
                 pov.getGm().getPawn(pov.pawnID()).getUsername(),
                 amount,
-                pov.getGm().getPawn(uid).getUsername());
+                pov.getGm().getPawn(uid).getUsername()
+        );
     }
 }

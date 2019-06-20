@@ -10,11 +10,9 @@ import java.util.function.Consumer;
 
 
 public class GrabEffect implements Effect {
-    private final TileUID cell;
     public final EffectType type;
 
-    public GrabEffect(TileUID cell) {
-        this.cell = cell;
+    public GrabEffect() {
         this.type = EffectType.GRAB;
     }
 
@@ -27,17 +25,57 @@ public class GrabEffect implements Effect {
     public void mergeInGameMap(SlaveController pov, Runnable finalize,
                                Consumer<String> broadcaster) {
 
-    }
+        // Choose actual operations
+        Tile tile = pov.getSelf().getGm().getTile(pov.getSelf().pawn().getTile());
 
+        AmmoAmount amountsToGrab = tile.getGrabbable().stream()
+                .flatMap(i-> Stream.of(i.getAmmoAmount()))
+                .reduce(new AmmoAmount(), (tot, amm)->new AmmoAmount(tot.add(amm)));
 
+        int powerups = tile.getGrabbable().stream()
+                .flatMap(i->Stream.of(i.getNumOfPowerUp()))
+                .reduce(0, Integer::sum);
 
-    public String effectString(Actor pov) {
-        return String.format("%s ha raccolto %s",
-                pov.pawn().getUsername(),
-                pov.getGm().getTile(pov.getGm().tile(pov.pawnID())).spawnPoint()
-                        //todo: come capire che arma ha raccolto?
-                        ? "un'arma"
-                        : "delle munizioni"
-        );
+        Set<Weapon> weapons = tile.getGrabbable().stream()
+                .map(Grabbable::getWeapon)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+
+        BiConsumer<Weapon, Optional<Weapon>> onChoice = (toGrab, toDiscard) -> {
+            String broadcast = String.format("%s", pov.getSelf().pawn().getUsername());
+
+            //TODO: move weapon toGrab from the tile to the actor
+            broadcast = broadcast.concat(String.format(" ha raccolto %s", toGrab.getName()));
+
+            if (toDiscard.isPresent()) {
+                Weapon toDisc = toDiscard.get();
+                //TODO: move weapon toDiscard from the Actor to the tile
+                broadcast = broadcast.concat(String.format(" e lasciato %s", toDisc.getName()));
+            }
+            broadcaster.accept(broadcast);
+            finalize.run();
+        };
+
+        //TODO: discard the AmmoCard if present and change actor loadout, use gamemap methods to
+        // ensure proper deck usage. Then broadcast the powerup and ammo changes. If weapons is
+        // not empty start the grabWeapon in slaveController, else run finalize
+        if (new AmmoAmount().compareTo(amountsToGrab)<0){ //If I have to grab some amount of cubes
+            broadcaster.accept(String.format("%s ha raccolto %s",
+                    pov.getSelf().pawn().getUsername(), amountsToGrab.toString()));
+            // TODO: add to actor
+        }
+
+        powerups = Math.min(powerups, 3-pov.getSelf().getPowerUp().size())
+        if (powerups>0){
+            broadcaster.accept(String.format("%s ha raccolto %d powerup",
+                    pov.getSelf().pawn().getUsername(), powerups));
+            // TODO: Add powerups powerup to actor
+        }
+
+        if (!weapons.isEmpty()){
+            pov.makeGrabChoice(weapons, onChoice);
+        } else {
+            finalize.run();
+        }
     }
 }

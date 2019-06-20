@@ -1,9 +1,12 @@
 package player;
 
 import actions.ActionTemplate;
+import actions.effects.DamageEffect;
+import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
+import actions.utils.PowerUpType;
 import board.GameMap;
 import exception.AmmoException;
 import gamemanager.ParserConfiguration;
@@ -12,6 +15,8 @@ import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
 import grabbables.Weapon;
+import testcontroller.SlaveController;
+import testcontroller.controllermessage.ControllerMessage;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -50,6 +55,7 @@ public class Actor {
     private Set<Actor> damagedBy;
     private boolean flipBoard = false;
     private boolean afterFirst;
+    private SlaveController slave;
 
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
@@ -267,8 +273,20 @@ public class Actor {
         }
     }
 
-    public void damageBreaking(Actor shooter, int numOfDmg, Runnable onResolved){
-        //TODO
+    public void damageBreaking(SlaveController shooter, int numOfDmg, Runnable onResolved) {
+        slave.startTagback(shooter.getSelf(), opt -> {
+            if (opt.isPresent()) {
+                PowerUp p = opt.get();
+                if (p.getType().equals(PowerUpType.TAGBACKGRANADE)) {
+                    ControllerMessage message = p.usePowup(
+                            shooter,
+                            List.of((Effect) new DamageEffect(pawnID, numOfDmg, false)),
+                            onResolved);
+                    return;
+                }
+            }
+            onResolved.run();
+        });
     }
 
     /**
@@ -517,7 +535,7 @@ public class Actor {
         this.afterFirst = afterFirst;
     }
 
-    public boolean endTurn(Actor player, Scoreboard scoreboard){
+    public boolean endTurn(Actor player, Scoreboard scoreboard);
         if(player.isDead()){
             scoreboard.score(player);
             //TODO don't know if using respawn() method and if check for final frenzy
@@ -526,8 +544,10 @@ public class Actor {
         return false;
     }
 
-    public void drop(Weapon weapUsed) {
-        //TODO
+    public void drop(Weapon weapUsed);
+
+    public void bindSlave(SlaveController slave) {
+        this.slave = slave;
     }
 
 

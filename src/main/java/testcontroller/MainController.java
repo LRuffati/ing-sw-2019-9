@@ -48,6 +48,10 @@ public class MainController {
     private List<SlaveController> slaveControllerList;
     private Map<DamageableUID, SlaveController> slaveMap;
 
+    public SlaveController getSlaveByUID(DamageableUID uid){
+        return slaveMap.get(uid);
+    }
+
     MainController(){
         slaveControllerList = new ArrayList<>();
         timeoutTime = 30;
@@ -202,6 +206,7 @@ public class MainController {
     public SlaveController bind(Player player, ServerInterface network){
         SlaveController slave = new SlaveController(this, player, network);
         slaveControllerList.add(slave);
+        player.getActor().bindSlave(slave);
         return slave;
     }
 

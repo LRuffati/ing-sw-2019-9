@@ -83,11 +83,6 @@ public class PayTemplate implements EffectTemplate{
                         return new PayTemplate(amount.subtract(tempSum)).spawn(targets,
                                 newSandbox,consumer);
                     }
-
-                    // Check if these are enough to pay (either alone or topped up by the cubes)
-                    // If they are just add the effects and call consumer with the sandbox
-                    // else: subtract the powerups from the Amount, update the sandbox, create a
-                    // new PayTemplate with the new amount and call .spawn on it
                 };
 
         return new PickPowerupMessage(useful, onChoice, optional, options);

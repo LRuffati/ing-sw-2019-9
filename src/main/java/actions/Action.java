@@ -200,6 +200,11 @@ public class Action {
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
                 return new PickTargetMessage(choiceMaker, "Scegli un bersaglio", sandbox);
+        } else if (!){
+            /*
+            Save contemporary effects in info and a flag.
+            Allow a pickAction with multiple picks
+             */
         } else if (!unresolvedEffects.isEmpty()){
 
             Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();
