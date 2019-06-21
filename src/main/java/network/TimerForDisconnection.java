@@ -5,6 +5,7 @@ import java.util.*;
 public class TimerForDisconnection {
     private static Map<TimerTask, String> timerMap = new HashMap<>();
     private static Map<String, Timer> tokenToTimerMap = new HashMap<>();
+    private static Map<Timer, TimerTask> timerTimerTaskMap = new HashMap<>();
     private static Map<TimerTask, Integer> numOfErrors = new HashMap<>();
 
     private TimerForDisconnection(){}
@@ -13,16 +14,22 @@ public class TimerForDisconnection {
         TimerTask repeatedTask = new TimerTask() {
             @Override
             public void run() {
-                numOfErrors.put(this, numOfErrors.get(this) + 1);
+                try {
+                    numOfErrors.put(this, numOfErrors.get(this) + 1);
 
-                int num = numOfErrors.get(this);
-                if(num>=2) {
-                    System.out.println("NumOfErrors\t" + num + "\t\t" + Database.get().getUserByToken(token).getUsername());
+                    int num = numOfErrors.get(this);
+                    if (num >= 2) {
+                        System.out.println("NumOfErrors\t" + num + "\t\t" + Database.get().getUserByToken(token).getUsername());
+                    }
+
+                    if (numOfErrors.get(this) == 10) {
+                        Database.get().logout(timerMap.get(this));
+                        //stop(timerMap.get(this));
+                    }
                 }
-
-                if (numOfErrors.get(this) >= 10) {
-                    Database.get().logout(timerMap.get(this));
-                    stop(timerMap.get(this));
+                catch (NullPointerException e) {
+                    System.out.println("NULLPOINTER\t\t" + Database.get().getUserByToken(token).getUsername());
+                    e.printStackTrace();
                 }
             }
         };
@@ -30,9 +37,9 @@ public class TimerForDisconnection {
         Timer timer = new Timer("timerForDisconnection");
         timerMap.put(repeatedTask, token);
         tokenToTimerMap.put(token, timer);
+        timerTimerTaskMap.put(timer, repeatedTask);
         numOfErrors.put(repeatedTask, 0);
         timer.schedule(repeatedTask, 300,500);
-        System.out.println("timer\t"+timer+"\n"+"timertask\t"+repeatedTask+"\n"+"token\t"+token+"\n");
     }
 
     public static void reset(String token) {
@@ -64,18 +71,17 @@ public class TimerForDisconnection {
     }
 
     public static void stop(String token) {
-        if(tokenToTimerMap.containsKey(token)){
+        if(tokenToTimerMap.containsKey(token)) {
             System.out.println("Stopping the timer");
+            timerTimerTaskMap.get(tokenToTimerMap.get(token)).cancel();
             tokenToTimerMap.get(token).cancel();
         }
         else System.out.println("NoTimerForDisconnection");
 
-        for(Map.Entry entry : timerMap.entrySet()) {
-            if(entry.getValue().equals(token)) {
-                numOfErrors.remove(entry.getKey());
-                timerMap.remove(entry.getKey());
-                return;
-            }
-        }
+        TimerTask toBeDeleted = timerTimerTaskMap.get(tokenToTimerMap.get(token));
+        numOfErrors.remove(toBeDeleted);
+        timerMap.remove(toBeDeleted);
+        timerTimerTaskMap.remove(tokenToTimerMap.get(token));
+        tokenToTimerMap.remove(token);
     }
 }

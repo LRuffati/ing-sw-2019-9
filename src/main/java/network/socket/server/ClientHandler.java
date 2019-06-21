@@ -65,9 +65,7 @@ public class ClientHandler implements Runnable{
                 }
             } while (!stop);
         } catch (SocketException | SocketTimeoutException e) {
-            System.out.println("Soft quit");
-            //TODO: notify controller too?
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "logout in ClientHandler.run");
             Database.get().logout(controller);
             close();
         }

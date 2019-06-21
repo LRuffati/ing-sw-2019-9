@@ -7,9 +7,7 @@ import testcontroller.MainController;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,12 +34,14 @@ public class NetworkBuilder {
         TimerTask repeatedTask = new TimerTask() {
             @Override
             public void run() {
-
-                for (String token : Database.get().getConnectedTokens()) {
+                Set<String> tokens = Database.get().getConnectedTokens();
+                for (String token : tokens) {
+                    ServerInterface network = Database.get().getNetworkByToken(token);
                     Thread thread = new Thread() {
                         public void run() {
                             try {
-                                Database.get().getNetworkByToken(token).ping();
+                                //System.out.println(Database.get().getUserByToken(token).getUsername());
+                                network.ping();
                             } catch (RemoteException | IllegalArgumentException e) {
                                 //e.printStackTrace();
                                 Database.get().logout(token);
