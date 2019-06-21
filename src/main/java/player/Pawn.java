@@ -133,10 +133,13 @@ public class Pawn {
     /**
      *
      * @param gameMapView the gameMap connected to the ActorView
-     * @param pointOfView if false hide non public information
+     * @param uid the player that is being created
+     * @param pov the owner of the map
      * @return a view of the actor
      */
-    public ActorView generateView(GameMapView gameMapView, boolean pointOfView) {
+    public ActorView generateView(GameMapView gameMapView, DamageableUID uid, DamageableUID pov) {
+
+        boolean pointOfView = uid.equals(pov);
 
         ActorView actorView = new ActorView();
         for(ActorView a : gameMapView.players())

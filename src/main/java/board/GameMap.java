@@ -490,9 +490,9 @@ public class GameMap {
         gameMapView.setYou(you);
         gameMapView.setPlayers(players);
 
-        you = getPawn(you.uid()).generateView(gameMapView, true);
+        you = getPawn(you.uid()).generateView(gameMapView, pointOfView, pointOfView);
         for(DamageableUID uid : getDamageable())
-            players2.add(getPawn(uid).generateView(gameMapView, false));
+            players2.add(getPawn(uid).generateView(gameMapView, uid, pointOfView));
         gameMapView.setYou(you);
         gameMapView.setPlayers(players2);
 

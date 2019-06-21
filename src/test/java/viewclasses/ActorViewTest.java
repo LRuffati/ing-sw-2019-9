@@ -60,8 +60,8 @@ class ActorViewTest {
 
 
 
-        ActorView view1 = act1.pawn().generateView(map.generateView(act1.pawnID()), true);
-        ActorView view2 = act2.pawn().generateView(map.generateView(act1.pawnID()), false);
+        ActorView view1 = act1.pawn().generateView(map.generateView(act1.pawnID()), act1.pawnID(), act1.pawnID());
+        ActorView view2 = act2.pawn().generateView(map.generateView(act1.pawnID()), act2.pawnID(), act1.pawnID());
 
         assertTrue(view2.damageTaken().isEmpty());
 
@@ -89,8 +89,6 @@ class ActorViewTest {
     void testTile() {
         Actor act1 = actors.get(0);
         Actor act2 = actors.get(1);
-        ActorView view1 = act1.pawn().generateView(map.generateView(act1.pawnID()), true);
-        ActorView view2 = act2.pawn().generateView(map.generateView(act1.pawnID()), false);
 
         assertFalse(map.generateView(act1.pawnID()).getPosition(new Coord(0,0)).spawnPoint());
         assertTrue(map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).spawnPoint());
