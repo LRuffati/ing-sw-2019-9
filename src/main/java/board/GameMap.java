@@ -410,7 +410,7 @@ public class GameMap {
      * @param grabbable The weapon that has to be discarded
      */
     public void discardWeapon(TileUID tile, Weapon grabbable){
-        if(getGrabbable(tile).size() == 3 || !emptyWeaponDeck())
+        if(!emptyWeaponDeck())
             throw new InvalidParameterException("A weapon cannot be discarded here");
         if(deckOfWeapon.isPicked(grabbable)){
             addGrabbable(tile, grabbable);

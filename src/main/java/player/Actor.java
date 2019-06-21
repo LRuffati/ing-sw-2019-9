@@ -521,8 +521,11 @@ public class Actor {
     }
 
     public void drop(Weapon weapUsed) {
-        //TODO
+        gm.discardWeapon(pawn().getTile(), weapUsed);
+        if (loadedWeapon.contains(weapUsed))
+            loadedWeapon.remove(weapUsed);
+        else
+            unloadedWeapon.remove(weapUsed);
     }
-
 }
 
