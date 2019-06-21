@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.List;
 
 public class CLIMap {
-    private final int dimTile = 5;
+    private static final int DIM_TILE = 5;
     private int maxY;
     private int maxX;
     private Character[][] tiles;
@@ -27,8 +27,8 @@ public class CLIMap {
      */
     public CLIMap(GameMapView gmv){
         this.mp = gmv;
-        this.maxX = gmv.maxPos().getX()*dimTile;
-        this.maxY = gmv.maxPos().getY()*dimTile;
+        this.maxX = gmv.maxPos().getX()* DIM_TILE;
+        this.maxY = gmv.maxPos().getY()* DIM_TILE;
         tiles = new Character[maxX][maxY];
         players = new HashMap<>();
         playerPos = new HashMap<>();
@@ -52,8 +52,8 @@ public class CLIMap {
     private void generateMap(){
 
         for(TileView t: mp.allTiles()){
-            int x = mp.getCoord(t).getY()*dimTile;
-            int y = mp.getCoord(t).getX()*dimTile;
+            int x = mp.getCoord(t).getY()* DIM_TILE;
+            int y = mp.getCoord(t).getX()* DIM_TILE;
 
             tiles[x][y] = '╔';
             tiles[x+1][y] = '═';
@@ -67,9 +67,9 @@ public class CLIMap {
             tiles[x][y+2] = '║';
             tiles[x][y+3] = '║';
             tiles[x][y+4] = '╚';
-            tiles[x+1][y+4] = '=';
-            tiles[x+2][y+4] = '=';
-            tiles[x+3][y+4] = '=';
+            tiles[x+1][y+4] = '═';
+            tiles[x+2][y+4] = '═';
+            tiles[x+3][y+4] = '═';
             tiles[x+4][y+4] = '╝';
             if(t.spawnPoint()){
                 tiles[x+1][y+1] = 's';
@@ -141,7 +141,7 @@ public class CLIMap {
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
-                Coord cord = new Coord(r/dimTile, c/dimTile);
+                Coord cord = new Coord(r/ DIM_TILE, c/ DIM_TILE);
                 boolean flag = true;
                 if(mp.allCoord().contains(cord)) {
                     //TODO add the escape "\0×1B" character in the following to print(s) to maintain the map. Won't work on Intellij.
@@ -159,8 +159,8 @@ public class CLIMap {
     }
 
     public void addAmmo(TileView tile){
-        int x = mp.getCoord(tile).getX()*dimTile;
-        int y = mp.getCoord(tile).getY()*dimTile;
+        int x = mp.getCoord(tile).getX()* DIM_TILE;
+        int y = mp.getCoord(tile).getY()* DIM_TILE;
         AmmoCardView ammo = tile.ammoCard();
         tiles[y][x] = Character.forDigit(ammo.numOfBlue(),10);
         tiles[y+1][x] = Character.forDigit(ammo.numOfRed(),10);
@@ -187,8 +187,8 @@ public class CLIMap {
         if(searchCharacter(players.get(mp.you())).getX()!=null && searchCharacter(players.get(mp.you())).getY()!=null)
             tiles[searchCharacter(players.get(mp.you())).getX()][searchCharacter(players.get(mp.you())).getY()]= ' ';
          */
-        tiles[cord.getY()*dimTile + playerPos.get(players.get(a)).getY()][cord.getX()*
-                dimTile + playerPos.get(players.get(a)).getX()] = players.get(a);
+        tiles[cord.getY()* DIM_TILE + playerPos.get(players.get(a)).getY()][cord.getX()*
+                DIM_TILE + playerPos.get(players.get(a)).getX()] = players.get(a);
     }
 
     /**
@@ -237,8 +237,8 @@ public class CLIMap {
     private void spawnPlayers(){
         for(TileView t : mp.allTiles()){
             for(ActorView a: t.players()){
-                tiles[mp.getCoord(t).getY()*dimTile+playerPos.get(players.get(a)).getX()]
-                        [mp.getCoord(t).getX()*dimTile+playerPos.get(players.get(a)).getY()]
+                tiles[mp.getCoord(t).getY()* DIM_TILE +playerPos.get(players.get(a)).getX()]
+                        [mp.getCoord(t).getX()* DIM_TILE +playerPos.get(players.get(a)).getY()]
                         = players.get(a);
             }
         }

@@ -28,7 +28,7 @@ green
 Room
 1 1
 Color
-purple
+magenta
 
 Room
 1 2

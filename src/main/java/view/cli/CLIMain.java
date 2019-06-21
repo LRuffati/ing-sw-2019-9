@@ -7,8 +7,6 @@ import player.Actor;
 import viewclasses.GameMapView;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.List;
 
 public class CLIMain {
@@ -34,6 +32,7 @@ public class CLIMain {
         }*/
         CLIDemo demo = new CLIDemo(client);
         demo.updateMap(gmv);
+        System.out.println();
         demo.endGame();
     }
 }
