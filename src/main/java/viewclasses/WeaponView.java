@@ -5,10 +5,7 @@ import actions.utils.AmmoColor;
 import uid.GrabbableUID;
 
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -63,26 +60,5 @@ public class WeaponView implements Serializable {
         return card;
     }
 
-    private void setCard() throws IOException {
-        String path;
-        switch (name.toLowerCase()){
-            case("martello ionico"):
-                path = "gui/Cards/AD_weapons_IT_022.png";
-                break;
-
-            case("spada ionica"):
-                path = "gui/Cards/AD_weapons_IT_023.png";
-                break;
-
-            case("cyberguanto"):
-                path = "gui/Cards/AD_weapons_IT_024.png";
-                break;
-
-            default:
-                path = "gui/Cards/AD_weapons_IT_02.png";
-                break;
-        }
-        card = ImageIO.read(ClassLoader.getSystemResourceAsStream(path));
-    }
 }
 
