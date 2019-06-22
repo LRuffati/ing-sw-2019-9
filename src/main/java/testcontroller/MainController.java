@@ -159,9 +159,17 @@ public class MainController {
 
         slaveControllerList = new ArrayList<>(slaveMap.values());
         Collections.shuffle(slaveControllerList);
+        slaveControllerList.sort((a,b)-> {
+            if (a.getSelf().getFirstPlayer())
+                return 1;
+            if (b.getSelf().getFirstPlayer())
+                return -1;
+            return 0;
+        });
 
-        slaveControllerList.get(0).
+        this.firstRoundOver=false;
 
+        slaveControllerList.get(0).startMainAction();
     }
 
     private void createGame() {
@@ -219,6 +227,23 @@ public class MainController {
     }
 
     /**
+     * Will be called by the EndTurn as long as the flag firstRoundOver is set to false
+     * @param going
+     * @param next
+     */
+    private void firstRound(SlaveController going, List<SlaveController> next){
+        if (next.isEmpty()){
+            firstRoundOver=true;
+        }
+        startRespawn(
+                List.of(going.getSelf().pawnID()),
+                2,
+                going::startMainAction
+        );
+    }
+
+    /**
+     * Called only as the last statement of a new thread
      *
      * @param responsible the SlaveController which started it all (redundant)
      * @param effects (the list of effects)
@@ -298,13 +323,13 @@ public class MainController {
             5a. Frenesia iniziata: Chiama Main.finalFrenzy(nextPlayer)
             5b. Inizia il main line sul prossimo turno
         */
+        getGameMap().refill();
         List<DamageableUID> dead = new ArrayList<>();
-        for (TileUID t: getGameMap().allTiles()){
-            getGameMap().getTile(t).endTurn(lastPlayed);
-        }
+
+        // TODO: iterate first on domination points somehow or else the game will break
         for (DamageableUID uid: getGameMap().getDamageable()){
             if (getGameMap().getPawn(uid).getActor().endTurn(lastPlayed, scoreboard)){
-                dead.add(uid);
+                dead.add(uid); //TODO: do they count as dead if they didn't spawn yet?
             }
         }
 
@@ -328,6 +353,7 @@ public class MainController {
         }
 
         this.startRespawn(dead, 1, next::startMainAction); // LAST LINE OF THE FUNCTION
+        //TODO: handle first turn of each player differently
         return;
     }
 
