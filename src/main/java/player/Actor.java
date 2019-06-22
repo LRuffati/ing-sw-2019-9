@@ -12,6 +12,7 @@ import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
 import grabbables.Weapon;
+import testcontroller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -48,6 +49,7 @@ public class Actor {
     private Set<Actor> damagedBy;
     private boolean flipBoard = false;
     private boolean afterFirst;
+    private SlaveController slaveController;
 
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor

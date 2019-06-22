@@ -153,8 +153,6 @@ public class MainController {
         slaveControllerList = new ArrayList<>(slaveMap.values());
         Collections.shuffle(slaveControllerList);
 
-        slaveControllerList.get(0).
-
     }
 
     private void createGame() {

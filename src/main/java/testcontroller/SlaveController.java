@@ -83,7 +83,7 @@ public class SlaveController {
     }
 
     protected void setFirst(boolean first){
-        getSelf().getFirstPlayer()
+        getSelf().getFirstPlayer();
     }
 
     /**
