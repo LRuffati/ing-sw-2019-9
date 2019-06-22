@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class Pawn {
     private TileUID tile;
-    private transient Actor actor;
+    protected transient Actor actor;
     public final DamageableUID damageableUID;
     private transient GameMap map;
 

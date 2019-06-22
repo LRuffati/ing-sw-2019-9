@@ -1,20 +1,28 @@
 package actions.effects;
 
 
+import actions.utils.AmmoAmount;
+import board.Tile;
+import grabbables.AmmoCard;
+import grabbables.Grabbable;
+import grabbables.Weapon;
 import player.Actor;
 import testcontroller.SlaveController;
 import uid.TileUID;
 
 
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class GrabEffect implements Effect {
-    private final TileUID cell;
     public final EffectType type;
 
-    public GrabEffect(TileUID cell) {
-        this.cell = cell;
+    public GrabEffect() {
         this.type = EffectType.GRAB;
     }
 
@@ -27,17 +35,59 @@ public class GrabEffect implements Effect {
     public void mergeInGameMap(SlaveController pov, Runnable finalize,
                                Consumer<String> broadcaster) {
 
-    }
 
+        // Choose actual operations
+        Tile tile = pov.getSelf().getGm().getTile(pov.getSelf().pawn().getTile());
 
+        Set<Grabbable> grabbables = tile.getGrabbable();
 
-    public String effectString(Actor pov) {
-        return String.format("%s ha raccolto %s",
-                pov.pawn().getUsername(),
-                pov.getGm().getTile(pov.getGm().tile(pov.pawnID())).spawnPoint()
-                        //todo: come capire che arma ha raccolto?
-                        ? "un'arma"
-                        : "delle munizioni"
-        );
+        AmmoAmount amountsToGrab = grabbables.stream()
+                .flatMap(i-> Stream.of(i.getAmmoAmount()))
+                .reduce(new AmmoAmount(), (tot, amm)->new AmmoAmount(tot.add(amm)));
+
+        int powerups = grabbables.stream()
+                .flatMap(i->Stream.of(i.getNumOfPowerUp()))
+                .reduce(0, Integer::sum);
+
+        Set<Weapon> weapons = grabbables.stream()
+                .map(Grabbable::getWeapon)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+
+        BiConsumer<Weapon, Optional<Weapon>> onChoice = (toGrab, toDiscard) -> {
+            String broadcast = String.format("%s", pov.getSelf().pawn().getUsername());
+            Weapon toDisc = null;
+            broadcast = broadcast.concat(String.format(" ha raccolto %s", toGrab.getName()));
+
+            if (toDiscard.isPresent()) {
+                toDisc = toDiscard.get();
+                broadcast = broadcast.concat(String.format(" e lasciato %s", toDisc.getName()));
+            }
+            pov.getSelf().pickUp(toGrab, toDisc);
+            broadcaster.accept(broadcast);
+            finalize.run();
+        };
+
+        if (new AmmoAmount().compareTo(amountsToGrab)<0){ //If I have to grab some amount of cubes
+            broadcaster.accept(String.format("%s ha raccolto %s",
+                    pov.getSelf().pawn().getUsername(), amountsToGrab.toString()));
+        }
+
+        powerups = Math.min(powerups, 3-pov.getSelf().getPowerUp().size());
+        if (powerups>0){
+            broadcaster.accept(String.format("%s ha raccolto %d powerup",
+                    pov.getSelf().pawn().getUsername(), powerups));
+        }
+
+        if (!weapons.isEmpty()){
+            pov.makeGrabChoice(weapons, onChoice);
+        } else {
+            Set<AmmoCard> cardsToDiscard = grabbables.stream().flatMap(i->i.getCard().stream())
+                    .collect(Collectors.toSet());
+            for (AmmoCard i: cardsToDiscard){
+                pov.getSelf().pickUp(i);
+            }
+            finalize.run();
+        }
     }
 }

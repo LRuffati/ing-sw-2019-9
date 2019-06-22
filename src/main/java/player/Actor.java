@@ -1,18 +1,23 @@
 package player;
 
 import actions.ActionTemplate;
+import actions.effects.DamageEffect;
+import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
+import actions.utils.PowerUpType;
 import board.GameMap;
 import exception.AmmoException;
 import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
+import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import testcontroller.SlaveController;
+import testcontroller.controllermessage.ControllerMessage;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -26,9 +31,13 @@ import java.util.List;
  */
 
 public class Actor {
+
+    // Proprietà di game info
     private static final int HP = ParserConfiguration.parseInt("Hp");
     private static final int MAX_WEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
     private static final int MAX_PUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
+
+    // Di Actor
     private boolean lastInFrenzy;
     private int points;
     private int numOfDeaths;
@@ -36,17 +45,30 @@ public class Actor {
     private Map<DamageableUID, Integer> marks;
     private Collection<Weapon> unloadedWeapon;
     private Collection<Weapon> loadedWeapon;
-    private Collection<PowerUp> powerUps;
+    private Collection<PowerUp> powerUps; // FIXME ensure it is always updated
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
-    private Boolean frenzy;
+
     private final GameMap gm;
 
     private DamageableUID pawnID;
 
-    private Set<Actor> damagedPlayer;
-    //TODO: is this necessary?
+    //TODO: if resolveEffect checks this and clears it I could handle tagbacks in a more coherent
+    // way, could also remove the need for slave attribute
     private Set<Actor> damagedBy;
+
+    public Set<Actor> getDamagedBy() {
+        return new HashSet<>(damagedBy);
+    }
+
+    public boolean removeDamager(Actor damager){
+       return damagedBy.remove(damager);
+    }
+
+    private SlaveController slave;
+
+    // Frenzy related
+    private Boolean frenzy;
     private boolean flipBoard = false;
     private boolean afterFirst;
     private SlaveController slaveController;
@@ -72,7 +94,6 @@ public class Actor {
         this.gm = map;
 
         this.damagedBy = new HashSet<>();
-        this.damagedPlayer = new HashSet<>();
 
         this.lastInFrenzy = false;
     }
@@ -113,7 +134,6 @@ public class Actor {
     /**
      * This metohd picks up a certain amount of power Ups, without check of validity
      * @param num the number of powerUp
-     * @param num the number of powerUp
      */
     public void drawPowerUpRaw(int num) {
         for(int i=0; i<num; i++)
@@ -123,14 +143,14 @@ public class Actor {
     /**
      * Checks if in the player's tile there is the grabbable item.
      * Picks up the weapon or the ammoTile, adds all the necessary ammo and powerUps
-     * @param ammoCard is the ammoCard element that the player want to pick up
+     * @param card is the ammoCard element that the player want to pick up
      */
-    public void pickUp(AmmoCard ammoCard){
+    public void pickUp(AmmoCard card){
         TileUID tile = pawn().getTile();
-        if(!gm.getGrabbable(tile).contains(ammoCard))
+        if(!gm.getGrabbable(tile).contains(card))
             throw new InvalidParameterException("There isn't this item here");
 
-        AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
+        gm.pickUpGrabbable(tile, card); //Removes from the map
         ammoAvailable = new AmmoAmount(ammoAvailable.add(new AmmoAmount(card.getAmmoAmount())));
         for(int i = 0; i<card.getNumOfPowerUp() && powerUps.size()< MAX_PUP; i++)
             powerUps.add(gm.pickUpPowerUp());
@@ -162,8 +182,8 @@ public class Actor {
             else
                 unloadedWeapon.remove(weaponToDiscard);
         }
-
-        loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, weapon));
+        gm.pickUpGrabbable(tile,weapon);
+        loadedWeapon.add(weapon);
     }
 
     /**
@@ -171,7 +191,7 @@ public class Actor {
      * @param weapon is the weapon to be reloaded.
      * @throws AmmoException if the player doesn't have enough ammo
      */
-    public void reloadWeapon(Weapon weapon) throws AmmoException{
+    public void reloadWeapon(Weapon weapon) {
         if(!unloadedWeapon.contains(weapon) && !loadedWeapon.contains(weapon))
             throw new InvalidParameterException("This actor has not this weapon");
         if(!unloadedWeapon.contains(weapon))
@@ -181,33 +201,9 @@ public class Actor {
         loadedWeapon.add(weapon);
     }
 
-    /**
-     * This method checks if a certain amount of Ammo can be reached using a list of PowerUps and player's AmmoTile
-     * @param ammoAmount The amount of ammo that has to be reached
-     * @param powerUpToPay the powerUps that the have to be considered in the check
-     * @return True if can be reloaded, false otherwise
-     */
-    public boolean checkAmmo(AmmoAmountUncapped ammoAmount, List<PowerUp> powerUpToPay){
-        AmmoAmountUncapped amount = new AmmoAmountUncapped();
-        if(powerUpToPay != null)
-            for(PowerUp p : powerUpToPay){
-                amount = amount.add(p.getAmmo());
-            }
-        amount.add(ammoAvailable);
-
-        return ammoAmount.compareTo(amount)>0;
-    }
-
-    /**
-     * This method keeps track of PowerUp cards possibly being used as ammunition
-     * @return the sum of ammoAvailable and all the powerups
-     */
-    public AmmoAmountUncapped getTotalAmmo(){
-        AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable.getAmounts());
-        for(PowerUp pu : powerUps){
-            am.add(pu.getAmmo());
-        }
-        return am;
+    public void useWeapon(Weapon weapon){
+        loadedWeapon.remove(weapon);
+        unloadedWeapon.add(weapon);
     }
 
     /**
@@ -237,60 +233,52 @@ public class Actor {
         return points;
     }
 
+
+
+
+
+    /*
+    TODO: Rework damage methods, make damageRaw be called when I don't want to trigger mark
+    conversion or the tagback grenade. Make damage convert marks into damage
+    Make them update damagedBy and check damaged by after effect resolution to call the tagback
+    grenade.
+     */
+
     /**
-     * Damages the player without applying the Marks
+     * Damages the player without applying the Marks nor triggering the tagback
+     *
+     * Also used to apply the damage
+     *
      * @param shooter the attacker
      * @param numOfDmg number of damage points
      */
     public void damageRaw(Actor shooter, int numOfDmg) {
         for(int i=0; i<numOfDmg; i++){
             if(damageTaken.size() <= HP){
-                damagedBy.add(shooter);
-                shooter.damagedPlayer.add(this);
                 damageTaken.add(shooter);
             }
         }
     }
 
     /**
-     * Damages the player, and applies all the Marks that can be applied
+     * Damages the player, and applies all the Marks that can be applied, triggers tagback on
+     * next check
      * @param shooter the attacker
      * @param numOfDmg number of damage points
      */
     public void damage(Actor shooter, int numOfDmg){
-        for(int i=0; i<numOfDmg; i++){
-            getDMG(shooter);
-        }
+        damagedBy.add(shooter);
+
+        Integer toApply = marks.remove(shooter.pawnID);
+        if (toApply==null)
+            toApply = 0;
+
+        damageRaw(shooter,numOfDmg+toApply);
     }
 
-    public void damageBreaking(Actor shooter, int numOfDmg, Runnable onResolved){
-        //TODO
-    }
-
-    /**
-     * Add the attacker who damaged the player on his playerboard.
-     * Adds the shooter to the attacked's damagedBy Set
-     * and the shot to the attacker's damagedPlayer Set.
-     * The first element is the first player who attacked "this".
-     * Also converts all the marks of the shooter into damage.
-     * @param shooter is the attacker.
-     */
-    private void getDMG(Actor shooter){
-        if(damageTaken.size() <= HP){
-            damagedBy.add(shooter);
-            shooter.damagedPlayer.add(this);
-            damageTaken.add(shooter);
-        }
-
-        if(marks.containsKey(shooter.pawn().getDamageableUID())) {
-            for (int i = 0; i < marks.get(shooter.pawnID); i++) {
-                if (damageTaken.size() <= HP)
-                    damageTaken.add(shooter);
-            }
-            marks.put(shooter.pawnID, 0);
-        }
-    }
-
+    //
+    // See T O D O above for damage related effects
+    //
 
     /**
      * Method needed in the Scoreboard class.
@@ -358,31 +346,6 @@ public class Actor {
 
     /**
      *
-     * @return the number of damage that an actor can take before the death
-     */
-    public int hp() {
-        return HP;
-    }
-
-    /**
-     *
-     * @return The set containing all the Player that damaged the Player before his turn
-     */
-    public Set<Actor> getDamagedBy() {
-        return new HashSet<>(damagedBy);
-    }
-
-    /**
-     *
-     * @return a Set containing all the Player that have been damaged by this during his turn
-     */
-    public Set<Actor> getDamagedPlayer() {
-        return new HashSet<>(damagedBy);
-    }
-
-
-    /**
-     *
      * @return True iif the player is dead
      */
     public boolean isDead(){
@@ -392,20 +355,21 @@ public class Actor {
     /**
      * Adds a certain number of marks from pawn to this.
      * If the pawn already assigned 3 marks nothing happens.
-     * @param attackerPawn The attacker
-     * @param numOfMarks
+     * @param attackerActor The attacker
+     * @param numOfMarks the number of marks to apply
      * @return the number of marks successfully applied
      */
-    //TODO: convert this to addMark(Actor attackerActor, int numOfMarks) ?
-    public int addMark(DamageableUID attackerPawn, int numOfMarks){
-        int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
+    public int addMark(Actor attackerActor, int numOfMarks){
 
-        int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
+        DamageableUID attackerPawn = attackerActor.pawnID;
 
-        if(marks.containsKey(attackerPawn))
-            marks.put(attackerPawn, marks.get(attackerPawn) + applied);
-        else
-            marks.put(attackerPawn, applied);
+        int totMarks = marks.getOrDefault(attackerPawn, 0);
+
+        // Minimum between numOfMarks and 3 - totmarks
+        int applied = Math.min(numOfMarks , 3 - totMarks);
+
+        marks.put(attackerPawn, marks.getOrDefault(attackerPawn, 0) + applied);
+
         return applied;
     }
 
@@ -505,6 +469,11 @@ public class Actor {
         return lastInFrenzy;
     }
 
+    /**
+     * Called when FF phase is starting
+     * If possible it flips the board and changes the action that can be performed
+     * @param afterFirst True iif the player is between the first player and the player who started FF
+     */
     public void beginFF(boolean afterFirst){
         if(damageTaken.isEmpty())
             this.flipBoard = true;
@@ -513,22 +482,43 @@ public class Actor {
         this.afterFirst = afterFirst;
     }
 
-    public boolean endTurn(Actor player, Scoreboard scoreboard){
-        if(player.isDead()){
-            scoreboard.score(player);
-            //TODO don't know if using respawn() method and if check for final frenzy
-            return true;
-        }
-        return false;
+    /**
+     * Manages the end of the turn. If the player is not dead nothing happens.
+     * Otherwise the kill and the score are added to the scoreboard and damage are cleared.
+     * If the player is dead and FF has started then flips the board
+     * @param player The player that finished the turn
+     * @param scoreboard Scoreboard
+     * @return True iif the player needs to respawn
+     */
+    public boolean endTurn(Actor player, Scoreboard scoreboard) {
+        if (!player.isDead())
+            return false;
+
+        scoreboard.addKill(player, this);
+        scoreboard.score(player);
+        damageTaken.clear();
+
+        if (frenzy)
+            flipBoard = true;
+
+        return true;
     }
 
+    /**
+     * This method drops a weapon.
+     * Given a weapon, it discards the weapon and removes it from the loaded or unloaded container
+     * @param weapUsed
+     */
     public void drop(Weapon weapUsed) {
-        //TODO
+        gm.discardWeapon(pawn().getTile(), weapUsed);
+        if (loadedWeapon.contains(weapUsed))
+            loadedWeapon.remove(weapUsed);
+        else
+            unloadedWeapon.remove(weapUsed);
     }
 
-
-    public void bindSlave(SlaveController slaveController) {
-        this.slaveController = slaveController;
+    public void bindSlave(SlaveController slave) {
+        this.slave = slave;
     }
 }
 

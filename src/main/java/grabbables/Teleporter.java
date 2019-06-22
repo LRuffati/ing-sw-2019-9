@@ -11,6 +11,7 @@ import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
 import actions.targeters.targets.TileTarget;
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoColor;
 import actions.utils.ChoiceMaker;
 import actions.utils.PowerUpType;
 import board.Sandbox;
@@ -23,6 +24,7 @@ import testcontroller.controllermessage.WaitMessage;
 import uid.TileUID;
 import viewclasses.TargetView;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -30,8 +32,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Teleporter extends PowerUp {
-    public Teleporter(AmmoAmount ammo) {
-        super(PowerUpType.TELEPORTER, ammo);
+    public Teleporter(AmmoColor color) {
+        super(PowerUpType.TELEPORTER, color);
     }
 
     /**

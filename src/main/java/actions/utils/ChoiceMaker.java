@@ -19,6 +19,8 @@ public interface ChoiceMaker {
 
     /**
      * This function will be called by the controller
+     *
+     * true if optional, false if required
      */
     Tuple<Boolean, List<TargetView>> showOptions();
 

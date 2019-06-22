@@ -44,8 +44,7 @@ public class DamageEffect implements Effect{
         if (raw){
             pov.getSelf().getGm().getPawn(uid).getActor().damageRaw(pov.getSelf(), amount);
         } else {
-            pov.getSelf().getGm().getPawn(uid).getActor().damageBreaking(pov.getSelf(), amount,
-                    finalize);
+            pov.getSelf().getGm().getPawn(uid).getActor().damage(pov.getSelf(), amount);
         }
 
     }

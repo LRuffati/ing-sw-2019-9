@@ -3,7 +3,6 @@ package testcontroller.controllermessage;
 import grabbables.PowerUp;
 import testcontroller.ChoiceBoard;
 import testcontroller.Message;
-import testcontroller.SlaveController;
 import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 

@@ -6,14 +6,16 @@ import board.Tile;
 import gamemanager.DominationMode;
 
 public class DominationPoint extends Pawn {
-    private final Actor actor;
     private final Tile tile;
 
     //TODO: what to do for the actor field
+
+    //TODO: create a domination actor,
+
     DominationPoint(Actor actor, Tile tile, DominationMode scoreboard){
         scoreboard.addTrack(tile.getColor());
         this.tile = tile;
-        this.actor = actor;
+        super.actor = actor;
     }
 
     /**

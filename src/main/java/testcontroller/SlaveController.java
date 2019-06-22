@@ -3,12 +3,11 @@ package testcontroller;
 import actions.ActionBundle;
 import actions.ActionTemplate;
 import actions.effects.Effect;
+import actions.effects.PayTemplate;
 import actions.effects.ReloadTemplate;
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.Targetable;
-import actions.utils.AmmoAmountUncapped;
-import actions.utils.ChoiceMaker;
-import actions.utils.PowerUpType;
+import actions.utils.*;
 import board.Sandbox;
 import genericitems.Tuple;
 import grabbables.PowerUp;
@@ -22,10 +21,12 @@ import testcontroller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
 
+import javax.swing.text.html.Option;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -80,10 +81,6 @@ public class SlaveController {
     public void startMainAction(){
         this.onTimeout = () -> new Thread(() -> main.endTurn(getSelf())).start();
         this.setCurrentMessage(setPowUps(new ArrayList<>(), getSelf().getActions()));
-    }
-
-    protected void setFirst(boolean first){
-        getSelf().getFirstPlayer();
     }
 
     /**
@@ -182,9 +179,7 @@ public class SlaveController {
         Function<List<PowerUp>, ControllerMessage> onPick =
                 list -> {
                     this.setCurrentMessage(new WaitMessage(List.of()));
-                    new Thread(()-> {
-                        onRespawned.accept(list.get(0));
-                    }).start();
+                    new Thread(()-> onRespawned.accept(list.get(0))).start();
                     return new WaitMessage(List.of());
                 };
 
@@ -211,62 +206,87 @@ public class SlaveController {
      *                  one. The provider should make sure it is only used once. Blocking
      */
     public void startTagback(Actor offender, Consumer<Optional<PowerUp>> onFinished){
+
+        /*
+        1. Check if you have any available tagbacks
+            a. No, run on finished with empty optional
+        2. Yes, make user choose which powerup to use, if any (set ControllerMessage)
+            a. None, return a waitMessage and call onFinished with empty
+        3. return a waitMessage to the user and call on finished with the powerup to use
+         */
+
         Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
         BasicTarget other = sandbox.getBasic(offender.pawnID());
 
-        if (other.seen(sandbox, sandbox.getBasic(getSelf().pawnID()), false)){
-            List<PowerUp> tagbacks =
-                    getSelf().getPowerUp().stream().filter(powerUp -> powerUp.getType().equals(PowerUpType.TAGBACKGRANADE)).collect(Collectors.toList());
-
-            if (tagbacks.isEmpty()) {
-                onFinished.accept(Optional.empty());
-                return;
-            }
-
-            ControllerMessage powerupPicker =
-                    new PickPowerupMessage(SlaveControllerState.USETAGBACK,
-                            tagbacks, list -> {
-                        if (list.isEmpty()) {
-                            onFinished.accept(Optional.empty());
-                        } else {
-                            onFinished.accept(Optional.of(list.get(0)));
-                        }
-                        return new WaitMessage(List.of());
-                    }, "Scegli quale tagback usare", true, getNotifications());
-
-            ChoiceMaker choiceMaker = new ChoiceMaker() {
-                @Override
-                public void giveTargets(String targetId, List<TargetView> possibilities,
-                                        Function<Integer, Targetable> action){
-                    // Since targets aren't added by a targeter but provided at creation this
-                    // method is unnecessary
-                }
-
-                @Override
-                public Tuple<Boolean, List<TargetView>> showOptions() {
-                    return new Tuple<>(true,
-                            List.of(other.generateView(sandbox)));
-                }
-
-                @Override
-                public ControllerMessage pick(int choice) {
-                    if (choice<0){
-                        onFinished.accept(Optional.empty());
-                        return new WaitMessage(List.of());
-                    } else {
-                        return powerupPicker;
-                    }
-                }
-            };
-
-            this.onTimeout = () -> new Thread( () -> onFinished.accept(Optional.empty())).start();
-            this.setCurrentMessage(new PickTargetMessage(choiceMaker,
-                    "Vuoi dare un marchio a questo giocatore?", sandbox));
-
-        } else {
-            onFinished.accept(Optional.empty());
+        if (other.seen(sandbox, sandbox.getBasic(getSelf().pawnID()),true)){ // 1a
+            new Thread(()->onFinished.accept(Optional.empty())).start();
+            return;
         }
 
+        List<PowerUp> tagbacks = getSelf().getPowerUp().stream()
+                .filter(powerUp -> powerUp.getType().equals(PowerUpType.TAGBACKGRANADE))
+                .collect(Collectors.toList());
+
+        if (tagbacks.isEmpty()){ // 1a
+            new Thread(()->onFinished.accept(Optional.empty())).start();
+            return;
+        }
+
+
+        /*
+         * Will be called by the controllerMessage, should put both the slave (by putMessage) and
+         *  the client (by return) in wait
+         */
+        Function<List<PowerUp>, ControllerMessage> powUpPickerAccept = lista -> {
+            this.setCurrentMessage(new WaitMessage(List.of()));
+            if (lista.isEmpty()){
+                new Thread(()->onFinished.accept(Optional.empty())).start(); //2a
+            } else {
+                new Thread(()->onFinished.accept(Optional.of(lista.get(0)))).start();
+            }
+            return new WaitMessage(List.of());
+        };
+
+        ControllerMessage askWhichTagBack =
+                new PickPowerupMessage(
+                        SlaveControllerState.USETAGBACK,
+                        tagbacks,
+                        powUpPickerAccept,
+                        "Scegli quale granata venom usare (o nessuna)",
+                        true,
+                        List.of()
+                );
+
+        // Scegli il target
+        ChoiceMaker targetConfirmation = new ChoiceMaker() {
+            @Override
+            public void giveTargets(String targetId, List<TargetView> possibilities, Function<Integer, Targetable> action) {
+            }
+
+            @Override
+            public Tuple<Boolean, List<TargetView>> showOptions() {
+                return new Tuple<>(true, List.of(other.generateView(sandbox)));
+            }
+
+            @Override
+            public ControllerMessage pick(int choice) {
+                if (choice==0){
+                    return askWhichTagBack;
+                } else {
+                    SlaveController.this.setCurrentMessage(new WaitMessage(List.of()));
+                    new Thread(()->onFinished.accept(Optional.empty())).start();
+                    return new WaitMessage(List.of());
+                }
+            }
+        };
+
+        ControllerMessage askTargetConfirmation = new PickTargetMessage(
+                targetConfirmation,
+                "Vuoi dare un marchio a questo giocatore?",
+                sandbox);
+
+        this.onTimeout = () -> new Thread( () -> onFinished.accept(Optional.empty())).start();
+        this.setCurrentMessage(askTargetConfirmation);
     }
 
     /**
@@ -379,5 +399,110 @@ public class SlaveController {
                 }
             }).start();
         }
+    }
+
+    /**
+     * Called when I have to choose between multiple weapons to pick and possibly drop one
+     */
+    public void makeGrabChoice(Set<Weapon> options, BiConsumer<Weapon, Optional<Weapon>> onChoice){
+
+        Sandbox sandbox = main.getGameMap().createSandbox(getSelf().pawnID());
+        /*
+        1. Show only weapons you can buy
+        2. If you have three already pick one to drop
+         */
+        AmmoAmountUncapped funds = sandbox.getUpdatedTotalAmmoAvailable();
+        List<Weapon> buyable =
+                options.stream()
+                        .filter(weapon -> funds.compareTo(weapon.getBuyCost())>0)
+                        .collect(Collectors.toList());
+        List<Weapon> owned =
+                sandbox.getArsenal().stream()
+                        .map(tup -> tup.y)
+                        .collect(Collectors.toList());
+
+        boolean haveToDrop =
+                (getSelf().getLoadedWeapon().size()+getSelf().getUnloadedWeapon().size()) >= 3;
+
+        BiFunction<Weapon, Sandbox, ControllerMessage>  afterPay = (weapPicked, sandPay) ->{
+            if (haveToDrop){
+                // Choose weapon to drop
+                // Apply effects
+                // Call the biconsumer
+                WeaponChooser weaponToDrop = new WeaponChooser() {
+                    @Override
+                    public Tuple<Boolean, Boolean> params() {
+                        return new Tuple<>(false,true);
+                    }
+
+                    @Override
+                    public List<Weapon> showOptions() {
+                        return owned;
+                    }
+
+                    @Override
+                    public ControllerMessage pick(List<Integer> choice) {
+                        Optional<Weapon> toDrop = Optional.of(owned.get(choice.get(0)));
+
+                        Runnable onRes = () -> onChoice.accept(weapPicked, toDrop);
+
+                        new Thread(()-> main.resolveEffect(
+                                SlaveController.this,
+                                sandPay.getEffectsHistory(),
+                                onRes)).start();
+
+                        return new WaitMessage(List.of());
+                    }
+                };
+                return new PickWeaponMessage(
+                        weaponToDrop,
+                        "Scegli che arma lasciare",
+                        sandPay);
+            } else {
+                Runnable onRes = () -> onChoice.accept(weapPicked, Optional.empty());
+
+                new Thread(()-> main.resolveEffect(
+                        SlaveController.this,
+                        sandPay.getEffectsHistory(),
+                        onRes)).start();
+
+                return new WaitMessage(List.of());
+            }
+        };
+
+        WeaponChooser weaponToPick = new WeaponChooser() {
+            @Override
+            public Tuple<Boolean, Boolean> params() {
+                return new Tuple<>(false, true);
+            }
+
+            @Override
+            public List<Weapon> showOptions() {
+                return buyable;
+            }
+
+            @Override
+            public ControllerMessage pick(List<Integer> choice) {
+                AmmoAmount zero = new AmmoAmount();
+                Weapon weaponToGrab = buyable.get(choice.get(0));
+                AmmoAmount cost = weaponToGrab.getBuyCost();
+                if (zero.compareTo(cost)<0){ // if the cost is not 0
+                    PayTemplate payTemplate = new PayTemplate(cost);
+                    return payTemplate.spawn(
+                            Map.of(),
+                            sandbox,
+                            sandPay -> afterPay.apply(weaponToGrab, sandPay));
+                } else {
+                    return afterPay.apply(weaponToGrab, sandbox);
+                }
+            }
+        };
+
+        ControllerMessage pickWeaponToGrab = new PickWeaponMessage(
+                weaponToPick,
+                "Scegli che arma raccogliere",
+                sandbox);
+
+        this.setCurrentMessage(pickWeaponToGrab);
     }
 }

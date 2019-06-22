@@ -12,6 +12,7 @@ import network.NetworkBuilder;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
+import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.GameMapView;
@@ -48,6 +49,11 @@ public class MainController {
      */
     private List<SlaveController> slaveControllerList;
     private Map<DamageableUID, SlaveController> slaveMap;
+    private boolean firstRoundOver;
+
+    public SlaveController getSlaveByUID(DamageableUID uid){
+        return slaveMap.get(uid);
+    }
 
     MainController(){
         slaveControllerList = new ArrayList<>();
@@ -139,6 +145,7 @@ public class MainController {
     }
 
     private void startGame() {
+
         gameStarted = true;
         createGame();
 
@@ -153,7 +160,17 @@ public class MainController {
 
         slaveControllerList = new ArrayList<>(slaveMap.values());
         Collections.shuffle(slaveControllerList);
+        slaveControllerList.sort((a,b)-> {
+            if (a.getSelf().getFirstPlayer())
+                return 1;
+            if (b.getSelf().getFirstPlayer())
+                return -1;
+            return 0;
+        });
 
+        this.firstRoundOver=false;
+
+        slaveControllerList.get(0).startMainAction();
     }
 
     private void createGame() {
@@ -201,6 +218,7 @@ public class MainController {
     public SlaveController bind(Player player, ServerInterface network){
         SlaveController slave = new SlaveController(this, player, network);
         slaveControllerList.add(slave);
+        player.getActor().bindSlave(slave);
         return slave;
     }
 
@@ -210,6 +228,23 @@ public class MainController {
     }
 
     /**
+     * Will be called by the EndTurn as long as the flag firstRoundOver is set to false
+     * @param going
+     * @param next
+     */
+    private void firstRound(SlaveController going, List<SlaveController> next){
+        if (next.isEmpty()){
+            firstRoundOver=true;
+        }
+        startRespawn(
+                List.of(going.getSelf().pawnID()),
+                2,
+                going::startMainAction
+        );
+    }
+
+    /**
+     * Called only as the last statement of a new thread
      *
      * @param responsible the SlaveController which started it all (redundant)
      * @param effects (the list of effects)
@@ -219,8 +254,35 @@ public class MainController {
      */
     public void resolveEffect(SlaveController responsible, List<Effect> effects,
                        Runnable onResolved){
+        Actor thisActor = responsible.getSelf();
         if (effects.isEmpty()){
-            new Thread(onResolved).start();
+            for (Actor a: slaveControllerList.stream()
+                    .filter(i->!responsible.equals(i))
+                    .map(i->i.getSelf()).collect(Collectors.toList())){
+
+                if (a.removeDamager(thisActor)){ // true if actor was present
+
+                    SlaveController aController = slaveMap.get(a.pawnID());
+                    Consumer<Optional<PowerUp>> consumerTagback = opt -> {
+                        if (opt.isEmpty()){
+                            new Thread(()->resolveEffect(responsible,effects,onResolved)).start();
+                        } else {
+                            a.discardPowerUp(opt.get());
+                            thisActor.addMark(a, 1);
+                            broadcastEffectMessage(String.format(
+                                    "%s ha usato la granata venom contro %s",
+                                    a.pawn().getUsername(),
+                                    thisActor.pawn().getUsername()
+                            ));
+                            new Thread(()->resolveEffect(responsible,effects,onResolved)).start();
+                        }
+                    };
+
+                    aController.startTagback(thisActor, consumerTagback); //TODO: double check
+                    return; // The resolution will be restarted by the tagBack
+                }
+            }
+            new Thread(onResolved).start(); // only if no actor
         } else {
             Effect first = effects.get(0);
             List<Effect> next = effects.subList(1, effects.size());
@@ -262,13 +324,13 @@ public class MainController {
             5a. Frenesia iniziata: Chiama Main.finalFrenzy(nextPlayer)
             5b. Inizia il main line sul prossimo turno
         */
+        getGameMap().refill();
         List<DamageableUID> dead = new ArrayList<>();
-        for (TileUID t: getGameMap().allTiles()){
-            getGameMap().getTile(t).endTurn(lastPlayed);
-        }
+
+        // TODO: iterate first on domination points somehow or else the game will break
         for (DamageableUID uid: getGameMap().getDamageable()){
             if (getGameMap().getPawn(uid).getActor().endTurn(lastPlayed, scoreboard)){
-                dead.add(uid);
+                dead.add(uid); //TODO: do they count as dead if they didn't spawn yet?
             }
         }
 
@@ -292,6 +354,7 @@ public class MainController {
         }
 
         this.startRespawn(dead, 1, next::startMainAction); // LAST LINE OF THE FUNCTION
+        //TODO: handle first turn of each player differently
         return;
     }
 

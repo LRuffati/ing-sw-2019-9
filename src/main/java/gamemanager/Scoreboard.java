@@ -105,7 +105,7 @@ public class Scoreboard {
         if(victim.getDamageTaken().size()>10 && victim.getDamageTaken().get(11)!= null) {
             numPoints = 2;
             //TODO: probably should't be done here
-            victim.addMark(killer.pawn().getDamageableUID(), 1);
+            victim.addMark(killer, 1);
         }
         skullBox.add(Map.of(killer, numPoints));
         numOfDeaths++;
