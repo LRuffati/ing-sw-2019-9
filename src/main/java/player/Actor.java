@@ -13,6 +13,7 @@ import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
+import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import testcontroller.SlaveController;
@@ -50,9 +51,22 @@ public class Actor {
 
     private DamageableUID pawnID;
 
-    private Set<Actor> damagedPlayer;
-    //TODO: is this necessary?
+    //TODO: if resolveEffect checks this and clears it I could handle tagbacks in a more coherent
+    // way, could also remove the need for slave attribute
     private Set<Actor> damagedBy;
+
+    public Set<Actor> getDamagedBy() {
+        return new HashSet<>(damagedBy);
+    }
+
+    public boolean removeDamager(Actor damager){
+       return damagedBy.remove(damager);
+    }
+
+    private SlaveController slave;
+
+    // Frenzy related
+    private Boolean frenzy;
     private boolean flipBoard = false;
     private boolean afterFirst;
     private SlaveController slave;
@@ -247,72 +261,52 @@ public class Actor {
         return points;
     }
 
+
+
+
+
+    /*
+    TODO: Rework damage methods, make damageRaw be called when I don't want to trigger mark
+    conversion or the tagback grenade. Make damage convert marks into damage
+    Make them update damagedBy and check damaged by after effect resolution to call the tagback
+    grenade.
+     */
+
     /**
-     * Damages the player without applying the Marks
+     * Damages the player without applying the Marks nor triggering the tagback
+     *
+     * Also used to apply the damage
+     *
      * @param shooter the attacker
      * @param numOfDmg number of damage points
      */
     public void damageRaw(Actor shooter, int numOfDmg) {
         for(int i=0; i<numOfDmg; i++){
             if(damageTaken.size() <= HP){
-                damagedBy.add(shooter);
-                shooter.damagedPlayer.add(this);
                 damageTaken.add(shooter);
             }
         }
     }
 
     /**
-     * Damages the player, and applies all the Marks that can be applied
+     * Damages the player, and applies all the Marks that can be applied, triggers tagback on
+     * next check
      * @param shooter the attacker
      * @param numOfDmg number of damage points
      */
     public void damage(Actor shooter, int numOfDmg){
-        for(int i=0; i<numOfDmg; i++){
-            getDMG(shooter);
-        }
+        damagedBy.add(shooter);
+
+        Integer toApply = marks.remove(shooter.pawnID);
+        if (toApply==null)
+            toApply = 0;
+
+        damageRaw(shooter,numOfDmg+toApply);
     }
 
-    public void damageBreaking(SlaveController shooter, int numOfDmg, Runnable onResolved) {
-        slave.startTagback(shooter.getSelf(), opt -> {
-            if (opt.isPresent()) {
-                PowerUp p = opt.get();
-                if (p.getType().equals(PowerUpType.TAGBACKGRANADE)) {
-                    ControllerMessage message = p.usePowup(
-                            shooter,
-                            List.of((Effect) new DamageEffect(pawnID, numOfDmg, false)),
-                            onResolved);
-                    return;
-                }
-            }
-            onResolved.run();
-        });
-    }
-
-    /**
-     * Add the attacker who damaged the player on his playerboard.
-     * Adds the shooter to the attacked's damagedBy Set
-     * and the shot to the attacker's damagedPlayer Set.
-     * The first element is the first player who attacked "this".
-     * Also converts all the marks of the shooter into damage.
-     * @param shooter is the attacker.
-     */
-    private void getDMG(Actor shooter){
-        if(damageTaken.size() <= HP){
-            damagedBy.add(shooter);
-            shooter.damagedPlayer.add(this);
-            damageTaken.add(shooter);
-        }
-
-        if(marks.containsKey(shooter.pawn().getDamageableUID())) {
-            for (int i = 0; i < marks.get(shooter.pawnID); i++) {
-                if (damageTaken.size() <= HP)
-                    damageTaken.add(shooter);
-            }
-            marks.put(shooter.pawnID, 0);
-        }
-    }
-
+    //
+    // See T O D O above for damage related effects
+    //
 
     /**
      * Method needed in the Scoreboard class.
@@ -414,22 +408,21 @@ public class Actor {
     /**
      * Adds a certain number of marks from pawn to this.
      * If the pawn already assigned 3 marks nothing happens.
-     * @param attackerPawn The attacker
-     * @param numOfMarks
+     * @param attackerActor The attacker
+     * @param numOfMarks the number of marks to apply
      * @return the number of marks successfully applied
      */
-    public int addMark(DamageableUID attackerPawn, int numOfMarks){
+    public int addMark(Actor attackerActor, int numOfMarks){
+
+        DamageableUID attackerPawn = attackerActor.pawnID;
+
         int totMarks = marks.getOrDefault(attackerPawn, 0);
 
-        //TODO: questo per avere 3 marchi in totale
-        //int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
+        // Minimum between numOfMarks and 3 - totmarks
+        int applied = Math.min(numOfMarks , 3 - totMarks);
 
-        int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
+        marks.put(attackerPawn, marks.getOrDefault(attackerPawn, 0) + applied);
 
-        if(marks.containsKey(attackerPawn))
-            marks.put(attackerPawn, marks.get(attackerPawn) + applied);
-        else
-            marks.put(attackerPawn, applied);
         return applied;
     }
 

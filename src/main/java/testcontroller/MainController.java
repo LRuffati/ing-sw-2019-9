@@ -225,8 +225,35 @@ public class MainController {
      */
     public void resolveEffect(SlaveController responsible, List<Effect> effects,
                        Runnable onResolved){
+        Actor thisActor = responsible.getSelf();
         if (effects.isEmpty()){
-            new Thread(onResolved).start();
+            for (Actor a: slaveControllerList.stream()
+                    .filter(i->!responsible.equals(i))
+                    .map(i->i.getSelf()).collect(Collectors.toList())){
+
+                if (a.removeDamager(thisActor)){ // true if actor was present
+
+                    SlaveController aController = slaveMap.get(a.pawnID());
+                    Consumer<Optional<PowerUp>> consumerTagback = opt -> {
+                        if (opt.isEmpty()){
+                            new Thread(()->resolveEffect(responsible,effects,onResolved)).start();
+                        } else {
+                            a.discardPowerUp(opt.get());
+                            thisActor.addMark(a, 1);
+                            broadcastEffectMessage(String.format(
+                                    "%s ha usato la granata venom contro %s",
+                                    a.pawn().getUsername(),
+                                    thisActor.pawn().getUsername()
+                            ));
+                            new Thread(()->resolveEffect(responsible,effects,onResolved)).start();
+                        }
+                    };
+
+                    aController.startTagback(thisActor, consumerTagback); //TODO: double check
+                    return; // The resolution will be restarted by the tagBack
+                }
+            }
+            new Thread(onResolved).start(); // only if no actor
         } else {
             Effect first = effects.get(0);
             List<Effect> next = effects.subList(1, effects.size());

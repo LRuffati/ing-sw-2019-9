@@ -24,7 +24,7 @@ public class MarkEffect implements Effect {
     public void mergeInGameMap(SlaveController pov, Runnable finalize,
                                Consumer<String> broadcaster) {
         broadcaster.accept(effectString(pov.getSelf()));
-        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf(), amount);
         finalize.run();
     }
 
