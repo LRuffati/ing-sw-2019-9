@@ -418,9 +418,11 @@ public class Actor {
      * @param numOfMarks
      * @return the number of marks successfully applied
      */
-    //TODO: convert this to addMark(Actor attackerActor, int numOfMarks) ?
     public int addMark(DamageableUID attackerPawn, int numOfMarks){
-        int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
+        int totMarks = marks.getOrDefault(attackerPawn, 0);
+
+        //TODO: questo per avere 3 marchi in totale
+        //int totMarks = gm.getPawn(attackerPawn).getActor().numOfMarksApplied();
 
         int applied = Math.min(totMarks + numOfMarks , 3) - totMarks;
 
