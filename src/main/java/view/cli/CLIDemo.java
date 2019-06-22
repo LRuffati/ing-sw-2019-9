@@ -17,6 +17,7 @@ public class CLIDemo implements View {
     private ClientControllerClientInterface client;
     private boolean inputTake = true;
     private CommandParser commandParser;
+    private Thread scanThread;
 
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
@@ -24,8 +25,14 @@ public class CLIDemo implements View {
 
     public CLIDemo(ClientControllerClientInterface client){
         this.client = client;
+        this.commandParser = new CommandParser(this);
+        this.scanThread = new Thread(()->{
+            while (inputTake) {
+                String string = in.nextLine();
+                commandParser.parseCommand(string);
+            }
+        });
         greetings();
-
     }
 
     /**
@@ -39,7 +46,7 @@ public class CLIDemo implements View {
      * Method to introduce a new player to the game and show the initial options.
      * It initially clear the whole command line, then it shows the title of the game.
      */
-    public void greetings(){
+    void greetings(){
         System.out.print("\033[H\033[2J");
         System.out.flush();
         System.out.println("\n  /$$$$$$  /$$$$$$$  /$$$$$$$  /$$$$$$$$ /$$   /$$  /$$$$$$  /$$       /$$$$$$ /$$   /$$ /$$$$$$$$\n" +
@@ -60,7 +67,7 @@ public class CLIDemo implements View {
      * It also takes a color if it's the player's first login.
      * @return true if the player joined the game.
      */
-    public void joinGame(){
+    private void joinGame(){
         String username = "";
         String password = "";
         String color = "";
@@ -91,17 +98,6 @@ public class CLIDemo implements View {
         client.login(username,password,color);
     }
 
-    private void scanThread(){
-        commandParser = new CommandParser(this);
-        new Thread(()-> {
-            while (inputTake) {
-                String string = in.nextLine();
-                commandParser.parseCommand(string);
-            }}).start();
-    }
-
-
-
 
     /**
      * After the player joined the game, he await for the game to start. This can happen only when there are three or
@@ -112,18 +108,19 @@ public class CLIDemo implements View {
         System.out.println("Wait for other players to join the game.");
     }
 
-    public void quitGame(){
+    void quitGame(){
         System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
                 "want to go back.");
         if(in.nextLine().equalsIgnoreCase("y")){
             client.quit();
+            endGame();
         } else if (in.nextLine().equalsIgnoreCase("n")){
             client.rollback();
         }
     }
 
 
-    public void printAppliedTarget(List<TargetView> targetViewList){
+    void printAppliedTarget(List<TargetView> targetViewList){
         climap.applyTarget(targetViewList);
 
     }
@@ -345,7 +342,7 @@ public class CLIDemo implements View {
     @Override
     public void onStarting(String map) {
         System.out.println("The game is goin' to start in a moment...");
-        scanThread();
+        scanThread.start();
     }
 
     @Override
@@ -480,7 +477,7 @@ public class CLIDemo implements View {
         }
     }
 
-    public void endGame(){
+    void endGame(){
         System.out.println("$$$$$$$$\\ $$\\                           $$\\             $$\\     $$\\                          $$$$$$\\                           $$$$$$$\\  $$\\                     $$\\                     \n" +
                 "\\__$$  __|$$ |                          $$ |            \\$$\\   $$  |                        $$  __$$\\                          $$  __$$\\ $$ |                    \\__|                    \n" +
                 "   $$ |   $$$$$$$\\   $$$$$$\\  $$$$$$$\\  $$ |  $$\\        \\$$\\ $$  /$$$$$$\\  $$\\   $$\\       $$ /  \\__|$$$$$$\\   $$$$$$\\        $$ |  $$ |$$ | $$$$$$\\  $$\\   $$\\ $$\\ $$$$$$$\\   $$$$$$\\  \n" +
