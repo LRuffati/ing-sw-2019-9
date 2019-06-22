@@ -5,6 +5,7 @@ import controller.Message;
 import controller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  *      1. Present a choice to the user
  *      2. Instruct the client controller to update the view or status according to the message
  */
-public interface ControllerMessage {
+public interface ControllerMessage extends Serializable {
     /**
      * This denotes the current state of the player turn
      * @return

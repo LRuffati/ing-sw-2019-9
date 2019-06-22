@@ -12,13 +12,14 @@ import viewclasses.PowerUpView;
 import viewclasses.TargetView;
 import viewclasses.WeaponView;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * This class contains all the possible choises to be made
  */
-public class ChoiceBoard {
+public class ChoiceBoard implements Serializable {
     /**
      * If optional is true then I can pick no element
      */
