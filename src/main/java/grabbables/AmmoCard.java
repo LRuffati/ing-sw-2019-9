@@ -68,4 +68,9 @@ public class AmmoCard extends Grabbable {
     public int hashCode() {
         return super.hashCode();
     }
+
+    @Override
+    public Set<AmmoCard> getCard() {
+        return Set.of(this);
+    }
 }
