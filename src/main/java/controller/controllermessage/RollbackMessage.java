@@ -1,12 +1,8 @@
-package testcontroller.controllermessage;
+package controller.controllermessage;
 
-import board.GameMap;
-import board.Sandbox;
-import genericitems.Tuple;
-import testcontroller.ChoiceBoard;
-import testcontroller.Message;
-import testcontroller.controllerstates.SlaveControllerState;
-import testcontroller.controllerstates.UpdateTypes;
+import controller.ChoiceBoard;
+import controller.Message;
+import controller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
 import java.util.List;

@@ -2,6 +2,7 @@ package actions.utils;
 
 import genericitems.Tuple3;
 
+import java.awt.*;
 import java.io.Serializable;
 
 /**
@@ -20,5 +21,17 @@ public enum AmmoColor implements Serializable {
         if(this.equals(AmmoColor.YELLOW))
             return new Tuple3<>(255,255,0);
         return new Tuple3<>(0,0,0);
+    }
+
+    public Color toColor(){
+        switch (AmmoColor.this){
+            case RED:
+                return Color.RED;
+            case BLUE:
+                return Color.BLUE;
+            case YELLOW:
+                return Color.YELLOW;
+        }
+        return null;
     }
 }

@@ -2,7 +2,7 @@ package actions.utils;
 
 import actions.targeters.targets.Targetable;
 import genericitems.Tuple;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.TargetView;
 
 import java.util.List;
@@ -19,6 +19,8 @@ public interface ChoiceMaker {
 
     /**
      * This function will be called by the controller
+     *
+     * true if optional, false if required
      */
     Tuple<Boolean, List<TargetView>> showOptions();
 

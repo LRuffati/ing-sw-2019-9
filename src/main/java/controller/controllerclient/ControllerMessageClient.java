@@ -1,9 +1,9 @@
-package testcontroller.controllerclient;
+package controller.controllerclient;
 
-import testcontroller.ChoiceBoard;
-import testcontroller.Message;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.ChoiceBoard;
+import controller.Message;
+import controller.controllermessage.ControllerMessage;
+import controller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
 import java.io.Serializable;

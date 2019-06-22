@@ -1,7 +1,7 @@
 package view;
 
 import network.Player;
-import testcontroller.Message;
+import controller.Message;
 import viewclasses.*;
 
 import java.util.List;

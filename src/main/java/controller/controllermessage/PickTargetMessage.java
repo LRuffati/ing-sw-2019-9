@@ -1,29 +1,26 @@
-package testcontroller.controllermessage;
+package controller.controllermessage;
 
-import actions.utils.ActionPicker;
+import actions.utils.ChoiceMaker;
 import board.Sandbox;
-import testcontroller.ChoiceBoard;
-import testcontroller.Message;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.ChoiceBoard;
+import controller.Message;
+import controller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PickActionMessage implements ControllerMessage{
+public class PickTargetMessage implements ControllerMessage{
 
     private final ChoiceBoard options;
     private final Function<Integer, ControllerMessage> fun;
-    private final List<String> message;
-    private final GameMapView sandboxView;
+    private final Sandbox sandbox;
 
-    public PickActionMessage(ActionPicker actionPicker, String s, Sandbox sandbox,
-                             List<String> notifications) {
-        options = new ChoiceBoard(actionPicker, s);
-        fun = actionPicker::pickAction;
-        this.message = notifications;
-        this.sandboxView = sandbox.generateView();
+    public PickTargetMessage(ChoiceMaker choiceMaker, String message, Sandbox sandbox) {
+        options = new ChoiceBoard(choiceMaker, message);
+        fun = choiceMaker::pick;
+        this.sandbox = sandbox;
     }
 
     /**
@@ -54,7 +51,7 @@ public class PickActionMessage implements ControllerMessage{
         return new Message() {
             @Override
             public List<String> getChanges() {
-                return message;
+                return List.of();
             }
         };
     }
@@ -67,7 +64,7 @@ public class PickActionMessage implements ControllerMessage{
      */
     @Override
     public GameMapView sandboxView() {
-        return sandboxView;
+        return sandbox.generateView();
     }
 
     /**
@@ -78,8 +75,7 @@ public class PickActionMessage implements ControllerMessage{
      */
     @Override
     public ControllerMessage pick(List<Integer> choices) {
-        choices =
-                choices.stream()
+        choices = choices.stream()
                         .distinct()
                         .filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
         if (choices.isEmpty()){

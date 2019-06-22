@@ -2,7 +2,7 @@ package actions.effects;
 
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import uid.DamageableUID;
 import uid.TileUID;
 

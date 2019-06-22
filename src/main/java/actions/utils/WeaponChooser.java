@@ -2,7 +2,7 @@ package actions.utils;
 
 import genericitems.Tuple;
 import grabbables.Weapon;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 
 import java.util.List;
 

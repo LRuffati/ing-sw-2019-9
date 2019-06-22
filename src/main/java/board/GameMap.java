@@ -48,7 +48,7 @@ public class GameMap {
     /**
      * Map between DamageableUID and Damageable Class
      */
-    private final Map<DamageableUID, Pawn> damageableUIDMap;
+    private final Map<DamageableUID, Pawn> damageableUIDMap; //TODO: doesn't contain dominationPoints
 
     /**
      * A tile used to store dead players waiting to be spawned

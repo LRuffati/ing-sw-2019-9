@@ -404,7 +404,7 @@ public class ParserWeapon {
                         }
                         effects.add(toEffect);
                     }
-
+                    mainAction=null;
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
                             targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
                     break;

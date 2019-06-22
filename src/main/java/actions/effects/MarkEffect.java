@@ -1,7 +1,7 @@
 package actions.effects;
 
 import player.Actor;
-import testcontroller.SlaveController;
+import controller.SlaveController;
 import uid.DamageableUID;
 
 import java.util.function.Consumer;
@@ -24,14 +24,16 @@ public class MarkEffect implements Effect {
     public void mergeInGameMap(SlaveController pov, Runnable finalize,
                                Consumer<String> broadcaster) {
         broadcaster.accept(effectString(pov.getSelf()));
-        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf().pawnID(), amount);
+        pov.getSelf().getGm().getPawn(uid).getActor().addMark(pov.getSelf(), amount);
         finalize.run();
     }
 
     String effectString(Actor pov) {
-        return String.format("%s ha dato %d marchi a %s",
+        return String.format(
+                "%s ha dato %d marchi a %s",
                 pov.getGm().getPawn(pov.pawnID()).getUsername(),
                 amount,
-                pov.getGm().getPawn(uid).getUsername());
+                pov.getGm().getPawn(uid).getUsername()
+        );
     }
 }

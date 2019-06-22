@@ -1,7 +1,7 @@
-package testcontroller.controllerclient;
+package controller.controllerclient;
 
 import network.Player;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 /**

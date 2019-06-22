@@ -1,7 +1,7 @@
 package network;
 
-import testcontroller.MainController;
-import testcontroller.SlaveController;
+import controller.MainController;
+import controller.SlaveController;
 import network.exception.InvalidLoginException;
 
 import java.rmi.RemoteException;

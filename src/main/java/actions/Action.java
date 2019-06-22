@@ -7,9 +7,10 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 import genericitems.Tuple;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllermessage.PickTargetMessage;
-import testcontroller.controllermessage.RollbackMessage;
+import controller.controllermessage.ControllerMessage;
+import controller.controllermessage.PickTargetMessage;
+import controller.controllermessage.RollbackMessage;
+import controller.controllermessage.WaitMessage;
 import viewclasses.TargetView;
 
 import java.util.*;
@@ -200,6 +201,13 @@ public class Action {
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
                 return new PickTargetMessage(choiceMaker, "Scegli un bersaglio", sandbox);
+        } else if (false){
+            /*
+            TODO: implement contemporaneous effects
+            Save contemporary effects in info and a flag.
+            Allow a pickAction with multiple picks
+             */
+            return new WaitMessage(List.of());
         } else if (!unresolvedEffects.isEmpty()){
 
             Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();

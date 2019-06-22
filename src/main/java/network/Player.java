@@ -1,6 +1,5 @@
 package network;
 
-import controller.SlaveController;
 import player.Actor;
 import uid.DamageableUID;
 

@@ -1,11 +1,11 @@
 package network.socket.client;
 
 import network.socket.messages.notify.*;
-import testcontroller.controllerclient.ClientControllerNetworkInterface;
+import controller.controllerclient.ClientControllerNetworkInterface;
 import network.ClientInterface;
 import network.exception.InvalidLoginException;
 import network.socket.messages.*;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 
 import java.io.IOException;
 import java.util.List;

@@ -1,11 +1,9 @@
 package view.gui;
 
-import actions.Action;
-import player.Actor;
-import testcontroller.Message;
+import controller.Message;
 import view.View;
 import network.Player;
-import testcontroller.controllerclient.ClientControllerClientInterface;
+import controller.controllerclient.ClientControllerClientInterface;
 import viewclasses.*;
 
 import javax.swing.*;

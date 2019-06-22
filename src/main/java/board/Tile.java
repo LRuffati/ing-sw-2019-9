@@ -231,14 +231,6 @@ public class Tile{
         return tileView;
     }
 
-    public boolean endTurn(Actor player){
-        map.refill();
-        if(spawnPoint && player.pawn().getTile().equals(tileID)){
-            return true;
-        }
-        return false;
-    }
-
     public TileUID getTileID() {
         return tileID;
     }

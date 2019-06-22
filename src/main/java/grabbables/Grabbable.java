@@ -46,4 +46,8 @@ public abstract class Grabbable {
         return Set.of();
     }
 
+    public Set<AmmoCard> getCard(){
+        return Set.of();
+    }
+
 }

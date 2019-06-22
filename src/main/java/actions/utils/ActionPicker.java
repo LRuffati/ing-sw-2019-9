@@ -1,7 +1,7 @@
 package actions.utils;
 
 import genericitems.Tuple;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.ActionView;
 
 import java.util.List;

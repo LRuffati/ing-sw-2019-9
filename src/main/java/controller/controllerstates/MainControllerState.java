@@ -1,4 +1,4 @@
-package testcontroller.controllerstates;
+package controller.controllerstates;
 
 /**
  * These are the states of the main controller

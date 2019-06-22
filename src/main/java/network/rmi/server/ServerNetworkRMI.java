@@ -5,10 +5,7 @@ import network.ObjectMap;
 import network.ServerInterface;
 import network.TimerForDisconnection;
 import network.exception.InvalidLoginException;
-import testcontroller.controllerclient.ControllerMessageClient;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllerstates.SlaveControllerState;
-import viewclasses.GameMapView;
+import controller.controllermessage.ControllerMessage;
 
 import java.rmi.ConnectException;
 import java.rmi.RemoteException;

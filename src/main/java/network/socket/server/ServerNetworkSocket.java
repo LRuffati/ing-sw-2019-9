@@ -5,9 +5,7 @@ import network.exception.InvalidTokenException;
 import network.socket.messages.*;
 import network.exception.InvalidLoginException;
 import network.socket.messages.notify.*;
-import testcontroller.controllerclient.ControllerMessageClient;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 

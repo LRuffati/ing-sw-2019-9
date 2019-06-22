@@ -1,4 +1,4 @@
-package testcontroller.controllerclient;
+package controller.controllerclient;
 
 import view.View;
 import viewclasses.GameMapView;

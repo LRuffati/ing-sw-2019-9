@@ -1,7 +1,7 @@
 package network.socket.client;
 
 import genericitems.Tuple;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 

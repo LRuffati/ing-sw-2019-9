@@ -1,4 +1,4 @@
-package testcontroller.controllerstates;
+package controller.controllerstates;
 
 /**
  * These are the types of an update received by the ClientController

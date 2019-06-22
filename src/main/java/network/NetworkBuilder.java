@@ -3,7 +3,7 @@ package network;
 import gamemanager.ParserConfiguration;
 import network.rmi.RMIServerLauncher;
 import network.socket.SocketServerLauncher;
-import testcontroller.MainController;
+import controller.MainController;
 
 import java.io.IOException;
 import java.rmi.RemoteException;

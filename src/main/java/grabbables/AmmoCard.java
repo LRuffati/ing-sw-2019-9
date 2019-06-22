@@ -4,6 +4,8 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import viewclasses.AmmoCardView;
 
+import java.util.Set;
+
 /**
  * Card containing an AmmoCard
  */
@@ -65,5 +67,10 @@ public class AmmoCard extends Grabbable {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    @Override
+    public Set<AmmoCard> getCard() {
+        return Set.of(this);
     }
 }
