@@ -30,4 +30,5 @@ public interface ResponseHandler {
     void handle(OnTimer response);
     void handle(OnConnection response);
     void handle(OnStarting response);
+    void handle(OnWinner response);
 }

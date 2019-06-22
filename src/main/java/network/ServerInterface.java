@@ -29,4 +29,6 @@ public interface ServerInterface extends Remote {
 
     void onStarting(String map) throws RemoteException;
     void onTimer(int ms) throws RemoteException;
+
+    void onWinner(String winner, int winnerPoints, int yourPoint) throws RemoteException;
 }

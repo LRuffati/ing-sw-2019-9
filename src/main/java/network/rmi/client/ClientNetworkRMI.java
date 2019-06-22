@@ -79,6 +79,11 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         clientController.onTimer(ms);
     }
 
+    @Override
+    public void onWinner(String winner, int winnerPoints, int yourPoint) {
+        clientController.onWinner(winner, winnerPoints, yourPoint);
+    }
+
 
 
     //ClientInterface methods

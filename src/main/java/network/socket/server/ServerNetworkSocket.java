@@ -85,6 +85,12 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
             clientHandler.respond(new OnConnection(player, true, numOfPlayer));
     }
 
+    @Override
+    public void onWinner(String winner, int winnerPoints, int yourPoints) {
+        if(checkConnection(token))
+            clientHandler.respond(new OnWinner(winner, winnerPoints, yourPoints));
+    }
+
 
     //RequestHandler methods
 

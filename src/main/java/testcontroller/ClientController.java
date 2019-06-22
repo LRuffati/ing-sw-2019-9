@@ -349,7 +349,11 @@ public class ClientController implements ClientControllerClientInterface, Client
         view.onConnection(player, connection, numOfPlayer);
     }
 
-
+    @Override
+    public void onWinner(String winner, int winnerPoints, int yourPoints) {
+        view.onWinner(winner, winnerPoints, yourPoints);
+        view.onCredits();
+    }
 
 
     private Timer timer = new Timer();

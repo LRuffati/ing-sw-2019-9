@@ -332,6 +332,15 @@ public class SlaveController {
         }
     }
 
+    void onWinner(String winner, int winnerPoints) {
+        try {
+            network.onWinner(winner, winnerPoints, player.getActor().getPoints());
+        }
+        catch (RemoteException e) {
+            Database.get().logout(this.player.getToken());
+        }
+    }
+
     public Actor getSelf() {
         return player.getActor();
     }

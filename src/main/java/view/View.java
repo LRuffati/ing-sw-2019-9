@@ -125,6 +125,17 @@ public interface View {
      * The view only need to print a text message representing the event.
      */
     void onRollback();
+    /**
+     * Method used to notify the user that the game is terminated. It contains the name of the winner, his and your score
+     * @param winner The username of the winner
+     * @param winnerPoints The score of the winner
+     * @param yourPoints Your score
+     */
+    void onWinner(String winner, int winnerPoints, int yourPoints);
+    /**
+     * After the game is finished credits are printed
+     */
+    void onCredits();
 
 
     /**

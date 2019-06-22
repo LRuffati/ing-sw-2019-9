@@ -16,6 +16,7 @@ public interface ClientControllerNetworkInterface {
     void onConnection(Player player, boolean connection, int numOfPlayer);
     void onStarting(String map);
     void onTimer(int ms);
+    void onWinner(String winner, int winnerPoints, int yourPoints);
 
 
     void reset();

@@ -6,7 +6,6 @@ import network.ClientInterface;
 import network.exception.InvalidLoginException;
 import network.socket.messages.*;
 import testcontroller.controllermessage.ControllerMessage;
-import view.View;
 
 import java.io.IOException;
 import java.util.List;
@@ -233,4 +232,8 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         clientController.onControllerMessage(response.controllerMessage);
     }
 
+    @Override
+    public void handle(OnWinner response) {
+        clientController.onWinner(response.winner, response.winnerPoints, response.yourPoints);
+    }
 }

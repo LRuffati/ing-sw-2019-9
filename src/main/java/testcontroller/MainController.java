@@ -134,6 +134,11 @@ public class MainController {
             slaveController.onTimer(ms);
     }
 
+    private void notifyWinner(String winner, int winnerPoints) {
+        for(SlaveController slaveController : slaveControllerList)
+            slaveController.onWinner(winner, winnerPoints);
+    }
+
     private void startGame() {
         gameStarted = true;
         createGame();
@@ -333,10 +338,9 @@ public class MainController {
     /**
      * Called to count
      */
-    void endGame(){
-        GameMapView gmv = gameMap.generateView(new DamageableUID());
-        System.out.println("And the winner is... " + scoreboard.claimWinner().pawn().generateView(gmv,false).name() + "!!!");
-
+    void endGame() {
+        Actor winner = scoreboard.claimWinner();
+        notifyWinner(winner.pawn().getUsername(), winner.getPoints());
     }
 
     public GameMap getGameMap() {
