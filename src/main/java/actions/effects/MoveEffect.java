@@ -5,6 +5,7 @@ import testcontroller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -32,7 +33,7 @@ public class MoveEffect implements Effect {
      */
     @Override
     public Map<DamageableUID, TileUID> newLocations(Map<DamageableUID, TileUID> old) {
-        Map<DamageableUID, TileUID> newM = Map.copyOf(old);
+        Map<DamageableUID, TileUID> newM = new HashMap<>(old);
         newM.put(pawn,dest);
         return newM;
     }

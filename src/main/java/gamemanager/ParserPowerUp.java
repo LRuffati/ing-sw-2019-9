@@ -49,7 +49,7 @@ public class ParserPowerUp {
                 type = getType(sLine.next());
                 col = getCol(sLine.next());
                 if(type != null && col != null){
-                    powerUpCollection.add(PowerUp.powerUpFactory(type, new AmmoAmount(Map.of(col,1))));
+                    powerUpCollection.add(PowerUp.powerUpFactory(type, col));
                 }
 
             }

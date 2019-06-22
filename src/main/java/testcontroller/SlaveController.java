@@ -83,10 +83,6 @@ public class SlaveController {
         this.setCurrentMessage(setPowUps(new ArrayList<>(), getSelf().getActions()));
     }
 
-    protected void setFirst(boolean first){
-        getSelf().getFirstPlayer()
-    }
-
     /**
      * The finalizer of an ActionBundle or start main action calls this function and sets the
      * slave controller message to the result.
@@ -253,7 +249,7 @@ public class SlaveController {
 
         ControllerMessage askWhichTagBack =
                 new PickPowerupMessage(
-                        SlaveControllerState.USETAGBACK
+                        SlaveControllerState.USETAGBACK,
                         tagbacks,
                         powUpPickerAccept,
                         "Scegli quale granata venom usare (o nessuna)",

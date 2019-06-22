@@ -12,6 +12,7 @@ import network.NetworkBuilder;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
+import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -47,6 +48,7 @@ public class MainController {
      */
     private List<SlaveController> slaveControllerList;
     private Map<DamageableUID, SlaveController> slaveMap;
+    private boolean firstRoundOver;
 
     public SlaveController getSlaveByUID(DamageableUID uid){
         return slaveMap.get(uid);
@@ -142,6 +144,7 @@ public class MainController {
     }
 
     private void startGame() {
+
         gameStarted = true;
         createGame();
 

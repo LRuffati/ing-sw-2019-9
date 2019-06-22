@@ -32,9 +32,13 @@ import java.util.List;
  */
 
 public class Actor {
+
+    // Proprietà di game info
     private static final int HP = ParserConfiguration.parseInt("Hp");
     private static final int MAX_WEAPON = ParserConfiguration.parseInt("maxNumOfWeapon");
     private static final int MAX_PUP = ParserConfiguration.parseInt("maxNumOfPowerUp");
+
+    // Di Actor
     private boolean lastInFrenzy;
     private int points;
     private int numOfDeaths;
@@ -42,11 +46,10 @@ public class Actor {
     private Map<DamageableUID, Integer> marks;
     private Collection<Weapon> unloadedWeapon;
     private Collection<Weapon> loadedWeapon;
-    private Collection<PowerUp> powerUps;
+    private Collection<PowerUp> powerUps; // FIXME ensure it is always updated
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
-    private Boolean frenzy;
-    private Boolean turn;
+
     private final GameMap gm;
 
     private DamageableUID pawnID;
@@ -69,7 +72,6 @@ public class Actor {
     private Boolean frenzy;
     private boolean flipBoard = false;
     private boolean afterFirst;
-    private SlaveController slave;
 
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
@@ -92,11 +94,8 @@ public class Actor {
         this.gm = map;
 
         this.damagedBy = new HashSet<>();
-        this.damagedPlayer = new HashSet<>();
 
         this.lastInFrenzy = false;
-
-        this.turn = false;
     }
 
     /**
@@ -135,7 +134,6 @@ public class Actor {
     /**
      * This metohd picks up a certain amount of power Ups, without check of validity
      * @param num the number of powerUp
-     * @param num the number of powerUp
      */
     public void drawPowerUpRaw(int num) {
         for(int i=0; i<num; i++)
@@ -169,8 +167,6 @@ public class Actor {
      */
     public void pickUp(Weapon weapon, Weapon weaponToDiscard){
         TileUID tile = pawn().getTile();
-        if(!turn)
-            throw new WrongMethodTypeException("It's not your turn");
         if(!gm.getGrabbable(tile).contains(weapon))
             throw new InvalidParameterException("There isn't this item here");
 
@@ -374,31 +370,6 @@ public class Actor {
 
     /**
      *
-     * @return the number of damage that an actor can take before the death
-     */
-    public int hp() {
-        return HP;
-    }
-
-    /**
-     *
-     * @return The set containing all the Player that damaged the Player before his turn
-     */
-    public Set<Actor> getDamagedBy() {
-        return new HashSet<>(damagedBy);
-    }
-
-    /**
-     *
-     * @return a Set containing all the Player that have been damaged by this during his turn
-     */
-    public Set<Actor> getDamagedPlayer() {
-        return new HashSet<>(damagedBy);
-    }
-
-
-    /**
-     *
      * @return True iif the player is dead
      */
     public boolean isDead(){
@@ -546,12 +517,14 @@ public class Actor {
     public boolean endTurn(Actor player, Scoreboard scoreboard) {
         if (!player.isDead())
             return false;
+
         scoreboard.addKill(player, this);
         scoreboard.score(player);
         damageTaken.clear();
 
-        if (frenzy && !flipBoard)
+        if (frenzy)
             flipBoard = true;
+
         return true;
     }
 

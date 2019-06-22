@@ -82,7 +82,7 @@ public class Fire implements EffectTemplate {
                     Sandbox newSandbox = new Sandbox(sandbox, effects);
 
                     WeaponUse action = new WeaponUse(weapUsed,newSandbox, consumer);
-                    return new PickActionMessage(action,"Scegli un'azione da eseguire", sandbox,
+                    return new PickActionMessage(action,"Scegli un'azione da eseguire", newSandbox,
                             List.of());
                 }
             }
