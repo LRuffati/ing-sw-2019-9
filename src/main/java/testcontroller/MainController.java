@@ -14,6 +14,7 @@ import network.ServerInterface;
 import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.GameMapView;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -341,10 +342,8 @@ public class MainController {
      * Called to count
      */
     void endGame(){
-        /*
-            1. Count points
-            2. Declare winner
-         */
+        GameMapView gmv = gameMap.generateView(new DamageableUID());
+        System.out.println("And the winner is... " + scoreboard.claimWinner().pawn().generateView(gmv,false).name() + "!!!");
 
     }
 
