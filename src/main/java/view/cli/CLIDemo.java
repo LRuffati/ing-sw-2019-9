@@ -366,6 +366,17 @@ public class CLIDemo implements View {
         System.out.println("You can move the Terminator now!");
     }
 
+    @Override
+    public void onWinner(String winner, int winnerPoints, int yourPoints) {
+        System.out.println(String.format("Game is over!%nThe winner is...%n%s%nHe won with %d points, you had %d points", winner, winnerPoints, yourPoints));
+    }
+
+    @Override
+    public void onCredits() {
+        System.out.println("Adrenaline™ is a game by Group9\nLorenzo Ruffati\nCarmelo Sarta\nPietro Tenani");
+        endGame();
+    }
+
     /**
      * It shows the room which the tile belongs. If there are weapons or ammoTile and finally what players are in this
      * tile.
