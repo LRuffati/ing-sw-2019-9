@@ -2,6 +2,7 @@ package grabbables;
 
 import actions.effects.Effect;
 import actions.utils.AmmoAmount;
+import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Tile;
 import exception.AmmoException;
@@ -11,16 +12,18 @@ import testcontroller.controllermessage.ControllerMessage;
 import uid.TileUID;
 import viewclasses.PowerUpView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
-    private final AmmoAmount ammo;
+    private final AmmoColor color;
 
-    public PowerUp(PowerUpType type, AmmoAmount ammo){
+    public PowerUp(PowerUpType type, AmmoColor color ){
         this.type = type;
-        this.ammo = ammo;
+        this.color = color;
     }
 
     /**
@@ -53,12 +56,12 @@ public abstract class PowerUp extends Grabbable {
      * @return The type of Ammo equivalent to the PowerUp
      */
     public AmmoAmount getAmmo() {
-        return ammo;
+        return new AmmoAmount(Map.of(color, 1));
     }
 
     @Override
     public String toString() {
-        return getType().toString() + ammo.toString();
+        return getType().toString() + color.name();
     }
 
     @Override
@@ -74,32 +77,35 @@ public abstract class PowerUp extends Grabbable {
 
     public PowerUpView generateView() {
         PowerUpView powerUpView = new PowerUpView();
-        powerUpView.setAmmo(ammo);
+        powerUpView.setAmmo(getAmmo());
         powerUpView.setType(type);
         powerUpView.setUid(super.getId());
         return powerUpView;
     }
 
+    /**
+     * Returns the proper spawnpoint from a set of spawnpoints
+     * @param tiles the
+     * @return
+     */
     public TileUID spawnLocation(Set<Tile> tiles){
         for(Tile tile:tiles){
-            try {
-                if(tile.getColor().equals(ammo.getOnlyColor())) return tile.getTileID();
-            } catch (AmmoException e) {
-                System.out.println("ammo è vuota");
-            }
+            if (tile.getColor().equals(color.toColor()))
+                return tile.getTileID();
         }
         return null;
     }
 
-    public static PowerUp powerUpFactory(PowerUpType type, AmmoAmount ammo){
+    public static PowerUp powerUpFactory(PowerUpType type, AmmoColor color){
         PowerUp ret=null;
         switch (type){
             case NEWTON:
                 break;
             case TELEPORTER:
-                ret = new Teleporter(ammo);
+                ret = new Teleporter(color);
                 break;
             case TAGBACKGRANADE:
+                ret = new TagBack(color);
                 break;
             case TARGETINGSCOPE:
                 break;
