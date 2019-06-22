@@ -4,6 +4,7 @@ import board.GameMap;
 import genericitems.Tuple3;
 import grabbables.*;
 import player.Actor;
+import player.DominationPoint;
 import uid.DamageableUID;
 
 import java.io.FileNotFoundException;
@@ -121,14 +122,13 @@ public class GameBuilder {
     private List<Actor> buildActor(GameMap map) {
         List<Actor> actors = new ArrayList<>();
         boolean firstPlayer = true;
-        for(DamageableUID pawnID : map.getDamageable()){
-            //FIXME: make it so it doesn't catch in the middle also the controlPoints, could
-            // work by using a visitor and a method on Pawn. Otherwise create Actors first and
-            // pawns later
-            Actor actor = new Actor(map, pawnID, firstPlayer);
-            actor.setBinding();
-            actors.add(actor);
-            firstPlayer = false;
+        for(DamageableUID pawnID : map.getDamageable()) {
+            if(!(map.getPawn(pawnID) instanceof DominationPoint)) {
+                Actor actor = new Actor(map, pawnID, firstPlayer);
+                actor.setBinding();
+                actors.add(actor);
+                firstPlayer = false;
+            }
         }
         return actors;
     }
