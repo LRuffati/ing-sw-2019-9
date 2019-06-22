@@ -325,6 +325,16 @@ public class Framework implements View {
 
     }
 
+    @Override
+    public void onCredits() {
+        //todo write this method
+    }
+
+    @Override
+    public void onWinner(String winner, int winnerPoints, int yourPoints) {
+        //todo write this method
+    }
+
     public void quit(JFrame frame) {
         if (quitConfirmed(frame)) {
             System.out.println("Quitting.");
