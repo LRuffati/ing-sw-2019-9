@@ -1,6 +1,6 @@
 package view;
 
-import testcontroller.ClientController;
+import controller.ClientController;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;

@@ -2,7 +2,7 @@ package network;
 
 
 import network.exception.InvalidLoginException;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 
 import java.rmi.RemoteException;
 import java.util.List;

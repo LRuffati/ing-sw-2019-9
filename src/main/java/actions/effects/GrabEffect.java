@@ -6,9 +6,7 @@ import board.Tile;
 import grabbables.AmmoCard;
 import grabbables.Grabbable;
 import grabbables.Weapon;
-import player.Actor;
-import testcontroller.SlaveController;
-import uid.TileUID;
+import controller.SlaveController;
 
 
 import java.util.Optional;

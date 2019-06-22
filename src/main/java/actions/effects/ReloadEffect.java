@@ -2,7 +2,7 @@ package actions.effects;
 
 import grabbables.Weapon;
 import player.Actor;
-import testcontroller.SlaveController;
+import controller.SlaveController;
 
 import java.util.HashMap;
 import java.util.Map;

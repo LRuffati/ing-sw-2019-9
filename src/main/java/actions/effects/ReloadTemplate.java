@@ -5,17 +5,13 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import actions.utils.WeaponChooser;
 import board.Sandbox;
-import exception.AmmoException;
 import genericitems.Tuple;
 import grabbables.Weapon;
-import player.Actor;
-import testcontroller.SlaveController;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllermessage.PickWeaponMessage;
-import testcontroller.controllermessage.RollbackMessage;
+import controller.controllermessage.ControllerMessage;
+import controller.controllermessage.PickWeaponMessage;
+import controller.controllermessage.RollbackMessage;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 

@@ -3,7 +3,7 @@ package actions.effects;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoAmountUncapped;
 import player.Actor;
-import testcontroller.SlaveController;
+import controller.SlaveController;
 
 import java.util.function.Consumer;
 

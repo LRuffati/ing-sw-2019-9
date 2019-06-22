@@ -1,9 +1,9 @@
-package testcontroller.controllermessage;
+package controller.controllermessage;
 
 import grabbables.PowerUp;
-import testcontroller.ChoiceBoard;
-import testcontroller.Message;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.ChoiceBoard;
+import controller.Message;
+import controller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
 import java.util.List;

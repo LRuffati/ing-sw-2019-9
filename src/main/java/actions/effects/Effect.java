@@ -3,7 +3,7 @@ package actions.effects;
 import actions.utils.AmmoAmount;
 import grabbables.PowerUp;
 import grabbables.Weapon;
-import testcontroller.SlaveController;
+import controller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
 

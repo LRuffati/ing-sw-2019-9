@@ -1,10 +1,10 @@
 package network;
 
 
-import testcontroller.ChoiceBoard;
-import testcontroller.controllerclient.ControllerMessageClient;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.ChoiceBoard;
+import controller.controllerclient.ControllerMessageClient;
+import controller.controllermessage.ControllerMessage;
+import controller.controllerstates.SlaveControllerState;
 
 import java.rmi.server.UID;
 import java.util.*;

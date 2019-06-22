@@ -5,14 +5,11 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Tile;
-import exception.AmmoException;
-import player.Actor;
-import testcontroller.SlaveController;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.SlaveController;
+import controller.controllermessage.ControllerMessage;
 import uid.TileUID;
 import viewclasses.PowerUpView;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

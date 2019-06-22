@@ -1,14 +1,12 @@
 package view.cli;
 
 import board.GameMap;
-import testcontroller.ClientController;
+import controller.ClientController;
 import gamemanager.GameBuilder;
 import player.Actor;
 import viewclasses.GameMapView;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.List;
 
 public class CLIMain {

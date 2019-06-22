@@ -1,7 +1,7 @@
 package actions.effects;
 
 import player.Actor;
-import testcontroller.SlaveController;
+import controller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
 

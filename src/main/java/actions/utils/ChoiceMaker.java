@@ -2,7 +2,7 @@ package actions.utils;
 
 import actions.targeters.targets.Targetable;
 import genericitems.Tuple;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.TargetView;
 
 import java.util.List;

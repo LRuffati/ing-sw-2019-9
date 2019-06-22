@@ -1,10 +1,10 @@
 package network.rmi.client;
 
 import network.Player;
-import testcontroller.controllerclient.ClientControllerNetworkInterface;
+import controller.controllerclient.ClientControllerNetworkInterface;
 import network.rmi.server.ServerRMIInterface;
 import network.exception.InvalidLoginException;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 import java.rmi.RemoteException;

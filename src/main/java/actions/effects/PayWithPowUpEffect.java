@@ -2,7 +2,7 @@ package actions.effects;
 
 import grabbables.PowerUp;
 import player.Actor;
-import testcontroller.SlaveController;
+import controller.SlaveController;
 
 import java.util.ArrayList;
 import java.util.List;

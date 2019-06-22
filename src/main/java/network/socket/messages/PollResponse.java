@@ -1,6 +1,6 @@
 package network.socket.messages;
 
-import testcontroller.controllermessage.ControllerMessage;
+import controller.controllermessage.ControllerMessage;
 
 public class PollResponse implements Response {
     public final ControllerMessage controllerMessage;

@@ -1,4 +1,4 @@
-package testcontroller;
+package controller;
 
 import view.cli.CLIDemo;
 import gamemanager.ParserConfiguration;
@@ -9,11 +9,11 @@ import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
 import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
-import testcontroller.controllerclient.ClientControllerClientInterface;
-import testcontroller.controllerclient.ClientControllerNetworkInterface;
-import testcontroller.controllerclient.ControllerMessageClient;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.controllerclient.ClientControllerClientInterface;
+import controller.controllerclient.ClientControllerNetworkInterface;
+import controller.controllerclient.ControllerMessageClient;
+import controller.controllermessage.ControllerMessage;
+import controller.controllerstates.SlaveControllerState;
 import view.View;
 import view.gui.Framework;
 import viewclasses.GameMapView;

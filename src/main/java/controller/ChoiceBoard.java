@@ -1,4 +1,4 @@
-package testcontroller;
+package controller;
 
 import actions.utils.ActionPicker;
 import actions.utils.ChoiceMaker;
@@ -6,7 +6,7 @@ import actions.utils.WeaponChooser;
 import genericitems.Tuple;
 import grabbables.PowerUp;
 import grabbables.Weapon;
-import testcontroller.controllerstates.PickTypes;
+import controller.controllerstates.PickTypes;
 import viewclasses.ActionView;
 import viewclasses.PowerUpView;
 import viewclasses.TargetView;

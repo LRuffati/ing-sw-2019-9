@@ -1,29 +1,29 @@
-package testcontroller.controllermessage;
+package controller.controllermessage;
 
-import actions.utils.WeaponChooser;
+import actions.utils.ActionPicker;
 import board.Sandbox;
-import testcontroller.ChoiceBoard;
-import testcontroller.Message;
-import testcontroller.controllerstates.SlaveControllerState;
+import controller.ChoiceBoard;
+import controller.Message;
+import controller.controllerstates.SlaveControllerState;
 import viewclasses.GameMapView;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class PickWeaponMessage implements ControllerMessage{
+public class PickActionMessage implements ControllerMessage{
 
     private final ChoiceBoard options;
-    private final Message message;
-    private final Function<List<Integer>, ControllerMessage> fun;
+    private final Function<Integer, ControllerMessage> fun;
+    private final List<String> message;
     private final GameMapView sandboxView;
 
-
-    public PickWeaponMessage(WeaponChooser weaponChooser, String s, Sandbox sandbox) {
-        options = new ChoiceBoard(weaponChooser, s);
-        fun = weaponChooser::pick;
-        message = null;
-        sandboxView = sandbox.generateView();
+    public PickActionMessage(ActionPicker actionPicker, String s, Sandbox sandbox,
+                             List<String> notifications) {
+        options = new ChoiceBoard(actionPicker, s);
+        fun = actionPicker::pickAction;
+        this.message = notifications;
+        this.sandboxView = sandbox.generateView();
     }
 
     /**
@@ -51,7 +51,12 @@ public class PickWeaponMessage implements ControllerMessage{
      */
     @Override
     public Message getMessage() {
-        return null;
+        return new Message() {
+            @Override
+            public List<String> getChanges() {
+                return message;
+            }
+        };
     }
 
     /**
@@ -77,6 +82,10 @@ public class PickWeaponMessage implements ControllerMessage{
                 choices.stream()
                         .distinct()
                         .filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
-        return fun.apply(choices);
+        if (choices.isEmpty()){
+            return fun.apply(-1);
+        } else {
+            return fun.apply(choices.get(0));
+        }
     }
 }

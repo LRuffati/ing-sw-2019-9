@@ -1,4 +1,4 @@
-package testcontroller.controllerstates;
+package controller.controllerstates;
 
 /**
  * These are the states of the SlaveController, thus by extension of the Client controller

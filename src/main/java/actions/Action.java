@@ -7,10 +7,10 @@ import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 import genericitems.Tuple;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllermessage.PickTargetMessage;
-import testcontroller.controllermessage.RollbackMessage;
-import testcontroller.controllermessage.WaitMessage;
+import controller.controllermessage.ControllerMessage;
+import controller.controllermessage.PickTargetMessage;
+import controller.controllermessage.RollbackMessage;
+import controller.controllermessage.WaitMessage;
 import viewclasses.TargetView;
 
 import java.util.*;

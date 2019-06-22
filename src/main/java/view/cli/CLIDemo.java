@@ -1,7 +1,7 @@
 package view.cli;
 
-import testcontroller.Message;
-import testcontroller.controllerclient.ClientControllerClientInterface;
+import controller.Message;
+import controller.controllerclient.ClientControllerClientInterface;
 import view.View;
 import network.Player;
 import uid.DamageableUID;

@@ -1,4 +1,4 @@
-package testcontroller.externalinterfaces;
+package controller.externalinterfaces;
 
 import actions.ActionTemplate;
 

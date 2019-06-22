@@ -7,10 +7,10 @@ import board.Sandbox;
 import genericitems.Tuple;
 import grabbables.Weapon;
 import player.Actor;
-import testcontroller.SlaveController;
-import testcontroller.controllermessage.ControllerMessage;
-import testcontroller.controllermessage.PickActionMessage;
-import testcontroller.controllermessage.PickWeaponMessage;
+import controller.SlaveController;
+import controller.controllermessage.ControllerMessage;
+import controller.controllermessage.PickActionMessage;
+import controller.controllermessage.PickWeaponMessage;
 
 import java.util.*;
 import java.util.function.Consumer;

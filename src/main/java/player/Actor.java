@@ -1,23 +1,17 @@
 package player;
 
 import actions.ActionTemplate;
-import actions.effects.DamageEffect;
-import actions.effects.Effect;
 import actions.utils.AmmoAmount;
-import actions.utils.AmmoAmountUncapped;
 import actions.utils.AmmoColor;
-import actions.utils.PowerUpType;
 import board.GameMap;
 import exception.AmmoException;
 import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import genericitems.Tuple3;
 import grabbables.AmmoCard;
-import grabbables.Grabbable;
 import grabbables.PowerUp;
 import grabbables.Weapon;
-import testcontroller.SlaveController;
-import testcontroller.controllermessage.ControllerMessage;
+import controller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
 
