@@ -527,6 +527,11 @@ public class Actor {
         return lastInFrenzy;
     }
 
+    /**
+     * Called when FF phase is starting
+     * If possible it flips the board and changes the action that can be performed
+     * @param afterFirst True iif the player is between the first player and the player who started FF
+     */
     public void beginFF(boolean afterFirst){
         if(damageTaken.isEmpty())
             this.flipBoard = true;
@@ -535,24 +540,41 @@ public class Actor {
         this.afterFirst = afterFirst;
     }
 
-    public boolean endTurn(Actor player, Scoreboard scoreboard);
-        if(player.isDead()){
-            scoreboard.score(player);
-            //TODO don't know if using respawn() method and if check for final frenzy
-            return true;
-        }
-        return false;
+    /**
+     * Manages the end of the turn. If the player is not dead nothing happens.
+     * Otherwise the kill and the score are added to the scoreboard and damage are cleared.
+     * If the player is dead and FF has started then flips the board
+     * @param player The player that finished the turn
+     * @param scoreboard Scoreboard
+     * @return True iif the player needs to respawn
+     */
+    public boolean endTurn(Actor player, Scoreboard scoreboard) {
+        if (!player.isDead())
+            return false;
+        scoreboard.addKill(player, this);
+        scoreboard.score(player);
+        damageTaken.clear();
+
+        if (frenzy && !flipBoard)
+            flipBoard = true;
+        return true;
     }
 
-    public void drop(Weapon weapUsed);
+    /**
+     * This method drops a weapon.
+     * Given a weapon, it discards the weapon and removes it from the loaded or unloaded container
+     * @param weapUsed
+     */
+    public void drop(Weapon weapUsed) {
+        gm.discardWeapon(pawn().getTile(), weapUsed);
+        if (loadedWeapon.contains(weapUsed))
+            loadedWeapon.remove(weapUsed);
+        else
+            unloadedWeapon.remove(weapUsed);
+    }
 
     public void bindSlave(SlaveController slave) {
         this.slave = slave;
-    }
-
-
-    public void bindSlave(SlaveController slaveController) {
-        this.slaveController = slaveController;
     }
 }
 
