@@ -71,7 +71,7 @@ public class Fire implements EffectTemplate {
                         @Override
                         public void mergeInGameMap(SlaveController pov, Runnable finalize,
                                                    Consumer<String> broadcaster) {
-                            pov.getSelf().drop(weapUsed);
+                            pov.getSelf().useWeapon(weapUsed);
                             broadcaster.accept(effectString(pov.getSelf()));
                         }
 

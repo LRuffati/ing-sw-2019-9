@@ -143,14 +143,14 @@ public class Actor {
     /**
      * Checks if in the player's tile there is the grabbable item.
      * Picks up the weapon or the ammoTile, adds all the necessary ammo and powerUps
-     * @param ammoCard is the ammoCard element that the player want to pick up
+     * @param card is the ammoCard element that the player want to pick up
      */
-    public void pickUp(AmmoCard ammoCard){
+    public void pickUp(AmmoCard card){
         TileUID tile = pawn().getTile();
-        if(!gm.getGrabbable(tile).contains(ammoCard))
+        if(!gm.getGrabbable(tile).contains(card))
             throw new InvalidParameterException("There isn't this item here");
 
-        AmmoCard card = (AmmoCard)gm.pickUpGrabbable(tile, ammoCard);
+        gm.pickUpGrabbable(tile, card); //Removes from the map
         ammoAvailable = new AmmoAmount(ammoAvailable.add(new AmmoAmount(card.getAmmoAmount())));
         for(int i = 0; i<card.getNumOfPowerUp() && powerUps.size()< MAX_PUP; i++)
             powerUps.add(gm.pickUpPowerUp());
@@ -182,8 +182,8 @@ public class Actor {
             else
                 unloadedWeapon.remove(weaponToDiscard);
         }
-
-        loadedWeapon.add((Weapon)gm.pickUpGrabbable(tile, weapon));
+        gm.pickUpGrabbable(tile,weapon);
+        loadedWeapon.add(weapon);
     }
 
     /**
@@ -191,7 +191,7 @@ public class Actor {
      * @param weapon is the weapon to be reloaded.
      * @throws AmmoException if the player doesn't have enough ammo
      */
-    public void reloadWeapon(Weapon weapon) throws AmmoException{
+    public void reloadWeapon(Weapon weapon) {
         if(!unloadedWeapon.contains(weapon) && !loadedWeapon.contains(weapon))
             throw new InvalidParameterException("This actor has not this weapon");
         if(!unloadedWeapon.contains(weapon))
@@ -201,33 +201,9 @@ public class Actor {
         loadedWeapon.add(weapon);
     }
 
-    /**
-     * This method checks if a certain amount of Ammo can be reached using a list of PowerUps and player's AmmoTile
-     * @param ammoAmount The amount of ammo that has to be reached
-     * @param powerUpToPay the powerUps that the have to be considered in the check
-     * @return True if can be reloaded, false otherwise
-     */
-    public boolean checkAmmo(AmmoAmountUncapped ammoAmount, List<PowerUp> powerUpToPay){
-        AmmoAmountUncapped amount = new AmmoAmountUncapped();
-        if(powerUpToPay != null)
-            for(PowerUp p : powerUpToPay){
-                amount = amount.add(p.getAmmo());
-            }
-        amount.add(ammoAvailable);
-
-        return ammoAmount.compareTo(amount)>0;
-    }
-
-    /**
-     * This method keeps track of PowerUp cards possibly being used as ammunition
-     * @return the sum of ammoAvailable and all the powerups
-     */
-    public AmmoAmountUncapped getTotalAmmo(){
-        AmmoAmountUncapped am = new AmmoAmountUncapped(ammoAvailable.getAmounts());
-        for(PowerUp pu : powerUps){
-            am.add(pu.getAmmo());
-        }
-        return am;
+    public void useWeapon(Weapon weapon){
+        loadedWeapon.remove(weapon);
+        unloadedWeapon.add(weapon);
     }
 
     /**
