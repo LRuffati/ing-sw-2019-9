@@ -15,16 +15,17 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class WeaponCards extends JPanel {
 
-    private WeaponView[] weapons = new WeaponView[3];
     private BufferedImage[] showedWeaponCards = new BufferedImage[3];
     private GameMapView gmv;
     private Map<ActorView, BufferedImage[]> cardMap;
 
-    public WeaponCards(GameMapView gmv){
+    public WeaponCards(GameMapView gmv) throws IOException {
         this.gmv = gmv;
+        setPlayersWeaponCards();
         setYourShowedWeaponCards();
 
     }
@@ -41,6 +42,37 @@ public class WeaponCards extends JPanel {
         }
     }
 
+    /**
+     * This method sets the cards on the other players hand.
+     * @throws IOException
+     */
+    private void setPlayersWeaponCards() throws IOException {
+        for(ActorView player : gmv.players()) {
+            BufferedImage[] playerCards = new BufferedImage[3];
+            int i = 0;
+            if (player.equals(gmv.you())) {
+                for (WeaponView weapon : gmv.you().getUnloadedWeapon()) {
+                    playerCards[i] = linkWeaponToCard(weapon);
+                    i++;
+                }
+                for (WeaponView weapon : gmv.you().getLoadedWeapon()) {
+                    playerCards[i] = linkWeaponToCard(weapon);
+                    i++;
+                }
+
+            } else {
+
+                for (WeaponView weapon : gmv.you().getUnloadedWeapon()) {
+                    playerCards[i] = linkWeaponToCard(weapon);
+                    i++;
+                }
+                for(;i<3;i++){
+                    playerCards[i] = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("gui/Cards/AD_weapons_IT_02.png")));
+                }
+            }
+            cardMap.put(player,playerCards);
+        }
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -155,7 +187,7 @@ public class WeaponCards extends JPanel {
                 break;
         }
         try {
-            return ImageIO.read(ClassLoader.getSystemResourceAsStream(path));
+            return ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(path)));
         } catch (IOException e) {
             System.out.println("Problema con lettura dell'immagine della carta " + weapon.name());
         }
@@ -176,8 +208,12 @@ public class WeaponCards extends JPanel {
         List<Actor> actorList = builder.getActorList();
         GameMapView gmv = map.generateView(actorList.get(0).pawn().damageableUID);
 
-        WeaponCards mainPanel;
-        mainPanel = new WeaponCards(gmv);
+        WeaponCards mainPanel = null;
+        try {
+            mainPanel = new WeaponCards(gmv);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         JFrame frame = new JFrame("Drawing Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
