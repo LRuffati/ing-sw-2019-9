@@ -24,8 +24,8 @@ class PawnTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String tilePath = "src/resources/ammoTile.txt";
-        String mapPath = "src/resources/map1.txt";
+        String tilePath = "ammoTile.txt";
+        String mapPath = "map1.txt";
         try {
             builder = new GameBuilder(
                     mapPath, null, null, tilePath, 2);

@@ -13,7 +13,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class ParserPowerUpTest {
+class ParserPowerUpTest {
 
     private Deck<PowerUp> powerUpDeck;
     private Collection<PowerUp> powerUpCollection;
@@ -30,7 +30,7 @@ public class ParserPowerUpTest {
     }
 
     private void setup2(){
-        String path = "src/test/java/gamemanager/PowerUpTestFile";
+        String path = "test/PowerUpTestFile";
         try {
             powerUpCollection = ParserPowerUp.parse(path);
             powerUpDeck = new GameBuilder(null, null, path, null, 1).getDeckOfPowerUp();
@@ -39,14 +39,6 @@ public class ParserPowerUpTest {
             System.out.println(e.getStackTrace());
         }
     }
-
-    @Test
-    void testWrongFile(){
-        assertThrows(FileNotFoundException.class, () -> ParserPowerUp.parse(""));
-        assertThrows(FileNotFoundException.class,
-                () -> new GameBuilder(null,null,"",null, 1));
-    }
-
 
     @Test
     void test(){

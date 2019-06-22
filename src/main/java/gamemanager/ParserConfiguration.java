@@ -2,6 +2,10 @@ package gamemanager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -20,28 +24,21 @@ public class ParserConfiguration {
      * @return A string containing the configuration item requested. If not found, "NO RESULT FOUND" is returned
      */
     public static String parse(String configuration) {
-        Logger logger = Logger.getLogger(ParserConfiguration.class.getName());
         Scanner scanner;
-        String configurationFile = "src" + File.separator + "resources" + File.separator + "configuration.txt";
+
+        InputStream configurationStream = ClassLoader.getSystemResourceAsStream("configuration.txt");
+
         String toSearch = configuration.toLowerCase();
 
-        try {
-
-            scanner = new Scanner(new File(configurationFile));
-            while(scanner.hasNextLine()){
-                if(scanner.nextLine().toLowerCase().startsWith("-" + toSearch)){
-                    String ret = scanner.nextLine();
-                    scanner.close();
-                    return ret;
-                }
+        scanner = new Scanner(configurationStream);
+        while (scanner.hasNextLine()) {
+            if (scanner.nextLine().toLowerCase().startsWith("-" + toSearch)) {
+                String ret = scanner.nextLine();
+                scanner.close();
+                return ret;
             }
-            scanner.close();
-
-            return "NO RESULT FOUND";
-
-        } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE, "Configuration not found", e.getStackTrace());
         }
+        scanner.close();
 
         return "NO RESULT FOUND";
     }
@@ -52,11 +49,21 @@ public class ParserConfiguration {
      * @return A string containing the path. If not found, an invalid path is returned
      */
     public static String parsePath(String configuration){
+
         return String.join(
                 File.separator,
                 Arrays.asList(parse(configuration).split(" ")
+                ));
+        /*
+        return ClassLoader.getSystemResource(String.join(
+                File.separator,
+                Arrays.asList(parse(configuration).split(" ")
+                ))).getFile();*/
+        /*return String.join(
+                File.separator,
+                Arrays.asList(parse(configuration).split(" ")
                 )
-        );
+        );*/
     }
 
     public static int parseInt(String configuration) {

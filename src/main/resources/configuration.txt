@@ -1,24 +1,24 @@
 #All the paths
 -ammoTilePath
-src/resources/ammoTile.txt
+ammoTile.txt
 
 -weaponPath
-src/resources/weapons.txt
+weapons.txt
 
 -powerUpPath
-src/resources/powerUp.txt
+powerUp.txt
 
 -map1Path
-src/resources/map1.txt
+map1.txt
 
 -map2Path
-src/resources/map1.txt
+map2.txt
 
 -map3Path
-src/resources/map1.txt
+map3.txt
 
 -map4Path
-src/resources/map1.txt
+map4.txt
 
 -GuiDirectoryPath
 src/resources/gui

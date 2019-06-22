@@ -182,8 +182,8 @@ public class Database {
 
 
         synchronized (wait) {
-            connectedToken.remove(token);
             TimerForDisconnection.stop(token);
+            connectedToken.remove(token);
         }
 
         mainController.logout(getUserByToken(token));

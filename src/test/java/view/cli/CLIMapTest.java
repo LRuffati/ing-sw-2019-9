@@ -26,11 +26,9 @@ class CLIMapTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String tilePath = "src/resources/ammoTile.txt";
-        String mapPath = "src/resources/map1.txt";
         try {
             builder = new GameBuilder(
-                    null, null, null, tilePath, 5);
+                    null, null, null, null, 4);
         }
         catch (FileNotFoundException ignored){
         }

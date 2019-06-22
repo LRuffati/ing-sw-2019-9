@@ -32,11 +32,14 @@ public class ParserPowerUp {
         PowerUpType type = null;
         AmmoColor col = null;
 
+        scanner = new Scanner(ClassLoader.getSystemResourceAsStream(path));
+        /*
         try {
             scanner = new Scanner(new File(path));
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException("File PowerUp not found");
         }
+        */
 
         while (scanner.hasNextLine()){
 

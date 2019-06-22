@@ -8,7 +8,6 @@ import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
 
-import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -113,7 +112,7 @@ public class CLIDemo implements View {
         System.out.println("Wait for other players to join the game.");
     }
 
-    private void quitGame(){
+    public void quitGame(){
         System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
                 "want to go back.");
         if(in.nextLine().equalsIgnoreCase("y")){
@@ -123,54 +122,6 @@ public class CLIDemo implements View {
         }
     }
 
-    /**
-     * Print the event "Player user uses powerUp pu" on the view.cli.
-     */
-    public void addPowerUpNotYou(ActorView user, PowerUpView pu){
-        System.out.println(user.getAnsi() + "Player " + user.name() + " is using " + pu.type().toString());
-    }
-
-    public void addPowerUpYou(ActorView user, PowerUpView pu){
-        System.out.println(user.getAnsi() + "You are using " + pu.type().toString());
-    }
-
-    /**
-     * Show who attacked who.
-     */
-    //TODO Check if passing a Map object is the better way.
-    public void addDmg(ActorView attacker, Map<ActorView,Integer> actorDamaged){
-        for(Map.Entry<ActorView,Integer> entry: actorDamaged.entrySet())
-            System.out.println(attacker.getAnsi() + "Player " + attacker.name() + " shot ⌐╦╦═─ player " + entry.getKey()
-                    .name() + " for a damage of " + entry.getValue().toString() + ".");
-    }
-
-    public void addMark(ActorView marker, Map<ActorView,Integer> marked){
-        for(Map.Entry<ActorView,Integer> entry: marked.entrySet())
-            System.out.println(marker.getAnsi() + "Player " + marker.name() + " marked ❌ player " + entry.getKey()
-                    .name() + " for a number of marks of " + entry.getValue().toString() + ".");
-    }
-
-    public void disconnectedPlayer(ActorView a){
-        System.out.println(a.getAnsi() + "Player " + a.name() + " has disconnected =║= from the game. Abuse him!");
-    }
-
-    public void reconnectedPlayer(ActorView a){
-        System.out.println(a.getAnsi() + "Player " + a.name() + " has reconnected === to the game. Run!");
-    }
-
-    public void displayTimeLeft(Duration timeLeft){
-        System.out.println(timeLeft.toString() + " is the time left.");
-    }
-
-    public void displayScoreAll(ActorListView players){
-        for(ActorView a:players.getActorList()){
-            System.out.println(a.getAnsi() + "Player " + a.name() + " gained score ✺(^O^)✺ is " + a.score() + ".");
-        }
-    }
-
-    public void addKill(ActorView killer, ActorView victim){
-        System.out.println(killer.getAnsi() + "Player " + killer.name() + " frag \uD83D\uDC80 player " + victim.name() + ".");
-    }
 
     public void printAppliedTarget(List<TargetView> targetViewList){
         climap.applyTarget(targetViewList);
@@ -423,7 +374,7 @@ public class CLIDemo implements View {
      * tile.
      * @param t to get the info from.
      */
-    public void tileInfo(TileView t){
+    private void tileInfo(TileView t){
         System.out.print("\n>> The tile belongs to the ");
         System.out.print(t.getAnsi() + t.color().toString() + " room\n");
         if(t.spawnPoint()){
@@ -433,7 +384,10 @@ public class CLIDemo implements View {
                 System.out.println(" +" + w.name());
             }
         } else {
-            System.out.println(">> There is a spawn point for ammunition in the tile.\n");
+            System.out.println(">> There is a spawn point for the following ammunition in the tile:\n");
+            System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
+            System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
+            System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
         }
         int i = 0;
         if(t.players().isEmpty()){
@@ -460,7 +414,7 @@ public class CLIDemo implements View {
         }
     }
 
-    public void playerInfo(ActorView player){
+    private void playerInfo(ActorView player){
         System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
         System.out.println("\n>> He's got the following loaded weapons: ");
@@ -486,7 +440,7 @@ public class CLIDemo implements View {
         }
     }
 
-    public void askInfo(){
+    void askInfo(){
         clearScreen();
         getPrintedMap();
         System.out.println(">> 1. Players");
@@ -563,8 +517,10 @@ class CommandParser{
         if(strings!=null){
             strings.accept(str);
             strings = null;
-        } else {
+        } else if(str.equalsIgnoreCase("info")){
             cliDemo.askInfo();
+        } else if(str.equalsIgnoreCase("quit")){
+            cliDemo.quitGame();
         }
     }
 }

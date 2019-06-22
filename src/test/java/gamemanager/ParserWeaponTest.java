@@ -17,19 +17,12 @@ public class ParserWeaponTest {
 
     @BeforeEach
     void setup(){
-        String path = "src\\test\\java\\gamemanager\\weaponToTest";
+        String path = "test/weaponToTest";
         try{
             weaponCollection = ParserWeapon.parse(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    }
-
-    @Test
-    void testWrongFile(){
-        assertThrows(FileNotFoundException.class, () -> ParserWeapon.parse(""));
-        assertThrows(FileNotFoundException.class,
-                () -> new GameBuilder(null,null,null,"", 1));
     }
 
     @Test
@@ -42,8 +35,8 @@ public class ParserWeaponTest {
         Map<AmmoColor, Integer> amountGiven = new HashMap<>();
         amountGiven.put(AmmoColor.BLUE,2);
         AmmoAmount amountTest = new AmmoAmount(amountGiven);
-        assertEquals("RED:0 BLUE:2 YELLOW:0",weaponToTest.getBuyCost().toString());
-        assertEquals("RED:0 BLUE:1 YELLOW:0",weaponToTest.getReloadCost().toString());
+        assertEquals("BLU: 2",weaponToTest.getBuyCost().toString());
+        assertEquals("BLU: 1",weaponToTest.getReloadCost().toString());
         assertEquals(1, weaponToTest.getBuyCost().compareTo(amountTest));
 
         Map<String, ActionTemplate> actions = weaponToTest.getActions();
@@ -56,7 +49,7 @@ public class ParserWeaponTest {
 
     @Test
     void realFile(){
-        String path = "src/resources/weapons.txt";
+        String path = "weapons.txt";
         try{
             weaponCollection = ParserWeapon.parse(path);
         } catch (FileNotFoundException e) {

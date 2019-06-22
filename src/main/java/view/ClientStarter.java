@@ -10,7 +10,7 @@ public class ClientStarter {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Benvenuto su Adrenalina!");
-        String res;
+        String res = "";
         boolean socket = true;
         boolean cli = true;
         String networkAddress = "";

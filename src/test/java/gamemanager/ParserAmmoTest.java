@@ -31,7 +31,7 @@ class ParserAmmoTest {
     }
 
     private void setup2(){
-        String path = "src/test/java/gamemanager/TileTest";
+        String path = "test/TileTest.txt";
         try {
             ammoCardCollection = ParserAmmoTile.parse(path);
             ammoCardDeck = new GameBuilder(null, null, null, path, 1).getDeckOfAmmoCard();
@@ -39,13 +39,6 @@ class ParserAmmoTest {
         catch (FileNotFoundException e){
             e.printStackTrace();
         }
-    }
-
-    @Test
-    void testWrongFile(){
-        assertThrows(FileNotFoundException.class, () -> ParserAmmoTile.parse(""));
-        assertThrows(FileNotFoundException.class,
-                () -> new GameBuilder(null,null,null,"", 1));
     }
 
     @Test
@@ -83,13 +76,12 @@ class ParserAmmoTest {
     void testAmmoCardGetter(){
         setup2();
         assertEquals(2, ammoCardCollection.size());
-;
+
         int n = 0;
         while(ammoCardDeck.hasNext()){
             n++;
             ammoCardDeck.next();
         }
-        System.out.println(n);
 
         assertThrows(NoSuchElementException.class, () -> ammoCardDeck.next());
     }

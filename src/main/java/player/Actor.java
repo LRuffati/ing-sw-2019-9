@@ -16,7 +16,6 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.awt.*;
-import java.lang.invoke.WrongMethodTypeException;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
@@ -40,7 +39,6 @@ public class Actor {
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
     private Boolean frenzy;
-    private Boolean turn;
     private final GameMap gm;
 
     private DamageableUID pawnID;
@@ -75,8 +73,6 @@ public class Actor {
         this.damagedPlayer = new HashSet<>();
 
         this.lastInFrenzy = false;
-
-        this.turn = false;
     }
 
     /**
@@ -149,8 +145,6 @@ public class Actor {
      */
     public void pickUp(Weapon weapon, Weapon weaponToDiscard){
         TileUID tile = pawn().getTile();
-        if(!turn)
-            throw new WrongMethodTypeException("It's not your turn");
         if(!gm.getGrabbable(tile).contains(weapon))
             throw new InvalidParameterException("There isn't this item here");
 

@@ -1,7 +1,9 @@
 package view.gui;
 
+import board.GameMap;
+import gamemanager.GameBuilder;
+import player.Actor;
 import viewclasses.GameMapView;
-import viewclasses.WeaponView;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,8 +14,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Dictionary;
+import java.util.List;
 
 public class PlayerBoard extends JPanel {
 
@@ -28,12 +31,12 @@ public class PlayerBoard extends JPanel {
     private BufferedImage[] showedWeaponCards = new BufferedImage[3];
     private GameMapView gmv;
 
-    public PlayerBoard(Color color, GameMapView gmv) throws IOException {
+    public PlayerBoard(GameMapView gmv) throws IOException {
         this.gmv = gmv;
-        nextPlayerBuffered = ImageIO.read(new File("src/resources/gui/PlayerBoards/nextPlayer.png"));
+        nextPlayerBuffered = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/nextPlayer.png"));
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
         initializeBoards();
-        setYourBoards(Color.green);
+        setYourBoards(gmv.you().color());
         changeBoard = new JButton(nextPlayerIcon);
         changeBoard.setContentAreaFilled(false);
         drawBoard(yourNormalBoard);
@@ -57,16 +60,6 @@ public class PlayerBoard extends JPanel {
         });
     }
 
-
-    private void setYourWeapons(){
-        int i = 0;
-        for(WeaponView weapon : gmv.you().getLoadedWeapon()){
-            showedWeaponCards[i] = weapon.card();
-        }
-        for(WeaponView weapon : gmv.you().getUnloadedWeapon()){
-            showedWeaponCards[i] = weapon.card();
-        }
-    }
 
     private void setYourBoards(Color color){
         switch(color.toString()){
@@ -102,16 +95,16 @@ public class PlayerBoard extends JPanel {
     }
 
     private void initializeBoards() throws IOException {
-        normalBoards[0] = ImageIO.read(new File("src/resources/gui/PlayerBoards/blueN.png"));
-        normalBoards[1] = ImageIO.read(new File("src/resources/gui/PlayerBoards/grayN.png"));
-        normalBoards[2] = ImageIO.read(new File("src/resources/gui/PlayerBoards/greenN.png"));
-        normalBoards[3] = ImageIO.read(new File("src/resources/gui/PlayerBoards/pinkN.png"));
-        normalBoards[4] = ImageIO.read(new File("src/resources/gui/PlayerBoards/yellowN.png"));
-        frenzyBoards[0] = ImageIO.read(new File("src/resources/gui/PlayerBoards/blueF.png"));
-        frenzyBoards[1] = ImageIO.read(new File("src/resources/gui/PlayerBoards/grayF.png"));
-        frenzyBoards[2] = ImageIO.read(new File("src/resources/gui/PlayerBoards/greenF.png"));
-        frenzyBoards[3] = ImageIO.read(new File("src/resources/gui/PlayerBoards/pinkF.png"));
-        frenzyBoards[4] = ImageIO.read(new File("src/resources/gui/PlayerBoards/yellowF.png"));
+        normalBoards[0] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/blueN.png"));
+        normalBoards[1] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/grayN.png"));
+        normalBoards[2] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/greenN.png"));
+        normalBoards[3] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/pinkN.png"));
+        normalBoards[4] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/yellowN.png"));
+        frenzyBoards[0] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/blueF.png"));
+        frenzyBoards[1] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/grayF.png"));
+        frenzyBoards[2] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/greenF.png"));
+        frenzyBoards[3] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/pinkF.png"));
+        frenzyBoards[4] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/yellowF.png"));
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
             normalBoards[0] = scaleImage(normalBoards[0]);
             normalBoards[1] = scaleImage(normalBoards[1]);
@@ -156,12 +149,23 @@ public class PlayerBoard extends JPanel {
 
 
     private static void createAndShowGui() {
+        GameBuilder builder = null;
+        try {
+            builder = new GameBuilder(
+                    null, null, null, null, 5);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        GameMap map = builder.getMap();
+        List<Actor> actorList = builder.getActorList();
+        GameMapView gmv = map.generateView(actorList.get(0).pawn().damageableUID);
+
         PlayerBoard mainPanel = null;
         try {
-            mainPanel = new PlayerBoard(Color.BLUE, new GameMapView());
+            mainPanel = new PlayerBoard(gmv);
         } catch (IOException e) {
             e.printStackTrace();
-            System.exit(-1);
         }
 
         JFrame frame = new JFrame("Drawing Panel");
