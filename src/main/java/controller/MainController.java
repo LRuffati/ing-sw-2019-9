@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -305,12 +306,18 @@ public class MainController {
         boolean frenzyBefore = scoreboard.finalFrenzy();
         SlaveController current = slaveMap.get(lastPlayed.pawnID());
         SlaveController next;
+
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
         if (currIndex<(size-1)){
             next = slaveControllerList.get(currIndex+1);
         } else {
             next = slaveControllerList.get(0);
+        }
+
+        List<SlaveController> nextnext=List.of();
+        if (!firstRoundOver){
+            nextnext = slaveControllerList.subList(Math.max(currIndex+2, size),size);
         }
         /*
         0. Riempie la mappa
@@ -352,7 +359,14 @@ public class MainController {
             current.getSelf().setLastInFrenzy();
         }
 
-        this.startRespawn(dead, 1, next::startMainAction); // LAST LINE OF THE FUNCTION
+        Runnable nextAction = next::startMainAction;
+
+        if (!firstRoundOver){ // If the first round isn't over
+            Function<List<SlaveController>, Runnable> runnableFunction = nextLis -> () -> firstRound(next, nextLis);
+            nextAction = runnableFunction.apply(nextnext);
+        }
+
+        this.startRespawn(dead, 1, nextAction); // LAST LINE OF THE FUNCTION
         //TODO: handle first turn of each player differently
         return;
     }
