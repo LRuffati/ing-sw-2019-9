@@ -173,15 +173,25 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void restartSelection() {
-        ControllerMessage first = stack.getFirst();
-        stack.clear();
-        elaborate(first);
+        if(stack.isEmpty())
+            poll();
+        else {
+            ControllerMessage first = stack.getFirst();
+            stack.clear();
+            elaborate(first);
+        }
     }
 
     @Override
     public void rollback() {
-        stack.pop();
-        elaborate(stack.pop());
+        if(stack.isEmpty() || stack.size() == 1) {
+            stack.clear();
+            poll();
+        }
+        else {
+            stack.pop();
+            elaborate(stack.pop());
+        }
     }
 
     @Override
@@ -277,16 +287,20 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
 
+    private void poll() {
+        System.out.println("Polling");
+        try {
+            network.poll();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            quitForDisconnection();
+        }
+    }
+
     private void initPolling() {
         repeatedTask = new TimerTask() {
             public void run() {
-                System.out.println("Polling");
-                try {
-                    network.poll();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    quitForDisconnection();
-                }
+                poll();
             }
         };
         timerForPolling = new Timer("TimerForPolling");
