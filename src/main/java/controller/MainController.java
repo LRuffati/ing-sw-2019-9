@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 public class MainController {
 
     private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
-    //private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
-    private static final int MIN_PLAYER = 1;
+    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;
@@ -223,8 +222,6 @@ public class MainController {
     public SlaveController bind(Player player, ServerInterface network){
         SlaveController slave = new SlaveController(this, player, network);
         slaveControllerList.add(slave);
-        //FIXME: l'actor viene creato quando parte la partita, non c'è a questo punto del giuoco
-        player.getActor().bindSlave(slave);
         return slave;
     }
 
