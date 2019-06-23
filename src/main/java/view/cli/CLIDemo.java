@@ -8,7 +8,9 @@ import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.*;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -298,8 +300,14 @@ public class CLIDemo implements View {
             PowerUpView pu = puIterator.next();
             builder.append(i);
             builder.append(". ");
+            if(pu.ammo().toColor().equals(Color.RED))
+                builder.append("\u001B[31m");
+            if(pu.ammo().toColor().equals(Color.YELLOW))
+                builder.append("\u001B[33m");
+            if(pu.ammo().toColor().equals(Color.BLUE))
+                builder.append("\u001B[34m");
             builder.append(pu.type().toString());
-            builder.append("\n");
+            builder.append("\u001B[0m \n");
             i+=1;
         }
         builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
