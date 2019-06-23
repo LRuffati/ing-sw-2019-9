@@ -8,6 +8,13 @@ import java.util.Scanner;
 
 public class ClientStarter {
     public static void main(String[] args) {
+        try {
+            new ClientController(true, true, "localhost");
+        }
+        catch (IOException | NotBoundException e) {
+            e.printStackTrace();
+        }
+        /*
         Scanner scanner = new Scanner(System.in);
         System.out.println("Benvenuto su Adrenalina!");
         String res = "";
@@ -38,5 +45,6 @@ public class ClientStarter {
         catch (IOException | NotBoundException e) {
             e.printStackTrace();
         }
+        */
     }
 }

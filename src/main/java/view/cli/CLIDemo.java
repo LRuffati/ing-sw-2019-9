@@ -152,6 +152,9 @@ public class CLIDemo implements View {
             }
         }
 
+        System.out.print("Chosen option(s) ");
+        for(Integer i : l) System.out.println(i + " ");
+        System.out.println();
         client.pick(choiceId,l);
     }
 
@@ -205,7 +208,7 @@ public class CLIDemo implements View {
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
         System.out.println("Choose your action(s):\n0. Exit selection");
         Iterator<ActionView> actionIterator = action.iterator();
-        int i = 0;
+        int i = 1;
         while(actionIterator.hasNext()){
             System.out.println(i + ". " + actionIterator.next().getName());
             i+=1;
