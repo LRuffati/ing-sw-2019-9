@@ -59,13 +59,11 @@ public class Actor {
        return damagedBy.remove(damager);
     }
 
-    private SlaveController slave;
 
     // Frenzy related
     private Boolean frenzy;
     private boolean flipBoard = false;
     private boolean afterFirst;
-    private SlaveController slaveController;
 
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
@@ -505,10 +503,6 @@ public class Actor {
      */
     public void drop(Weapon weapUsed) {
         //TODO
-    }
-
-    public void bindSlave(SlaveController slave) {
-        this.slave = slave;
     }
 }
 

@@ -71,9 +71,7 @@ public class SlaveController {
         this.setCurrentMessage(new WaitMessage(List.of()));
         this.main = main;
         this.timeoutWindow = main.timeoutTime;
-        //FIXME: lo slave viene creato al momento del login, non c'è ancora l'actor
-        //  viene creato quando parte la partita
-        player.getActor().bindSlave(this);
+        notificationList = new ArrayList<>();
     }
 
     /**
@@ -163,12 +161,9 @@ public class SlaveController {
     }
 
     private List<String> getNotifications() {
-        //FIXME NullPointerException appena parte la partita
-            //notificationList is never assigned
         List<String> notifs = List.copyOf(notificationList);
         notificationList.clear();
         return notifs;
-        //return List.of("");
     }
 
     /**
