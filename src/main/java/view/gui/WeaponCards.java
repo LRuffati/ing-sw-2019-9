@@ -13,6 +13,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -24,6 +25,7 @@ public class WeaponCards extends JPanel {
     private Map<ActorView, BufferedImage[]> cardMap;
 
     public WeaponCards(GameMapView gmv){
+        cardMap = new HashMap<>();
         this.gmv = gmv;
         setPlayersWeaponCards();
         setYourShowedWeaponCards();
@@ -65,12 +67,18 @@ public class WeaponCards extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
+        int i = 0;
         for(BufferedImage image : showedWeaponCards){
-            g.drawImage(image, 0, 0, this);
+            g.drawImage(image, i*240, 0, this);
+            i++;
         }
 
         repaint();
 
+    }
+
+    public BufferedImage[] getShowedWeaponCards() {
+        return showedWeaponCards;
     }
 
     private BufferedImage linkWeaponToCard(WeaponView weapon){
@@ -206,6 +214,10 @@ public class WeaponCards extends JPanel {
         frame.setSize(new Dimension(1000,1000));
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
+    }
+
+    public Map<ActorView, BufferedImage[]> getCardMap() {
+        return cardMap;
     }
 
     public static void main(String[] args) {

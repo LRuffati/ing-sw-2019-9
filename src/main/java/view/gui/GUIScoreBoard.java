@@ -24,7 +24,7 @@ public class GUIScoreBoard extends JPanel {
 
     public GUIScoreBoard() throws IOException {
 
-        scoreBoardBuffered = ImageIO.read(new File("src/resources/gui/ScoreBoardScaled.png"));
+        scoreBoardBuffered = ImageIO.read(new File("src/main/resources/gui/ScoreBoardScaled.png"));
 
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight()==768){
             scoreBoardBuffered = scaleImage(scoreBoardBuffered);

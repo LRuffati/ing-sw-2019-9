@@ -28,11 +28,8 @@ public class PlayerBoard extends JPanel {
     private BufferedImage nextPlayerBuffered;
     private ImageIcon nextPlayerIcon;
     private JButton changeBoard;
-    private BufferedImage[] showedWeaponCards = new BufferedImage[3];
-    private GameMapView gmv;
 
     public PlayerBoard(GameMapView gmv) throws IOException {
-        this.gmv = gmv;
         nextPlayerBuffered = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/nextPlayer.png"));
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
         initializeBoards();

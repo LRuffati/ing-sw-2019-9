@@ -44,18 +44,18 @@ public class GUIMap1 extends JPanel implements GUIMap{
 
         this.buttonCoord = new HashMap<>();
 
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_1.png", Color.GREEN,new Coord(0,0));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_2.png", Color.YELLOW,new Coord(1,0));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_3.png", Color.YELLOW,new Coord(2,0));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_4.png", Color.BLUE,new Coord(0,1));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_5.png", Color.YELLOW,new Coord(1,1));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_6.png", Color.YELLOW,new Coord(2,1));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_7.png", Color.BLUE,new Coord(0,2));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_8.png", Color.RED,new Coord(1,2));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_9.png", Color.WHITE,new Coord(2,2));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_10.png", Color.BLUE,new Coord(0,3));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_11.png", Color.RED,new Coord(1,3));
-        setTile(label,"src/resources/gui/GUImap1/GUImap1_12.png", null,new Coord(2,3));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_1.png", Color.GREEN,new Coord(0,0));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_2.png", Color.YELLOW,new Coord(1,0));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_3.png", Color.YELLOW,new Coord(2,0));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_4.png", Color.BLUE,new Coord(0,1));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_5.png", Color.YELLOW,new Coord(1,1));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_6.png", Color.YELLOW,new Coord(2,1));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_7.png", Color.BLUE,new Coord(0,2));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_8.png", Color.RED,new Coord(1,2));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_9.png", Color.WHITE,new Coord(2,2));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_10.png", Color.BLUE,new Coord(0,3));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_11.png", Color.RED,new Coord(1,3));
+        setTile(label,"src/main/resources/gui/GUImap1/GUImap1_12.png", null,new Coord(2,3));
 
         System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 

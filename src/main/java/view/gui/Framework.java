@@ -26,6 +26,7 @@ public class Framework implements View {
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
+
     }
 
     private static void createAndShowGUI(ClientControllerClientInterface controller) {
