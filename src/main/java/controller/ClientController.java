@@ -136,9 +136,12 @@ public class ClientController implements ClientControllerClientInterface, Client
                 super.run();
                 try {
                     Tuple<Boolean, Boolean> res = network.reconnect(username, password);
-                    if(res.y)
-                        initPolling();
+                    System.out.println(res.x + "\t" + res.y);
                     view.loginResponse(true, false, false);
+
+                    if(res.y){
+                        setPolling(true);
+                    }
                     add();
                 }
                 catch (InvalidLoginException e) {

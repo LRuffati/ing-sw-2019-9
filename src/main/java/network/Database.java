@@ -157,6 +157,14 @@ public class Database {
         if(!present)
             throw new InvalidLoginException("Reconnection exception", true, false);
 
+        try {
+            network.setToken(token);
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+            logout(token);
+        }
+
         networkByToken.put(token, network);
         disconnectedToken.remove(token);
 
