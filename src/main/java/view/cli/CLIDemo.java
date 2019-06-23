@@ -29,7 +29,7 @@ public class CLIDemo implements View {
         this.commandParser = new CommandParser(this);
         this.scanThread = new Thread(()->{
             while (inputTake) {
-                String string = in.nextLine();
+                String string = in.next();
                 commandParser.parseCommand(string);
             }
         });
@@ -126,14 +126,12 @@ public class CLIDemo implements View {
 
     }
 
-    private void choicer(boolean optional, boolean single, String choiceId, String type){
+    private void choicer(boolean optional, boolean single, String choiceId, String type, String str){
         System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
         List<Integer> l = new ArrayList<>();
         boolean flag = false;
-        String j;
         while(!flag) {
-            j = in.next();
-            switch (j){
+            switch (str){
 
                 case("info"):
                     askInfo();
@@ -165,16 +163,17 @@ public class CLIDemo implements View {
                     break;
 
                 default:
-                    l.add(Integer.parseInt(j));
+                    l.add(Integer.parseInt(str));
                     if (l.size()==1 && single) flag = true;
                     break;
 
             }
-
+            if(!flag) str = in.next();
         }
         System.out.print("Chosen option(s) ");
         for(Integer i : l) System.out.println(i + " ");
         System.out.println();
+        //TODO controllare se muovere pick su un altro thread
         client.pick(choiceId, l.stream().map(x -> x-1).collect(Collectors.toList()));
     }
 
@@ -188,7 +187,7 @@ public class CLIDemo implements View {
         printAppliedTarget(target);
         System.out.println("Choose your target(s):\n0. Exit Selection");
         Iterator<TargetView> targetIterator = target.iterator();
-        int i = 0;
+        int i = 1;
         while(targetIterator.hasNext()){
             TargetView tw = targetIterator.next();
             Collection<DamageableUID> dmg = tw.getDamageableUIDList();
@@ -215,7 +214,7 @@ public class CLIDemo implements View {
 
 
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "target");
+                string -> choicer(optional, single, choiceId, "target", string);
 
         commandParser.bind(consumer);
     }
@@ -227,7 +226,7 @@ public class CLIDemo implements View {
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
         System.out.println("Choose your action(s):\n0. Exit selection");
         Iterator<ActionView> actionIterator = action.iterator();
-        int i = 0;
+        int i = 1;
         while(actionIterator.hasNext()){
             System.out.println(i + ". " + actionIterator.next().getName());
             i+=1;
@@ -235,7 +234,7 @@ public class CLIDemo implements View {
 
 
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "action");
+                string -> choicer(optional, single, choiceId, "action", string);
 
         commandParser.bind(consumer);
     }
@@ -255,7 +254,7 @@ public class CLIDemo implements View {
         }
 
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "weapon");
+                string -> choicer(optional, single, choiceId, "weapon", string);
         commandParser.bind(consumer);
     }
 
@@ -271,7 +270,7 @@ public class CLIDemo implements View {
         }
 
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "power up");
+                string -> choicer(optional, single, choiceId, "power up", string);
 
         commandParser.bind(consumer);
     }
@@ -288,7 +287,7 @@ public class CLIDemo implements View {
         }
 
         Consumer<String> consumer =
-                stringa -> choicer(optional, single, choiceId, "string");
+                stringa -> choicer(optional, single, choiceId, "string", stringa);
 
         commandParser.bind(consumer);
     }
