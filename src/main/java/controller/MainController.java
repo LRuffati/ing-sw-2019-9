@@ -103,6 +103,10 @@ public class MainController {
         return numOfPlayer<MAX_PLAYER && !gameStarted;
     }
 
+    public boolean isGameStarted(){
+        return gameStarted;
+    }
+
     /**
      * Method called by the network layer when a logout is made.
      * It notifies all the clients that the player is not playing.

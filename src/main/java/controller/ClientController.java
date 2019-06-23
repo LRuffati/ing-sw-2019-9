@@ -317,6 +317,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     private void setPolling(boolean value) {
         if(polling != value)
             if(value) {
+                initPolling();
                 timerForPolling.scheduleAtFixedRate(repeatedTask, 1000, 5000);
             }
             else {
