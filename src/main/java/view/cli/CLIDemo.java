@@ -127,7 +127,6 @@ public class CLIDemo implements View {
     }
 
     private void choicer(boolean optional, boolean single, String choiceId, String type, String str){
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
         List<Integer> l = new ArrayList<>();
         boolean flag = false;
         while(!flag) {
@@ -211,6 +210,7 @@ public class CLIDemo implements View {
                 }
             }
         }
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
 
         Consumer<String> consumer =
@@ -231,6 +231,7 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + actionIterator.next().getName());
             i+=1;
         }
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
 
         Consumer<String> consumer =
@@ -252,6 +253,7 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + wv.name());
             i+=1;
         }
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "weapon", string);
@@ -268,6 +270,7 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + pu.type().toString());
             i+=1;
         }
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "power up", string);
@@ -285,6 +288,7 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + str);
             i+=1;
         }
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 stringa -> choicer(optional, single, choiceId, "string", stringa);
@@ -401,7 +405,7 @@ public class CLIDemo implements View {
      */
     private void tileInfo(TileView t){
         System.out.print("\n>> The tile belongs to the ");
-        System.out.print(t.getAnsi() + t.color().toString() + " room\n");
+        System.out.print(t.getAnsi() + t.color().toString() + "\u001B[0m" + " room\n");
         if(t.spawnPoint()){
             System.out.println(">> There is a spawn point for weapons in the tile.\n");
             System.out.println(">> You can pick up: ");
@@ -423,19 +427,6 @@ public class CLIDemo implements View {
                 System.out.println(i + ". " + a.getAnsi() + a.name());
                 i++;
             }
-            System.out.println(">> If you want more information about a player, type his name now. Otherwise type" +
-                    "anything else.");
-            String ans = in.next();
-            for(Map.Entry<ActorView,Character> actor : climap.getPlayers().entrySet()){
-                if(ans.equalsIgnoreCase(actor.getKey().name())){
-                    playerInfo(actor.getKey());
-                }
-            }
-        }
-        System.out.println("Type anything.");
-        if(in.next()!=null){
-            clearScreen();
-            getPrintedMap();
         }
     }
 
@@ -458,50 +449,49 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + w.type());
             i++;
         }
-        System.out.println("Type anything.");
-        if(in.next()!=null){
-            clearScreen();
-            getPrintedMap();
-        }
     }
 
-    void askInfo(){
+    void askInfo() {
         clearScreen();
         getPrintedMap();
         System.out.println(">> 1. Players");
         System.out.println(">> 2. Tiles");
-        int i;
-        switch (in.next().toLowerCase()){
-            case("players"):
-            case("1"):
-                i = 0;
-                for(Map.Entry<ActorView,Character> actor : climap.getPlayers().entrySet()){
-                    System.out.println(i + ". " + actor.getKey().name());
-                }
+    }
 
-                for(Map.Entry<ActorView,Character> actor : climap.getPlayers().entrySet()){
-                    if(in.next().equalsIgnoreCase(actor.getKey().name())){
-                        playerInfo(actor.getKey());
-                    }
-                }
+    void askPlayer() {
+        int i = 0;
+        for (Map.Entry<ActorView, Character> actor : climap.getPlayers().entrySet()) {
+            System.out.println(i + ". " + actor.getKey().name());
+        }
+    }
 
-                break;
-            case("tiles"):
-            case("2"):
-                i = 0;
-                for(TileView tile : climap.getMp().allTiles()){
-                    System.out.println(i + ". " + climap.getMp().getCoord(tile));
-                }
+    void choosePlayer(String str) {
+        int value = Integer.valueOf(str);
+        int i = 0;
+        for(Map.Entry entry : climap.getPlayers().entrySet()) {
+            if(i == value) {
+                playerInfo((ActorView)entry.getKey());
+            }
+            i++;
+        }
+    }
 
-                for(TileView tile : climap.getMp().allTiles()){
-                    if(in.nextLine().equalsIgnoreCase(climap.getMp().getCoord(tile).toString())){
-                        tileInfo(tile);
-                    }
-                }
+    void askTile() {
+        int i = 0;
+        for(TileView tile : climap.getMp().allTiles()) {
+            System.out.println(i + ". " + climap.getMp().getCoord(tile));
+            i++;
+        }
+    }
 
-                break;
-            default:
-                break;
+    void chooseTile(String str) {
+        int value = Integer.valueOf(str);
+        int i = 0;
+        for(TileView tile : climap.getMp().allTiles()) {
+            if(i == value) {
+                tileInfo(tile);
+            }
+            i++;
         }
     }
 
@@ -530,8 +520,11 @@ class CommandParser{
     private Consumer<String> strings;
     private CLIDemo cliDemo;
 
+    private State state;
+
     CommandParser(CLIDemo cliDemo){
         this.cliDemo = cliDemo;
+        this.state = State.MAIN;
     }
 
     void bind(Consumer<String> strings){
@@ -539,13 +532,52 @@ class CommandParser{
     }
 
     void parseCommand(String str){
-        if(strings!=null){
-            strings.accept(str);
-            strings = null;
-        } else if(str.equalsIgnoreCase("info")){
-            cliDemo.askInfo();
-        } else if(str.equalsIgnoreCase("quit")){
-            cliDemo.quitGame();
+        switch (state) {
+            case MAIN:
+                if (str.equalsIgnoreCase("info")) {
+                    state = State.INFO;
+                    cliDemo.askInfo();
+                    break;
+                }
+                if (str.equalsIgnoreCase("quit")) {
+                    cliDemo.quitGame();
+                    break;
+                }
+                if (strings != null) {
+                    strings.accept(str);
+                    strings = null;
+                }
+                break;
+
+            case INFO:
+                if (str.equals("1")) {
+                    state = State.CHOOSEPLAYER;
+                    cliDemo.askPlayer();
+                    break;
+                }
+                if (str.equals("2")) {
+                    state = State.CHOOSETILE;
+                    cliDemo.askTile();
+                    break;
+                }
+                break;
+
+            case CHOOSEPLAYER:
+                cliDemo.choosePlayer(str);
+                state = State.MAIN;
+                break;
+
+            case CHOOSETILE:
+                cliDemo.chooseTile(str);
+                state = State.MAIN;
+                break;
+
+            default:
+                break;
         }
+    }
+
+    private enum State {
+        MAIN, INFO, CHOOSEPLAYER, CHOOSETILE
     }
 }
