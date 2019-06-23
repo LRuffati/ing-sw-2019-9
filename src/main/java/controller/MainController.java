@@ -397,8 +397,11 @@ public class MainController {
                 - Calls startRespawn with the tail of dead and same parameter
         3. If dead is empty run onAllRespawned
          */
-        if (dead.isEmpty())
+        if (dead.isEmpty()){
             onAllRespawned.run();
+            return;
+        }
+
 
         DamageableUID head = dead.get(0);
         List<DamageableUID> tail = dead.subList(1,dead.size());
