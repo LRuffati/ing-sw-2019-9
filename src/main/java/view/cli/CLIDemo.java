@@ -24,6 +24,7 @@ public class CLIDemo implements View {
 
     String pickStringMessage;
     private List<Integer> chosenList = new ArrayList<>();
+    private List<Integer> toReturn;
 
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
@@ -155,7 +156,6 @@ public class CLIDemo implements View {
                 System.out.print("Chosen option(s) ");
                 for(Integer i : toReturn) System.out.println(i + " ");
                 System.out.println();
-                //TODO controllare se muovere pick su un altro thread
                 client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
                 break;
 
@@ -173,10 +173,18 @@ public class CLIDemo implements View {
                 client.rollback();
                 break;
 
-                default:
-                    System.out.println("adding" + n);
-                    chosenList.add(n);
-                    break;
+            default:
+                System.out.println("adding" + n);
+                chosenList.add(n);
+                if(single){
+                    toReturn = new ArrayList<>(chosenList);
+                    chosenList.clear();
+                    System.out.print("Chosen option(s) ");
+                    for(Integer i : toReturn) System.out.println(i + " ");
+                    System.out.println();
+                    client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
+                }
+                break;
         }
     }
 
@@ -185,6 +193,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId) {
+        chosenList.clear();
         StringBuilder builder = new StringBuilder();
 
         CLIMap map = new CLIMap(gameMap);
@@ -197,7 +206,7 @@ public class CLIDemo implements View {
             TargetView tw = targetIterator.next();
             Collection<DamageableUID> dmg = tw.getDamageableUIDList();
             Collection<TileUID> tile = tw.getTileUIDList();
-            if(!dmg.isEmpty()){
+            if(dmg!=null){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
                         builder.append(a.getAnsi());
@@ -240,6 +249,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
+        chosenList.clear();
         StringBuilder builder = new StringBuilder();
         builder.append("Choose your action(s):\n0. Exit selection\n");
         Iterator<ActionView> actionIterator = action.iterator();
@@ -267,6 +277,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
+        chosenList.clear();
         StringBuilder toChoose = new StringBuilder();
         toChoose.append("Choose your weapons:\n0. Exit selection");
 
@@ -292,6 +303,7 @@ public class CLIDemo implements View {
 
     @Override
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
+        chosenList.clear();
         StringBuilder builder = new StringBuilder();
         builder.append("Choose your PowerUp(s):\n0. Exit selection\n");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
@@ -322,6 +334,7 @@ public class CLIDemo implements View {
 
     @Override
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
+        chosenList.clear();
         StringBuilder builder = new StringBuilder();
         builder.append("Choose an option:\n0. Exit selection\n");
         Iterator<String> strIterator = string.iterator();
@@ -389,6 +402,7 @@ public class CLIDemo implements View {
                     System.out.println("Please, try another username and/or password.");
                 }
             }
+            joinGame();
         }
     }
 
@@ -453,7 +467,7 @@ public class CLIDemo implements View {
      */
     private void tileInfo(TileView t){
         System.out.print("\n>> The tile belongs to the ");
-        System.out.print(t.getAnsi() + t.color().toString() + "\u001B[0m" + " room\n");
+        System.out.print(t.getAnsi() + t.getColorName() + "\u001B[0m" + " room\n");
         if(t.spawnPoint()){
             System.out.println(">> There is a spawn point for weapons in the tile.\n");
             System.out.println(">> You can pick up: ");
@@ -514,7 +528,7 @@ public class CLIDemo implements View {
     }
 
     void choosePlayer(String str) {
-        int value = Integer.valueOf(str);
+        int value = Integer.parseInt(str);
         int i = 0;
         for(Map.Entry entry : climap.getPlayers().entrySet()) {
             if(i == value) {
@@ -533,7 +547,7 @@ public class CLIDemo implements View {
     }
 
     void chooseTile(String str) {
-        int value = Integer.valueOf(str);
+        int value = Integer.parseInt(str);
         int i = 0;
         for(TileView tile : climap.getMp().allTiles()) {
             if(i == value) {

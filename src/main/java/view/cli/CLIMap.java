@@ -258,18 +258,24 @@ public class CLIMap {
         for(TargetView target :  targetViewList) {
             tiles = target.getTileUIDList();
             actors = target.getDamageableUIDList();
-            for (TileView t : targetMap.allTiles()) {
-                if (!tiles.contains(t.uid())) {
-                    tilesColor.put(t,t.color());
-                    t.setColor(Color.DARK_GRAY);
+            if(tiles!=null) {
+                for (TileView t : targetMap.allTiles()) {
+                    if (!tiles.contains(t.uid())) {
+                        tilesColor.put(t, t.color());
+                        t.setColor(Color.DARK_GRAY);
+                    }
                 }
             }
-            for (ActorView a : targetMap.players()) {
-                if (!actors.contains(a.uid())) {
-                    actorsColor.put(a,a.color());
-                    a.setColor(Color.lightGray);
+            if(actors!=null) {
+                for (ActorView a : targetMap.players()) {
+                    if (!actors.contains(a.uid())) {
+                        actorsColor.put(a, a.color());
+                        a.setColor(Color.lightGray);
+                    }
                 }
             }
+
+
         }
         printMap();
 

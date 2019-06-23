@@ -23,7 +23,7 @@ public class WeaponCards extends JPanel {
     private GameMapView gmv;
     private Map<ActorView, BufferedImage[]> cardMap;
 
-    public WeaponCards(GameMapView gmv) throws IOException {
+    public WeaponCards(GameMapView gmv){
         this.gmv = gmv;
         setPlayersWeaponCards();
         setYourShowedWeaponCards();
@@ -44,31 +44,18 @@ public class WeaponCards extends JPanel {
 
     /**
      * This method sets the cards on the other players hand.
-     * @throws IOException
      */
-    private void setPlayersWeaponCards() throws IOException {
+    private void setPlayersWeaponCards(){
         for(ActorView player : gmv.players()) {
             BufferedImage[] playerCards = new BufferedImage[3];
             int i = 0;
-            if (player.equals(gmv.you())) {
-                for (WeaponView weapon : gmv.you().getUnloadedWeapon()) {
-                    playerCards[i] = linkWeaponToCard(weapon);
-                    i++;
-                }
-                for (WeaponView weapon : gmv.you().getLoadedWeapon()) {
-                    playerCards[i] = linkWeaponToCard(weapon);
-                    i++;
-                }
-
-            } else {
-
-                for (WeaponView weapon : gmv.you().getUnloadedWeapon()) {
-                    playerCards[i] = linkWeaponToCard(weapon);
-                    i++;
-                }
-                for(;i<3;i++){
-                    playerCards[i] = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("gui/Cards/AD_weapons_IT_02.png")));
-                }
+            for (WeaponView weapon : player.getUnloadedWeapon()) {
+                playerCards[i] = linkWeaponToCard(weapon);
+                i++;
+            }
+            for(WeaponView weapon : player.getLoadedWeapon()){
+                playerCards[i] = linkWeaponToCard(weapon);
+                i++;
             }
             cardMap.put(player,playerCards);
         }
@@ -209,11 +196,7 @@ public class WeaponCards extends JPanel {
         GameMapView gmv = map.generateView(actorList.get(0).pawn().damageableUID);
 
         WeaponCards mainPanel = null;
-        try {
-            mainPanel = new WeaponCards(gmv);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        mainPanel = new WeaponCards(gmv);
 
         JFrame frame = new JFrame("Drawing Panel");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
