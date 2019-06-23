@@ -21,6 +21,7 @@ public class CLIDemo implements View {
     private Thread scanThread;
 
     String pickStringMessage;
+    private List<Integer> chosenList = new ArrayList<>();
 
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
@@ -129,56 +130,52 @@ public class CLIDemo implements View {
     }
 
     private void choicer(boolean optional, boolean single, String choiceId, String type, String str){
-        List<Integer> l = new ArrayList<>();
-        boolean flag = false;
-        while(!flag) {
-            switch (str){
-
-                case("info"):
-                    askInfo();
-                    break;
-
-                case("quit"):
-                    quitGame();
-                    break;
-
-                case("200"):
-                    client.rollback();
-                    return;
-
-                case("0"):
-                    if(l.isEmpty()&&optional){
-                        flag = true;
-                    } else if(l.isEmpty()){
-                        System.out.println("You must choose at least one " + type +".");
-                    }
-                    break;
-
-                case("99"):
-                    if(!l.isEmpty()) l.remove(l.size()-1);
-                    break;
-
-                case("100"):
-                    l.clear();
-                    client.restartSelection();
-                    break;
-
-                default:
-                    l.add(Integer.parseInt(str));
-                    if (l.size()==1 && single) flag = true;
-                    break;
-
-            }
-            //if(!flag) str = in.next();
+        int n;
+        try {
+            n = Integer.parseInt(str);
+        }
+        catch (NumberFormatException e){
+            return;
         }
 
-        pickStringMessage = "";
+        switch (n) {
+            case 0:
+                if(chosenList.isEmpty() && !optional) {
+                    System.out.println("You must choose at least one " + type + ".");
+                    break;
+                }
 
-        System.out.print("Chosen option(s) ");
-        for(Integer i : l) System.out.println(i + " ");
-        System.out.println();
-        //TODO controllare se muovere pick su un altro thread
-        client.pick(choiceId, l.stream().map(x -> x-1).collect(Collectors.toList()));
+                pickStringMessage = "";
+
+                List<Integer> toReturn = new ArrayList<>(chosenList);
+                chosenList.clear();
+
+                System.out.print("Chosen option(s) ");
+                for(Integer i : toReturn) System.out.println(i + " ");
+                System.out.println();
+                //TODO controllare se muovere pick su un altro thread
+                client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
+                break;
+
+            case 99:
+                if(!chosenList.isEmpty()) chosenList.remove(chosenList.size()-1);
+                break;
+
+            case 100:
+                chosenList.clear();
+                client.restartSelection();
+                break;
+
+            case(200):
+                chosenList.clear();
+                client.rollback();
+                break;
+
+                default:
+                    System.out.println("adding" + n);
+                    chosenList.add(n);
+                    break;
+        }
     }
 
     /**
@@ -575,6 +572,8 @@ class CommandParser{
     }
 
     void parseCommand(String str){
+        System.out.println(str);
+        System.out.println(state);
         switch (state) {
             case MAIN:
                 if (str.equalsIgnoreCase("info")) {
@@ -586,10 +585,13 @@ class CommandParser{
                     cliDemo.quitGame();
                     break;
                 }
+                strings.accept(str);
+                /*
                 if (strings != null) {
                     strings.accept(str);
                     strings = null;
                 }
+                */
                 break;
 
             case INFO:
