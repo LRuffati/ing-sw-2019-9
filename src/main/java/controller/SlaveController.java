@@ -161,12 +161,9 @@ public class SlaveController {
     }
 
     private List<String> getNotifications() {
-        //FIXME NullPointerException appena parte la partita
-            //notificationList is never assigned
         List<String> notifs = List.copyOf(notificationList);
         notificationList.clear();
         return notifs;
-        //return List.of("");
     }
 
     /**

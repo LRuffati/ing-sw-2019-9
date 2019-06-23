@@ -83,7 +83,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             network = new ClientNetworkRMI(controller, this);
         }
 
-        //view.loginNotif();
+        view.loginNotif();
 
         stack = new ArrayDeque<>();
 
@@ -92,7 +92,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         //Main.register(network);
         //Main.run(network);
 
-        login("username", "password", "blue");
+        //login("username", "password", "blue");
     }
 
     /**
