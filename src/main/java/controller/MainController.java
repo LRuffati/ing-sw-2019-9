@@ -174,7 +174,8 @@ public class MainController {
 
         this.firstRoundOver=false;
 
-        slaveControllerList.get(0).startMainAction();
+        this.startRespawn(List.of(slaveControllerList.get(0).getSelf().pawnID()), 2,
+                () -> slaveControllerList.get(0).startMainAction());
     }
 
     private void createGame() {
