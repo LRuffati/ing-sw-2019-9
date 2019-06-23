@@ -371,6 +371,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     private boolean stopped = false;
 
     public void add() {
+        /*
         timer = new Timer("TimerForDisconnection");
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -388,17 +389,25 @@ public class ClientController implements ClientControllerClientInterface, Client
         };
 
         timer.schedule(timerTask, 200,500);
+
+         */
     }
 
     public void reset() {
+        /*
         if(!stopped) {
             signals = 0;
         }
+
+         */
     }
 
     public void stop() {
+        /*
         stopped = true;
         timer.cancel();
+
+         */
     }
 
 

@@ -47,7 +47,7 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
 
     @Override
     public void pingResponse(String token) {
-        TimerForDisconnection.reset(token);
+        //TimerForDisconnection.reset(token);
     }
 
 

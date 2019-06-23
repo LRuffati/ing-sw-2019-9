@@ -131,7 +131,7 @@ public class Database {
         synchronized (wait) {
             connectedToken.add(token);
 
-            TimerForDisconnection.add(token);
+            //TimerForDisconnection.add(token);
         }
 
         return token;
@@ -172,7 +172,7 @@ public class Database {
 
         synchronized (wait) {
             connectedToken.add(token);
-            TimerForDisconnection.add(token);
+            //TimerForDisconnection.add(token);
         }
 
 
@@ -190,7 +190,7 @@ public class Database {
 
 
         synchronized (wait) {
-            TimerForDisconnection.stop(token);
+            //TimerForDisconnection.stop(token);
             connectedToken.remove(token);
         }
 
