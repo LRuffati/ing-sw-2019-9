@@ -25,7 +25,11 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
         this.type = controllerMessage.type();
         this.choiceBoard = controllerMessage.genView();
         this.sandbox = controllerMessage.sandboxView();
-        this.changes = controllerMessage.getMessage().getChanges();
+
+        if(controllerMessage.getMessage() == null)
+            this.changes = List.of();
+        else
+            this.changes = controllerMessage.getMessage().getChanges();
     }
 
     public ControllerMessageClient() {

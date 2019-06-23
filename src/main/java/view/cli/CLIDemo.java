@@ -10,6 +10,7 @@ import viewclasses.*;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class CLIDemo implements View {
     private static CLIMap climap;
@@ -131,11 +132,20 @@ public class CLIDemo implements View {
         int j;
         while(!flag) {
             try {
+                //System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
                 j = in.nextInt();
-                if(j==200){
+                if(j==200) {
                     client.rollback();
                     return;
-                } else if(j==0){
+                }
+                else if(j==99 && !l.isEmpty()) {
+                    l.remove(l.size()-1);
+                }
+                else if(j==100) {
+                    client.restartSelection();
+                    return;
+                }
+                    else if(j==0){
                     if(l.isEmpty()&&optional){
                         flag = true;
                     } else if(l.isEmpty()){
@@ -155,7 +165,7 @@ public class CLIDemo implements View {
         System.out.print("Chosen option(s) ");
         for(Integer i : l) System.out.println(i + " ");
         System.out.println();
-        client.pick(choiceId,l);
+        client.pick(choiceId, l.stream().map(x -> x-1).collect(Collectors.toList()));
     }
 
     /**
@@ -214,7 +224,7 @@ public class CLIDemo implements View {
             i+=1;
         }
 
-        System.out.println("99. Rollback\n100. Restart Selection");
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "action");
