@@ -20,6 +20,8 @@ public class CLIDemo implements View {
     private CommandParser commandParser;
     private Thread scanThread;
 
+    String pickStringMessage;
+
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
@@ -167,8 +169,11 @@ public class CLIDemo implements View {
                     break;
 
             }
-            if(!flag) str = in.next();
+            //if(!flag) str = in.next();
         }
+
+        pickStringMessage = "";
+
         System.out.print("Chosen option(s) ");
         for(Integer i : l) System.out.println(i + " ");
         System.out.println();
@@ -181,10 +186,12 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId) {
+        StringBuilder builder = new StringBuilder();
+
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
         printAppliedTarget(target);
-        System.out.println("Choose your target(s):\n0. Exit Selection");
+        builder.append("Choose your target(s):\n0. Exit Selection\n");
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
         while(targetIterator.hasNext()){
@@ -194,8 +201,13 @@ public class CLIDemo implements View {
             if(!dmg.isEmpty()){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
-                        System.out.println(a.getAnsi() + i + ". " + a.name() + " whom character on the map " +
-                                "is '" + climap.getPlayers().get(a) + "'.");
+                        builder.append(a.getAnsi());
+                        builder.append(i);
+                        builder.append(". ");
+                        builder.append(a.name());
+                        builder.append(" whom character on the map is '");
+                        builder.append(climap.getPlayers().get(a));
+                        builder.append("'.\n");
                         i+=1;
                         break;
                     }
@@ -203,15 +215,20 @@ public class CLIDemo implements View {
             } else {
                 for(TileView t : gameMap.allTiles()){
                     if(t.uid().equals(tile.iterator().next())){
-                        System.out.println(t.getAnsi() + i + ". " + gameMap.getCoord(t).toString());
+                        builder.append(t.getAnsi());
+                        builder.append(i);
+                        builder.append(". ");
+                        builder.append(gameMap.getCoord(t).toString());
+                        builder.append("\n");
                         i+=1;
                         break;
                     }
                 }
             }
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
-
+        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        pickStringMessage = builder.toString();
+        System.out.println(pickStringMessage);
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "target", string);
@@ -224,14 +241,20 @@ public class CLIDemo implements View {
      */
     @Override
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
-        System.out.println("Choose your action(s):\n0. Exit selection");
+        StringBuilder builder = new StringBuilder();
+        builder.append("Choose your action(s):\n0. Exit selection\n");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 1;
         while(actionIterator.hasNext()){
-            System.out.println(i + ". " + actionIterator.next().getName());
+            builder.append(i);
+            builder.append(". ");
+            builder.append(actionIterator.next().getName());
+            builder.append("\n");
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
+        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        pickStringMessage = builder.toString();
+        System.out.println(pickStringMessage);
 
 
         Consumer<String> consumer =
@@ -244,16 +267,24 @@ public class CLIDemo implements View {
      * See documentation in the View interface.
      */
     @Override
-    public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId){
-        System.out.println("Choose your weapons:\n0. Exit selection");
+    public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
+        StringBuilder toChoose = new StringBuilder();
+        toChoose.append("Choose your weapons:\n0. Exit selection");
+
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
         while(weaponIterator.hasNext()){
             WeaponView wv = weaponIterator.next();
-            System.out.println(i + ". " + wv.name());
+            toChoose.append(i);
+            toChoose.append(". ");
+            toChoose.append(wv.name());
+            toChoose.append("\n");
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
+        toChoose.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+
+        pickStringMessage = toChoose.toString();
+        System.out.println(pickStringMessage);
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "weapon", string);
@@ -262,15 +293,21 @@ public class CLIDemo implements View {
 
     @Override
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
-        System.out.println("Choose your PowerUp(s):\n0. Exit selection");
+        StringBuilder builder = new StringBuilder();
+        builder.append("Choose your PowerUp(s):\n0. Exit selection\n");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
         while(puIterator.hasNext()){
             PowerUpView pu = puIterator.next();
-            System.out.println(i + ". " + pu.type().toString());
+            builder.append(i);
+            builder.append(". ");
+            builder.append(pu.type().toString());
+            builder.append("\n");
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
+        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        pickStringMessage = builder.toString();
+        System.out.println(pickStringMessage);
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "power up", string);
@@ -280,15 +317,21 @@ public class CLIDemo implements View {
 
     @Override
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
-        System.out.println("Choose your weapons:\n0. Exit selection");
+        StringBuilder builder = new StringBuilder();
+        builder.append("Choose an option:\n0. Exit selection\n");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
         while(strIterator.hasNext()){
             String str = strIterator.next();
-            System.out.println(i + ". " + str);
+            builder.append(i);
+            builder.append(". ");
+            builder.append(str);
+            builder.append("\n");
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
+        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        pickStringMessage = builder.toString();
+        System.out.println(pickStringMessage);
 
         Consumer<String> consumer =
                 stringa -> choicer(optional, single, choiceId, "string", stringa);
@@ -565,14 +608,17 @@ class CommandParser{
             case CHOOSEPLAYER:
                 cliDemo.choosePlayer(str);
                 state = State.MAIN;
+                System.out.println(cliDemo.pickStringMessage);
                 break;
 
             case CHOOSETILE:
                 cliDemo.chooseTile(str);
                 state = State.MAIN;
+                System.out.println(cliDemo.pickStringMessage);
                 break;
 
             default:
+                System.out.println("type info or quit");
                 break;
         }
     }
