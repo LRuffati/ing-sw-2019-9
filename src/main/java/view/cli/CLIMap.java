@@ -258,7 +258,7 @@ public class CLIMap {
         for(TargetView target :  targetViewList) {
             tiles = target.getTileUIDList();
             actors = target.getDamageableUIDList();
-            if(tiles!=null) {
+            if(!tiles.isEmpty()) {
                 for (TileView t : targetMap.allTiles()) {
                     if (!tiles.contains(t.uid())) {
                         tilesColor.put(t, t.color());
@@ -266,7 +266,7 @@ public class CLIMap {
                     }
                 }
             }
-            if(actors!=null) {
+            if(!actors.isEmpty()) {
                 for (ActorView a : targetMap.players()) {
                     if (!actors.contains(a.uid())) {
                         actorsColor.put(a, a.color());

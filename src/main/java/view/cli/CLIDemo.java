@@ -206,7 +206,9 @@ public class CLIDemo implements View {
             TargetView tw = targetIterator.next();
             Collection<DamageableUID> dmg = tw.getDamageableUIDList();
             Collection<TileUID> tile = tw.getTileUIDList();
-            if(dmg!=null){
+
+            // TODO: this can be substituted by a visitor pattern. You add to targetView
+            if (!dmg.isEmpty()){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
                         builder.append(a.getAnsi());

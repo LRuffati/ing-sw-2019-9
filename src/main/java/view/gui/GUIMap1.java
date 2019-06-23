@@ -144,12 +144,13 @@ public class GUIMap1 extends JPanel implements GUIMap{
         for(TargetView target: targets){
             tiles = target.getTileUIDList();
             actors = target.getDamageableUIDList();
-            if(tiles!=null) {
+            if(!tiles.isEmpty()) {
                 for (TileView tw : gmv.allTiles()) {
-                    if (tiles.contains(tw.uid())) coords.add(gmv.getCoord(tw));
+                    if (tiles.contains(tw.uid()))
+                        coords.add(gmv.getCoord(tw));
                 }
             }
-            if(actors!=null) {
+            if(!actors.isEmpty()) {
                 for (ActorView av : gmv.players()) {
                     if (actors.contains(av.uid())) coords.add(gmv.getCoord(av.position()));
                 }
@@ -177,7 +178,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
                         String[] names = new String[100];
                         int i = 0;
                         for(TargetView target : targets){
-                            if(target.getDamageableUIDList()!=null&&!target.getDamageableUIDList().isEmpty()){
+                            if(!target.getDamageableUIDList().isEmpty()){
                                 for(ActorView player : gmv.players()){
                                     if(target.getDamageableUIDList().contains(player.uid())&&gmv.getCoord(player.position()).equals(coord)){
                                         System.out.println(player.name());

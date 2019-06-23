@@ -6,6 +6,8 @@ import uid.TileUID;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TargetView implements Serializable {
     private String gameMapViewId;
@@ -23,11 +25,11 @@ public class TargetView implements Serializable {
         return gameMapViewId;
     }
 
-    public Collection<DamageableUID> getDamageableUIDList() {
-        return damageableUIDList;
+    public Set<DamageableUID> getDamageableUIDList() {
+        return new HashSet<>(damageableUIDList);
     }
 
-    public Collection<TileUID> getTileUIDList() {
-        return tileUIDList;
+    public Set<TileUID> getTileUIDList() {
+        return new HashSet<>(tileUIDList);
     }
 }
