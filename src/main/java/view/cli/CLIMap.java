@@ -156,6 +156,7 @@ public class CLIMap {
                 } else System.out.print(" ");
             }
         }
+        System.out.println("\n");
     }
 
     public void addAmmo(TileView tile){

@@ -10,6 +10,7 @@ import viewclasses.*;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class CLIDemo implements View {
     private static CLIMap climap;
@@ -126,33 +127,55 @@ public class CLIDemo implements View {
     }
 
     private void choicer(boolean optional, boolean single, String choiceId, String type){
+        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
         List<Integer> l = new ArrayList<>();
         boolean flag = false;
-        int j;
+        String j;
         while(!flag) {
-            try {
-                j = in.nextInt();
-                if(j==200){
+            j = in.next();
+            switch (j){
+
+                case("info"):
+                    askInfo();
+                    break;
+
+                case("quit"):
+                    quitGame();
+                    break;
+
+                case("200"):
                     client.rollback();
                     return;
-                } else if(j==0){
+
+                case("0"):
                     if(l.isEmpty()&&optional){
                         flag = true;
                     } else if(l.isEmpty()){
                         System.out.println("You must choose at least one " + type +".");
                     }
-                } else {
-                    l.add(j);
-                    if (l.size()==1 && single) {
-                        flag = true;
-                    }
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Please, pick a + " + type + " typing ONLY his index on the line.");
-            }
-        }
+                    break;
 
-        client.pick(choiceId,l);
+                case("99"):
+                    if(!l.isEmpty()) l.remove(l.size()-1);
+                    break;
+
+                case("100"):
+                    l.clear();
+                    client.restartSelection();
+                    break;
+
+                default:
+                    l.add(Integer.parseInt(j));
+                    if (l.size()==1 && single) flag = true;
+                    break;
+
+            }
+
+        }
+        System.out.print("Chosen option(s) ");
+        for(Integer i : l) System.out.println(i + " ");
+        System.out.println();
+        client.pick(choiceId, l.stream().map(x -> x-1).collect(Collectors.toList()));
     }
 
     /**
@@ -190,7 +213,6 @@ public class CLIDemo implements View {
             }
         }
 
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "target");
@@ -211,7 +233,6 @@ public class CLIDemo implements View {
             i+=1;
         }
 
-        System.out.println("99. Rollback\n100. Restart Selection");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "action");
@@ -232,7 +253,6 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + wv.name());
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "weapon");
@@ -249,7 +269,6 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + pu.type().toString());
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 string -> choicer(optional, single, choiceId, "power up");
@@ -267,7 +286,6 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + str);
             i+=1;
         }
-        System.out.println("99. Cancel last selection\n100. Restart Selection\n200. Rollback");
 
         Consumer<String> consumer =
                 stringa -> choicer(optional, single, choiceId, "string");

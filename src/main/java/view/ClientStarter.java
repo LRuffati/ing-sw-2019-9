@@ -21,7 +21,7 @@ public class ClientStarter {
             if(res.equals("1")) socket = false;
         } while (!res.equals("0") && !res.equals("1"));
         do {
-            System.out.print("view.cli [0] o GUI[1]:\t");
+            System.out.print("CLI [0] o GUI[1]:\t");
             res = scanner.next();
             if(res.equals("0")) cli = true;
             if(res.equals("1")) cli = false;
