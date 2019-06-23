@@ -1,5 +1,6 @@
 package viewclasses;
 
+import org.jetbrains.annotations.NotNull;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -11,7 +12,8 @@ public class TargetView implements Serializable {
     private Collection<DamageableUID> damageableUIDList;
     private Collection<TileUID> tileUIDList;
 
-    public TargetView(String sandboxUID, Collection<DamageableUID> damageableUIDList, Collection<TileUID> tileUIDList) {
+    public TargetView(String sandboxUID, @NotNull Collection<DamageableUID> damageableUIDList,
+                      @NotNull Collection<TileUID> tileUIDList) {
         this.gameMapViewId = sandboxUID;
         this.damageableUIDList = damageableUIDList;
         this.tileUIDList = tileUIDList;
