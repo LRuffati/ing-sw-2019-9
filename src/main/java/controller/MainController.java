@@ -301,6 +301,7 @@ public class MainController {
     }
 
     private void broadcastEffectMessage(String effectString) {
+        System.out.println(effectString);
         for (SlaveController i: slaveControllerList){
             i.addNotification(effectString);
         }

@@ -1,5 +1,6 @@
 package view.cli;
 
+import actions.utils.AmmoColor;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
 import view.View;
@@ -198,6 +199,8 @@ public class CLIDemo implements View {
 
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
+        //TODO: senza questo c'è comunque una stampa. serve?
+        //eventualmente toglierne una sopra?
         printAppliedTarget(target);
         builder.append("Choose your target(s):\n0. Exit Selection\n");
         Iterator<TargetView> targetIterator = target.iterator();
@@ -486,15 +489,19 @@ public class CLIDemo implements View {
         } else {
             System.out.println(">> The following players are in the tile: ");
             for(ActorView a: t.players()){
-                System.out.println(i + ". " + a.getAnsi() + a.name());
+                System.out.println(i + ". " + a.getAnsi() + a.name() + "\u001B[0m \n");
                 i++;
             }
         }
     }
 
-    private void playerInfo(ActorView player){
+    private void playerInfo(ActorView player) {
         System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
+        System.out.println("\n>> He's got the following ammo: ");
+        System.out.println(player.ammo().get(AmmoColor.RED) + "\tRED");
+        System.out.println(player.ammo().get(AmmoColor.BLUE) + "\tBLUE");
+        System.out.println(player.ammo().get(AmmoColor.YELLOW) + "\tYELLOW");
         System.out.println("\n>> He's got the following loaded weapons: ");
         int i = 0;
         for(WeaponView w : player.getLoadedWeapon()){
@@ -524,6 +531,7 @@ public class CLIDemo implements View {
         int i = 0;
         for (Map.Entry<ActorView, Character> actor : climap.getPlayers().entrySet()) {
             System.out.println(i + ". " + actor.getKey().name());
+            i++;
         }
     }
 

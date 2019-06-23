@@ -31,10 +31,10 @@ public class ActorView implements Serializable {
     private List<WeaponView> loadedWeapon;
     private List<WeaponView> unloadedWeapon;
     private List<PowerUpView> powerUp;
-    private static final int HP = 5;
+    private int hp;
 
     public int getHP(){
-        return HP;
+        return hp;
     }
 
     public List<WeaponView> getLoadedWeapon() {
@@ -104,6 +104,10 @@ public class ActorView implements Serializable {
 
     public void setAmmo(AmmoAmount ammo) {
         this.ammo = ammo.getAmounts();
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
 

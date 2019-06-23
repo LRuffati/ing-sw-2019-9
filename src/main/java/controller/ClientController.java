@@ -296,7 +296,6 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     private void poll() {
-        System.out.println("Polling");
         try {
             network.poll();
         } catch (RemoteException e) {
