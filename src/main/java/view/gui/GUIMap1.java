@@ -144,52 +144,96 @@ public class GUIMap1 extends JPanel implements GUIMap{
         for(TargetView target: targets){
             tiles = target.getTileUIDList();
             actors = target.getDamageableUIDList();
-            for(TileView tw : gmv.allTiles()){
-                if(tiles.contains(tw.uid())) coords.add(gmv.getCoord(tw));
+            if(tiles!=null) {
+                for (TileView tw : gmv.allTiles()) {
+                    if (tiles.contains(tw.uid())) coords.add(gmv.getCoord(tw));
+                }
             }
-            for(ActorView av : gmv.players()){
-                if(actors.contains(av.uid())) coords.add(gmv.getCoord(av.position()));
+            if(actors!=null) {
+                for (ActorView av : gmv.players()) {
+                    if (actors.contains(av.uid())) coords.add(gmv.getCoord(av.position()));
+                }
             }
         }
         return coords;
     }
 
+
+
     /**
      * Simple method to set a button based on the action to be applied.
      * @param question based on the kind of action to be executed.
      */
-    //TODO to be better implemented
     public List<Integer> clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
         List<Coord> coords = getTargetCoordinates(targets);
-        GUIMap1 map = this;
         List<Integer> indexList = new ArrayList<>();
-        final boolean[] flag = {true};
+        int j = 0;
         for(Coord coord : coords){
             for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
                 if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
-                        while(flag[0]){
-
-                            String res = JOptionPane.showInputDialog(map, question + " Type 'stop' to stop.", "TIME TO CHOOSE", JOptionPane.QUESTION_MESSAGE);
-
-
-                            if(res.equalsIgnoreCase("stop")){
-
-                                if(!optional && indexList.isEmpty()){
-                                    JOptionPane.showMessageDialog(map,"You must choose at least one number!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                                } else flag[0] = false;
-                            } else {
-                                while(isNotNumeric(res)){
-                                    res = JOptionPane.showInputDialog(map, "You must type just the number!", "ERROR", JOptionPane.QUESTION_MESSAGE);
+                        String[] names = new String[100];
+                        int i = 0;
+                        for(TargetView target : targets){
+                            if(target.getDamageableUIDList()!=null&&!target.getDamageableUIDList().isEmpty()){
+                                for(ActorView player : gmv.players()){
+                                    if(target.getDamageableUIDList().contains(player.uid())&&gmv.getCoord(player.position()).equals(coord)){
+                                        System.out.println(player.name());
+                                        names[i] = player.name();
+                                        i++;
+                                    }
                                 }
-                                indexList.add(Integer.parseInt(res));
+                                if(i!=0) {
+                                    names[i] = "Stop";
+                                    i++;
+                                    names[i] = "Rollback";
+                                    i++;
+                                    names[i] = "Reset";
+
+                                    String[] namesBeta = new String[i];
+
+                                    System.arraycopy(names, 0, namesBeta, 0, i);
+
+
+                                    Integer choice;
+                                    boolean flag = true;
+                                    while (flag) {
+
+                                        choice = JOptionPane.showOptionDialog(null, "Choose your next Target!", "TARGET", JOptionPane.DEFAULT_OPTION,
+                                                JOptionPane.INFORMATION_MESSAGE, null, namesBeta, namesBeta[0]);
+
+                                        if (choice.equals(i - 2)) {
+                                            if (indexList.isEmpty() && optional) {
+                                                flag = false;
+                                            } else if (indexList.isEmpty()) {
+                                                JOptionPane.showMessageDialog(null, "You must choose at least one Target!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                                            }
+                                        } else if (choice.equals(i - 1) && !indexList.isEmpty()) {
+                                            indexList.remove(indexList.size() - 1);
+                                        } else if (choice.equals(i)) {
+                                            indexList.clear();
+                                        } else {
+                                            if (!indexList.contains(choice)) {
+                                                indexList.add(choice);
+                                            } else {
+                                                JOptionPane.showMessageDialog(null, "You must choose a different Target", "ERROR", JOptionPane.ERROR_MESSAGE);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                int choice;
+                                choice = JOptionPane.showConfirmDialog(null,"Are you sure?","CONFIRM", JOptionPane.OK_CANCEL_OPTION);
+                                if(choice==1){
+                                    indexList.add(i);
+                                    i++;
+                                }
+                                break;
                             }
-
-                            if(single && indexList.size()==1) flag[0] = false;
-
                         }
+
                     }
                 });
             }
