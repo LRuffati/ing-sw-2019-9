@@ -119,8 +119,9 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
 
 
     @Override
-    public ControllerMessage pick(String choiceId, List<Integer> choices) throws RemoteException {
-        return controller.pick(token, choiceId, choices);
+    public void pick(String choiceId, List<Integer> choices) throws RemoteException {
+        ControllerMessage result = controller.pick(token, choiceId, choices);
+        clientController.onControllerMessage(result);
     }
 
 

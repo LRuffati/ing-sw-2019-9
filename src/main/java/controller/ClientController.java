@@ -83,7 +83,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             network = new ClientNetworkRMI(controller, this);
         }
 
-        view.loginNotif();
+        //view.loginNotif();
 
         stack = new ArrayDeque<>();
 
@@ -91,6 +91,8 @@ public class ClientController implements ClientControllerClientInterface, Client
 
         //Main.register(network);
         //Main.run(network);
+
+        login("username", "password", "blue");
     }
 
     /**
@@ -337,6 +339,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     public void onStarting(String map) {
         setPolling(true);
         view.onStarting(map);
+        poll();
     }
 
     @Override

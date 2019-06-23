@@ -43,8 +43,11 @@ public class ObjectMap {
     private String put(String token, ControllerMessage controllerMessage) {
         String id = newID();
         choiceMap.put(id, controllerMessage);
-        if(choicesForPlayer.containsKey(token))
-            choicesForPlayer.get(token).add(id);
+        if(choicesForPlayer.containsKey(token)) {
+            ArrayList<String> list = new ArrayList<>(choicesForPlayer.get(token));
+            list.add(id);
+            choicesForPlayer.replace(token, list);
+        }
         else
             choicesForPlayer.put(token, List.of(id));
 
@@ -91,6 +94,7 @@ public class ObjectMap {
      * @return A rollback if the choice is not valid, a WAIT if the client can't do the action or if the client is blocked, the next ControllerMessage otherwise
      */
     public ControllerMessage pick(String token, String choiceId, List<Integer> choices) {
+        System.out.println("Pick\n\t" + choiceMap.get(choiceId).type()+"\n\t"+choiceMap.get(choiceId).genView().type);
         if(!choiceMap.containsKey(choiceId)
                 || !choicesForPlayer.containsKey(token)
                 || !choicesForPlayer.get(token).contains(choiceId) ) {

@@ -15,7 +15,7 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
 
     private SlaveControllerState type;
     private ChoiceBoard choiceBoard;
-    private Message message;
+    private List<String> changes;
     private GameMapView sandbox;
 
 
@@ -25,7 +25,11 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
         this.type = controllerMessage.type();
         this.choiceBoard = controllerMessage.genView();
         this.sandbox = controllerMessage.sandboxView();
-        this.message = controllerMessage.getMessage();
+
+        if(controllerMessage.getMessage() == null)
+            this.changes = List.of();
+        else
+            this.changes = controllerMessage.getMessage().getChanges();
     }
 
     public ControllerMessageClient() {
@@ -33,7 +37,7 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
 
         this.type = SlaveControllerState.WAIT;
         this.choiceBoard = null;
-        this.message = null;
+        this.changes = List.of();
         this.sandbox = null;
     }
 
@@ -43,7 +47,7 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
         this.type = state;
         this.choiceBoard = controllerMessage.genView();
         this.sandbox = controllerMessage.sandboxView();
-        this.message = controllerMessage.getMessage();
+        this.changes = List.of();
     }
 
 
@@ -59,7 +63,12 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
 
     @Override
     public Message getMessage() {
-        return message;
+        return new Message() {
+            @Override
+            public List<String> getChanges() {
+                return changes;
+            }
+        };
     }
 
     @Override

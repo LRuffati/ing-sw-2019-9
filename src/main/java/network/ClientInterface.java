@@ -2,7 +2,6 @@ package network;
 
 
 import network.exception.InvalidLoginException;
-import controller.controllermessage.ControllerMessage;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -17,7 +16,7 @@ public interface ClientInterface {
     boolean register(String username, String password, String color) throws RemoteException, InvalidLoginException;
     boolean reconnect(String username, String password) throws RemoteException, InvalidLoginException;
 
-    ControllerMessage pick(String choiceIf, List<Integer> choices) throws RemoteException;
+    void pick(String choiceIf, List<Integer> choices) throws RemoteException;
 
     void getMap() throws RemoteException;
 

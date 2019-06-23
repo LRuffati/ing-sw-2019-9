@@ -119,10 +119,8 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
      * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
      */
     @Override
-    public ControllerMessage pick(String chooserId, List<Integer> choice){
+    public void pick(String chooserId, List<Integer> choice){
         client.request(new PickRequest(chooserId, choice));
-        sync();
-        return ClientContext.get().getPickElement();
     }
 
 
@@ -183,8 +181,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(PickResponse response) {
-        ClientContext.get().setPickElement(response.result);
-        desync();
+        clientController.onControllerMessage(response.result);
     }
 
     @Override
