@@ -1,5 +1,7 @@
 package network.rmi.client;
 
+import genericitems.Tuple;
+import network.Database;
 import network.Player;
 import controller.controllerclient.ClientControllerNetworkInterface;
 import network.rmi.server.ServerRMIInterface;
@@ -97,10 +99,10 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
 
     @Override
-    public boolean reconnect(String username, String password) throws RemoteException, InvalidLoginException {
+    public Tuple<Boolean, Boolean> reconnect(String username, String password) throws RemoteException, InvalidLoginException {
         String token = controller.reconnect(this, username, password);
         this.token = token;
-        return !token.equals("");
+        return new Tuple<>(!token.equals(""), Database.get().getMainController().isGameStarted());
     }
 
     @Override

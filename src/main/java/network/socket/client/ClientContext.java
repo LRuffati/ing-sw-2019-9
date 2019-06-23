@@ -83,4 +83,13 @@ public class ClientContext {
     public GameMapView getGameMapView() {
         return gameMapView;
     }
+
+
+    private boolean isStarted;
+    void setIsStarted(boolean isStarted){
+        this.isStarted = isStarted;
+    }
+    boolean getIsStarted(){
+        return isStarted;
+    }
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import genericitems.Tuple;
 import view.cli.CLIDemo;
 import gamemanager.ParserConfiguration;
 import network.ClientInterface;
@@ -83,7 +84,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             network = new ClientNetworkRMI(controller, this);
         }
 
-        //view.loginNotif();
+        view.loginNotif();
 
         stack = new ArrayDeque<>();
 
@@ -92,7 +93,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         //Main.register(network);
         //Main.run(network);
 
-        login("username", "password", "blue");
+        //login("username", "password", "blue");
     }
 
     /**
@@ -134,7 +135,9 @@ public class ClientController implements ClientControllerClientInterface, Client
             public void run() {
                 super.run();
                 try {
-                    network.reconnect(username, password);
+                    Tuple<Boolean, Boolean> res = network.reconnect(username, password);
+                    if(res.y)
+                        initPolling();
                     view.loginResponse(true, false, false);
                     add();
                 }

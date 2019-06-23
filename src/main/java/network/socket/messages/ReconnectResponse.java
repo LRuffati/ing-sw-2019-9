@@ -6,17 +6,23 @@ public class ReconnectResponse implements Response {
     public final boolean wrongColor;
     public final String token;
 
-    public ReconnectResponse(String token){
+    public final boolean isStarted;
+
+    public ReconnectResponse(String token, boolean isStarted){
         this.token = token;
         this.wrongUsername = false;
         this.wrongColor = false;
         this.result = true;
+
+        this.isStarted = isStarted;
     }
     public ReconnectResponse(boolean wrongUsername) {
         this.token = "";
         this.wrongUsername = wrongUsername;
         this.wrongColor = false;
         this.result = false;
+
+        this.isStarted = false;
     }
 
     @Override

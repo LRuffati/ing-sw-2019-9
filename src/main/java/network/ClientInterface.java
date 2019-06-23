@@ -1,6 +1,7 @@
 package network;
 
 
+import genericitems.Tuple;
 import network.exception.InvalidLoginException;
 
 import java.rmi.RemoteException;
@@ -14,7 +15,7 @@ public interface ClientInterface {
 
     int close() throws RemoteException;
     boolean register(String username, String password, String color) throws RemoteException, InvalidLoginException;
-    boolean reconnect(String username, String password) throws RemoteException, InvalidLoginException;
+    Tuple<Boolean, Boolean> reconnect(String username, String password) throws RemoteException, InvalidLoginException;
 
     void pick(String choiceIf, List<Integer> choices) throws RemoteException;
 

@@ -1,5 +1,6 @@
 package network.socket.client;
 
+import genericitems.Tuple;
 import network.socket.messages.notify.*;
 import controller.controllerclient.ClientControllerNetworkInterface;
 import network.ClientInterface;
@@ -100,14 +101,14 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public boolean reconnect(String username, String password) throws InvalidLoginException {
+    public Tuple<Boolean, Boolean> reconnect(String username, String password) throws InvalidLoginException {
         client.request(new ReconnectRequest(username, password));
         sync();
         ClientContext c = ClientContext.get();
         if(c.getConnectionResult()) {
             String token = ClientContext.get().getToken();
             System.out.println("Reconnected with: token\n" + token);
-            return true;
+            return new Tuple<>(true, ClientContext.get().getIsStarted());
         }
         else {
             throw new InvalidLoginException("Invalid reconnection", c.getLoginException().x, c.getLoginException().y);
@@ -155,6 +156,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         ClientContext.get().setConnectionResult(response.result);
         if(!response.result) ClientContext.get().setLoginException(response.wrongUsername, response.wrongColor);
         ClientContext.get().setToken(response.token);
+        ClientContext.get().setIsStarted(response.isStarted);
         desync();
     }
 
