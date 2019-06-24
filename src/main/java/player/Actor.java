@@ -443,7 +443,7 @@ public class Actor {
      * @return A collection containing all the PowerUps held by the player
      */
     public Collection<PowerUp> getPowerUp() {
-        return powerUps;
+        return new ArrayList<>(powerUps);
     }
 
 
