@@ -31,10 +31,10 @@ public class ActorView implements Serializable {
     private List<WeaponView> loadedWeapon;
     private List<WeaponView> unloadedWeapon;
     private List<PowerUpView> powerUp;
-    private static final int HP = 5;
+    private int hp;
 
     public int getHP(){
-        return HP;
+        return hp;
     }
 
     public List<WeaponView> getLoadedWeapon() {
@@ -106,6 +106,10 @@ public class ActorView implements Serializable {
         this.ammo = ammo.getAmounts();
     }
 
+    public void setHp(int hp) {
+        this.hp = hp;
+    }
+
 
 
     public Color color() {
@@ -159,19 +163,16 @@ public class ActorView implements Serializable {
     public List<PowerUpView> powerUp() {
         return powerUp;
     }
-
+/*
     public String getAnsi(){
         if(color.equals(Color.white)) return "\u001B[37m";
-        //todo: magenta o pink?
-        if(color.equals(Color.magenta)) return "\u001B[35m";
+        if(color.equals(Color.pink)) return "\u001B[35m";
         if(color.equals(Color.green)) return "\u001B[32m";
         if(color.equals(Color.yellow)) return "\u001B[33m";
         if(color.equals(Color.blue)) return "\u001B[34m";
         return "\u001B[0m";
-
-
     }
-
+*/
 
 
     @Override

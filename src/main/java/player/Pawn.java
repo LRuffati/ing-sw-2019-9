@@ -1,6 +1,7 @@
 package player;
 import actions.targeters.targets.BasicTarget;
 import board.GameMap;
+import gamemanager.ParserConfiguration;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
@@ -162,6 +163,7 @@ public class Pawn {
 
         actorView.setColor(color);
         actorView.setUsername(username);
+        actorView.setHp(ParserConfiguration.parseInt("Hp"));
 
         actorView.setNumOfDeaths(getActor().getNumOfDeaths());
         actorView.setAmmo(getActor().getAmmo());
