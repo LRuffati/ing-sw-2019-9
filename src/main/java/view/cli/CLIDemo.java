@@ -281,7 +281,7 @@ public class CLIDemo implements View {
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder toChoose = new StringBuilder();
-        toChoose.append("Choose your weapons:\n0. Exit selection");
+        toChoose.append("Choose your weapons:\n0. Exit selection\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
@@ -491,6 +491,7 @@ public class CLIDemo implements View {
                 System.out.println(i + ". " + a.getAnsi() + a.name());
                 i++;
             }
+            System.out.println("\u001B[0m");
         }
     }
 
