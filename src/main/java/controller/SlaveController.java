@@ -128,16 +128,16 @@ public class SlaveController {
                 };
 
         List<List<ActionTemplate>> tail = nextActs.subList(Math.min(1,nextActs.size()), nextActs.size());
-        ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
-        ControllerMessage actionMessage = new PickActionMessage(action, "Scegli un'azione",
-                sandbox, getNotifications());
+
 
         if ((pows.isEmpty()) & (nextActs.isEmpty())){ // No powUp available, only reload left
             return reloadMessage;
 
         } else if ((pows.isEmpty()) & !nextActs.isEmpty()){ // No powerups but ActionBundle
             // available
-            return actionMessage;
+            ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
+            return new PickActionMessage(action, "Scegli un'azione",
+                sandbox, getNotifications());
 
         } else { // Powerups and then reload
             Function<List<PowerUp>, ControllerMessage> onPowupPick =
@@ -146,7 +146,9 @@ public class SlaveController {
                             if (nextActs.isEmpty()) {
                                 return reloadMessage;
                             } else {
-                                return actionMessage;
+                                ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
+                                return new PickActionMessage(action, "Scegli un'azione", sandbox,
+                                        getNotifications());
                             }
                         } else {
                             //3. Call this function with same params

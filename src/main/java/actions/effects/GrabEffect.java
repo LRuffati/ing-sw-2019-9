@@ -54,14 +54,12 @@ public class GrabEffect implements Effect {
 
         BiConsumer<Weapon, Optional<Weapon>> onChoice = (toGrab, toDiscard) -> {
             String broadcast = String.format("%s", pov.getSelf().pawn().getUsername());
-            Weapon toDisc = null;
             broadcast = broadcast.concat(String.format(" ha raccolto %s", toGrab.getName()));
 
             if (toDiscard.isPresent()) {
-                toDisc = toDiscard.get();
-                broadcast = broadcast.concat(String.format(" e lasciato %s", toDisc.getName()));
+                broadcast = broadcast.concat(String.format(" e lasciato %s", toDiscard.get().getName()));
             }
-            pov.getSelf().pickUp(toGrab, toDisc);
+            pov.getSelf().pickUp(toGrab, toDiscard);
             broadcaster.accept(broadcast);
             finalize.run();
         };
