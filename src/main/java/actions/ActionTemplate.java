@@ -7,6 +7,7 @@ import actions.utils.AmmoAmount;
 import board.Sandbox;
 import genericitems.Tuple;
 import controller.controllermessage.ControllerMessage;
+import org.jetbrains.annotations.NotNull;
 import viewclasses.ActionView;
 
 import java.util.*;
@@ -102,7 +103,7 @@ public class ActionTemplate {
      * @param available The ammo available to the user
      * @return true if the given amount is enough to pay
      */
-    private boolean verifyCost(AmmoAmount available){
+    private boolean verifyCost(@NotNull AmmoAmount available){
         return available.compareTo(info.getCost())>=0;
     }
 

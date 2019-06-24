@@ -127,7 +127,7 @@ public class SlaveController {
                     return new WaitMessage(List.of());
                 };
 
-        List<List<ActionTemplate>> tail = nextActs.subList(1, nextActs.size());
+        List<List<ActionTemplate>> tail = nextActs.subList(Math.min(1,nextActs.size()), nextActs.size());
         ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
         ControllerMessage actionMessage = new PickActionMessage(action, "Scegli un'azione",
                 sandbox, getNotifications());

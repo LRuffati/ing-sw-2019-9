@@ -1,6 +1,5 @@
 package view.cli;
 
-import actions.utils.AmmoColor;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
 import view.View;
@@ -133,7 +132,7 @@ public class CLIDemo implements View {
 
     }
 
-    private void choicer(boolean optional, boolean single, String choiceId, String type, String str){
+    private void choicer(boolean optional, boolean single, String choiceId, String type, String str, int max){
         int n;
         try {
             n = Integer.parseInt(str);
@@ -175,15 +174,19 @@ public class CLIDemo implements View {
                 break;
 
             default:
-                System.out.println("adding" + n);
-                chosenList.add(n);
-                if(single){
-                    toReturn = new ArrayList<>(chosenList);
-                    chosenList.clear();
-                    System.out.print("Chosen option(s) ");
-                    for(Integer i : toReturn) System.out.println(i + " ");
-                    System.out.println();
-                    client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
+                if(n>max){
+                    System.out.println("You must choose one valid option.\n");
+                } else {
+                    System.out.println("adding" + n);
+                    chosenList.add(n);
+                    if (single) {
+                        toReturn = new ArrayList<>(chosenList);
+                        chosenList.clear();
+                        System.out.print("Chosen option(s) ");
+                        for (Integer i : toReturn) System.out.println(i + " ");
+                        System.out.println();
+                        client.pick(choiceId, toReturn.stream().map(x -> x - 1).collect(Collectors.toList()));
+                    }
                 }
                 break;
         }
@@ -199,9 +202,7 @@ public class CLIDemo implements View {
 
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
-        //TODO: senza questo c'è comunque una stampa. serve?
-        //eventualmente toglierne una sopra?
-        printAppliedTarget(target);
+        //printAppliedTarget(target);
         builder.append("Choose your target(s):\n0. Exit Selection\n");
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
@@ -243,8 +244,9 @@ public class CLIDemo implements View {
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
+        int finalI = i;
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "target", string);
+                string -> choicer(optional, single, choiceId, "target", string, finalI);
 
         commandParser.bind(consumer);
     }
@@ -271,8 +273,9 @@ public class CLIDemo implements View {
         System.out.println(pickStringMessage);
 
 
+        int finalI = i;
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "action", string);
+                string -> choicer(optional, single, choiceId, "action", string, finalI);
 
         commandParser.bind(consumer);
     }
@@ -301,8 +304,9 @@ public class CLIDemo implements View {
         pickStringMessage = toChoose.toString();
         System.out.println(pickStringMessage);
 
+        int finalI = i;
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "weapon", string);
+                string -> choicer(optional, single, choiceId, "weapon", string, finalI);
         commandParser.bind(consumer);
     }
 
@@ -331,8 +335,9 @@ public class CLIDemo implements View {
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
+        int finalI = i;
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "power up", string);
+                string -> choicer(optional, single, choiceId, "power up", string, finalI);
 
         commandParser.bind(consumer);
     }
@@ -356,8 +361,9 @@ public class CLIDemo implements View {
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
+        int finalI = i;
         Consumer<String> consumer =
-                stringa -> choicer(optional, single, choiceId, "string", stringa);
+                stringa -> choicer(optional, single, choiceId, "string", stringa, finalI);
 
         commandParser.bind(consumer);
     }
