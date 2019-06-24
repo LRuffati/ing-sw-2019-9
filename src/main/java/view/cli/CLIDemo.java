@@ -207,9 +207,11 @@ public class CLIDemo implements View {
         int i = 1;
         while(targetIterator.hasNext()){
             TargetView tw = targetIterator.next();
-            Collection<DamageableUID> dmg = tw.getDamageableUIDList();
-            Collection<TileUID> tile = tw.getTileUIDList();
-            if(dmg!=null){
+            List<DamageableUID> dmg = tw.getDamageableUIDList();
+            List<TileUID> tile = tw.getTileUIDList();
+
+            // TODO: this can be substituted by a visitor pattern. You add to targetView
+            if (!dmg.isEmpty()){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
                         builder.append(a.getAnsi());
@@ -282,7 +284,7 @@ public class CLIDemo implements View {
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder toChoose = new StringBuilder();
-        toChoose.append("Choose your weapons:\n0. Exit selection");
+        toChoose.append("Choose your weapons:\n0. Exit selection\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
@@ -498,6 +500,7 @@ public class CLIDemo implements View {
     private void playerInfo(ActorView player) {
         System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
+        System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
         System.out.println("\n>> He's got the following ammo: ");
         System.out.println(player.ammo().get(AmmoColor.RED) + "\tRED");
         System.out.println(player.ammo().get(AmmoColor.BLUE) + "\tBLUE");

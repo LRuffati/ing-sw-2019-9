@@ -73,9 +73,9 @@ public class GUIMap1 extends JPanel implements GUIMap{
         GameMapView mv = game.getMap().generateView(game.getActorList().get(0).pawnID());
 
         List<TargetView> targetViewList = new ArrayList<>();
-        Collection<TileUID> tileUIDS = new ArrayList<>();
+        List<TileUID> tileUIDS = new ArrayList<>();
         tileUIDS.add(mv.getTiles().get(new Coord(1,0)).uid());
-        Collection<DamageableUID> damageableUIDS = new ArrayList<>();
+        List<DamageableUID> damageableUIDS = new ArrayList<>();
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
 
@@ -137,19 +137,20 @@ public class GUIMap1 extends JPanel implements GUIMap{
      * @return a list of selectable coordinates.
      */
     private List<Coord> getTargetCoordinates(List<TargetView> targets){
-        Collection<TileUID> tiles;
-        Collection<DamageableUID> actors;
+        List<TileUID> tiles;
+        List<DamageableUID> actors;
         List<Coord> coords = new ArrayList<>();
 
         for(TargetView target: targets){
             tiles = target.getTileUIDList();
             actors = target.getDamageableUIDList();
-            if(tiles!=null) {
+            if(!tiles.isEmpty()) {
                 for (TileView tw : gmv.allTiles()) {
-                    if (tiles.contains(tw.uid())) coords.add(gmv.getCoord(tw));
+                    if (tiles.contains(tw.uid()))
+                        coords.add(gmv.getCoord(tw));
                 }
             }
-            if(actors!=null) {
+            if(!actors.isEmpty()) {
                 for (ActorView av : gmv.players()) {
                     if (actors.contains(av.uid())) coords.add(gmv.getCoord(av.position()));
                 }
@@ -167,7 +168,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
     public List<Integer> clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
         List<Coord> coords = getTargetCoordinates(targets);
         List<Integer> indexList = new ArrayList<>();
-        int j = 0;
+        final int[] j = {0};
         for(Coord coord : coords){
             for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
                 if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
@@ -177,7 +178,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
                         String[] names = new String[100];
                         int i = 0;
                         for(TargetView target : targets){
-                            if(target.getDamageableUIDList()!=null&&!target.getDamageableUIDList().isEmpty()){
+                            if(!target.getDamageableUIDList().isEmpty()){
                                 for(ActorView player : gmv.players()){
                                     if(target.getDamageableUIDList().contains(player.uid())&&gmv.getCoord(player.position()).equals(coord)){
                                         System.out.println(player.name());
@@ -228,7 +229,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
                                 choice = JOptionPane.showConfirmDialog(null,"Are you sure?","CONFIRM", JOptionPane.OK_CANCEL_OPTION);
                                 if(choice==1){
                                     indexList.add(i);
-                                    i++;
+                                    j[0]++;
                                 }
                                 break;
                             }
