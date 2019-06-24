@@ -41,9 +41,10 @@ public class GameFrame extends JFrame {
         getContentPane().setLayout(new GridLayout(1,0));
         getContentPane().add(map);
         JPanel sndPanel = new JPanel();
-        sndPanel.setLayout(new BorderLayout());
+        sndPanel.setLayout(new GridLayout(0,1));
         sndPanel.add(scoreBoard);
-        sndPanel.add(outputBox, BorderLayout.SOUTH);
+        sndPanel.add(new PlayerCardsPanel(gmv));
+        sndPanel.add(outputBox);
 
         add(sndPanel);
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight()==1080){

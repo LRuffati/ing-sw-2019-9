@@ -23,12 +23,29 @@ public class WeaponCards extends JPanel {
     private BufferedImage[] showedWeaponCards = new BufferedImage[3];
     private GameMapView gmv;
     private Map<ActorView, BufferedImage[]> cardMap;
+    private JButton[] weaponButtons = new JButton[3];
 
     public WeaponCards(GameMapView gmv){
         cardMap = new HashMap<>();
         this.gmv = gmv;
         setPlayersWeaponCards();
         setYourShowedWeaponCards();
+
+        setLayout(new GridLayout(1,3));
+
+        for (int i = 0; i < 3; i++) {
+            ImageIcon icon = new ImageIcon(showedWeaponCards[i]);
+            JButton btn = new JButton(icon);
+
+            btn.setContentAreaFilled( false );
+            btn.setBorder( null );
+            btn.setBounds(icon.getIconWidth(),icon.getIconHeight(),0,0);
+            weaponButtons[i] = btn;
+
+            add(btn);
+
+        }
+
 
     }
 
@@ -41,6 +58,13 @@ public class WeaponCards extends JPanel {
         for(WeaponView weapon : gmv.you().getLoadedWeapon()){
             showedWeaponCards[i] = linkWeaponToCard(weapon);
             i++;
+        }
+        for(;i<3;i++){
+            try {
+                showedWeaponCards[i] = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream("gui/Cards/AD_weapons_IT_02.png")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -61,20 +85,6 @@ public class WeaponCards extends JPanel {
             }
             cardMap.put(player,playerCards);
         }
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
-        int i = 0;
-        for(BufferedImage image : showedWeaponCards){
-            g.drawImage(image, i*240, 0, this);
-            i++;
-        }
-
-        repaint();
-
     }
 
     public BufferedImage[] getShowedWeaponCards() {

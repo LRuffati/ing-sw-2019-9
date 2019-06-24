@@ -37,25 +37,9 @@ public class PlayerBoard extends JPanel {
         changeBoard = new JButton(nextPlayerIcon);
         changeBoard.setContentAreaFilled(false);
         drawBoard(yourNormalBoard);
-        setChangeBoard();
         add(changeBoard);
     }
 
-    private void setChangeBoard(){
-        changeBoard.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                super.mouseClicked(e);
-                for(int i = 0; i< normalBoards.length; i++){
-                    if(normalBoards[i].equals(yourNormalBoard)){
-                        if(i!=normalBoards.length-1){
-                            drawBoard(normalBoards[i+1]);
-                        } else drawBoard(normalBoards[0]);
-                    }
-                }
-            }
-        });
-    }
 
 
     private void setYourBoards(Color color){
@@ -128,7 +112,7 @@ public class PlayerBoard extends JPanel {
         return scaleOp.filter(toScale, scaled);
     }
 
-    private void drawBoard(BufferedImage image){
+    public void drawBoard(BufferedImage image){
         toPaint = image;
         Graphics g = image.getGraphics();
         g.drawImage(image, 0, 0, this);
@@ -144,6 +128,17 @@ public class PlayerBoard extends JPanel {
 
     }
 
+    public JButton getChangeBoard() {
+        return changeBoard;
+    }
+
+    public BufferedImage[] getNormalBoards() {
+        return normalBoards;
+    }
+
+    public BufferedImage getYourNormalBoard() {
+        return yourNormalBoard;
+    }
 
     private static void createAndShowGui() {
         GameBuilder builder = null;
@@ -178,5 +173,4 @@ public class PlayerBoard extends JPanel {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(PlayerBoard::createAndShowGui);
     }
-
 }

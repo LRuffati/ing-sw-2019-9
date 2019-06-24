@@ -32,7 +32,6 @@ public class GUIMap1 extends JPanel implements GUIMap{
     private BufferedImage tile;
     private Map<JButton, Coord> buttonCoord;
     private BufferedImage scoreBoard;
-    private static JFrame frame;
     private BufferedImage pg;
     private GameMapView gmv;
 
@@ -79,7 +78,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
 
-        frame = new JFrame("frame");
+        JFrame frame = new JFrame("frame");
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
             frame.setSize(777,1046);
         } else if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
