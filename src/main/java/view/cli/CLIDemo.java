@@ -204,8 +204,8 @@ public class CLIDemo implements View {
         int i = 1;
         while(targetIterator.hasNext()){
             TargetView tw = targetIterator.next();
-            Collection<DamageableUID> dmg = tw.getDamageableUIDList();
-            Collection<TileUID> tile = tw.getTileUIDList();
+            List<DamageableUID> dmg = tw.getDamageableUIDList();
+            List<TileUID> tile = tw.getTileUIDList();
 
             // TODO: this can be substituted by a visitor pattern. You add to targetView
             if (!dmg.isEmpty()){

@@ -73,9 +73,9 @@ public class GUIMap1 extends JPanel implements GUIMap{
         GameMapView mv = game.getMap().generateView(game.getActorList().get(0).pawnID());
 
         List<TargetView> targetViewList = new ArrayList<>();
-        Collection<TileUID> tileUIDS = new ArrayList<>();
+        List<TileUID> tileUIDS = new ArrayList<>();
         tileUIDS.add(mv.getTiles().get(new Coord(1,0)).uid());
-        Collection<DamageableUID> damageableUIDS = new ArrayList<>();
+        List<DamageableUID> damageableUIDS = new ArrayList<>();
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
         targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
 
@@ -137,8 +137,8 @@ public class GUIMap1 extends JPanel implements GUIMap{
      * @return a list of selectable coordinates.
      */
     private List<Coord> getTargetCoordinates(List<TargetView> targets){
-        Collection<TileUID> tiles;
-        Collection<DamageableUID> actors;
+        List<TileUID> tiles;
+        List<DamageableUID> actors;
         List<Coord> coords = new ArrayList<>();
 
         for(TargetView target: targets){
@@ -168,7 +168,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
     public List<Integer> clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
         List<Coord> coords = getTargetCoordinates(targets);
         List<Integer> indexList = new ArrayList<>();
-        int j = 0;
+        final int[] j = {0};
         for(Coord coord : coords){
             for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
                 if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
@@ -229,7 +229,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
                                 choice = JOptionPane.showConfirmDialog(null,"Are you sure?","CONFIRM", JOptionPane.OK_CANCEL_OPTION);
                                 if(choice==1){
                                     indexList.add(i);
-                                    i++;
+                                    j[0]++;
                                 }
                                 break;
                             }

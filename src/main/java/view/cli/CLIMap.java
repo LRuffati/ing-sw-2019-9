@@ -159,23 +159,6 @@ public class CLIMap {
         System.out.println("\n");
     }
 
-    public void addAmmo(TileView tile){
-        int x = mp.getCoord(tile).getX()* DIM_TILE;
-        int y = mp.getCoord(tile).getY()* DIM_TILE;
-        AmmoCardView ammo = tile.ammoCard();
-        tiles[y][x] = Character.forDigit(ammo.numOfBlue(),10);
-        tiles[y+1][x] = Character.forDigit(ammo.numOfRed(),10);
-        tiles[y+2][x] = Character.forDigit(ammo.numOfYellow(),10);
-
-        if(ammo.numOfPowerUp() != 0)
-            if(ammo.numOfBlue() == 0)
-                tiles[y][x] = 'P';
-        if(ammo.numOfRed() == 0)
-            tiles[y+1][x] = 'P';
-        if(ammo.numOfYellow() == 0)
-            tiles[y+2][x] = 'P';
-    }
-
 
     /**
      * Move a player.
@@ -251,16 +234,16 @@ public class CLIMap {
      */
     public void applyTarget(List<TargetView> targetViewList){
         GameMapView targetMap = new GameMapView(mp);
-        Collection<TileUID> tiles;
-        Collection<DamageableUID> actors;
+        List<TileUID> tiless;
+        List<DamageableUID> actors;
         Map<TileView, Color> tilesColor = new HashMap<>();
         Map<ActorView, Color> actorsColor = new HashMap<>();
         for(TargetView target :  targetViewList) {
-            tiles = target.getTileUIDList();
+            tiless = target.getTileUIDList();
             actors = target.getDamageableUIDList();
-            if(!tiles.isEmpty()) {
+            if(!tiless.isEmpty()) {
                 for (TileView t : targetMap.allTiles()) {
-                    if (!tiles.contains(t.uid())) {
+                    if (!tiless.contains(t.uid())) {
                         tilesColor.put(t, t.color());
                         t.setColor(Color.DARK_GRAY);
                     }

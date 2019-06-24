@@ -5,17 +5,16 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+
 
 public class TargetView implements Serializable {
     private String gameMapViewId;
-    private Collection<DamageableUID> damageableUIDList;
-    private Collection<TileUID> tileUIDList;
+    private List<DamageableUID> damageableUIDList;
+    private List<TileUID> tileUIDList;
 
-    public TargetView(String sandboxUID, @NotNull Collection<DamageableUID> damageableUIDList,
-                      @NotNull Collection<TileUID> tileUIDList) {
+    public TargetView(String sandboxUID, @NotNull List<DamageableUID> damageableUIDList,
+                      @NotNull List<TileUID> tileUIDList) {
         this.gameMapViewId = sandboxUID;
         this.damageableUIDList = damageableUIDList;
         this.tileUIDList = tileUIDList;
@@ -25,11 +24,11 @@ public class TargetView implements Serializable {
         return gameMapViewId;
     }
 
-    public Set<DamageableUID> getDamageableUIDList() {
-        return new HashSet<>(damageableUIDList);
+    public List<DamageableUID> getDamageableUIDList() {
+        return damageableUIDList;
     }
 
-    public Set<TileUID> getTileUIDList() {
-        return new HashSet<>(tileUIDList);
+    public List<TileUID> getTileUIDList() {
+        return tileUIDList;
     }
 }

@@ -75,7 +75,7 @@ public class ParserWeapon {
                     amountGiven.put(AmmoColor.BLUE,B);
                     amountGiven.put(AmmoColor.RED,R);
                     amountGiven.put(AmmoColor.YELLOW,Y);
-                    buyWeapon = new AmmoAmount(amountGiven);
+                    reloadWeapon = new AmmoAmount(amountGiven);
 
                     switch (ammoColour.charAt(0)) {
                         case 'B':
@@ -91,7 +91,7 @@ public class ParserWeapon {
                             break;
                     }
 
-                    reloadWeapon = new AmmoAmount(amountGiven);
+                    buyWeapon = new AmmoAmount(amountGiven);
                     //System.out.println("\n" + "Costo arma: " + buyWeapon.toString() + "\n" + "Ricarica arma: " + reloadWeapon.toString() + "\n");
                     break;
 
