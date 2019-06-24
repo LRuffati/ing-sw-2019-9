@@ -497,6 +497,7 @@ public class CLIDemo implements View {
     private void playerInfo(ActorView player){
         System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
+        System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
         System.out.println("\n>> He's got the following loaded weapons: ");
         int i = 0;
         for(WeaponView w : player.getLoadedWeapon()){
