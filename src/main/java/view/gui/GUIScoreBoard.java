@@ -30,9 +30,8 @@ public class GUIScoreBoard extends JPanel {
             scoreBoardBuffered = scaleImage(scoreBoardBuffered);
         }
 
-        setSkullIndex(0,Color.red);
-        setSkullIndex(1,Color.green);
-        setSkullIndex(7,Color.yellow);
+
+        //setSkullIndex(7,Color.yellow);
 
         Graphics g = scoreBoardBuffered.getGraphics();
         g.drawImage(scoreBoardBuffered, 0, 0, this);

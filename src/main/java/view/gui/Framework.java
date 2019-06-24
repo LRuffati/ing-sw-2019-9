@@ -7,8 +7,10 @@ import controller.controllerclient.ClientControllerClientInterface;
 import viewclasses.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +25,11 @@ public class Framework implements View {
     private GameFrame game;
     private static boolean changeFrameFlag = false;
     private WaitingScreen waitingScreen;
+    private GameMapView gmv;
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
-
+        this.gmv = controller.getMap();
     }
 
     private static void createAndShowGUI(ClientControllerClientInterface controller) {
@@ -139,6 +142,18 @@ public class Framework implements View {
         String[] names = new String[100];
         int i = 0;
         for(PowerUpView pu : powerUp){
+            JFrame puPopUp = new JFrame();
+            puPopUp.setUndecorated(true);
+            BufferedImage puCard = new PUCard(pu).getCard();
+            ImageIcon puCardImage = new ImageIcon(puCard);
+            JLabel lbl = new JLabel(puCardImage);
+
+            puPopUp.getContentPane().add(lbl);
+
+            puPopUp.setSize(puCardImage.getIconWidth(), puCardImage.getIconHeight());
+
+            puPopUp.setLocation(i * 170, 0);
+            puPopUp.setVisible(true);
             names[i] = pu.type().toString();
             i++;
         }
@@ -291,9 +306,7 @@ public class Framework implements View {
         changeFrameFlag = true;
         waitingScreen.dispatchEvent(new WindowEvent(waitingScreen, WindowEvent.WINDOW_CLOSING));
 
-        /*game = new GUIMap1();
-        game.addWindowListener(new WindowEventHandler());
-        game.setVisible(true);*/
+        game = new GameFrame(gmv);
     }
 
     @Override
