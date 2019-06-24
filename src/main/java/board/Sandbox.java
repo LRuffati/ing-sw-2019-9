@@ -297,28 +297,28 @@ public class Sandbox {
      * This method generates a TargetView (TileView) given a TileUID
      */
     public TargetView generateTargetView(TileUID tileUID) {
-        return new TargetView(uid, List.of(), List.of(tileUID));
+        return new TargetView(uid, new ArrayList<>(), new ArrayList<>(List.of(tileUID)));
     }
 
     /**
      * This method generates a TargetView (TileListView) given a Collection of TileUid
      */
     public TargetView generateTargetView(Collection<TileUID> tiles) {
-        return new TargetView(uid, List.of(), new ArrayList<>(tiles));
+        return new TargetView(uid, new ArrayList<>(), new ArrayList<>(tiles));
     }
 
     /**
      * This method generates a TargetView (ActorView) given a DamageableUID
      */
     public TargetView generateTargetView(DamageableUID damageableUID) {
-        return new TargetView(uid, List.of(damageableUID), List.of());
+        return new TargetView(uid, new ArrayList<>(List.of(damageableUID)), new ArrayList<>());
     }
 
     /**
      * This method generates a TargetView (ActorListView) given a Collection of DamageableUID
      */
     public TargetView generateTargetView(Set<DamageableUID> targets) {
-        return new TargetView(uid, new ArrayList<>(targets), List.of());
+        return new TargetView(uid, new ArrayList<>(targets), new ArrayList<>());
     }
 
     /**
