@@ -1,5 +1,6 @@
 package view.cli;
 
+import actions.utils.AmmoColor;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
 import view.View;
@@ -132,6 +133,18 @@ public class CLIDemo implements View {
 
     }
 
+    private void pick(String choiceId) {
+        pickStringMessage = "";
+
+        List<Integer> toReturn = new ArrayList<>(chosenList);
+        chosenList.clear();
+
+        System.out.print("Chosen option(s) ");
+        for(Integer i : toReturn) System.out.println(i + " ");
+        System.out.println();
+        client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
+    }
+
     private void choicer(boolean optional, boolean single, String choiceId, String type, String str, int max){
         int n;
         try {
@@ -147,16 +160,7 @@ public class CLIDemo implements View {
                     System.out.println("You must choose at least one " + type + ".");
                     break;
                 }
-
-                pickStringMessage = "";
-
-                List<Integer> toReturn = new ArrayList<>(chosenList);
-                chosenList.clear();
-
-                System.out.print("Chosen option(s) ");
-                for(Integer i : toReturn) System.out.println(i + " ");
-                System.out.println();
-                client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
+                pick(choiceId);
                 break;
 
             case 99:
@@ -168,24 +172,19 @@ public class CLIDemo implements View {
                 client.restartSelection();
                 break;
 
-            case(200):
+            case 200:
                 chosenList.clear();
                 client.rollback();
                 break;
 
             default:
-                if(n>max){
+                if(n>=max){
                     System.out.println("You must choose one valid option.\n");
                 } else {
                     System.out.println("adding" + n);
                     chosenList.add(n);
                     if (single) {
-                        toReturn = new ArrayList<>(chosenList);
-                        chosenList.clear();
-                        System.out.print("Chosen option(s) ");
-                        for (Integer i : toReturn) System.out.println(i + " ");
-                        System.out.println();
-                        client.pick(choiceId, toReturn.stream().map(x -> x - 1).collect(Collectors.toList()));
+                        pick(choiceId);
                     }
                 }
                 break;
@@ -215,7 +214,7 @@ public class CLIDemo implements View {
             if (!dmg.isEmpty()){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
-                        builder.append(a.getAnsi());
+                        builder.append(AnsiColor.getAnsi(a.color()));
                         builder.append(i);
                         builder.append(". ");
                         builder.append(a.name());
@@ -229,7 +228,7 @@ public class CLIDemo implements View {
             } else {
                 for(TileView t : gameMap.allTiles()){
                     if(t.uid().equals(tile.iterator().next())){
-                        builder.append(t.getAnsi());
+                        builder.append(AnsiColor.getAnsi(t.color()));
                         builder.append(i);
                         builder.append(". ");
                         builder.append(gameMap.getCoord(t).toString());
@@ -478,18 +477,22 @@ public class CLIDemo implements View {
      */
     private void tileInfo(TileView t){
         System.out.print("\n>> The tile belongs to the ");
-        System.out.print(t.getAnsi() + t.getColorName() + "\u001B[0m" + " room\n");
+        System.out.print(AnsiColor.getAnsi(t.color()) + AnsiColor.getColorName(t.color()) + AnsiColor.getAnsi() + " room\n");
         if(t.spawnPoint()){
             System.out.println(">> There is a spawn point for weapons in the tile.\n");
-            System.out.println(">> You can pick up: ");
-            for(WeaponView w : t.weapons()){
-                System.out.println(" +" + w.name());
+            if(t.weapons() != null) {
+                System.out.println(">> You can pick up: ");
+                for (WeaponView w : t.weapons()) {
+                    System.out.println("+ " + w.name());
+                }
             }
         } else {
-            System.out.println(">> There is a spawn point for the following ammunition in the tile:\n");
-            System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
-            System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
-            System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
+            if(t.ammoCard() != null) {
+                System.out.println(">> There is a spawn point for the following ammunition in the tile:\n");
+                System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
+                System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
+                System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
+            }
         }
         int i = 0;
         if(t.players().isEmpty()){
@@ -497,14 +500,14 @@ public class CLIDemo implements View {
         } else {
             System.out.println(">> The following players are in the tile: ");
             for(ActorView a: t.players()){
-                System.out.println(i + ". " + a.getAnsi() + a.name() + "\u001B[0m \n");
+                System.out.println(i + ". " + AnsiColor.getAnsi(a.color()) + a.name() + "\u001B[0m \n");
                 i++;
             }
         }
     }
 
     private void playerInfo(ActorView player) {
-        System.out.println("\n>> The player " + player.getAnsi() + player.name() + "\u001B[0m" + " still got " +
+        System.out.println("\n>> The player " + AnsiColor.getAnsi(player.color()) + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
         System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
         System.out.println("\n>> He's got the following ammo: ");
@@ -524,7 +527,7 @@ public class CLIDemo implements View {
         }
         System.out.println("\n>> He's got the following powerUps: ");
         for(PowerUpView w : player.getPowerUp()){
-            System.out.println(i + ". " + w.type());
+            System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getAnsi());
             i++;
         }
     }
@@ -611,8 +614,6 @@ class CommandParser{
     }
 
     void parseCommand(String str){
-        System.out.println(str);
-        System.out.println(state);
         switch (state) {
             case MAIN:
                 if (str.equalsIgnoreCase("info")) {

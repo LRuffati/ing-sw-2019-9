@@ -1,5 +1,6 @@
 package controller;
 
+import controller.controllerstates.PickTypes;
 import genericitems.Tuple;
 import view.cli.CLIDemo;
 import gamemanager.ParserConfiguration;
@@ -171,6 +172,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void pick(String id, List<Integer> choices) {
+        System.out.println("\t\t\tSELECTED ITEMS\t"+choices);
         try {
             network.pick(id, choices);
         } catch (RemoteException e) {
@@ -212,13 +214,21 @@ public class ClientController implements ClientControllerClientInterface, Client
             view.onMessage(controllerMessage.getMessage());
         }
 
-        if(controllerMessage.sandboxView() == null)
+        System.out.print(controllerMessage.type() + "\t\t");
+        if(controllerMessage.genView() == null) System.out.println("null");
+        else System.out.println(controllerMessage.genView().type);
+
+        if(controllerMessage.sandboxView() == null) {
             try {
                 network.getMap();
-            }
-            catch (RemoteException e) {
+            } catch (RemoteException e) {
                 quitForDisconnection();
             }
+        }
+        else {
+            if(controllerMessage.genView().type != PickTypes.TARGET)
+                view.updateMap(controllerMessage.sandboxView());
+        }
 
 
         if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
