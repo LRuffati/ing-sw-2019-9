@@ -274,32 +274,32 @@ public class ClientController implements ClientControllerClientInterface, Client
                     super.run();
                     switch (choice.type) {
                         case STRING:
-                            if(choice.stringViews.isEmpty())    pick(id, List.of());
-                            else
+                            //if(choice.stringViews.isEmpty())    pick(id, List.of());
+                            //else
                                 view.chooseString(choice.stringViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case ACTION:
-                            if(choice.actionViews.isEmpty())    pick(id, List.of());
-                            else
+                            //if(choice.actionViews.isEmpty())    pick(id, List.of());
+                            //else
                                 view.chooseAction(choice.actionViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case TARGET:
-                            if(choice.targetViews.isEmpty())    pick(id, List.of());
-                            else
+                            //if(choice.targetViews.isEmpty())    pick(id, List.of());
+                            //else
                                 view.chooseTarget(choice.targetViews, choice.single, choice.optional,
                                     choice.description, controllerMessage.sandboxView(), id);
                             break;
                         case WEAPON:
-                            if(choice.weaponViews.isEmpty())    pick(id, List.of());
-                            else
+                            //if(choice.weaponViews.isEmpty())    pick(id, List.of());
+                            //else
                                 view.chooseWeapon(choice.weaponViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case POWERUP:
-                            if(choice.powerUpViews.isEmpty())    pick(id, List.of());
-                            else
+                            //if(choice.powerUpViews.isEmpty())    pick(id, List.of());
+                            //else
                                 view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
