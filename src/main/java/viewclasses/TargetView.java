@@ -5,6 +5,7 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,10 +26,10 @@ public class TargetView implements Serializable {
     }
 
     public List<DamageableUID> getDamageableUIDList() {
-        return damageableUIDList;
+        return new ArrayList<>(damageableUIDList);
     }
 
     public List<TileUID> getTileUIDList() {
-        return tileUIDList;
+        return new ArrayList<>(tileUIDList);
     }
 }

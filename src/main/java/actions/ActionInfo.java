@@ -2,6 +2,7 @@ package actions;
 
 import actions.utils.AmmoAmount;
 import genericitems.Tuple;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -72,7 +73,7 @@ public class ActionInfo {
      */
     private final Optional<String> masterAction;
 
-    public ActionInfo (String name, String actionId, AmmoAmount cost,
+    public ActionInfo (String name, String actionId, @NotNull AmmoAmount cost,
                 Collection<Tuple<Boolean, String>> actionRequirements,
                 Collection<Tuple<Boolean, String>> targetRequirements,
                 Optional<String> masterAction, boolean show){

@@ -52,7 +52,7 @@ public class Fire implements EffectTemplate {
             @Override
             public ControllerMessage pick(List<Integer> choice){
                 if (choice.get(0) < 0 || choice.get(0) >= loadedWeapon.size()){
-                    return new PickWeaponMessage(this, "", sandbox);
+                    return new PickWeaponMessage(this, "Scegli un'arma da usare", sandbox);
                 } else {
                     Weapon weapUsed = loadedWeapon.get(choice.get(0));
                     List<Effect> effects = List.of(new Effect() {
