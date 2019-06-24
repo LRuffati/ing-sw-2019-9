@@ -293,7 +293,7 @@ public class MainController {
             new Thread(onResolved).start(); // only if no actor
         } else {
             Effect first = effects.get(0);
-            List<Effect> next = effects.subList(1, effects.size());
+            List<Effect> next = effects.subList(Math.min(1,effects.size()), effects.size());
             Runnable nextOnRes = () -> MainController.this.resolveEffect(responsible, next, onResolved);
             (new Thread(() -> first.mergeInGameMap(responsible, nextOnRes,
                     this::broadcastEffectMessage))).start();
@@ -325,7 +325,7 @@ public class MainController {
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){
-            nextnext = slaveControllerList.subList(Math.max(currIndex+2, size),size);
+            nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
         /*
         0. Riempie la mappa
@@ -404,7 +404,7 @@ public class MainController {
 
 
         DamageableUID head = dead.get(0);
-        List<DamageableUID> tail = dead.subList(1,dead.size());
+        List<DamageableUID> tail = dead.subList(Math.min(1,dead.size()),dead.size());
 
         slaveMap.get(head).getSelf().drawPowerUpRaw(cards);
 
