@@ -83,6 +83,7 @@ public class TileView implements Serializable {
         return weapons;
     }
 
+    /*
     public String getAnsi() {
         if(color.equals(Color.white)) return "\u001B[37m";
         if(color.equals(Color.black)) return "\u001B[30m";
@@ -104,5 +105,6 @@ public class TileView implements Serializable {
         if(color.equals(Color.magenta)) return "magenta";
         return "gray";
     }
+    */
 }
 

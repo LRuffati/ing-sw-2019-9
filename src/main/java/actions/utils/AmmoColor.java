@@ -31,7 +31,9 @@ public enum AmmoColor implements Serializable {
                 return Color.BLUE;
             case YELLOW:
                 return Color.YELLOW;
+
+                default:
+                    return Color.white;
         }
-        return null;
     }
 }

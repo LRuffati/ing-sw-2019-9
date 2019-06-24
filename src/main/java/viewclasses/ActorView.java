@@ -163,19 +163,16 @@ public class ActorView implements Serializable {
     public List<PowerUpView> powerUp() {
         return powerUp;
     }
-
+/*
     public String getAnsi(){
         if(color.equals(Color.white)) return "\u001B[37m";
-        //todo: magenta o pink?
-        if(color.equals(Color.magenta)) return "\u001B[35m";
+        if(color.equals(Color.pink)) return "\u001B[35m";
         if(color.equals(Color.green)) return "\u001B[32m";
         if(color.equals(Color.yellow)) return "\u001B[33m";
         if(color.equals(Color.blue)) return "\u001B[34m";
         return "\u001B[0m";
-
-
     }
-
+*/
 
 
     @Override
