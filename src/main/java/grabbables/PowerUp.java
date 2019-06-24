@@ -58,7 +58,7 @@ public abstract class PowerUp extends Grabbable {
 
     @Override
     public String toString() {
-        return getType().toString() + color.name();
+        return getType().toString() + " " + color.name();
     }
 
     @Override

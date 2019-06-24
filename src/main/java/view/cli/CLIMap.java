@@ -147,12 +147,12 @@ public class CLIMap {
                     //TODO add the escape "\0×1B" character in the following to print(s) to maintain the map. Won't work on Intellij.
                     for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
                         if(tiles[c][r].equals(entry.getValue())){
-                            System.out.print(entry.getKey().getAnsi() + tiles[c][r] + "\u001B[0m");
+                            System.out.print(AnsiColor.getAnsi(entry.getKey().color()) + tiles[c][r] + "\u001B[0m");
                             flag = false;
                             break;
                         }
                     }
-                    if(flag) System.out.print(mp.getPosition(cord).getAnsi() + tiles[c][r] + "\u001B[0m");
+                    if(flag) System.out.print(AnsiColor.getAnsi(mp.getPosition(cord).color()) + tiles[c][r] + "\u001B[0m");
                 } else System.out.print(" ");
             }
         }

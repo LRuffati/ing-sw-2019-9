@@ -11,7 +11,6 @@ import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
 import grabbables.Weapon;
-import controller.SlaveController;
 import uid.DamageableUID;
 import uid.TileUID;
 
@@ -19,12 +18,15 @@ import java.awt.*;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The class Actor implements the status of the player in the game.
  */
 
 public class Actor {
+    Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     // Proprietà di game info
     private static final int HP = ParserConfiguration.parseInt("Hp");
@@ -121,6 +123,8 @@ public class Actor {
     public void discardPowerUp(PowerUp powerUp) {
         powerUps.remove(powerUp);
         gm.discardPowerUp(powerUp);
+        logger.log(Level.INFO, "discardPowerUp " + powerUp.toString());
+
     }
 
     /**
@@ -208,7 +212,7 @@ public class Actor {
      */
     public void pay(PowerUp p){
         if (getPowerUp().contains(p)){
-            gm.discardPowerUp(p);
+            discardPowerUp(p);
         }
     }
 
@@ -439,7 +443,7 @@ public class Actor {
      * @return A collection containing all the PowerUps held by the player
      */
     public Collection<PowerUp> getPowerUp() {
-        return powerUps;
+        return new ArrayList<>(powerUps);
     }
 
 

@@ -1,5 +1,6 @@
 package controller;
 
+import controller.controllerstates.PickTypes;
 import genericitems.Tuple;
 import view.cli.CLIDemo;
 import gamemanager.ParserConfiguration;
@@ -171,6 +172,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void pick(String id, List<Integer> choices) {
+        System.out.println("\t\t\tSELECTED ITEMS\t"+choices);
         try {
             network.pick(id, choices);
         } catch (RemoteException e) {
@@ -212,13 +214,21 @@ public class ClientController implements ClientControllerClientInterface, Client
             view.onMessage(controllerMessage.getMessage());
         }
 
-        if(controllerMessage.sandboxView() == null)
+        System.out.print(controllerMessage.type() + "\t\t");
+        if(controllerMessage.genView() == null) System.out.println("null");
+        else System.out.println(controllerMessage.genView().type);
+
+        if(controllerMessage.sandboxView() == null) {
             try {
                 network.getMap();
-            }
-            catch (RemoteException e) {
+            } catch (RemoteException e) {
                 quitForDisconnection();
             }
+        }
+        else {
+            if(controllerMessage.genView().type != PickTypes.TARGET)
+                view.updateMap(controllerMessage.sandboxView());
+        }
 
 
         if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
@@ -264,23 +274,33 @@ public class ClientController implements ClientControllerClientInterface, Client
                     super.run();
                     switch (choice.type) {
                         case STRING:
-                            view.chooseString(choice.stringViews, choice.single, choice.optional,
+                            //if(choice.stringViews.isEmpty())    pick(id, List.of());
+                            //else
+                                view.chooseString(choice.stringViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case ACTION:
-                            view.chooseAction(choice.actionViews, choice.single, choice.optional,
+                            //if(choice.actionViews.isEmpty())    pick(id, List.of());
+                            //else
+                                view.chooseAction(choice.actionViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case TARGET:
-                            view.chooseTarget(choice.targetViews, choice.single, choice.optional,
+                            //if(choice.targetViews.isEmpty())    pick(id, List.of());
+                            //else
+                                view.chooseTarget(choice.targetViews, choice.single, choice.optional,
                                     choice.description, controllerMessage.sandboxView(), id);
                             break;
                         case WEAPON:
-                            view.chooseWeapon(choice.weaponViews, choice.single, choice.optional,
+                            //if(choice.weaponViews.isEmpty())    pick(id, List.of());
+                            //else
+                                view.chooseWeapon(choice.weaponViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case POWERUP:
-                            view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional,
+                            //if(choice.powerUpViews.isEmpty())    pick(id, List.of());
+                            //else
+                                view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
 
@@ -296,7 +316,6 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     private void poll() {
-        System.out.println("Polling");
         try {
             network.poll();
         } catch (RemoteException e) {

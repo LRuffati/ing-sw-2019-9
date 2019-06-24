@@ -469,7 +469,7 @@ public class SlaveController {
                         sandPay);
             } else {
                 Runnable onRes = () -> onChoice.accept(weapPicked, Optional.empty());
-
+                this.setCurrentMessage(new WaitMessage(List.of()));
                 new Thread(()-> main.resolveEffect(
                         SlaveController.this,
                         sandPay.getEffectsHistory(),

@@ -301,6 +301,7 @@ public class MainController {
     }
 
     private void broadcastEffectMessage(String effectString) {
+        System.out.println(effectString);
         for (SlaveController i: slaveControllerList){
             i.addNotification(effectString);
         }
@@ -325,6 +326,7 @@ public class MainController {
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){
+            firstRoundOver = currIndex==slaveControllerList.size()-1;
             nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
         /*
