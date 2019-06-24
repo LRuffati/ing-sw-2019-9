@@ -157,22 +157,26 @@ public class Actor {
      * @param weapon is the weapon that the player want to pick up
      * @param weaponToDiscard contains the weapon that must be discarded. If there is no need to discard weapons, this field is left unchecked
      */
-    public void pickUp(Weapon weapon, Weapon weaponToDiscard){
+    public void pickUp(Weapon weapon, Optional<Weapon> weaponToDiscard){
         TileUID tile = pawn().getTile();
         if(!gm.getGrabbable(tile).contains(weapon))
             throw new InvalidParameterException("There isn't this item here");
 
         if((loadedWeapon.size() + unloadedWeapon.size()) >= MAX_WEAPON) {
-            if(weaponToDiscard == null)
+            if(weaponToDiscard.isEmpty()) {
                 throw new InvalidParameterException("A weapon must be discarded");
-            if(!(loadedWeapon.contains(weaponToDiscard) || unloadedWeapon.contains(weaponToDiscard)))
+            }
+
+            Weapon weaponToDisc = weaponToDiscard.get();
+
+            if(!(loadedWeapon.contains(weaponToDisc) || unloadedWeapon.contains(weaponToDisc)))
                 throw new InvalidParameterException("You haven't this weapon");
 
-            gm.discardWeapon(tile, weaponToDiscard);
-            if (loadedWeapon.contains(weaponToDiscard))
-                loadedWeapon.remove(weaponToDiscard);
+            gm.discardWeapon(tile, weaponToDisc);
+            if (loadedWeapon.contains(weaponToDisc))
+                loadedWeapon.remove(weaponToDisc);
             else
-                unloadedWeapon.remove(weaponToDiscard);
+                unloadedWeapon.remove(weaponToDisc);
         }
         gm.pickUpGrabbable(tile,weapon);
         loadedWeapon.add(weapon);

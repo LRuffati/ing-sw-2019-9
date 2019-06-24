@@ -105,7 +105,7 @@ public class ParserWeapon {
 
                 case "action":
                     amountGiven = new HashMap<>();
-                    AmmoAmount actionPrice = null;
+                    AmmoAmount actionPrice = new AmmoAmount();
                     String actionId = sLine.next();
                     String maybeCost = null;
                     boolean mNotNull = false;

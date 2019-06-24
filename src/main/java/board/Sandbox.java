@@ -48,6 +48,7 @@ public class Sandbox {
         this.updatedLocations = new HashMap<>();
         this.updatedWeapons = new HashMap<>();
         this.updatedAmmoAvailable = map.getPawn(pov).getActor().getAmmo();
+        if ((updatedAmmoAvailable == null)) throw new AssertionError();
         this.usedPowerups = new ArrayList<>();
 
         this.map = map;
