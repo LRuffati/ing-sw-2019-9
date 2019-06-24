@@ -325,6 +325,7 @@ public class MainController {
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){
+            firstRoundOver = currIndex==slaveControllerList.size()-1;
             nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
         /*

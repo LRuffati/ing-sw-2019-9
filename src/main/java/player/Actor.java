@@ -208,7 +208,7 @@ public class Actor {
      */
     public void pay(PowerUp p){
         if (getPowerUp().contains(p)){
-            gm.discardPowerUp(p);
+            discardPowerUp(p);
         }
     }
 
@@ -439,7 +439,7 @@ public class Actor {
      * @return A collection containing all the PowerUps held by the player
      */
     public Collection<PowerUp> getPowerUp() {
-        return powerUps;
+        return new ArrayList<>(powerUps);
     }
 
 

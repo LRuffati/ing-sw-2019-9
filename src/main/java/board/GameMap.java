@@ -348,12 +348,12 @@ public class GameMap {
      */
     public void addGrabbable(TileUID tile, Grabbable grabbable) {
         if (getTile(tile).spawnPoint()
-                && grabbable instanceof Weapon
-                && deckOfWeapon.isPicked((Weapon)grabbable))
+                && !grabbable.getWeapon().isEmpty()
+                && deckOfWeapon.isPicked(grabbable.getWeapon().iterator().next()))
             getTile(tile).addGrabbable(grabbable);
         else if (!getTile(tile).spawnPoint()
-                && grabbable instanceof AmmoCard
-                && deckOfAmmoCard.isPicked((AmmoCard)grabbable))
+                && !grabbable.getCard().isEmpty()
+                && deckOfAmmoCard.isPicked(grabbable.getCard().iterator().next()))
             getTile(tile).addGrabbable(grabbable);
         else
             throw new InvalidParameterException("The card cannot be added");
@@ -410,8 +410,6 @@ public class GameMap {
      * @param grabbable The weapon that has to be discarded
      */
     public void discardWeapon(TileUID tile, Weapon grabbable){
-        if(!emptyWeaponDeck())
-            throw new InvalidParameterException("A weapon cannot be discarded here");
         if(deckOfWeapon.isPicked(grabbable)){
             addGrabbable(tile, grabbable);
         }

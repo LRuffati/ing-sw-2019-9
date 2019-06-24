@@ -174,8 +174,8 @@ public class Pawn {
             actorView.setScore(getActor().getPoints());
         }
         else {
-            actorView.setLoadedWeapon(null);
-            actorView.setPowerUp(null);
+            actorView.setLoadedWeapon(List.of());
+            actorView.setPowerUp(List.of());
             actorView.setScore(-1);
         }
 
