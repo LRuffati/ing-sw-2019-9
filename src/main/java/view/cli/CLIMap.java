@@ -245,7 +245,7 @@ public class CLIMap {
                 for (TileView t : targetMap.allTiles()) {
                     if (!tiless.contains(t.uid())) {
                         tilesColor.put(t, t.color());
-                        t.setColor(Color.DARK_GRAY);
+                        t.setColor(Color.darkGray);
                     }
                 }
             }
@@ -253,7 +253,7 @@ public class CLIMap {
                 for (ActorView a : targetMap.players()) {
                     if (!actors.contains(a.uid())) {
                         actorsColor.put(a, a.color());
-                        a.setColor(Color.lightGray);
+                        a.setColor(Color.darkGray);
                     }
                 }
             }
