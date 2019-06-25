@@ -3,6 +3,7 @@ import grabbables.AmmoCard;
 import grabbables.Grabbable;
 import grabbables.Weapon;
 import player.Actor;
+import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
 import uid.RoomUID;
@@ -43,6 +44,11 @@ public class Tile{
 
     }
 
+    public void endTurn(Actor actor){
+        // For normal tiles it's nothing
+        return;
+    }
+
     /**
      * True if the tile is a Spawn Point, and can contain Weapons
      */
@@ -76,7 +82,7 @@ public class Tile{
     private transient GameMap map;
 
 
-    protected void setMap(GameMap map){
+    protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap){
         if (this.map==null)
             this.map = map;
         else

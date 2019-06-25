@@ -12,7 +12,7 @@ public class DominationPoint extends Pawn {
 
     //TODO: create a domination actor,
 
-    DominationPoint(Actor actor, Tile tile, DominationMode scoreboard){
+    DominationPoint(Tile tile, DominationMode scoreboard){
         scoreboard.addTrack(tile.getColor());
         this.tile = tile;
         super.actor = actor;
