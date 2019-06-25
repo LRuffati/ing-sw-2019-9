@@ -12,6 +12,7 @@ import viewclasses.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.BlockingDeque;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,6 @@ public class CLIDemo implements View {
 
     String pickStringMessage;
     private List<Integer> chosenList = new ArrayList<>();
-    private List<Integer> toReturn;
 
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
@@ -150,7 +150,7 @@ public class CLIDemo implements View {
         try {
             n = Integer.parseInt(str);
         }
-        catch (NumberFormatException e){
+        catch (NumberFormatException e) {
             return;
         }
 
@@ -164,7 +164,8 @@ public class CLIDemo implements View {
                 break;
 
             case 99:
-                if(!chosenList.isEmpty()) chosenList.remove(chosenList.size()-1);
+                if(!chosenList.isEmpty())
+                    chosenList.remove(chosenList.size()-1);
                 break;
 
             case 100:
@@ -178,12 +179,12 @@ public class CLIDemo implements View {
                 break;
 
             default:
-                if(n>=max){
+                if(n<0 || n>=max){
                     System.out.println("You must choose one valid option.\n");
                 } else {
-                    System.out.println("adding" + n);
                     chosenList.add(n);
                     if (single) {
+                        System.out.println("Added to chosen list: " + n);
                         pick(choiceId);
                     }
                 }
@@ -297,10 +298,11 @@ public class CLIDemo implements View {
             toChoose.append(i);
             toChoose.append(". ");
             toChoose.append(wv.name());
-            toChoose.append(" with buy cost of: ");
-
+            toChoose.append("\n\tBuy cost: ");
             toChoose.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE)));
-
+            toChoose.append("\n\tReload cost: ");
+            toChoose.append(printCost(wv.reloadCost().get(AmmoColor.RED),wv.reloadCost().get(AmmoColor.YELLOW),wv.reloadCost().get(AmmoColor.BLUE)));
+            toChoose.append("\n");
             i+=1;
         }
         toChoose.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
@@ -488,7 +490,7 @@ public class CLIDemo implements View {
             if(t.weapons() != null) {
                 System.out.println(">> You can pick up: ");
                 for (WeaponView w : t.weapons()) {
-                    System.out.println("+ " + w.name());
+                    System.out.println("+ " + w.name() + " that costs " + printCost(w.buyCost()));
                 }
             }
         } else {
@@ -512,6 +514,11 @@ public class CLIDemo implements View {
         }
     }
 
+
+    private String printCost(Map<AmmoColor, Integer> map) {
+        return printCost(map.get(AmmoColor.RED), map.get(AmmoColor.YELLOW), map.get(AmmoColor.BLUE));
+    }
+
     private String printCost(int red, int yellow, int blue){
         StringBuilder out = new StringBuilder();
         out.append(AnsiColor.getAnsi(Color.red));
@@ -529,7 +536,6 @@ public class CLIDemo implements View {
         }
         out.append(" ");
         out.append(AnsiColor.getDefault());
-        out.append("\n");
         return out.toString();
     }
 
