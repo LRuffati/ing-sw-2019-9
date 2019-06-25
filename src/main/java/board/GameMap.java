@@ -83,12 +83,15 @@ public class GameMap {
         this.deckOfPowerUp = cards.z;
 
         this.emptyTile = new TileUID();
-        tileUIDMap.values().forEach(x -> x.setMap(this));
+
+        this.damageableUIDMap = buildPawn(this, numOfPlayer);
+
+        tileUIDMap.values().forEach(x -> x.setMap(this, damageableUIDMap));
 
         //TODO: create weapon cards
          refill();
 
-        this.damageableUIDMap = buildPawn(this, numOfPlayer);
+
 
     }
 
@@ -105,7 +108,12 @@ public class GameMap {
                                          Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
             throws FileNotFoundException {
 
-        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
+        Tuple4<
+                Map<RoomUID, Room>,
+                Map<TileUID, Tile>,
+                List<TileUID>,
+                Coord
+                > res = ParserMap.parseMap(path);
         return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
     }
 

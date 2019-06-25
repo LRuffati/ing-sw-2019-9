@@ -266,7 +266,7 @@ public class MainController {
         if (effects.isEmpty()){
             for (Actor a: slaveControllerList.stream()
                     .filter(i->!responsible.equals(i))
-                    .map(i->i.getSelf()).collect(Collectors.toList())){
+                    .map(SlaveController::getSelf).collect(Collectors.toList())){
 
                 if (a.removeDamager(thisActor)){ // true if actor was present
 
@@ -342,6 +342,10 @@ public class MainController {
         */
         getGameMap().refill();
         List<DamageableUID> dead = new ArrayList<>();
+
+        for (TileUID tile: getGameMap().allTiles()){
+            getGameMap().getTile(tile).endTurn(lastPlayed);
+        }
 
         // TODO: iterate first on domination points somehow or else the game will break
         for (DamageableUID uid: getGameMap().getDamageable()){
