@@ -56,6 +56,8 @@ public class ParserWeaponTest {
             e.printStackTrace();
         }
 
+
+
         System.out.println(weaponCollection.size());
     }
 }
