@@ -295,6 +295,12 @@ public class CLIDemo implements View {
             toChoose.append(i);
             toChoose.append(". ");
             toChoose.append(wv.name());
+            toChoose.append(" with buy cost of: ");
+            for(Map.Entry<AmmoColor, Integer> entry : wv.buyCost().entrySet()){
+                toChoose.append(AnsiColor.getAnsi(entry.getKey().toColor()));
+                toChoose.append("■".repeat(Math.max(0, entry.getValue())));
+            }
+            toChoose.append(AnsiColor.getAnsi(Color.gray));
             toChoose.append("\n");
             i+=1;
         }
@@ -488,7 +494,8 @@ public class CLIDemo implements View {
             }
         } else {
             if(t.ammoCard() != null) {
-                System.out.println(">> There is a spawn point for the following ammunition in the tile:\n");
+                System.out.print(">> There is a spawn point for the following ammunition in the tile:  ");
+                printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue());
                 System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
                 System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
                 System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
@@ -504,6 +511,23 @@ public class CLIDemo implements View {
                 i++;
             }
         }
+    }
+
+    private void printCost(int red, int yellow, int blue){
+        System.out.print(AnsiColor.getAnsi(Color.red));
+        for(int i = 0; i<red; i++){
+            System.out.print("■");
+        }
+        System.out.print(AnsiColor.getAnsi(Color.yellow));
+        for(int i = 0; i<yellow; i++){
+            System.out.print("■");
+        }
+
+        System.out.print(AnsiColor.getAnsi(Color.blue));
+        for(int i = 0; i<blue; i++){
+            System.out.print("■");
+        }
+        System.out.println(AnsiColor.getAnsi(Color.gray));
     }
 
     private void playerInfo(ActorView player) {
