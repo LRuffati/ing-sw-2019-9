@@ -2,6 +2,7 @@ package board;
 
 import gamemanager.DominationMode;
 import gamemanager.Scoreboard;
+import genericitems.Tuple;
 import player.Actor;
 import player.ControlPointActor;
 import player.DominationPoint;
@@ -10,11 +11,12 @@ import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
 
+import java.awt.*;
 import java.util.Map;
 
 public class DominationPointTile extends Tile {
 
-    private Actor controlPointActor;
+    private ControlPointActor controlPointActor;
     private final DamageableUID pawnID;
 
     /**
@@ -25,7 +27,7 @@ public class DominationPointTile extends Tile {
      * @param tileID     The identifier of the tile
      * @param neighbors  The neighbors of the tile
      */
-    public DominationPointTile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction, NeighTile> neighbors) {
+    DominationPointTile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction, NeighTile> neighbors) {
         super(map, roomID, tileID, neighbors, true);
         this.pawnID = new DamageableUID();
     }
@@ -40,6 +42,13 @@ public class DominationPointTile extends Tile {
 
     @Override
     public void endTurn(Actor actor) {
+        if(map.tile(actor.pawnID()).equals(
+                ((DominationPoint)controlPointActor.pawn()).getDominationPointTile().tileID)
+        ) {
+            actor.damageRaw(controlPointActor, 1);
+            controlPointActor.addDamageList(actor, getColor());
+        }
+
     }
 
     @Override

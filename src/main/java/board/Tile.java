@@ -79,7 +79,7 @@ public class Tile{
     /**
      * Reference of the global map
      */
-    private transient GameMap map;
+    transient GameMap map;
 
 
     protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap){
