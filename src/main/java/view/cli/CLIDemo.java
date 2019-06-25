@@ -214,10 +214,11 @@ public class CLIDemo implements View {
             if (!dmg.isEmpty()){
                 for(ActorView a: gameMap.players()){
                     if(a.uid().equals(dmg.iterator().next())){
-                        builder.append(AnsiColor.getAnsi(a.color()));
                         builder.append(i);
                         builder.append(". ");
+                        builder.append(AnsiColor.getAnsi(a.color()));
                         builder.append(a.name());
+                        builder.append(AnsiColor.getDefault());
                         builder.append(" whom character on the map is '");
                         builder.append(climap.getPlayers().get(a));
                         builder.append("'.\n");
@@ -228,11 +229,12 @@ public class CLIDemo implements View {
             } else {
                 for(TileView t : gameMap.allTiles()){
                     if(t.uid().equals(tile.iterator().next())){
-                        builder.append(AnsiColor.getAnsi(t.color()));
                         builder.append(i);
                         builder.append(". ");
+                        builder.append(AnsiColor.getAnsi(t.color()));
                         builder.append(gameMap.getCoord(t).toString());
-                        builder.append("\n");
+                        builder.append(AnsiColor.getDefault());
+                        builder.append(".\n");
                         i+=1;
                         break;
                     }
@@ -477,7 +479,7 @@ public class CLIDemo implements View {
      */
     private void tileInfo(TileView t){
         System.out.print("\n>> The tile belongs to the ");
-        System.out.print(AnsiColor.getAnsi(t.color()) + AnsiColor.getColorName(t.color()) + AnsiColor.getAnsi() + " room\n");
+        System.out.print(AnsiColor.getAnsi(t.color()) + AnsiColor.getColorName(t.color()) + AnsiColor.getDefault() + " room\n");
         if(t.spawnPoint()){
             System.out.println(">> There is a spawn point for weapons in the tile.\n");
             if(t.weapons() != null) {
@@ -527,7 +529,7 @@ public class CLIDemo implements View {
         }
         System.out.println("\n>> He's got the following powerUps: ");
         for(PowerUpView w : player.getPowerUp()){
-            System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getAnsi());
+            System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());
             i++;
         }
     }
