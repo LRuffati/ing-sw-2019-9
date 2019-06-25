@@ -423,7 +423,7 @@ public class SlaveController {
         AmmoAmountUncapped funds = sandbox.getUpdatedTotalAmmoAvailable();
         List<Weapon> buyable =
                 options.stream()
-                        .filter(weapon -> funds.compareTo(weapon.getBuyCost())>0)
+                        .filter(weapon -> funds.canBuy(weapon.getBuyCost()))
                         .collect(Collectors.toList());
         List<Weapon> owned =
                 sandbox.getArsenal().stream()
@@ -495,7 +495,7 @@ public class SlaveController {
                 AmmoAmount zero = new AmmoAmount();
                 Weapon weaponToGrab = buyable.get(choice.get(0));
                 AmmoAmount cost = weaponToGrab.getBuyCost();
-                if (zero.compareTo(cost)<0){ // if the cost is not 0
+                if (!zero.canBuy(cost)){ // if the cost is not 0
                     PayTemplate payTemplate = new PayTemplate(cost);
                     return payTemplate.spawn(
                             Map.of(),

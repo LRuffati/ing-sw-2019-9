@@ -5,7 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
+public class AmmoAmountUncapped{
+
+    public static AmmoAmountUncapped zeroAmmo = new AmmoAmountUncapped();
+
     private final Map<AmmoColor, Integer> amounts;
 
     public AmmoAmountUncapped(Map<AmmoColor, Integer> amountGiven){
@@ -31,28 +34,28 @@ public class AmmoAmountUncapped implements Comparable<AmmoAmountUncapped>{
         return new EnumMap<>(amounts);
     }
 
-    /**
-     *
-     * @param o the other ammoamount
-     * @return 1 if I can use "this" to pay "o", -1 otherwise
-     */
-    @Override
-    public int compareTo(@NotNull AmmoAmountUncapped o) { // If this can pay o (t>o) then 1 else -1
-        //Test
+
+    public boolean canBuy(@NotNull AmmoAmountUncapped cost){
+        return cost.canBeBought(this);
+    }
+
+    protected boolean canBeBought(@NotNull AmmoAmountUncapped funds){
         for (AmmoColor i: AmmoColor.values()){
-            if (getAmounts().get(i)<o.getAmounts().get(i)){
-                return -1;
+            if (getAmounts().get(i)>funds.getAmounts().get(i)){
+                return false;
             }
         }
-        return 1;
+        return true;
     }
+
+
     /**
      * This method creates a new AmmoAmount to represent a cost having been paid
      * @param c the cost
      * @return the original ammoAmount decreased by c
      */
     public AmmoAmountUncapped subtract(AmmoAmountUncapped c){
-        if (compareTo(c)<0){ // c is
+        if (!canBuy(c)){ // c is
             throw new IllegalArgumentException("Cost is greater than available amounts");
         } else {
             Map<AmmoColor,Integer> newMap = new EnumMap<>(getAmounts());

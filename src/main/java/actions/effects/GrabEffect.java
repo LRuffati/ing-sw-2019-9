@@ -64,7 +64,7 @@ public class GrabEffect implements Effect {
             finalize.run();
         };
 
-        if (new AmmoAmount().compareTo(amountsToGrab)<0){ //If I have to grab some amount of cubes
+        if (!(new AmmoAmount().canBuy(amountsToGrab))){ //If I have to grab some amount of cubes
             broadcaster.accept(String.format("%s ha raccolto %s",
                     pov.getSelf().pawn().getUsername(), amountsToGrab.toString()));
         }

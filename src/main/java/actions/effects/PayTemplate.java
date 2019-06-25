@@ -36,15 +36,15 @@ public class PayTemplate implements EffectTemplate{
             ControllerMessage> consumer) {
         AmmoAmountUncapped totAv = sandbox.getUpdatedTotalAmmoAvailable();
 
-        if (totAv.compareTo(amount)<0)
+        if (!totAv.canBuy(amount))
             return new RollbackMessage("Not enough ammo or powerups");
 
         List<PowerUp> useful = sandbox.powerUpsAvailable().stream()
-                .filter(p -> amount.compareTo(new AmmoAmountUncapped(p.getAmmo().getAmounts()))>0) // this checks that the powerup has any use
+                .filter(p -> amount.canBuy(p.getAmmo())) // this checks that the powerup has any use
                 .collect(Collectors.toList());
 
-        boolean optional = new AmmoAmountUncapped(sandbox.getUpdatedAmmoAvailable().getAmounts())
-                .compareTo(amount) > 0; // If > 0 I can pay with just cubes
+        boolean optional = sandbox.getUpdatedAmmoAvailable().canBuy(amount); // If > 0 I can pay
+        // with just cubes
 
         ChoiceBoard options = ChoiceBoard.powupChoiceFactory(useful,
                 "Pick powerups to pay your debt", //TODO: add the amount to pay and the cubes
@@ -57,7 +57,7 @@ public class PayTemplate implements EffectTemplate{
                     for (PowerUp p: list){
                         AmmoAmountUncapped intermediate =
                                 tempSum.add(new AmmoAmountUncapped(p.getAmmo().getAmounts()));
-                        if (amount.compareTo(intermediate)>0){ // If the total doesn't exceed the amount
+                        if (amount.canBuy(intermediate)){ // If the total doesn't exceed the amount
                             tempSum = intermediate; // Add to the temp
                             powUpsUsed.add(p);
                         }
@@ -70,10 +70,9 @@ public class PayTemplate implements EffectTemplate{
                     AmmoAmountUncapped amountLeft = amount.subtract(tempSum);
 
                     boolean canPayWithCubes =
-                            new AmmoAmountUncapped(newSandbox.getUpdatedAmmoAvailable().getAmounts())
-                            .compareTo(amountLeft) > 0;
+                            newSandbox.getUpdatedAmmoAvailable().canBuy(amountLeft);
 
-                    if (tempSum.compareTo(amount)>0){ // If it's enough to pay just with powerups
+                    if (tempSum.canBuy(amount)){ // If it's enough to pay just with powerups
                         return consumer.apply(newSandbox);
                     } else if (canPayWithCubes) {
                         Sandbox completedSandbox = new Sandbox(newSandbox,
