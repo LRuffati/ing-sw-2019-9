@@ -17,14 +17,19 @@ import uid.TileUID;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
+import java.lang.reflect.GenericArrayType;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
 public class MainController {
+
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
     private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
@@ -65,7 +70,8 @@ public class MainController {
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
-            startGame();
+            //todo: change
+            startGame(GameMode.NORMAL);
         }
         if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
             timerStart(TIME_BEFORE_STARTING);
@@ -77,7 +83,7 @@ public class MainController {
         if(!canConnect())   throw new IllegalArgumentException("Invalid connection request");
 
         numOfPlayer++;
-        System.out.println("Connection");
+        logger.log(Level.INFO, "Connection");
         notifyConnection(numOfPlayer, player);
         checkGameStart();
     }
@@ -90,7 +96,7 @@ public class MainController {
      */
     public void reconnect(Player player) {
         numOfPlayer++;
-        System.out.println("Reconnection");
+        logger.log(Level.INFO, "Reconnection");
         notifyConnection(numOfPlayer, player);
         checkGameStart();
     }
@@ -128,13 +134,14 @@ public class MainController {
     private void notifyConnection(int num, Player player){
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onConnection(player, num);
-        System.out.println(player);
+        logger.log(Level.INFO, player.toString());
     }
 
     private void notifyDisconnection(int numOfPlayer, Player player) {
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onDisconnection(player, numOfPlayer);
-        System.out.println("Disconnection of\n" + player);
+        logger.log(Level.INFO, "Disconnection");
+        logger.log(Level.INFO, player.toString());
     }
 
     private void notifyStarting(String map){
@@ -152,10 +159,10 @@ public class MainController {
             slaveController.onWinner(winner, winnerPoints);
     }
 
-    private void startGame() {
+    private void startGame(GameMode gameMode) {
 
         gameStarted = true;
-        createGame();
+        createGame(gameMode);
 
         this.scoreboard = game.getScoreboard();
         this.gameMap = game.getMap();
@@ -182,9 +189,9 @@ public class MainController {
                 () -> slaveControllerList.get(0).startMainAction());
     }
 
-    private void createGame() {
+    private void createGame(GameMode gameMode) {
         try {
-            game = new GameBuilder(numOfPlayer);
+            game = new GameBuilder(gameMode, numOfPlayer);
             Iterator<Actor> actorList = game.getActorList().iterator();
             for(Player player : Database.get().getPlayers()) {
                 Actor actor = actorList.next();
@@ -195,7 +202,7 @@ public class MainController {
             }
         }
         catch (FileNotFoundException | NoSuchFieldException | IllegalAccessException e){
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -209,8 +216,9 @@ public class MainController {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("si parte");
-                startGame();
+                logger.log(Level.INFO, "si parte");
+                //todo: change
+                startGame(GameMode.NORMAL);
                 timerClose();
             }
         };
@@ -301,7 +309,7 @@ public class MainController {
     }
 
     private void broadcastEffectMessage(String effectString) {
-        System.out.println(effectString);
+        logger.log(Level.INFO, effectString);
         for (SlaveController i: slaveControllerList){
             i.addNotification(effectString);
         }

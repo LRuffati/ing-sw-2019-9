@@ -298,12 +298,9 @@ public class CLIDemo implements View {
             toChoose.append(". ");
             toChoose.append(wv.name());
             toChoose.append(" with buy cost of: ");
-            for(Map.Entry<AmmoColor, Integer> entry : wv.buyCost().entrySet()){
-                toChoose.append(AnsiColor.getAnsi(entry.getKey().toColor()));
-                toChoose.append("■".repeat(Math.max(0, entry.getValue())));
-            }
-            toChoose.append(AnsiColor.getAnsi(Color.gray));
-            toChoose.append("\n");
+
+            toChoose.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE)));
+
             i+=1;
         }
         toChoose.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
@@ -497,7 +494,7 @@ public class CLIDemo implements View {
         } else {
             if(t.ammoCard() != null) {
                 System.out.print(">> There is a spawn point for the following ammunition in the tile:  ");
-                printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue());
+                System.out.println(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue()));
                 System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
                 System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
                 System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
@@ -515,21 +512,25 @@ public class CLIDemo implements View {
         }
     }
 
-    private void printCost(int red, int yellow, int blue){
-        System.out.print(AnsiColor.getAnsi(Color.red));
+    private String printCost(int red, int yellow, int blue){
+        StringBuilder out = new StringBuilder();
+        out.append(AnsiColor.getAnsi(Color.red));
         for(int i = 0; i<red; i++){
-            System.out.print("■");
+            out.append("■");
         }
-        System.out.print(AnsiColor.getAnsi(Color.yellow));
+        out.append(AnsiColor.getAnsi(Color.yellow));
         for(int i = 0; i<yellow; i++){
-            System.out.print("■");
+            out.append("■");
         }
 
-        System.out.print(AnsiColor.getAnsi(Color.blue));
+        out.append(AnsiColor.getAnsi(Color.blue));
         for(int i = 0; i<blue; i++){
-            System.out.print("■");
+            out.append("■");
         }
-        System.out.println(AnsiColor.getAnsi(Color.gray));
+        out.append(" ");
+        out.append(AnsiColor.getDefault());
+        out.append("\n");
+        return out.toString();
     }
 
     private void playerInfo(ActorView player) {
