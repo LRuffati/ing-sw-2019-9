@@ -15,9 +15,9 @@ import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 
-import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.io.FileNotFoundException;
+import java.lang.reflect.GenericArrayType;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 
 public class MainController {
 
-    Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
     private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
@@ -70,7 +70,8 @@ public class MainController {
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
-            startGame();
+            //todo: change
+            startGame(GameMode.NORMAL);
         }
         if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
             timerStart(TIME_BEFORE_STARTING);
@@ -158,10 +159,10 @@ public class MainController {
             slaveController.onWinner(winner, winnerPoints);
     }
 
-    private void startGame() {
+    private void startGame(GameMode gameMode) {
 
         gameStarted = true;
-        createGame();
+        createGame(gameMode);
 
         this.scoreboard = game.getScoreboard();
         this.gameMap = game.getMap();
@@ -188,9 +189,9 @@ public class MainController {
                 () -> slaveControllerList.get(0).startMainAction());
     }
 
-    private void createGame() {
+    private void createGame(GameMode gameMode) {
         try {
-            game = new GameBuilder(numOfPlayer);
+            game = new GameBuilder(gameMode, numOfPlayer);
             Iterator<Actor> actorList = game.getActorList().iterator();
             for(Player player : Database.get().getPlayers()) {
                 Actor actor = actorList.next();
@@ -201,7 +202,7 @@ public class MainController {
             }
         }
         catch (FileNotFoundException | NoSuchFieldException | IllegalAccessException e){
-            e.printStackTrace();
+            logger.log(Level.SEVERE, e.getMessage());
         }
     }
 
@@ -216,7 +217,8 @@ public class MainController {
             @Override
             public void run() {
                 logger.log(Level.INFO, "si parte");
-                startGame();
+                //todo: change
+                startGame(GameMode.NORMAL);
                 timerClose();
             }
         };

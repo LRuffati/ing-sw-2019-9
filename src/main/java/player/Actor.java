@@ -45,7 +45,7 @@ public class Actor {
     private AmmoAmount ammoAvailable;
     private boolean startingPlayerMarker;
 
-    private final GameMap gm;
+    private GameMap gm;
 
     private DamageableUID pawnID;
 

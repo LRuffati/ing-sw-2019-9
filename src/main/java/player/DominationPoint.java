@@ -2,20 +2,26 @@ package player;
 
 import actions.targeters.targets.BasicTarget;
 import actions.targeters.targets.DominationPointTarget;
+import board.DominationPointTile;
 import board.Tile;
 import gamemanager.DominationMode;
+import uid.DamageableUID;
 
 public class DominationPoint extends Pawn {
     private final Tile tile;
+    private final DamageableUID uid;
 
     //TODO: what to do for the actor field
 
     //TODO: create a domination actor,
 
-    DominationPoint(Tile tile, DominationMode scoreboard){
-        scoreboard.addTrack(tile.getColor());
+    public DominationPoint(DamageableUID uid, Tile tile){
+        this.uid = uid;
         this.tile = tile;
-        super.actor = actor;
+    }
+
+    public Tile getDominationPointTile() {
+        return tile;
     }
 
     /**

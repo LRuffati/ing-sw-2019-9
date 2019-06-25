@@ -1,10 +1,10 @@
 package board;
-import java.io.FileNotFoundException;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import controller.GameMode;
 import gamemanager.GameBuilder;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
@@ -67,7 +67,9 @@ public class GameMap {
     /**
      * Private constructor, to build a map gameMapFactory must be used
      */
-    private GameMap(Map<RoomUID, Room> roomUIDMap,
+    private GameMap (
+            GameMode gameMode,
+            Map<RoomUID, Room> roomUIDMap,
             Map<TileUID, Tile> tileUIDMap,
             List<TileUID> position,
             Coord maxPos,
@@ -83,13 +85,12 @@ public class GameMap {
         this.deckOfPowerUp = cards.z;
 
         this.emptyTile = new TileUID();
-        tileUIDMap.values().forEach(x -> x.setMap(this));
+        this.damageableUIDMap = buildPawnForPlayers(this, numOfPlayer);
+
+        tileUIDMap.values().forEach(x -> x.setMap(this, damageableUIDMap));
 
         //TODO: create weapon cards
-         refill();
-
-        this.damageableUIDMap = buildPawn(this, numOfPlayer);
-
+        refill();
     }
 
     /**
@@ -98,15 +99,15 @@ public class GameMap {
      * @param numOfPlayer the number of player that join the game
      * @param cards a Tuple containing the Decks: deck of Weapon, deck of Ammo and deck of PowerUp
      * @return the GameMap object
-     * @throws FileNotFoundException if the path is not correct
      */
-    public static GameMap gameMapFactory(String path,
-                                         int numOfPlayer,
-                                         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
-            throws FileNotFoundException {
+    public static GameMap gameMapFactory(   GameMode gameMode,
+                                            String path,
+                                            int numOfPlayer,
+                                            Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<grabbables.PowerUp>> cards)
+    {
 
-        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(path);
-        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
+        Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> res = ParserMap.parseMap(gameMode.equals(GameMode.NORMAL), path);
+        return new GameMap(gameMode, res.x, res.y, res.z, res.t, numOfPlayer, cards);
     }
 
     /*
@@ -157,8 +158,9 @@ public class GameMap {
      * @throws NoSuchElementException If no Damageable is found, an exception is returned
      */
     public Pawn getPawn(DamageableUID damageableUID) {
-        if (damageableUIDMap.containsKey(damageableUID))
+        if (damageableUIDMap.containsKey(damageableUID)) {
             return damageableUIDMap.get(damageableUID);
+        }
         else
             throw new NoSuchElementException("This DamageableUID does not exists");
     }
@@ -456,7 +458,7 @@ public class GameMap {
         return false;
     }
     
-    private Map<DamageableUID, Pawn> buildPawn(GameMap map, int numOfPlayer){
+    private Map<DamageableUID, Pawn> buildPawnForPlayers(GameMap map, int numOfPlayer){
         Map<DamageableUID, Pawn> res = new HashMap<>();
         Pawn p;
         DamageableUID uid;

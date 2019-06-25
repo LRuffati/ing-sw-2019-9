@@ -1,5 +1,7 @@
 package board;
 
+import gamemanager.DominationMode;
+import gamemanager.Scoreboard;
 import player.Actor;
 import player.ControlPointActor;
 import player.DominationPoint;
@@ -12,8 +14,8 @@ import java.util.Map;
 
 public class DominationPointTile extends Tile {
 
-    private final Actor controlPointActor;
-    DamageableUID pawnID;
+    private Actor controlPointActor;
+    private final DamageableUID pawnID;
 
     /**
      * Default constructor
@@ -25,10 +27,28 @@ public class DominationPointTile extends Tile {
      */
     public DominationPointTile(GameMap map, RoomUID roomID, TileUID tileID, Map<Direction, NeighTile> neighbors) {
         super(map, roomID, tileID, neighbors, true);
-        this.controlPointActor = new ControlPointActor();
+        this.pawnID = new DamageableUID();
+    }
+
+    public void addTrack(Scoreboard scoreboard) {
+        ((DominationMode)scoreboard).addTrack(this.getColor());
+    }
+
+    public Actor getControlPointActor() {
+        return controlPointActor;
     }
 
     @Override
     public void endTurn(Actor actor) {
     }
+
+    @Override
+    protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap) {
+        super.setMap(map, damageableUIDPawnMap);
+        this.controlPointActor = new ControlPointActor(map, pawnID, false);
+        damageableUIDPawnMap.put(pawnID, new DominationPoint(pawnID, this));
+    }
+
+
+
 }

@@ -2,6 +2,7 @@ package player;
 
 import board.GameMap;
 import uid.DamageableUID;
+import viewclasses.GameMapView;
 
 public class ControlPointActor extends Actor{
     /**

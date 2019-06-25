@@ -1,6 +1,9 @@
 package gamemanager;
 
+import board.DominationPointTile;
 import board.GameMap;
+import board.Tile;
+import controller.GameMode;
 import genericitems.Tuple3;
 import grabbables.*;
 import player.Actor;
@@ -18,15 +21,6 @@ import java.util.List;
 public class GameBuilder {
 
     private static GameBuilder instance;
-
-    public static void newGame(String mapPath,
-                              String weaponPath,
-                              String powerUpPath,
-                              String ammoCardPath,
-                              int numOfPlayer)
-            throws FileNotFoundException{
-        instance = new GameBuilder(mapPath, weaponPath, powerUpPath, ammoCardPath, numOfPlayer);
-    }
 
     public static GameBuilder get(){
         return instance;
@@ -54,11 +48,12 @@ public class GameBuilder {
      * @param numOfPlayer Number of players that will join the game.
      * @throws FileNotFoundException If any file isn't found, this exception will be called.
      */
-    public GameBuilder(String mapPath,
-                       String weaponPath,
-                       String powerUpPath,
-                       String ammoCardPath,
-                       int numOfPlayer)
+    public GameBuilder( GameMode gameMode,
+                        String mapPath,
+                        String weaponPath,
+                        String powerUpPath,
+                        String ammoCardPath,
+                        int numOfPlayer)
             throws FileNotFoundException{
 
         deckOfWeapon = parserWeapon(weaponPath);
@@ -67,23 +62,37 @@ public class GameBuilder {
 
         Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks = new Tuple3<>(deckOfWeapon, deckOfAmmoCard, deckOfPowerUp);
 
-        map = parserMap(mapPath, numOfPlayer, decks);
+        map = parserMap(gameMode, mapPath, numOfPlayer, decks);
+
+        scoreboard = gameMode.equals(GameMode.NORMAL) ? new Scoreboard(actorList) : new DominationMode(actorList);
 
         actorList = buildActor(map);
 
-        scoreboard = new Scoreboard(actorList);
+        instance = this;
+    }
+
+    public GameBuilder(GameMode gameMode, int numOfPlayer) throws FileNotFoundException {
+        this(gameMode, null, null, null, null, numOfPlayer);
     }
 
     public GameBuilder(int numOfPlayer) throws FileNotFoundException {
-        this(null, null, null, null, numOfPlayer);
+        this(GameMode.NORMAL, numOfPlayer);
+    }
+    public GameBuilder( String mapPath,
+                        String weaponPath,
+                        String powerUpPath,
+                        String ammoCardPath,
+                        int numOfPlayer)
+            throws FileNotFoundException{
+        this(GameMode.NORMAL, mapPath, weaponPath, powerUpPath, ammoCardPath, numOfPlayer);
     }
 
 
-    private GameMap parserMap(String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
+    private GameMap parserMap(GameMode gameMode, String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
         mapName = null;
         if (mapPath != null) {
             mapName = mapPath;
-            return GameMap.gameMapFactory(mapPath, numOfPlayer, decks);
+            return GameMap.gameMapFactory(gameMode, mapPath, numOfPlayer, decks);
         }
 
         if (numOfPlayer == 3)
@@ -94,10 +103,10 @@ public class GameBuilder {
             mapName = "map3";
 
         if (mapName != null)
-            return GameMap.gameMapFactory(ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
+            return GameMap.gameMapFactory(gameMode, ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
 
         mapName = "map1";
-        return GameMap.gameMapFactory(ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
+        return GameMap.gameMapFactory(gameMode, ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
     }
 
     private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
@@ -128,6 +137,14 @@ public class GameBuilder {
                 actor.setBinding();
                 actors.add(actor);
                 firstPlayer = false;
+            }
+            else {
+                Tile tile = ((DominationPoint) map.getPawn(pawnID)).getDominationPointTile();
+                DominationPointTile dominationPointTile = (DominationPointTile) tile;
+                dominationPointTile.getControlPointActor().setBinding();
+
+                dominationPointTile.addTrack(scoreboard);
+                //((DominationMode)scoreboard).addTrack(((DominationPoint)actor.pawn()).getTile());
             }
         }
         return actors;

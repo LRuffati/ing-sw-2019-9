@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class ObjectMap {
 
-    Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static ObjectMap ourInstance = new ObjectMap();
     public static ObjectMap get() {
