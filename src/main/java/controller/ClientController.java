@@ -214,23 +214,6 @@ public class ClientController implements ClientControllerClientInterface, Client
             view.onMessage(controllerMessage.getMessage());
         }
 
-        System.out.print(controllerMessage.type() + "\t\t");
-        if(controllerMessage.genView() == null) System.out.println("null");
-        else System.out.println(controllerMessage.genView().type);
-
-        if(controllerMessage.sandboxView() == null) {
-            try {
-                network.getMap();
-            } catch (RemoteException e) {
-                quitForDisconnection();
-            }
-        }
-        else {
-            if(controllerMessage.genView().type != PickTypes.TARGET)
-                view.updateMap(controllerMessage.sandboxView());
-        }
-
-
         if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
             stack.clear();
             if (!polling) {
@@ -242,6 +225,12 @@ public class ClientController implements ClientControllerClientInterface, Client
             stack.push(controllerMessage);
             if(polling)    setPolling(false);
         }
+
+        System.out.print(controllerMessage.type() + "\t\t");
+        if(controllerMessage.genView() == null) System.out.println("null");
+        else System.out.println(controllerMessage.genView().type);
+
+        handlePrintMap(controllerMessage);
 
 
         switch (controllerMessage.type()) {
@@ -274,32 +263,32 @@ public class ClientController implements ClientControllerClientInterface, Client
                     super.run();
                     switch (choice.type) {
                         case STRING:
-                            //if(choice.stringViews.isEmpty())    pick(id, List.of());
-                            //else
+                            if(choice.stringViews.isEmpty())    emptyPick(choice.optional, id);
+                            else
                                 view.chooseString(choice.stringViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case ACTION:
-                            //if(choice.actionViews.isEmpty())    pick(id, List.of());
-                            //else
+                            if(choice.actionViews.isEmpty())    emptyPick(choice.optional, id);
+                            else
                                 view.chooseAction(choice.actionViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case TARGET:
-                            //if(choice.targetViews.isEmpty())    pick(id, List.of());
-                            //else
+                            if(choice.targetViews.isEmpty())    emptyPick(choice.optional, id);
+                            else
                                 view.chooseTarget(choice.targetViews, choice.single, choice.optional,
                                     choice.description, controllerMessage.sandboxView(), id);
                             break;
                         case WEAPON:
-                            //if(choice.weaponViews.isEmpty())    pick(id, List.of());
-                            //else
+                            if(choice.weaponViews.isEmpty())    emptyPick(choice.optional, id);
+                            else
                                 view.chooseWeapon(choice.weaponViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
                         case POWERUP:
-                            //if(choice.powerUpViews.isEmpty())    pick(id, List.of());
-                            //else
+                            if(choice.powerUpViews.isEmpty())    emptyPick(choice.optional, id);
+                            else
                                 view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional,
                                     choice.description, id);
                             break;
@@ -313,6 +302,37 @@ public class ClientController implements ClientControllerClientInterface, Client
         }
 
     }
+
+    private void emptyPick(boolean optional, String id) {
+        if(optional)
+            pick(id, List.of());
+        else
+            rollback();
+    }
+
+
+    private boolean filterWait = false;
+
+    private void handlePrintMap(ControllerMessage message) {
+        if (!message.type().equals(SlaveControllerState.WAIT)) {
+            if (message.sandboxView() == null) {
+                try {
+                    network.getMap();
+                } catch (RemoteException e) {
+                    quitForDisconnection();
+                }
+            } else if (message.genView().type != PickTypes.TARGET)
+                view.updateMap(message.sandboxView());
+        } else if (!filterWait) {
+            try {
+                network.getMap();
+            } catch (RemoteException e) {
+                quitForDisconnection();
+            }
+        } else
+            filterWait = false;
+    }
+
 
 
     private void poll() {
@@ -336,6 +356,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     private void setPolling(boolean value) {
         if(polling != value)
             if(value) {
+                filterWait = true;
                 initPolling();
                 timerForPolling.scheduleAtFixedRate(repeatedTask, 1000, 5000);
             }

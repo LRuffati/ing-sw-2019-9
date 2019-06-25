@@ -156,7 +156,7 @@ public class CLIMap {
                 } else System.out.print(" ");
             }
         }
-        System.out.println("\n");
+        System.out.println(AnsiColor.getDefault() + "\t\n");
     }
 
 
@@ -234,32 +234,31 @@ public class CLIMap {
      */
     public void applyTarget(List<TargetView> targetViewList){
         GameMapView targetMap = new GameMapView(mp);
-        List<TileUID> tiless;
-        List<DamageableUID> actors;
+        List<TileUID> tiless = new ArrayList<>();
+        List<DamageableUID> actors = new ArrayList<>();
         Map<TileView, Color> tilesColor = new HashMap<>();
         Map<ActorView, Color> actorsColor = new HashMap<>();
+        System.out.println(targetViewList.size());
         for(TargetView target :  targetViewList) {
-            tiless = target.getTileUIDList();
-            actors = target.getDamageableUIDList();
-            if(!tiless.isEmpty()) {
-                for (TileView t : targetMap.allTiles()) {
-                    if (!tiless.contains(t.uid())) {
-                        tilesColor.put(t, t.color());
-                        t.setColor(Color.darkGray);
-                    }
-                }
-            }
-            if(!actors.isEmpty()) {
-                for (ActorView a : targetMap.players()) {
-                    if (!actors.contains(a.uid())) {
-                        actorsColor.put(a, a.color());
-                        a.setColor(Color.darkGray);
-                    }
-                }
-            }
-
-
+            tiless.addAll(target.getTileUIDList());
+            actors.addAll(target.getDamageableUIDList());
         }
+
+        for (TileView t : targetMap.allTiles()) {
+            if (!tiless.contains(t.uid())) {
+                tilesColor.put(t, t.color());
+                t.setColor(Color.darkGray);
+            }
+        }
+
+        for (ActorView a : targetMap.players()) {
+            if (!actors.contains(a.uid())) {
+                actorsColor.put(a, a.color());
+                a.setColor(Color.darkGray);
+            }
+        }
+
+
         printMap();
 
         for(Map.Entry<TileView,Color> entry: tilesColor.entrySet()){
