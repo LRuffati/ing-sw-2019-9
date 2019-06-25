@@ -5,8 +5,6 @@ import uid.RoomUID;
 import uid.TileUID;
 
 import java.awt.*;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
@@ -25,26 +23,21 @@ class ParserMap {
     private static List<Map<Direction, NeighTile>> allNeight;
     private static List<Integer> spawnPoint;
 
+    private static boolean normalMode;
+
     private ParserMap(){}
 
     /**
      * @param path The Path of the Map file
      * @return a GameMap built upon the path file
-     * @throws FileNotFoundException If path is not found, throws an exception
      */
-    static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> parseMap(String path) throws FileNotFoundException{
+    static Tuple4<Map<RoomUID, Room>, Map<TileUID, Tile>, List<TileUID>, Coord> parseMap(boolean normalMode1, String path) {
+
+        normalMode = normalMode1;
 
         String str;
         Scanner scanner;
         scanner = new Scanner(ClassLoader.getSystemResourceAsStream(path));
-        /*
-        try{
-            scanner = new Scanner(new File(path));
-        }
-        catch (FileNotFoundException e){
-            throw new FileNotFoundException("File not found");
-        }
-        */
 
         while(scanner.hasNext()){
             str = scanner.nextLine();
@@ -196,7 +189,10 @@ class ParserMap {
         boolean isSpawn;
         for(int i=0; i<tile.size(); i++) {
             isSpawn = spawnPoint.contains(i);
-            tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn));
+            if(!normalMode && spawnPoint.contains(i))
+                tileObj.add(new DominationPointTile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i)));
+            else
+                tileObj.add(new Tile(null, roomOfTile.get(i), tile.get(i), allNeight.get(i), isSpawn));
         }
 
 

@@ -1,9 +1,18 @@
 package player;
 
 import board.GameMap;
+import gamemanager.DominationMode;
+import gamemanager.Scoreboard;
+import genericitems.Tuple;
 import uid.DamageableUID;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ControlPointActor extends Actor{
+
+    private List<Tuple<Actor, Color>> damageList = new ArrayList<>();
     /**
      * This constructor gets the GameMap and the Pawn, and build the Actor
      *
@@ -13,6 +22,10 @@ public class ControlPointActor extends Actor{
      */
     public ControlPointActor(GameMap map, DamageableUID pawnId, boolean firstPlayer) {
         super(map, pawnId, firstPlayer);
+    }
+
+    public void addDamageList(Actor actor, Color color) {
+        damageList.add(new Tuple<>(actor, color));
     }
 
     @Override
@@ -26,5 +39,11 @@ public class ControlPointActor extends Actor{
     }
 
 
-
+    @Override
+    public boolean endTurn(Actor player, Scoreboard scoreboard) {
+        for (Tuple<Actor, Color> t : damageList) {
+            ((DominationMode)scoreboard).addSpawnTrackerPoint(t.y, t.x);
+        }
+        return false;
+    }
 }

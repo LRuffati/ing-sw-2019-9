@@ -1,5 +1,6 @@
 package board;
 
+import controller.GameMode;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple3;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,16 +19,11 @@ class RoomTest {
     private GameMap map;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         map = null;
-        try {
-            map = GameMap.gameMapFactory(ParserConfiguration.parsePath("map1Path")
-                    , 0, new Tuple3<>(null,null,null));
-            //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
-        }
-        catch (FileNotFoundException e){
-            System.exit(-100);
-        }
+        map = GameMap.gameMapFactory(GameMode.NORMAL, ParserConfiguration.parsePath("map1Path")
+                , 0, new Tuple3<>(null, null, null));
+        //map = ParserMap.parseMap("C:/Users/pietr/Desktop/Polimi/anno3/periodo2/IngSw/resources/map1.txt");
     }
 
     @Test
