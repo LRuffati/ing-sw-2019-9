@@ -214,23 +214,6 @@ public class ClientController implements ClientControllerClientInterface, Client
             view.onMessage(controllerMessage.getMessage());
         }
 
-        System.out.print(controllerMessage.type() + "\t\t");
-        if(controllerMessage.genView() == null) System.out.println("null");
-        else System.out.println(controllerMessage.genView().type);
-
-        if(controllerMessage.sandboxView() == null) {
-            try {
-                network.getMap();
-            } catch (RemoteException e) {
-                quitForDisconnection();
-            }
-        }
-        else {
-            if(controllerMessage.genView().type != PickTypes.TARGET)
-                view.updateMap(controllerMessage.sandboxView());
-        }
-
-
         if(controllerMessage.type().equals(SlaveControllerState.WAIT)) {
             stack.clear();
             if (!polling) {
@@ -242,6 +225,12 @@ public class ClientController implements ClientControllerClientInterface, Client
             stack.push(controllerMessage);
             if(polling)    setPolling(false);
         }
+
+        System.out.print(controllerMessage.type() + "\t\t");
+        if(controllerMessage.genView() == null) System.out.println("null");
+        else System.out.println(controllerMessage.genView().type);
+
+        handlePrintMap(controllerMessage);
 
 
         switch (controllerMessage.type()) {
@@ -314,6 +303,29 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     }
 
+    private boolean filterWait = false;
+
+    private void handlePrintMap(ControllerMessage message) {
+        if (!message.type().equals(SlaveControllerState.WAIT)) {
+            if (message.sandboxView() == null) {
+                try {
+                    network.getMap();
+                } catch (RemoteException e) {
+                    quitForDisconnection();
+                }
+            } else if (message.genView().type != PickTypes.TARGET)
+                view.updateMap(message.sandboxView());
+        } else if (!filterWait) {
+            try {
+                network.getMap();
+            } catch (RemoteException e) {
+                quitForDisconnection();
+            }
+        } else
+            filterWait = false;
+    }
+
+
 
     private void poll() {
         try {
@@ -336,6 +348,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     private void setPolling(boolean value) {
         if(polling != value)
             if(value) {
+                filterWait = true;
                 initPolling();
                 timerForPolling.scheduleAtFixedRate(repeatedTask, 1000, 5000);
             }
