@@ -15,16 +15,21 @@ import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 
+import javax.security.auth.login.LoginException;
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
 public class MainController {
+
+    Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
     private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
@@ -77,7 +82,7 @@ public class MainController {
         if(!canConnect())   throw new IllegalArgumentException("Invalid connection request");
 
         numOfPlayer++;
-        System.out.println("Connection");
+        logger.log(Level.INFO, "Connection");
         notifyConnection(numOfPlayer, player);
         checkGameStart();
     }
@@ -90,7 +95,7 @@ public class MainController {
      */
     public void reconnect(Player player) {
         numOfPlayer++;
-        System.out.println("Reconnection");
+        logger.log(Level.INFO, "Reconnection");
         notifyConnection(numOfPlayer, player);
         checkGameStart();
     }
@@ -128,13 +133,14 @@ public class MainController {
     private void notifyConnection(int num, Player player){
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onConnection(player, num);
-        System.out.println(player);
+        logger.log(Level.INFO, player.toString());
     }
 
     private void notifyDisconnection(int numOfPlayer, Player player) {
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onDisconnection(player, numOfPlayer);
-        System.out.println("Disconnection of\n" + player);
+        logger.log(Level.INFO, "Disconnection");
+        logger.log(Level.INFO, player.toString());
     }
 
     private void notifyStarting(String map){
@@ -209,7 +215,7 @@ public class MainController {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
-                System.out.println("si parte");
+                logger.log(Level.INFO, "si parte");
                 startGame();
                 timerClose();
             }
@@ -301,7 +307,7 @@ public class MainController {
     }
 
     private void broadcastEffectMessage(String effectString) {
-        System.out.println(effectString);
+        logger.log(Level.INFO, effectString);
         for (SlaveController i: slaveControllerList){
             i.addNotification(effectString);
         }

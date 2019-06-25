@@ -8,9 +8,13 @@ import controller.controllerstates.SlaveControllerState;
 
 import java.rmi.server.UID;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ObjectMap {
+
+    Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static ObjectMap ourInstance = new ObjectMap();
     public static ObjectMap get() {
@@ -94,7 +98,9 @@ public class ObjectMap {
      * @return A rollback if the choice is not valid, a WAIT if the client can't do the action or if the client is blocked, the next ControllerMessage otherwise
      */
     public ControllerMessage pick(String token, String choiceId, List<Integer> choices) {
-        System.out.println("Pick\n\t" + choiceMap.get(choiceId).type()+"\n\t"+choiceMap.get(choiceId).genView().type);
+        String messageToLog = "Pick " + choiceMap.get(choiceId).type() + " " + choiceMap.get(choiceId).genView().type;
+        logger.log(Level.INFO, messageToLog);
+
         if(!choiceMap.containsKey(choiceId)
                 || !choicesForPlayer.containsKey(token)
                 || !choicesForPlayer.get(token).contains(choiceId) ) {
