@@ -73,8 +73,11 @@ public class Scoreboard {
                 ));
 
         if(dead.isDead()){
-            dead.getDamageTaken().get(0).addPoints(1);
-
+            if (dead.getDamageTaken().get(0)!=dead)
+                dead.getDamageTaken().get(0).addPoints(1);
+            List<Actor> damages = dead.getDamageTaken().stream()
+                                    .filter(a -> a != dead).collect(Collectors.toList());
+            
             scoreSet.addAll(dead.getDamageTaken());
 
             int num = dead.getNumOfDeaths();

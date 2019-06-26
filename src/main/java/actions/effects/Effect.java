@@ -10,6 +10,7 @@ import uid.TileUID;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public interface Effect {
@@ -64,4 +65,9 @@ public interface Effect {
     default List<PowerUp> newUsedPowUp(List<PowerUp> old){
         return old;
     }
+
+    default Set<DamageableUID> targetedPlayers() {
+        return Set.of();
+    }
+
 }

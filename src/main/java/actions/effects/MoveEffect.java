@@ -7,6 +7,7 @@ import uid.TileUID;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class MoveEffect implements Effect {
@@ -58,5 +59,10 @@ public class MoveEffect implements Effect {
             message = String.format("%s ha spostato %s", pov.pawn().getUsername(),
                     pov.getGm().getPawn(pawn).getUsername());
         return message;
+    }
+
+    @Override
+    public Set<DamageableUID> targetedPlayers() {
+        return Set.of(pawn);
     }
 }

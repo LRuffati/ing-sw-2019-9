@@ -20,7 +20,7 @@ public class PayTemplate implements EffectTemplate{
     private final AmmoAmountUncapped amount;
 
     public PayTemplate(AmmoAmountUncapped amount){
-        this.amount = new AmmoAmountUncapped(amount.getAmounts());
+        this.amount = amount.copy();
     }
 
     /**

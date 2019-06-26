@@ -35,9 +35,9 @@ public class ParserWeaponTest {
         Map<AmmoColor, Integer> amountGiven = new HashMap<>();
         amountGiven.put(AmmoColor.BLUE,2);
         AmmoAmount amountTest = new AmmoAmount(amountGiven);
-        assertEquals("BLU: 2",weaponToTest.getBuyCost().toString());
-        assertEquals("BLU: 1",weaponToTest.getReloadCost().toString());
-        assertEquals(1, weaponToTest.getBuyCost().compareTo(amountTest));
+        assertEquals("BLU: 1",weaponToTest.getBuyCost().toString());
+        assertEquals("BLU: 2",weaponToTest.getReloadCost().toString());
+        assertTrue(amountTest.canBuy(weaponToTest.getBuyCost()));
 
         Map<String, ActionTemplate> actions = weaponToTest.getActions();
         assertTrue(actions.containsKey("main"));

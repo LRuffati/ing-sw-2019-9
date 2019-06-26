@@ -45,7 +45,7 @@ public class DominationPointTile extends Tile {
         if(map.tile(actor.pawnID()).equals(
                 ((DominationPoint)controlPointActor.pawn()).getDominationPointTile().tileID)
         ) {
-            actor.damageRaw(controlPointActor, 1);
+            actor.damageRaw(actor, 1);
             controlPointActor.addDamageList(actor, getColor());
         }
 

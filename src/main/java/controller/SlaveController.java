@@ -100,6 +100,13 @@ public class SlaveController {
                                     .filter(i->i.canUse(lastEffects))
                                     .collect(Collectors.toList());
 
+        // Check that I can pay the targeting scope
+        if (getSelf().getPowerUp().size()==1 & AmmoAmountUncapped.zeroAmmo.canBuy(getSelf().getAmmo())){
+            pows = pows.stream()
+                    .filter(p -> p.getType().equals(PowerUpType.TARGETINGSCOPE))
+                    .collect(Collectors.toList());
+        }
+
         Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
 
         Function<Sandbox, ControllerMessage> reloadMerger = // Will take the effects in
@@ -139,7 +146,7 @@ public class SlaveController {
             return new PickActionMessage(action, "Scegli un'azione",
                 sandbox, getNotifications());
 
-        } else { // Powerups and then reload
+        } else { // Powerups
             Function<List<PowerUp>, ControllerMessage> onPowupPick =
                     list -> {
                         if (list.isEmpty()) {
@@ -152,7 +159,9 @@ public class SlaveController {
                             }
                         } else {
                             //3. Call this function with same params
-                            Runnable onApplied = () -> this.setCurrentMessage(this.setPowUps(lastEffects, nextActs));
+                            Runnable onApplied = () -> {
+                                        this.setCurrentMessage(this.setPowUps(lastEffects, nextActs));
+                                    };
                             //2. Apply powerup
                             return list.get(0).usePowup(this, lastEffects, onApplied);
                         }
@@ -407,7 +416,7 @@ public class SlaveController {
 
                 }
             }).start();
-        }
+        } //TODO merge old and new wait messages
     }
 
     /**

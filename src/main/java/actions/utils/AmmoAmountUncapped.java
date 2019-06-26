@@ -30,6 +30,10 @@ public class AmmoAmountUncapped{
         amounts = temp;
     }
 
+    public AmmoAmountUncapped copy(){
+        return new AmmoAmountUncapped(this.amounts);
+    }
+
     public Map<AmmoColor, Integer> getAmounts(){
         return new EnumMap<>(amounts);
     }
