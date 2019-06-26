@@ -49,6 +49,10 @@ public class DominationMode extends Scoreboard{
         this.spawnTracker = new HashMap<>();
     }
 
+    public Map<Color, List<Actor>> getSpawnTracker() {
+        return spawnTracker;
+    }
+
     public boolean finalFrenzy() {
         return numOfDeaths >= maxDeaths || spawnTracker.values().stream().filter(x -> x.size() == 8).count() >= 2;
     }

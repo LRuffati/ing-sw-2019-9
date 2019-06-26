@@ -34,6 +34,8 @@ public class GameBuilder {
     private Scoreboard scoreboard;
     private String mapName;
 
+    private GameMode gameMode;
+
     /**
      * Constructor of the class. It builds all the modules needed for the game to start.
      * Requires the configuration files for all the components.
@@ -55,6 +57,8 @@ public class GameBuilder {
                         String ammoCardPath,
                         int numOfPlayer)
             throws FileNotFoundException{
+
+        this.gameMode = gameMode;
 
         deckOfWeapon = parserWeapon(weaponPath);
         deckOfPowerUp = parserPowerUp(powerUpPath);
@@ -171,6 +175,9 @@ public class GameBuilder {
     }
     public String getMapName() {
         return mapName;
+    }
+    public GameMode getGameMode() {
+        return gameMode;
     }
 }
 

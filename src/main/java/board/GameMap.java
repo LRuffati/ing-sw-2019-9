@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import controller.GameMode;
+import gamemanager.DominationMode;
 import gamemanager.GameBuilder;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
@@ -474,15 +475,15 @@ public class GameMap {
      * Generates a copy of the Map for Serialization
      * @return the GameMapView object
      */
-    public GameMapView generateView(DamageableUID pointOfView){
+    public GameMapView generateView(DamageableUID pointOfView) {
 
         GameMapView gameMapView = new GameMapView();
 
         List<ActorView> players = new ArrayList<>();
         List<ActorView> players2 = new ArrayList<>();
         ActorView you = new ActorView();
-        for(DamageableUID actor : getDamageable()){
-            if(pointOfView.equals(actor))
+        for (DamageableUID actor : getDamageable()) {
+            if (pointOfView.equals(actor))
                 you = new ActorView(getPawn(actor).getDamageableUID());
             players.add(new ActorView(getPawn(actor).getDamageableUID()));
         }
@@ -491,15 +492,15 @@ public class GameMap {
         gameMapView.setPlayers(players);
 
         you = getPawn(you.uid()).generateView(gameMapView, pointOfView, pointOfView);
-        for(DamageableUID uid : getDamageable())
+        for (DamageableUID uid : getDamageable())
             players2.add(getPawn(uid).generateView(gameMapView, uid, pointOfView));
         gameMapView.setYou(you);
         gameMapView.setPlayers(players2);
 
         //TODO: tiles.put(getCoord(tile), null) ?? is this correct?
         Map<Coord, TileView> tiles = new HashMap<>();
-        for(TileUID tile : position){
-            if(allTiles().contains(tile))
+        for (TileUID tile : position) {
+            if (allTiles().contains(tile))
                 tiles.put(getCoord(tile), getTile(tile).generateView(gameMapView));
             //else
             //    tiles.put(getCoord(tile), null);
@@ -508,9 +509,13 @@ public class GameMap {
         gameMapView.setTiles(tiles);
         gameMapView.setMax(maxPos);
 
-        if(GameBuilder.get() != null)
-            gameMapView.setSkullBox(GameBuilder.get().getScoreboard().getSkullBox());
+        gameMapView.setGameMode(GameBuilder.get().getGameMode());
 
+        gameMapView.setSkullBox(GameBuilder.get().getScoreboard().getSkullBox());
+
+        if (gameMapView.gameMode().equals(GameMode.DOMINATION)) {
+            gameMapView.setSpawnTracker(((DominationMode) GameBuilder.get().getScoreboard()).getSpawnTracker());
+        }
         return gameMapView;
     }
 }

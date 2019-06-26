@@ -1,6 +1,10 @@
 package controller;
 
-public enum GameMode {
+import java.io.Serializable;
+
+public enum GameMode implements Serializable {
     NORMAL,
-    DOMINATION
+    DOMINATION,
+    TURRET,
+    TERMINATOR
 }

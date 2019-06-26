@@ -1,6 +1,7 @@
 package view.cli;
 
 import actions.utils.AmmoColor;
+import controller.GameMode;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
 import view.View;
@@ -577,8 +578,41 @@ public class CLIDemo implements View {
     void askInfo() {
         clearScreen();
         getPrintedMap();
+        printScoreboard();
+        System.out.println(">> 0. Exit");
         System.out.println(">> 1. Players");
         System.out.println(">> 2. Tiles");
+    }
+
+    private void printScoreboard() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Killtrack : ");
+        for(Map<ActorView, Integer> map : climap.getMp().skullBox()) {
+            for(ActorView actorView : map.keySet()) {
+                builder.append( AnsiColor.getAnsi(actorView.color()) );
+                builder.append("█ ");
+                builder.append(AnsiColor.getDefault());
+            }
+        }
+        System.out.println(builder.toString());
+
+        builder = new StringBuilder();
+        if(climap.getMp().gameMode().equals(GameMode.DOMINATION)) {
+            builder.append("Colortrack :");
+            for(Map.Entry<Color, List<ActorView>> entry : climap.getMp().spawnTracker().entrySet()) {
+                builder.append("\n\t");
+                builder.append(AnsiColor.getColorName(entry.getKey()));
+                builder.append(" :\t");
+                for(ActorView actorView : entry.getValue()) {
+                    builder.append( AnsiColor.getAnsi(actorView.color()) );
+                    builder.append("█ ");
+                    builder.append(AnsiColor.getDefault());
+                }
+            }
+            builder.append("\n");
+            System.out.println(builder.toString());
+        }
+
     }
 
     void askPlayer() {
@@ -677,15 +711,20 @@ class CommandParser{
                 break;
 
             case INFO:
-                if (str.equals("1")) {
-                    state = State.CHOOSEPLAYER;
-                    cliDemo.askPlayer();
-                    break;
-                }
-                if (str.equals("2")) {
-                    state = State.CHOOSETILE;
-                    cliDemo.askTile();
-                    break;
+                switch (str) {
+                    case "1":
+                        state = State.CHOOSEPLAYER;
+                        cliDemo.askPlayer();
+                        break;
+                    case "2":
+                        state = State.CHOOSETILE;
+                        cliDemo.askTile();
+                        break;
+
+                        default:
+                            state = State.MAIN;
+                            System.out.println(cliDemo.pickStringMessage);
+                            break;
                 }
                 break;
 
