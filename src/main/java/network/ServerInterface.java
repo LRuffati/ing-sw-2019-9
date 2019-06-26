@@ -1,5 +1,6 @@
 package network;
 
+import controller.GameMode;
 import viewclasses.GameMapView;
 
 import java.rmi.Remote;
@@ -27,7 +28,7 @@ public interface ServerInterface extends Remote {
     void onConnection(Player player, int numOfPlayer) throws RemoteException;
     void onDisconnection(Player player, int numOfPlayer) throws RemoteException;
 
-    void onStarting(String map) throws RemoteException;
+    void onStarting(String map, GameMode gameMode) throws RemoteException;
     void onTimer(int ms) throws RemoteException;
 
     void onWinner(String winner, int winnerPoints, int yourPoint) throws RemoteException;

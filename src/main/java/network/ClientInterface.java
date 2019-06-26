@@ -22,4 +22,6 @@ public interface ClientInterface {
     void getMap() throws RemoteException;
 
     void poll() throws RemoteException;
+
+    void modeRequest(boolean normalMode) throws RemoteException;
 }

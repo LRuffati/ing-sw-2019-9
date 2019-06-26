@@ -448,8 +448,21 @@ public class CLIDemo implements View {
     }
 
     @Override
-    public void onStarting(String map) {
+    public void onStarting(String map, GameMode gameMode) {
         System.out.println("The game is goin' to start in a moment...");
+        switch (gameMode) {
+            case NORMAL:
+                System.out.println("Normal mode");
+                break;
+            case DOMINATION:
+                System.out.println("Domination mode");
+                break;
+            case TERMINATOR:
+                System.out.println("Terminator mode");
+                break;
+            case TURRET:
+                System.out.println("Turret mode");
+        }
         scanThread.start();
     }
 

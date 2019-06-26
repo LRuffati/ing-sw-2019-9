@@ -24,4 +24,6 @@ public interface ServerRMIInterface extends Remote {
     ControllerMessage poll(String token) throws RemoteException;
 
     void pingResponse(String token) throws RemoteException;
+
+    void modeRequest(boolean normalMode) throws RemoteException;
 }

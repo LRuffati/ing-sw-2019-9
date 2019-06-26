@@ -17,7 +17,6 @@ import uid.TileUID;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
-import java.lang.reflect.GenericArrayType;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -46,6 +45,7 @@ public class MainController {
 
     private GameMap gameMap;
     private GameBuilder game;
+    private GameMode gameMode;
 
     /**
      * The list of slave controllers, in the order of their turns, randomised from slaveMap
@@ -71,7 +71,7 @@ public class MainController {
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
             //todo: change
-            startGame(GameMode.NORMAL);
+            startGame();
         }
         if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
             timerStart(TIME_BEFORE_STARTING);
@@ -146,7 +146,7 @@ public class MainController {
 
     private void notifyStarting(String map){
         for(SlaveController slaveController : slaveControllerList)
-            slaveController.onStarting(map);
+            slaveController.onStarting(map, gameMode);
     }
 
     private void notifyTimer(int ms){
@@ -159,13 +159,16 @@ public class MainController {
             slaveController.onWinner(winner, winnerPoints);
     }
 
-    private void startGame(GameMode gameMode) {
+    private void startGame() {
+
+        GameMode gameMode = 2*normalMode>=numOfPlayer ? GameMode.NORMAL : GameMode.DOMINATION;
 
         gameStarted = true;
         createGame(gameMode);
 
         this.scoreboard = game.getScoreboard();
         this.gameMap = game.getMap();
+        this.gameMode = gameMode;
 
         for (SlaveController i: slaveControllerList){
             slaveMap.put(i.getSelf().pawnID(), i);
@@ -218,7 +221,7 @@ public class MainController {
             public void run() {
                 logger.log(Level.INFO, "si parte");
                 //todo: change
-                startGame(GameMode.NORMAL);
+                startGame();
                 timerClose();
             }
         };
@@ -449,5 +452,11 @@ public class MainController {
 
     private void setGameMap(GameMap gameMap) {
         this.gameMap = gameMap;
+    }
+
+
+    private int normalMode = 0;
+    public void modeRequest(boolean normalMode) {
+        this.normalMode += normalMode ? 1 : 0;
     }
 }
