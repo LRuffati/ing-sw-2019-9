@@ -28,7 +28,7 @@ public class ClientStarter {
             if(res.equals("1")) cli = false;
         } while (!res.equals("0") && !res.equals("1"));
 
-        System.out.println("Normale [0] o Dominazione [1]:\t");
+        System.out.print("Normale [0] o Dominazione [1]:\t");
         res = scanner.next();
         if(res.equals("1")) normal = false;
 

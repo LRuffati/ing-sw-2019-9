@@ -214,8 +214,8 @@ public class Tile{
 
         List<ActorView> players = new ArrayList<>();
         for(DamageableUID pawn : map.containedPawns(tileID)) {
-            for(ActorView actorView : gameMapView.players())
-                if(actorView.uid().equals(pawn)) {
+            for (ActorView actorView : gameMapView.players())
+                if (actorView.uid().equals(pawn)) {
                     players.add(actorView);
                     actorView.setPosition(tileView);
                 }

@@ -55,7 +55,7 @@ public class DominationPointTile extends Tile {
     protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap) {
         super.setMap(map, damageableUIDPawnMap);
         this.controlPointActor = new ControlPointActor(map, pawnID, false);
-        damageableUIDPawnMap.put(pawnID, new DominationPoint(pawnID, this));
+        damageableUIDPawnMap.put(pawnID, new DominationPoint(pawnID, this, map));
     }
 
 

@@ -22,7 +22,6 @@ public class CLIMap {
 
     /**
      * The object will generate an ASCII map to be printed on the command line.
-     * @throws FileNotFoundException will probably be deleted, the map to be taken won't be to be generated
      * every time.
      */
     public CLIMap(GameMapView gmv){

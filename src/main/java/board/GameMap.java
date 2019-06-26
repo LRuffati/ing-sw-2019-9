@@ -10,6 +10,7 @@ import gamemanager.GameBuilder;
 import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
+import player.Actor;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -482,7 +483,8 @@ public class GameMap {
         List<ActorView> players = new ArrayList<>();
         List<ActorView> players2 = new ArrayList<>();
         ActorView you = new ActorView();
-        for (DamageableUID actor : getDamageable()) {
+        for(Actor a : GameBuilder.get().getActorList()) {
+            DamageableUID actor = a.pawnID();
             if (pointOfView.equals(actor))
                 you = new ActorView(getPawn(actor).getDamageableUID());
             players.add(new ActorView(getPawn(actor).getDamageableUID()));
@@ -492,8 +494,10 @@ public class GameMap {
         gameMapView.setPlayers(players);
 
         you = getPawn(you.uid()).generateView(gameMapView, pointOfView, pointOfView);
-        for (DamageableUID uid : getDamageable())
+        for(Actor a : GameBuilder.get().getActorList()) {
+            DamageableUID uid = a.pawnID();
             players2.add(getPawn(uid).generateView(gameMapView, uid, pointOfView));
+        }
         gameMapView.setYou(you);
         gameMapView.setPlayers(players2);
 
@@ -511,9 +515,10 @@ public class GameMap {
 
         gameMapView.setGameMode(GameBuilder.get().getGameMode());
 
-        gameMapView.setSkullBox(GameBuilder.get().getScoreboard().getSkullBox());
+
 
         if (gameMapView.gameMode().equals(GameMode.DOMINATION)) {
+            gameMapView.setSkullBox(((DominationMode) GameBuilder.get().getScoreboard()).getSkullBox());
             gameMapView.setSpawnTracker(((DominationMode) GameBuilder.get().getScoreboard()).getSpawnTracker());
         }
         return gameMapView;
