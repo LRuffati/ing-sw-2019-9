@@ -26,6 +26,7 @@ public class CLIDemo implements View {
     String pickStringMessage;
     private List<Integer> chosenList = new ArrayList<>();
     private List<Integer> toReturn;
+    private String yourPlayerChar;
 
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
@@ -401,6 +402,11 @@ public class CLIDemo implements View {
     @Override
     public void updateMap(GameMapView gameMapView) {
         climap = new CLIMap(gameMapView);
+        if(yourPlayerChar == null) {
+            yourPlayerChar = "You're the player " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
+            System.out.println(yourPlayerChar);
+            System.out.println(AnsiColor.getAnsi(Color.gray));
+        }
         climap.printMap();
     }
 
@@ -557,6 +563,8 @@ public class CLIDemo implements View {
             System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());
             i++;
         }
+
+        System.out.println("\n\n\n");
     }
 
     void askInfo() {
