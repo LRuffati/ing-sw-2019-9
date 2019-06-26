@@ -337,9 +337,9 @@ public class SlaveController {
         }
     }
 
-    void onStarting(String map) {
+    void onStarting(String map, GameMode gameMode) {
             try {
-                network.onStarting(map);
+                network.onStarting(map, gameMode);
             }
             catch (RemoteException e) {
                 Database.get().logout(this.player.getToken());

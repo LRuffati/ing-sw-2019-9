@@ -6,9 +6,9 @@ import controller.controllerclient.ClientControllerNetworkInterface;
 import network.ClientInterface;
 import network.exception.InvalidLoginException;
 import network.socket.messages.*;
-import controller.controllermessage.ControllerMessage;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -115,6 +115,11 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         }
     }
 
+    @Override
+    public void modeRequest(boolean normalMode) {
+        client.request(new ModeRequest(normalMode));
+    }
+
     /**
      * @param chooserId Id of the chosen container
      * @param choice A list containing all the chosen index. Server will analyze if a List or an int is needed
@@ -218,7 +223,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(OnStarting response) {
-        clientController.onStarting(response.mapName);
+        clientController.onStarting(response.mapName, response.gameMode);
     }
 
     @Override

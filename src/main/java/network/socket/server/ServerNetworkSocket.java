@@ -1,5 +1,6 @@
 package network.socket.server;
 
+import controller.GameMode;
 import network.*;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
@@ -7,7 +8,6 @@ import network.exception.InvalidLoginException;
 import network.socket.messages.notify.*;
 import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
-
 
 /**
  * This class handles all the methods called by the Server(implemented in ServerInterface)
@@ -66,9 +66,9 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     }
 
     @Override
-    public void onStarting(String map) {
+    public void onStarting(String map, GameMode gameMode) {
         if(checkConnection(token))
-            clientHandler.respond(new OnStarting(map));
+            clientHandler.respond(new OnStarting(map, gameMode));
     }
 
     @Override
@@ -167,10 +167,13 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
         msg = ObjectMap.get().poll(token, msg);
         return new PollResponse(msg);
-
-
     }
 
+    @Override
+    public Response handle(ModeRequest request) {
+        Database.get().getMainController().modeRequest(request.normalMode);
+        return null;
+    }
 
     @Override
     public Response handle(PickRequest request) {

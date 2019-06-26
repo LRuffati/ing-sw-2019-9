@@ -42,11 +42,16 @@ public class DominationMode extends Scoreboard{
     }
 
     public DominationMode(List<Actor> actorList, int numOfdeaths) {
+        super(actorList, numOfdeaths);
         this.actorList = actorList;
         this.maxDeaths = numOfdeaths;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();
         this.spawnTracker = new HashMap<>();
+    }
+
+    public Map<Color, List<Actor>> getSpawnTracker() {
+        return spawnTracker;
     }
 
     public boolean finalFrenzy() {
