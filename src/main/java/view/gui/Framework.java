@@ -29,7 +29,6 @@ public class Framework implements View {
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
-        this.gmv = controller.getMap();
     }
 
     private static void createAndShowGUI(ClientControllerClientInterface controller) {
@@ -86,7 +85,8 @@ public class Framework implements View {
 
     @Override
     public void updateMap(GameMapView gameMapView) {
-
+        this.gmv = gameMapView;
+        if(game == null) game = new GameFrame(gmv);
     }
 
     @Override
@@ -306,7 +306,7 @@ public class Framework implements View {
         changeFrameFlag = true;
         waitingScreen.dispatchEvent(new WindowEvent(waitingScreen, WindowEvent.WINDOW_CLOSING));
 
-        game = new GameFrame(gmv);
+
     }
 
     @Override
@@ -318,7 +318,7 @@ public class Framework implements View {
 
     @Override
     public void onRespawn() {
-        game.getOutputBox().writeOnOutput("You're respawing now...");
+        if(game!=null) game.getOutputBox().writeOnOutput("You're respawing now...");
     }
 
     @Override

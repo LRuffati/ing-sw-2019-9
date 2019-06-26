@@ -49,7 +49,7 @@ public class ParserWeaponTest {
 
     @Test
     void realFile(){
-        String path = "weapons.txt";
+        String path = "src/main/resources/weapons.txt";
         try{
             weaponCollection = ParserWeapon.parse(path);
         } catch (FileNotFoundException e) {

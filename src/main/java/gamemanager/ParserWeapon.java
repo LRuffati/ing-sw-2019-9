@@ -14,6 +14,10 @@ import grabbables.Weapon;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +26,7 @@ public class ParserWeapon {
     ParserWeapon(){}
 
     public static Collection<Weapon> parse(String path) throws FileNotFoundException{
+        parseWeapons(path);
         Collection<Weapon> weaponCollection = new ArrayList<>();
         Scanner scanner;
         Scanner sLine;
@@ -30,6 +35,7 @@ public class ParserWeapon {
         AmmoAmount reloadWeapon = null;
         Collection<ActionTemplate> actions = new ArrayList<>();
         String mainAction = null;
+        int countWeap = 0;
 
 
 
@@ -49,6 +55,7 @@ public class ParserWeapon {
             int R = 0;
             switch(toBegin) {
                 case "weapon":
+                    countWeap +=1;
                     weaponId = sLine.next();
                     String ammoColour = sLine.next();
                     for(int i = 0; i < ammoColour.length()-1; i++){
@@ -401,10 +408,12 @@ public class ParserWeapon {
                     mainAction=null;
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
                             targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
+                    effects.clear();
                     break;
 
                 case "stop":
                     weaponCollection.add(new Weapon(name,buyWeapon,reloadWeapon,actions));
+                    actions.clear();
                     break;
 
                 default:
@@ -414,5 +423,126 @@ public class ParserWeapon {
         }
         scanner.close();
         return weaponCollection;
+    }
+
+    public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
+
+        Set<Weapon> weapons = new HashSet<>();
+        Scanner scanner = new Scanner( ClassLoader.getSystemResourceAsStream(path));
+        String wholeFile = scanner.useDelimiter("\\A").next();
+        scanner.close();
+
+
+        Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:([\\w\\W]+?)\\nstop").matcher(wholeFile);
+
+        while (wholeFileMatcher.find()) {
+            Matcher wIdMatcher = Pattern.compile("weapon +(\\w+)").matcher(wholeFile);
+            String weaponId = wIdMatcher.group().split(" ")[1];
+
+            Matcher costMatcher = Pattern.compile("([RBY]([RYB]*))").matcher(wholeFile);
+            String fullCost = costMatcher.group();
+            int R = 0;
+            int B = 0;
+            int Y = 0;
+            for (int i = 0; i < fullCost.length(); i++) {
+                switch (fullCost.charAt(i)) {
+                    case ('R'):
+                        R++;
+                        break;
+
+                    case ('B'):
+                        B++;
+                        break;
+
+                    case ('Y'):
+                        Y++;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            Map<AmmoColor, Integer> reloadCost = new HashMap<>();
+            reloadCost.put(AmmoColor.RED, R);
+            reloadCost.put(AmmoColor.BLUE, B);
+            reloadCost.put(AmmoColor.YELLOW, Y);
+
+            Map<AmmoColor, Integer> buyCost = new HashMap<>();
+            if (R > 0) {
+                buyCost.put(AmmoColor.RED, R - 1);
+            } else buyCost.put(AmmoColor.RED, R);
+            if (B > 0) {
+                buyCost.put(AmmoColor.BLUE, B - 1);
+            } else buyCost.put(AmmoColor.BLUE, B);
+            if (Y > 0) {
+                buyCost.put(AmmoColor.YELLOW, Y - 1);
+            } else buyCost.put(AmmoColor.YELLOW, Y);
+
+            Matcher bodyMatcher = Pattern.compile("([\\w\\W]+?)\\nstop").matcher(wholeFile);
+            String body = bodyMatcher.group();
+
+            weapons.add(parseSingleWeapon(weaponId, new AmmoAmount(reloadCost), new AmmoAmount(buyCost), body));
+
+        }
+
+        // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
+        // Per ogni match:
+        //          Gruppo 1: weaponId
+        //          2: Ricarica
+        //          3: BuyCost
+        //          4: body
+        return weapons;
+    }
+
+    private static AmmoAmount parseAmmo(String ammoamount){
+
+
+
+        return null;
+    }
+
+    private static Weapon parseSingleWeapon(String weaponId, AmmoAmount reloadCost, AmmoAmount buyCost, String body){
+        // regex1:= nomeWeapon: +([ \w]+?) *\ndescrizioneWeapon: +([ \w]+?) *\n(action[\w\W]+)$
+        // gruppo 1: nome
+        // gruppo 2: descrizione
+        // gruppo 3: actions
+        //
+        // regex2:= action +(\w+)(?: +([RYB]*))?(?: +follows +\[(.+?)\])?(?: +exist +\[(.+?)\])?(?: +xor +\[(.+?)\])?(?: +contemp +(\w+))? *:\n([\w\W]+?)(?=action|$)
+        // 1: idAzione
+        // 2: costo
+        // 3: listaFollows ex "!main ciao"
+        // 4: listaexist ^
+        // 5: listaxor "act1 act2"
+        // 6: contemp "main"
+        // 7: body
+        //
+        // Per ogni match di regex2 chiama prima parseInfo e poi parseTarget
+        // Dopo aver raccolto tutte le azioni verificare per i contemp
+        return null;
+    }
+
+    private static ActionTemplate parseAction(ActionInfo info,
+                                              String body){
+        return null;
+    }
+
+    private static Tuple<String, TargeterTemplate> parseTarget(String line){
+        return null;
+    }
+
+    private static EffectTemplate parseEffect(String body){
+        return null;
+    }
+
+    private static ActionInfo parseInfo(String nomeId,
+                                        String nome,
+                                        String descrizione,
+                                        AmmoAmount cost,
+                                        String followsList,
+                                        String existList,
+                                        String xorList,
+                                        String contemp){
+        return null;
     }
 }

@@ -2,7 +2,6 @@ package board;
 
 import gamemanager.DominationMode;
 import gamemanager.Scoreboard;
-import genericitems.Tuple;
 import player.Actor;
 import player.ControlPointActor;
 import player.DominationPoint;

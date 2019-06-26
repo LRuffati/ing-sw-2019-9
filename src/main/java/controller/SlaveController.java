@@ -252,7 +252,7 @@ public class SlaveController {
                         SlaveControllerState.USETAGBACK,
                         tagbacks,
                         powUpPickerAccept,
-                        "Scegli quale granata venom usare (o nessuna)",
+                        "Scegli quale granata venom usare",
                         true,
                         List.of()
                 );
