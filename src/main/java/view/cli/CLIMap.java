@@ -137,14 +137,12 @@ public class CLIMap {
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
-        //System.out.println(mp.allCoord().contains(new Coord(0,0)));
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
                 Coord cord = new Coord(r/ DIM_TILE, c/ DIM_TILE);
                 boolean flag = true;
                 if(mp.allCoord().contains(cord)) {
-                    //TODO add the escape "\0×1B" character in the following to print(s) to maintain the map. Won't work on Intellij.
                     for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
                         if(tiles[c][r].equals(entry.getValue())){
                             System.out.print(AnsiColor.getAnsi(entry.getKey().color()) + tiles[c][r] + "\u001B[0m");
