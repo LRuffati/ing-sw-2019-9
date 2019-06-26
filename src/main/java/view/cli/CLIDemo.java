@@ -560,29 +560,58 @@ public class CLIDemo implements View {
         return out.toString();
     }
 
+    String printListOfColor(List<ActorView> actorViews) {
+        StringBuilder builder = new StringBuilder();
+        for(ActorView actorView : actorViews) {
+            builder.append( AnsiColor.getAnsi(actorView.color()) );
+            builder.append("█ ");
+            builder.append(AnsiColor.getDefault());
+        }
+        return builder.toString();
+    }
+
     private void playerInfo(ActorView player) {
         System.out.println("\n>> The player " + AnsiColor.getAnsi(player.color()) + player.name() + "\u001B[0m" + " still got " +
                 (player.getHP()-player.damageTaken().size()) + "HP left.");
+        if(player.getHP()-player.damageTaken().size() < 10 ) {
+            System.out.print("\n>> Damage taken :\t");
+            System.out.println(printListOfColor(player.damageTaken()));
+        }
+        if(player.marks().size() != 0) {
+            System.out.print("\n>> Marks taken:\t");
+            List<ActorView> marks = new ArrayList<>();
+            for(Map.Entry entry : player.marks().entrySet())
+                for(int i = 0; i<(Integer)entry.getValue(); i++)
+                    marks.add((ActorView)entry.getKey());
+            System.out.println(printListOfColor(marks));
+        }
         System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
         System.out.println("\n>> He's got the following ammo: ");
         System.out.println(player.ammo().get(AmmoColor.RED) + "\tRED");
         System.out.println(player.ammo().get(AmmoColor.BLUE) + "\tBLUE");
         System.out.println(player.ammo().get(AmmoColor.YELLOW) + "\tYELLOW");
-        System.out.println("\n>> He's got the following loaded weapons: ");
+
         int i = 0;
-        for(WeaponView w : player.getLoadedWeapon()){
-            System.out.println(i + ". " + w.name());
-            i++;
+        if(player.getLoadedWeapon().size() > 0) {
+            System.out.println("\n>> He's got the following loaded weapons: ");
+            for (WeaponView w : player.getLoadedWeapon()) {
+                System.out.println(i + ". " + w.name());
+                i++;
+            }
         }
-        System.out.println("\n>> He's got the following unloaded weapons: ");
-        for(WeaponView w : player.getUnloadedWeapon()){
-            System.out.println(i + ". " + w.name());
-            i++;
+        if(player.getUnloadedWeapon().size() > 0) {
+            System.out.println("\n>> He's got the following unloaded weapons: ");
+            for (WeaponView w : player.getUnloadedWeapon()) {
+                System.out.println(i + ". " + w.name());
+                i++;
+            }
         }
-        System.out.println("\n>> He's got the following powerUps: ");
-        for(PowerUpView w : player.getPowerUp()){
-            System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());
-            i++;
+        if(player.getPowerUp().size() > 0) {
+            System.out.println("\n>> He's got the following powerUps: ");
+            for (PowerUpView w : player.getPowerUp()) {
+                System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());
+                i++;
+            }
         }
 
         System.out.println("\n\n\n");
@@ -600,15 +629,8 @@ public class CLIDemo implements View {
     private void printScoreboard() {
         StringBuilder builder = new StringBuilder();
         builder.append("Killtrack : ");
-        for(Map<ActorView, Integer> map : climap.getMp().skullBox()) {
-            for(ActorView actorView : map.keySet()) {
-                builder.append( AnsiColor.getAnsi(actorView.color()) );
-                builder.append("█ ");
-                builder.append(AnsiColor.getDefault());
-            }
-        }
+        printListOfColor(climap.getMp().skullBox().stream().map(x -> (ActorView)x.keySet()).collect(Collectors.toList()));
         System.out.println(builder.toString());
-
         builder = new StringBuilder();
         if(climap.getMp().gameMode().equals(GameMode.DOMINATION)) {
             builder.append("Colortrack :");
@@ -616,16 +638,11 @@ public class CLIDemo implements View {
                 builder.append("\n\t");
                 builder.append(AnsiColor.getColorName(entry.getKey()));
                 builder.append(" :\t");
-                for(ActorView actorView : entry.getValue()) {
-                    builder.append( AnsiColor.getAnsi(actorView.color()) );
-                    builder.append("█ ");
-                    builder.append(AnsiColor.getDefault());
-                }
+                printListOfColor(entry.getValue());
             }
             builder.append("\n");
             System.out.println(builder.toString());
         }
-
     }
 
     void askPlayer() {
@@ -683,83 +700,5 @@ public class CLIDemo implements View {
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
-    }
-}
-
-class CommandParser{
-
-    private Consumer<String> strings;
-    private CLIDemo cliDemo;
-
-    private State state;
-
-    CommandParser(CLIDemo cliDemo){
-        this.cliDemo = cliDemo;
-        this.state = State.MAIN;
-    }
-
-    void bind(Consumer<String> strings){
-        this.strings = strings;
-    }
-
-    void parseCommand(String str){
-        switch (state) {
-            case MAIN:
-                if (str.equalsIgnoreCase("info")) {
-                    state = State.INFO;
-                    cliDemo.askInfo();
-                    break;
-                }
-                if (str.equalsIgnoreCase("quit")) {
-                    cliDemo.quitGame();
-                    break;
-                }
-                strings.accept(str);
-                /*
-                if (strings != null) {
-                    strings.accept(str);
-                    strings = null;
-                }
-                */
-                break;
-
-            case INFO:
-                switch (str) {
-                    case "1":
-                        state = State.CHOOSEPLAYER;
-                        cliDemo.askPlayer();
-                        break;
-                    case "2":
-                        state = State.CHOOSETILE;
-                        cliDemo.askTile();
-                        break;
-
-                        default:
-                            state = State.MAIN;
-                            System.out.println(cliDemo.pickStringMessage);
-                            break;
-                }
-                break;
-
-            case CHOOSEPLAYER:
-                cliDemo.choosePlayer(str);
-                state = State.MAIN;
-                System.out.println(cliDemo.pickStringMessage);
-                break;
-
-            case CHOOSETILE:
-                cliDemo.chooseTile(str);
-                state = State.MAIN;
-                System.out.println(cliDemo.pickStringMessage);
-                break;
-
-            default:
-                System.out.println("type info or quit");
-                break;
-        }
-    }
-
-    private enum State {
-        MAIN, INFO, CHOOSEPLAYER, CHOOSETILE
     }
 }
