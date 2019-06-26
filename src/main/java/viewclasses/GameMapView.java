@@ -126,7 +126,7 @@ public class GameMapView implements Serializable{
     public void setSkullBox(List<Map<Actor, Integer>> skullBox){
         this.skullBox = new ArrayList<>();
         for(Map<Actor, Integer> actorIntegerMap : skullBox){
-            for(Map.Entry entry : actorIntegerMap.entrySet()){
+            for(Map.Entry entry : actorIntegerMap.entrySet()) {
                 Actor actor = (Actor)entry.getKey();
                 Integer n = (Integer)entry.getValue();
                 this.skullBox.add(Map.of(players.stream().filter(x -> x.uid().equals(actor.pawnID())).collect(Collectors.toList()).get(0), n));

@@ -563,7 +563,11 @@ public class CLIDemo implements View {
     String printListOfColor(List<ActorView> actorViews) {
         StringBuilder builder = new StringBuilder();
         for(ActorView actorView : actorViews) {
-            builder.append( AnsiColor.getAnsi(actorView.color()) );
+            //todo: should be changed
+            if(actorView == null && climap.getMp().gameMode().equals(GameMode.DOMINATION))
+                builder.append(AnsiColor.getAnsi(Color.orange));
+            else
+                builder.append( AnsiColor.getAnsi(actorView.color()) );
             builder.append("█ ");
             builder.append(AnsiColor.getDefault());
         }
