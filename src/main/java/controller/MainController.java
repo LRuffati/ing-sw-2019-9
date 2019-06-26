@@ -96,6 +96,7 @@ public class MainController {
      */
     public void reconnect(Player player) {
         numOfPlayer++;
+        player.setOnLine(true);
         logger.log(Level.INFO, "Reconnection");
         notifyConnection(numOfPlayer, player);
         checkGameStart();
@@ -122,6 +123,7 @@ public class MainController {
      */
     public void logout(Player player) {
         numOfPlayer--;
+        player.setOnLine(false);
         notifyDisconnection(numOfPlayer, player);
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
@@ -329,11 +331,14 @@ public class MainController {
 
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
+        while(!slaveControllerList.get(currIndex+1).isOnline()) currIndex = (currIndex+1)%size;
+        next = slaveControllerList.get(currIndex);
+        /*
         if (currIndex<(size-1)){
             next = slaveControllerList.get(currIndex+1);
         } else {
             next = slaveControllerList.get(0);
-        }
+        }*/
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){
