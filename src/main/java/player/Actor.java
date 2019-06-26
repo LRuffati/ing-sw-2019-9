@@ -26,7 +26,7 @@ import java.util.logging.Logger;
  */
 
 public class Actor {
-    Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
 
     // Proprietà di game info
     private static final int HP = ParserConfiguration.parseInt("Hp");

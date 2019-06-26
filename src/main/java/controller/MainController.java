@@ -161,14 +161,13 @@ public class MainController {
 
     private void startGame() {
 
-        GameMode gameMode = 2*normalMode>=numOfPlayer ? GameMode.NORMAL : GameMode.DOMINATION;
+        gameMode = 2*normalMode>=numOfPlayer ? GameMode.NORMAL : GameMode.DOMINATION;
 
         gameStarted = true;
         createGame(gameMode);
 
         this.scoreboard = game.getScoreboard();
         this.gameMap = game.getMap();
-        this.gameMode = gameMode;
 
         for (SlaveController i: slaveControllerList){
             slaveMap.put(i.getSelf().pawnID(), i);
@@ -201,6 +200,7 @@ public class MainController {
                 player.setActor(actor);
                 player.setUid(actor.pawnID());
                 actor.pawn().setUsername(player.getUsername());
+                actor.pawn().setColorString(player.getColor());
                 actor.pawn().setColor((Color) Color.class.getField(player.getColor()).get(null));
             }
         }
