@@ -405,7 +405,7 @@ public class CLIDemo implements View {
         if(yourPlayerChar == null) {
             yourPlayerChar = "You're the player " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
             System.out.println(yourPlayerChar);
-            System.out.println(AnsiColor.getAnsi(Color.gray));
+            System.out.println(AnsiColor.getDefault());
         }
         climap.printMap();
     }
@@ -556,12 +556,12 @@ public class CLIDemo implements View {
         return out.toString();
     }
 
-    String printListOfColor(List<ActorView> actorViews) {
+    private String printListOfColor(List<ActorView> actorViews) {
         StringBuilder builder = new StringBuilder();
         for(ActorView actorView : actorViews) {
             //todo: should be changed
             if(actorView == null && climap.getMp().gameMode().equals(GameMode.DOMINATION))
-                builder.append(AnsiColor.getAnsi(Color.orange));
+                builder.append(AnsiColor.getAnsi(climap.getMp().dominationPointActor().color()));
             else
                 builder.append( AnsiColor.getAnsi(actorView.color()) );
             builder.append("█ ");

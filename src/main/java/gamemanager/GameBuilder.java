@@ -34,6 +34,7 @@ public class GameBuilder {
     private Scoreboard scoreboard;
     private String mapName;
 
+    private Actor dominationPointActor;
     private GameMode gameMode;
 
     /**
@@ -149,7 +150,7 @@ public class GameBuilder {
                 dominationPointTile.getControlPointActor().setBinding();
 
                 dominationPointTile.addTrack(scoreboard);
-                //((DominationMode)scoreboard).addTrack(((DominationPoint)actor.pawn()).getTile());
+                dominationPointActor = ((DominationPoint)map.getPawn(pawnID)).getDominationPointTile().getControlPointActor();
             }
         }
         return actors;
@@ -179,6 +180,9 @@ public class GameBuilder {
     }
     public GameMode getGameMode() {
         return gameMode;
+    }
+    public Actor getDominationPointActor() {
+        return dominationPointActor;
     }
 }
 
