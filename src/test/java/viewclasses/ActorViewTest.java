@@ -78,7 +78,7 @@ class ActorViewTest {
         assertEquals(-1, view2.score());
 
         assertEquals(1, view1.loadedWeapon().size());
-        assertNull(view2.loadedWeapon());
+        assertEquals(0, view2.loadedWeapon().size());
 
 
         assertEquals(2,map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).weapons().size());
