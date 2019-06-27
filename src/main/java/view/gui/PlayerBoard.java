@@ -30,7 +30,7 @@ public class PlayerBoard extends JPanel {
     private JButton changeBoard;
 
     public PlayerBoard(GameMapView gmv) throws IOException {
-        nextPlayerBuffered = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/nextPlayer.png"));
+        nextPlayerBuffered = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/nextPlayer.png"));
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
         initializeBoards();
         setYourBoards(gmv.you().color());
@@ -39,8 +39,6 @@ public class PlayerBoard extends JPanel {
         drawBoard(yourNormalBoard);
         add(changeBoard);
     }
-
-
 
     private void setYourBoards(Color color){
         switch(color.toString()){
@@ -75,17 +73,22 @@ public class PlayerBoard extends JPanel {
         }
     }
 
+    void setYourBoards(int i) {
+        yourNormalBoard = normalBoards[i];
+        yourFrenzyBoard = frenzyBoards[i];
+    }
+
     private void initializeBoards() throws IOException {
-        normalBoards[0] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/blueN.png"));
-        normalBoards[1] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/grayN.png"));
-        normalBoards[2] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/greenN.png"));
-        normalBoards[3] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/pinkN.png"));
-        normalBoards[4] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/yellowN.png"));
-        frenzyBoards[0] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/blueF.png"));
-        frenzyBoards[1] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/grayF.png"));
-        frenzyBoards[2] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/greenF.png"));
-        frenzyBoards[3] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/pinkF.png"));
-        frenzyBoards[4] = ImageIO.read(new File("src/main/resources/gui/PlayerBoards/yellowF.png"));
+        normalBoards[0] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/blueN.png"));
+        normalBoards[1] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/grayN.png"));
+        normalBoards[2] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/greenN.png"));
+        normalBoards[3] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/pinkN.png"));
+        normalBoards[4] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/yellowN.png"));
+        frenzyBoards[0] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/blueF.png"));
+        frenzyBoards[1] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/grayF.png"));
+        frenzyBoards[2] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/greenF.png"));
+        frenzyBoards[3] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/pinkF.png"));
+        frenzyBoards[4] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/yellowF.png"));
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
             normalBoards[0] = scaleImage(normalBoards[0]);
             normalBoards[1] = scaleImage(normalBoards[1]);

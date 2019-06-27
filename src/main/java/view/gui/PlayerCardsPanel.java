@@ -11,7 +11,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +46,12 @@ public class PlayerCardsPanel extends JPanel {
                     if(playerBoard.getNormalBoards()[i].equals(playerBoard.getYourNormalBoard())){
                         if(i!=playerBoard.getNormalBoards().length-1){
                             playerBoard.drawBoard(playerBoard.getNormalBoards()[i+1]);
-                        } else playerBoard.drawBoard(playerBoard.getNormalBoards()[0]);
+                            playerBoard.setYourBoards(i+1);
+                        } else {
+                            playerBoard.drawBoard(playerBoard.getNormalBoards()[0]);
+                            playerBoard.setYourBoards(0);
+                        }
+                        break;
                     }
                 }
             }
