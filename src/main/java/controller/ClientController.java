@@ -145,7 +145,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                     System.out.println(res.x + "\t" + res.y);
                     view.loginResponse(true, false, false);
 
-                    if(res.y){
+                    if(res.y) {
                         setPolling(true);
                     }
                     add();

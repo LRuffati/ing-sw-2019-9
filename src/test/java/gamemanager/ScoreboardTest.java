@@ -49,7 +49,7 @@ public class ScoreboardTest {
         Actor pietro = new Actor(null,null,false);
         listaAttori = new ArrayList<>();
         listaAttori.add(pietro);
-        Scoreboard sb = new Scoreboard(listaAttori);
+        Scoreboard sb = new Scoreboard(listaAttori,8);
         assertEquals(listaAttori, sb.getActorsList());
         assertEquals(8,sb.getMaxDeaths());
         assertEquals(0, sb.getSkullBox().size());
@@ -63,7 +63,7 @@ public class ScoreboardTest {
 
     @Test
     void scoringTest(){
-        Scoreboard sb = new Scoreboard(actorList);
+        Scoreboard sb = new Scoreboard(actorList,8);
         Actor Pietro = actorList.get(0);
         Actor Lorenzo = actorList.get(1);
         Actor Carmelo = actorList.get(2);
@@ -83,7 +83,7 @@ public class ScoreboardTest {
 
     @Test
     void winnerClaimingTest(){
-        Scoreboard sb = new Scoreboard(actorList);
+        Scoreboard sb = new Scoreboard(actorList,8);
         Actor Pietro = actorList.get(0);
         Pietro.addPoints(1);
         assertEquals(Pietro, sb.claimWinner());
@@ -91,7 +91,7 @@ public class ScoreboardTest {
 
     @Test
     void killTest(){
-        Scoreboard sb = new Scoreboard(actorList);
+        Scoreboard sb = new Scoreboard(actorList,8);
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
         sb.addKill(Pietro, melo);

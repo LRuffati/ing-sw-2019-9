@@ -41,6 +41,13 @@ public class Scoreboard {
         this.skullBox = new ArrayList<>();
     }
 
+    public Scoreboard(List<Actor> actorList, int skulls) {
+        this.actorsList = actorList;
+        this.maxDeaths = skulls;
+        this.numOfDeaths = 0;
+        this.skullBox = new ArrayList<>();
+    }
+
     void setActor(List<Actor> actorList) {
         this.actorsList = actorList;
     }
