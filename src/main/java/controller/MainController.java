@@ -31,7 +31,7 @@ public class MainController {
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int MIN_PLAYER = 2;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;
@@ -331,8 +331,10 @@ public class MainController {
 
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
-        while(!slaveControllerList.get(currIndex+1).isOnline()) currIndex = (currIndex+1)%size;
-        next = slaveControllerList.get(currIndex);
+        currIndex++;
+        while(!slaveControllerList.get(currIndex%size).isOnline()) currIndex = (currIndex+1)%size;
+        currIndex--;
+        next = slaveControllerList.get((currIndex+1)%size);
         /*
         if (currIndex<(size-1)){
             next = slaveControllerList.get(currIndex+1);
