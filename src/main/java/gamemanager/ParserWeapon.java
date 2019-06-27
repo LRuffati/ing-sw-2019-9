@@ -1,6 +1,5 @@
 package gamemanager;
 
-import actions.Action;
 import actions.ActionInfo;
 import actions.ActionTemplate;
 import actions.conditions.*;
@@ -12,17 +11,10 @@ import actions.utils.AmmoColor;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
-import javax.swing.text.html.Option;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 public class ParserWeapon {
@@ -578,7 +570,7 @@ public class ParserWeapon {
                 .map(m->parseTarget(m.group(0)))
                 .collect(Collectors.toList());
 
-        Pattern matchEffectDef = Pattern.compile("effect.+\\n");
+        Pattern matchEffectDef = Pattern.compile("effect.+(?:\\n|$)");
         List<EffectTemplate> effectTemplates = matchEffectDef.matcher(body).results()
                 .map(m->parseEffect(m.group(0)))
                 .collect(Collectors.toList());
@@ -587,7 +579,7 @@ public class ParserWeapon {
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
-        Matcher targetMatcher = Pattern.compile("target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))? +(?=&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?\\n").matcher(line);
+        Matcher targetMatcher = Pattern.compile("target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))?(?= +&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?(?:\\n|$)", Pattern.CASE_INSENSITIVE).matcher(line);
         targetMatcher.find();
         String targName = targetMatcher.group(1);
         String targType = targetMatcher.group(2);
@@ -596,32 +588,40 @@ public class ParserWeapon {
         if(selectorParam==null) selectorParam = "";
 
         Matcher selectorParamMatcher;
-        Tuple<String, Selector> selector = new Tuple<>(null,null);
+        Tuple<String, Selector> selector = null; // This should always be updated, a
+        // nullpointerexception is desired if it isn't
 
         switch (selectorType.toLowerCase()){
             case "in":
                 selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
                 selectorParamMatcher.find();
-                selector = new Tuple<>(selectorParamMatcher.group(),new ContainedSelector());
+                selector = new Tuple<>(selectorParamMatcher.group(1),new ContainedSelector());
                 break;
             case "is":
                 selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
                 selectorParamMatcher.find();
-                selector = new Tuple<>(selectorParamMatcher.group(),new ExistSelector());
+                selector = new Tuple<>(selectorParamMatcher.group(1),new IsSelector());
                 break;
             case "has":
                 selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
                 selectorParamMatcher.find();
-                selector = new Tuple<>(selectorParamMatcher.group(),new HasSelector());
+                selector = new Tuple<>(selectorParamMatcher.group(1),new HasSelector());
                 break;
             case "seen":
                 selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
                 selectorParamMatcher.find();
-                selector = new Tuple<>(selectorParamMatcher.group(),new VisibleSelector());
+                selector = new Tuple<>(selectorParamMatcher.group(1),new VisibleSelector());
                 break;
 
             case "distant":
-                selectorParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(selectorParam);
+                selectorParamMatcher = Pattern.compile(" *\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+) *").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(3),
+                        new DistanceSelector(Integer.parseInt(selectorParamMatcher.group(1)),
+                                Integer.parseInt(selectorParamMatcher.group(2)), true));
+                break;
+            case "distantph":
+                selectorParamMatcher = Pattern.compile(" *\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+) *").matcher(selectorParam);
                 selectorParamMatcher.find();
                 selector = new Tuple<>(selectorParamMatcher.group(3),
                         new DistanceSelector(Integer.parseInt(selectorParamMatcher.group(1)), Integer.parseInt(selectorParamMatcher.group(2)), false));
@@ -632,7 +632,9 @@ public class ParserWeapon {
                 selector = new Tuple<>(selectorParamMatcher.group(3),
                         new ReachableSelector(Integer.parseInt(selectorParamMatcher.group(1)), Integer.parseInt(selectorParamMatcher.group(2))));
                 break;
-
+            case "exists":
+                selector = new Tuple<>("self", new ExistSelector());
+                break;
             default:
                 break;
         }
@@ -642,7 +644,8 @@ public class ParserWeapon {
         if(conditions==null) {
             conditions = "";
         } else {
-            Matcher conditionsMatcher = Pattern.compile("(NOT|not) +(DISTANT|HAS|IN|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
+            Matcher conditionsMatcher = Pattern.compile("(NOT|not) +(DISTANT|DISTANTPH|HAS|IN" +
+                    "|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
 
 
             conditionsList = conditionsMatcher.results().map(m -> {
@@ -653,35 +656,43 @@ public class ParserWeapon {
                     case "in":
                         conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new InCondition(m.group(1)==null);
+                        condition = new InCondition(m.group(1)!=null);
                         toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
                         break;
 
                     case "has":
                         conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new HasCondition(m.group(1)==null);
+                        condition = new HasCondition(m.group(1)!=null);
                         toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
                         break;
 
                     case "seen":
                         conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new SeenCondition(m.group(1)==null);
+                        condition = new SeenCondition(m.group(1)!=null);
                         toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
                         break;
 
                     case "distant":
                         conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), true,m.group(1)==null);
+                        condition =
+                                new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), true,m.group(1)!=null);
                         toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
                         break;
-
+                    case "distantph":
+                        conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition =
+                                new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), false,m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
+                        break;
                     case "reached":
                         conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new ReachesCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), m.group(1)==null);
+                        condition =
+                                new ReachesCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), m.group(1)!=null);
                         toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
                         break;
 
@@ -707,7 +718,8 @@ public class ParserWeapon {
     private static EffectTemplate parseEffect(String body){
 
         EffectTemplate effect = null;
-        Matcher effectMatcher = Pattern.compile("effect +(FIRE|DAMAGE|RELOAD|GRAB|MARK|MOVE|PAY) *(.*)(?:$|\\n)").matcher(body);
+        Matcher effectMatcher = Pattern.compile("effect +(FIRE|DAMAGE|RELOAD|GRAB|MARK|MOVE|PAY) " +
+                "*(.*)(?:$|\\n)", Pattern.CASE_INSENSITIVE).matcher(body);
         effectMatcher.find();
 
         Matcher effectParamMatcher;
