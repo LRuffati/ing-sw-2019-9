@@ -54,14 +54,18 @@ public class ClientController implements ClientControllerClientInterface, Client
     private Timer timerForPolling;
     private boolean polling;
 
+    private boolean normalMode;
+
     /**
      * Builder of the class. This generates the View (view.cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
      * @param socket true if a socket connection is required. False if a RMI connection is required
      * @param cli true if Cli is required. False is Gui is required
      * @param networkAddress Contains the address used by the Network to connect with the Server
      */
-    public ClientController(boolean socket, boolean cli, String networkAddress) throws NotBoundException, IOException {
+    public ClientController(boolean socket, boolean cli, String networkAddress, boolean normalMode) throws NotBoundException, IOException {
         logger = Logger.getLogger(ClientController.class.getName());
+
+        this.normalMode = normalMode;
 
         if (cli)
             view = new CLIDemo(this);
@@ -115,6 +119,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 try {
                     network.register(username, password, color.toLowerCase());
                     view.loginResponse(true, false, false);
+                    network.modeRequest(normalMode);
                     add();
                 } catch (
                         InvalidLoginException e) {
@@ -383,9 +388,9 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void onStarting(String map) {
+    public void onStarting(String map, GameMode gameMode) {
         setPolling(true);
-        view.onStarting(map);
+        view.onStarting(map, gameMode);
         poll();
     }
 

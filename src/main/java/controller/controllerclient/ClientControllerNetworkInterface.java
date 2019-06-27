@@ -1,5 +1,6 @@
 package controller.controllerclient;
 
+import controller.GameMode;
 import network.Player;
 import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
@@ -14,7 +15,7 @@ public interface ClientControllerNetworkInterface {
     void onControllerMessage(ControllerMessage controllerMessage);
 
     void onConnection(Player player, boolean connection, int numOfPlayer);
-    void onStarting(String map);
+    void onStarting(String map, GameMode gameMode);
     void onTimer(int ms);
     void onWinner(String winner, int winnerPoints, int yourPoints);
 
