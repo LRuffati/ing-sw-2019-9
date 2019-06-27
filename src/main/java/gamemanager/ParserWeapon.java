@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ParserWeapon {
     ParserWeapon(){}
@@ -427,7 +428,6 @@ public class ParserWeapon {
 
     public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
 
-        Set<Weapon> weapons = new HashSet<>();
         Scanner scanner = new Scanner( ClassLoader.getSystemResourceAsStream(path));
         String wholeFile = scanner.useDelimiter("\\A").next();
         scanner.close();
@@ -435,27 +435,13 @@ public class ParserWeapon {
 
         Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:([\\w\\W]+?)\\nstop").matcher(wholeFile);
 
-        while (wholeFileMatcher.find()) {
-            Matcher wIdMatcher = Pattern.compile("weapon +(\\w+)").matcher(wholeFile);
-            wIdMatcher.find();
-            String weaponId = wIdMatcher.group().split(" ")[1];
-
-            Matcher costMatcher = Pattern.compile("([RBY]([RYB]*))").matcher(wholeFile);
-            costMatcher.find();
-            String fullCost = costMatcher.group();
-            AmmoAmount reloadCost = parseAmmo(fullCost);
-            AmmoAmount buyCost;
-            if(fullCost.length()>1){
-                buyCost = parseAmmo(fullCost.substring(0, fullCost.length()-1));
-            } else buyCost = reloadCost;
-
-            Matcher bodyMatcher = Pattern.compile("([\\w\\W]+?)\\n(?=stop)").matcher(wholeFile);
-            bodyMatcher.find();
-            String body = bodyMatcher.group();
-
-            weapons.add(parseSingleWeapon(weaponId, reloadCost, buyCost, body));
-
-        }
+        return wholeFileMatcher.results()
+                .map(m -> {
+                    String weaponId = m.group(1);
+                    AmmoAmount reloadCost = parseAmmo(m.group(2));
+                    AmmoAmount buyCost = parseAmmo(m.group(3));
+                    return parseSingleWeapon(weaponId,reloadCost,buyCost,m.group(4));
+                }).collect(Collectors.toSet());
 
         // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
         // Per ogni match:
@@ -463,19 +449,22 @@ public class ParserWeapon {
         //          2: Ricarica
         //          3: BuyCost
         //          4: body
-        return weapons;
     }
 
     private static AmmoAmount parseAmmo(String ammoamount){
-        int red = (int)ammoamount.chars().filter(ch -> ch == 'R').count();
-        int blue = (int)ammoamount.chars().filter(ch -> ch == 'B').count();
-        int yellow = (int)ammoamount.chars().filter(ch -> ch == 'Y').count();
+        if(ammoamount.length()==0){
+            return new AmmoAmount();
+        } else {
+            int red = (int) ammoamount.chars().filter(ch -> ch == 'R').count();
+            int blue = (int) ammoamount.chars().filter(ch -> ch == 'B').count();
+            int yellow = (int) ammoamount.chars().filter(ch -> ch == 'Y').count();
 
-        Map<AmmoColor, Integer> amount = new HashMap<>();
-        amount.put(AmmoColor.YELLOW, yellow);
-        amount.put(AmmoColor.BLUE, blue);
-        amount.put(AmmoColor.RED, red);
-        return new AmmoAmount(amount);
+            Map<AmmoColor, Integer> amount = new HashMap<>();
+            amount.put(AmmoColor.YELLOW, yellow);
+            amount.put(AmmoColor.BLUE, blue);
+            amount.put(AmmoColor.RED, red);
+            return new AmmoAmount(amount);
+        }
     }
 
     private static Weapon parseSingleWeapon(String weaponId, AmmoAmount reloadCost, AmmoAmount buyCost, String body){
@@ -486,17 +475,11 @@ public class ParserWeapon {
         // gruppo 3: actions
         //
 
-        Matcher weaponNameMatcher = Pattern.compile("nomeWeapon: +([ \\w]+) *").matcher(body);
-        weaponNameMatcher.find();
-        String weaponName = weaponNameMatcher.group().split(" ")[1];
+        Matcher header = Pattern.compile("nomeWeapon: +([ \\w]+?) *\\ndescrizioneWeapon: +([ \\w]+?) *\\n").matcher(body);
+        List<String> list = header.results().map(m -> m.group(1)+", "+m.group(2)).collect(Collectors.toList());
+        list.size();
 
-        Matcher weaponDesMatcher = Pattern.compile("descrizioneWeapon: +([ \\w]+) *").matcher(body);
-        weaponDesMatcher.find();
-        String weaponDescription = weaponDesMatcher.group().split(" ")[1];
 
-        Matcher actioBody = Pattern.compile("(action[\\w\\W]+)$").matcher(body);
-        actioBody.find();
-        String allActions = actioBody.group();
 
         // regex2:= action +(\w+)(?: +([RYB]*))?(?: +follows +\[(.+?)\])?(?: +exist +\[(.+?)\])?(?: +xor +\[(.+?)\])?(?: +contemp +(\w+))? *:\n([\w\W]+?)(?=action|$)
         // 1: idAzione
@@ -510,25 +493,11 @@ public class ParserWeapon {
         // Per ogni match di regex2 chiama prima parseInfo e poi parseTarget
         // Dopo aver raccolto tutte le azioni verificare per i contemp
 
-        Matcher allActionsMatcher = Pattern.compile("action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+)\\])?(?: +exist +\\[(.+)\\])?(?: +xor +\\[(.+)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+)(?=action|$)").matcher(allActions);
+        //Matcher allActionsMatcher = Pattern.compile("action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+)\\])?(?: +exist +\\[(.+)\\])?(?: +xor +\\[(.+)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+?)(?=\\naction|$)").matcher(allActions);
 
-        //TODO non entrerà nel while così
-
-        while (allActionsMatcher.find()) {
-
-            Matcher actionIdMatcher = Pattern.compile("action +(\\w+)").matcher(allActions);
-            actionIdMatcher.find();
-            String actionId = actionIdMatcher.group();
-
-            Matcher actionCostMatcher = Pattern.compile("(?: +([RYB]*))?").matcher(allActions);
-            actionCostMatcher.find();
-            AmmoAmount actionCost = parseAmmo(actionCostMatcher.group());
-
-        }
-        Collection<ActionTemplate> actions = new ArrayList<>();
-
-        return new Weapon(weaponName,buyCost,reloadCost,actions);
+       return null;
     }
+
 
     private static ActionTemplate parseAction(ActionInfo info,
                                               String body){
