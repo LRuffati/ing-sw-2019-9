@@ -642,47 +642,47 @@ public class ParserWeapon {
         if(conditions==null) {
             conditions = "";
         } else {
-            Matcher conditionsMatcher = Pattern.compile("(DISTANT|HAS|IN|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
+            Matcher conditionsMatcher = Pattern.compile("(NOT|not) +(DISTANT|HAS|IN|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
 
 
             conditionsList = conditionsMatcher.results().map(m -> {
                 Matcher conditionParamMatcher;
                 Condition condition;
                 Tuple<String, Condition> toReturn = null;
-                switch (m.group(1).toLowerCase()){
+                switch (m.group(2).toLowerCase()){
                     case "in":
-                        conditionParamMatcher = Pattern.compile("(!)?(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
                         condition = new InCondition(m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(2),condition);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
                         break;
 
                     case "has":
-                        conditionParamMatcher = Pattern.compile("(!)?(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
                         condition = new HasCondition(m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(2),condition);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
                         break;
 
                     case "seen":
-                        conditionParamMatcher = Pattern.compile("(!)?(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
                         condition = new SeenCondition(m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(2),condition);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
                         break;
 
                     case "distant":
-                        conditionParamMatcher = Pattern.compile("(!)?\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new DistantCondition(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), true,m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(4),condition);
+                        condition = new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), true,m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(3),condition);
                         break;
 
                     case "reached":
-                        conditionParamMatcher = Pattern.compile("(!)?\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
-                        condition = new ReachesCondition(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(4),condition);
+                        condition = new ReachesCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(3),condition);
                         break;
 
                     default:
