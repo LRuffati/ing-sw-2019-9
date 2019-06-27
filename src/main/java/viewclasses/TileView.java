@@ -24,6 +24,7 @@ public class TileView implements Serializable {
     public TileView(){
         players = new ArrayList<>();
         nearTiles = new EnumMap<>(Direction.class);
+        ammoCard = new AmmoCardView();
     }
 
     public void setColor(Color color) {
