@@ -20,7 +20,7 @@ public class CLIMap {
     private Map<Character,Coord> playerPos;
 
     private Map<TileView, List<String>> colorsOfAmmo = new HashMap<>();
-    private char charForAmmo = '■';
+    private char charForAmmo = '@';
 
     /**
      * The object will generate an ASCII map to be printed on the command line.
@@ -51,7 +51,6 @@ public class CLIMap {
      * Finally it places the doors.
      */
     private void generateMap(){
-
         for(TileView t: mp.allTiles()){
             int x = mp.getCoord(t).getY()* DIM_TILE;
             int y = mp.getCoord(t).getX()* DIM_TILE;
@@ -80,10 +79,10 @@ public class CLIMap {
                 for(int i=0; i<t.ammoCard().numOfRed(); i++)        elem.add(AnsiColor.getAnsi(Color.red));
                 for(int i=0; i<t.ammoCard().numOfYellow(); i++)     elem.add(AnsiColor.getAnsi(Color.yellow));
                 for(int i=0; i<t.ammoCard().numOfPowerUp(); i++)    elem.add(AnsiColor.getAnsi(Color.darkGray));
+                Collections.shuffle(elem);
                 colorsOfAmmo.put(t, elem);
-                tiles[x+1][y+1] = charForAmmo;
-                tiles[x+1][y+2] = charForAmmo;
-                tiles[x+1][y+3] = charForAmmo;
+                for(int i=1; i<=elem.size(); i++)
+                    tiles[x+1][y+i] = charForAmmo;
             }
             for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
                 if(entry.getValue().equals("Door")){
