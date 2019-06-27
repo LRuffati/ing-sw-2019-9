@@ -104,7 +104,7 @@ public class ActionTemplate {
      * @return true if the given amount is enough to pay
      */
     private boolean verifyCost(@NotNull AmmoAmount available){
-        return available.compareTo(info.getCost())>=0;
+        return available.canBuy(info.getCost());
     }
 
     /**

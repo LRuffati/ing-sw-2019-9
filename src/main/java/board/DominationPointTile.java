@@ -44,7 +44,7 @@ public class DominationPointTile extends Tile {
         if(map.tile(actor.pawnID()).equals(
                 ((DominationPoint)controlPointActor.pawn()).getDominationPointTile().tileID)
         ) {
-            actor.damageRaw(controlPointActor, 1);
+            actor.damageRaw(actor, 1);
             controlPointActor.addDamageList(actor, getColor());
         }
 
@@ -54,7 +54,7 @@ public class DominationPointTile extends Tile {
     protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap) {
         super.setMap(map, damageableUIDPawnMap);
         this.controlPointActor = new ControlPointActor(map, pawnID, false);
-        damageableUIDPawnMap.put(pawnID, new DominationPoint(pawnID, this));
+        damageableUIDPawnMap.put(pawnID, new DominationPoint(pawnID, this, map));
     }
 
 

@@ -42,11 +42,16 @@ public class DominationMode extends Scoreboard{
     }
 
     public DominationMode(List<Actor> actorList, int numOfdeaths) {
+        super(actorList, numOfdeaths);
         this.actorList = actorList;
         this.maxDeaths = numOfdeaths;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();
         this.spawnTracker = new HashMap<>();
+    }
+
+    public Map<Color, List<Actor>> getSpawnTracker() {
+        return spawnTracker;
     }
 
     public boolean finalFrenzy() {
@@ -80,6 +85,7 @@ public class DominationMode extends Scoreboard{
      * Remove a skull and add the killer marker(s).
      * @param killer is the player who got the kill.
      */
+    @Override
     public void addKill(Actor killer, Actor victim){
         int numPoints = 1;
         if(victim.getDamageTaken().size()>10 && victim.getDamageTaken().get(11)!= null) {
@@ -95,44 +101,12 @@ public class DominationMode extends Scoreboard{
      * Parse the players list and return the player with more points.
      * @return the actor controller by the winner player.
      */
+    @Override
     public Actor claimWinner() {
         Actor maxA = null;
         for (Actor a : actorList) {
             if (maxA == null || a.getPoints() > maxA.getPoints()) maxA = a;
         }
         return maxA;
-    }
-
-
-    /**
-     * Add to the @points attribute of every player (in the class actor) the points gain from a kill.
-     */
-    public void score(Actor dead){
-        TreeSet<Actor> scoreSet = new TreeSet<>
-                (Comparator.comparing(
-                        x -> Collections.frequency(dead.getDamageTaken(), x)
-                ));
-
-        if(dead.isDead()){
-            dead.getDamageTaken().get(0).addPoints(1);
-
-            scoreSet.addAll(dead.getDamageTaken());
-
-            int num = dead.getNumOfDeaths();
-            for(Actor actor : scoreSet.descendingSet()){
-                if(!finalFrenzy()) {
-                    if (num < pointForDeath.size()) {
-                        actor.addPoints(pointForDeath.get(num));
-                        num++;
-                    }
-                }
-                else {
-                    if (num < pointForDeathFinal.size()) {
-                        actor.addPoints(pointForDeathFinal.get(num));
-                        num++;
-                    }
-                }
-            }
-        }
     }
 }

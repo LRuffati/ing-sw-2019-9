@@ -384,7 +384,7 @@ public class Sandbox {
                     .collect(Collectors.toSet());
             ret =
                     weaps.stream()
-                            .anyMatch(i->getUpdatedTotalAmmoAvailable().compareTo(i.getBuyCost())>0);
+                            .anyMatch(i->getUpdatedTotalAmmoAvailable().canBuy(i.getBuyCost()));
         }
         return ret;
     }
