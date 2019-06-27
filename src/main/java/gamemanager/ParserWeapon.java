@@ -566,6 +566,10 @@ public class ParserWeapon {
                                               String contemp,
                                               String body){
 
+        Matcher header = Pattern.compile("nomeAction: +([ \\w]+?) *\\ndescrizioneAction: +([ \\w]+?) *\\n").matcher(body);
+        header.find();
+        String actionName = header.group(1);
+        String actionDes = header.group(2);
 
 
 
@@ -588,6 +592,8 @@ public class ParserWeapon {
                                         String existList,
                                         String xorList,
                                         String contemp){
+
+
         return null;
     }
 }
