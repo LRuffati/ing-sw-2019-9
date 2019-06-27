@@ -71,19 +71,11 @@ public class CLIMap {
             tiles[x+2][y+4] = '═';
             tiles[x+3][y+4] = '═';
             tiles[x+4][y+4] = '╝';
-            if(t.spawnPoint()){
+            if(t.spawnPoint())
                 tiles[x+1][y+1] = 's';
-            } else {
-                List<String> elem = new ArrayList<>();
-                for(int i=0; i<t.ammoCard().numOfBlue(); i++)       elem.add(AnsiColor.getAnsi(Color.blue));
-                for(int i=0; i<t.ammoCard().numOfRed(); i++)        elem.add(AnsiColor.getAnsi(Color.red));
-                for(int i=0; i<t.ammoCard().numOfYellow(); i++)     elem.add(AnsiColor.getAnsi(Color.yellow));
-                for(int i=0; i<t.ammoCard().numOfPowerUp(); i++)    elem.add(AnsiColor.getAnsi(Color.darkGray));
-                Collections.shuffle(elem);
-                colorsOfAmmo.put(t, elem);
-                for(int i=1; i<=elem.size(); i++)
-                    tiles[x+1][y+i] = charForAmmo;
-            }
+            else
+                setAmmoCard(t,x,y);
+
             for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
                 if(entry.getValue().equals("Door")){
                     switch (entry.getKey()){
@@ -138,6 +130,18 @@ public class CLIMap {
                 if(tiles[j][i]==null) tiles[j][i] = ' ';
             }
         }
+    }
+
+    private void setAmmoCard(TileView t, int x, int y) {
+        List<String> elem = new ArrayList<>();
+        for(int i=0; i<t.ammoCard().numOfBlue(); i++)       elem.add(AnsiColor.getAnsi(Color.blue));
+        for(int i=0; i<t.ammoCard().numOfRed(); i++)        elem.add(AnsiColor.getAnsi(Color.red));
+        for(int i=0; i<t.ammoCard().numOfYellow(); i++)     elem.add(AnsiColor.getAnsi(Color.yellow));
+        for(int i=0; i<t.ammoCard().numOfPowerUp(); i++)    elem.add(AnsiColor.getAnsi(Color.darkGray));
+        Collections.shuffle(elem);
+        colorsOfAmmo.put(t, elem);
+        for(int i=1; i<=elem.size(); i++)
+            tiles[x+1][y+i] = charForAmmo;
     }
 
     /**
