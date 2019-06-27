@@ -11,7 +11,7 @@ import java.util.Map;
  * This class represents a fixed ammunition amount, it can represent a cost or the amount available to the player
  * <br/>It is important that AmmoAmount be immutable
  */
-public class AmmoAmount extends AmmoAmountUncapped implements Comparable<AmmoAmountUncapped> {
+public class AmmoAmount extends AmmoAmountUncapped{
 
     /**
      * The maximum amount available, this is a global variable
@@ -89,6 +89,5 @@ public class AmmoAmount extends AmmoAmountUncapped implements Comparable<AmmoAmo
             }
         }
         throw new AmmoException("Non ci sono munizioni");
-
     }
 }
