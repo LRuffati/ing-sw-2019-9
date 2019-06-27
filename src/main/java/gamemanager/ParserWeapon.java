@@ -449,7 +449,7 @@ public class ParserWeapon {
                 buyCost = parseAmmo(fullCost.substring(0, fullCost.length()-1));
             } else buyCost = reloadCost;
 
-            Matcher bodyMatcher = Pattern.compile("([\\w\\W]+?)\\n").matcher(wholeFile);
+            Matcher bodyMatcher = Pattern.compile("([\\w\\W]+?)\\n(?=stop)").matcher(wholeFile);
             bodyMatcher.find();
             String body = bodyMatcher.group();
 
@@ -488,11 +488,11 @@ public class ParserWeapon {
 
         Matcher weaponNameMatcher = Pattern.compile("nomeWeapon: +([ \\w]+) *").matcher(body);
         weaponNameMatcher.find();
-        String weaponName = weaponNameMatcher.group();
+        String weaponName = weaponNameMatcher.group().split(" ")[1];
 
-        Matcher weaponDesMatcher = Pattern.compile("descrizioneWeapon: +([ \\w]+?) *").matcher(body);
+        Matcher weaponDesMatcher = Pattern.compile("descrizioneWeapon: +([ \\w]+) *").matcher(body);
         weaponDesMatcher.find();
-        String weaponDescription = weaponDesMatcher.group();
+        String weaponDescription = weaponDesMatcher.group().split(" ")[1];
 
         Matcher actioBody = Pattern.compile("(action[\\w\\W]+)$").matcher(body);
         actioBody.find();
@@ -510,7 +510,9 @@ public class ParserWeapon {
         // Per ogni match di regex2 chiama prima parseInfo e poi parseTarget
         // Dopo aver raccolto tutte le azioni verificare per i contemp
 
-        Matcher allActionsMatcher = Pattern.compile(" +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+?)\\])?(?: +exist +\\[(.+?)\\])?(?: +xor +\\[(.+?)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+?)(?=action|$)").matcher(allActions);
+        Matcher allActionsMatcher = Pattern.compile("action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+)\\])?(?: +exist +\\[(.+)\\])?(?: +xor +\\[(.+)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+)(?=action|$)").matcher(allActions);
+
+        //TODO non entrerà nel while così
 
         while (allActionsMatcher.find()) {
 
