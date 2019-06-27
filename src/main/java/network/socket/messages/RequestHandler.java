@@ -18,4 +18,6 @@ public interface RequestHandler {
     Response handle(PollRequest request);
 
     Response handle(PingResponse response);
+
+    Response handle(ModeRequest request);
 }

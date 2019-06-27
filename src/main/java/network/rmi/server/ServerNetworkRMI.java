@@ -78,6 +78,10 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
 
+    @Override
+    public void modeRequest(boolean normalMode) {
+        Database.get().getMainController().modeRequest(normalMode);
+    }
 
     @Override
     public ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException {

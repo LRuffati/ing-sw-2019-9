@@ -1,5 +1,6 @@
 package network.rmi.client;
 
+import controller.GameMode;
 import genericitems.Tuple;
 import network.Database;
 import network.Player;
@@ -72,8 +73,8 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     }
 
     @Override
-    public void onStarting(String map) {
-        clientController.onStarting(map);
+    public void onStarting(String map, GameMode gameMode) {
+        clientController.onStarting(map, gameMode);
     }
 
     @Override
@@ -119,6 +120,10 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
         return n;
     }
 
+    @Override
+    public void modeRequest(boolean normalMode) throws RemoteException {
+        controller.modeRequest(normalMode);
+    }
 
     @Override
     public void pick(String choiceId, List<Integer> choices) throws RemoteException {
