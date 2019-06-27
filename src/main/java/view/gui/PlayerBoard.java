@@ -3,6 +3,7 @@ package view.gui;
 import board.GameMap;
 import gamemanager.GameBuilder;
 import player.Actor;
+import viewclasses.ActorView;
 import viewclasses.GameMapView;
 
 import javax.imageio.ImageIO;
@@ -32,11 +33,11 @@ public class PlayerBoard extends JPanel {
     public PlayerBoard(GameMapView gmv) throws IOException {
         nextPlayerBuffered = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/nextPlayer.png"));
         nextPlayerIcon = new ImageIcon(nextPlayerBuffered);
-        initializeBoards();
-        setYourBoards(gmv.you().color());
+        initializeBoards(gmv.players());
+        //setYourBoards(gmv.you().color());
         changeBoard = new JButton(nextPlayerIcon);
         changeBoard.setContentAreaFilled(false);
-        drawBoard(yourNormalBoard);
+        //drawBoard(yourNormalBoard);
         add(changeBoard);
     }
 
@@ -78,28 +79,46 @@ public class PlayerBoard extends JPanel {
         yourFrenzyBoard = frenzyBoards[i];
     }
 
-    private void initializeBoards() throws IOException {
-        normalBoards[0] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/blueN.png"));
-        normalBoards[1] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/grayN.png"));
-        normalBoards[2] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/greenN.png"));
-        normalBoards[3] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/pinkN.png"));
-        normalBoards[4] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/yellowN.png"));
-        frenzyBoards[0] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/blueF.png"));
-        frenzyBoards[1] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/grayF.png"));
-        frenzyBoards[2] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/greenF.png"));
-        frenzyBoards[3] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/pinkF.png"));
-        frenzyBoards[4] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/yellowF.png"));
+    private void initializeBoards(List<ActorView> players) throws IOException {
+        int i = 0;
+        for(ActorView actorView : players) {
+            switch (actorView.colorString()) {
+                case "blue":
+                    normalBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/blueN.png"));
+                    frenzyBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/blueF.png"));
+                    i++;
+                    break;
+                case "green":
+                    normalBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/greenN.png"));
+                    frenzyBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/greenF.png"));
+                    i++;
+                    break;
+                case "gray":
+                    normalBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/grayN.png"));
+                    frenzyBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/grayF.png"));
+                    i++;
+                    break;
+                case "pink":
+                    normalBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/pinkN.png"));
+                    frenzyBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/pinkF.png"));
+                    i++;
+                    break;
+                case "yellow":
+                    normalBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/yellowN.png"));
+                    frenzyBoards[i] = ImageIO.read(ClassLoader.getSystemResourceAsStream("gui/PlayerBoards/yellowF.png"));
+                    i++;
+                    break;
+
+                    default:
+                        break;
+            }
+        }
+
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
-            normalBoards[0] = scaleImage(normalBoards[0]);
-            normalBoards[1] = scaleImage(normalBoards[1]);
-            normalBoards[2] = scaleImage(normalBoards[2]);
-            normalBoards[3] = scaleImage(normalBoards[3]);
-            normalBoards[4] = scaleImage(normalBoards[4]);
-            frenzyBoards[0] = scaleImage(frenzyBoards[0]);
-            frenzyBoards[1] = scaleImage(frenzyBoards[1]);
-            frenzyBoards[2] = scaleImage(frenzyBoards[2]);
-            frenzyBoards[3] = scaleImage(frenzyBoards[3]);
-            frenzyBoards[4] = scaleImage(frenzyBoards[4]);
+            for(int j=0; j<=i; j++) {
+                normalBoards[j] = scaleImage(normalBoards[j]);
+                frenzyBoards[j] = scaleImage(frenzyBoards[j]);
+            }
 
         }
     }

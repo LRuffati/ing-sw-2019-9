@@ -4,8 +4,10 @@ import board.Coord;
 import gamemanager.GameBuilder;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.ActorView;
 import viewclasses.GameMapView;
 import viewclasses.TargetView;
+import viewclasses.WeaponView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,15 +23,21 @@ public class PlayerCardsPanel extends JPanel {
     private WeaponCards weaponCards;
     private PlayerBoard playerBoard;
 
-
+    private List<ActorView> actorViews;
+    private ActorView currActor;
 
     public PlayerCardsPanel(GameMapView gmv){
+        actorViews = gmv.players();
+        currActor = gmv.you();
+
         weaponCards = new WeaponCards(gmv);
         try {
             playerBoard = new PlayerBoard(gmv);
         } catch (IOException e) {
             System.out.println("Problema con PlayerBoard");
         }
+        playerBoard.drawBoard(playerBoard.getNormalBoards()[actorViews.indexOf(currActor)]);
+        weaponCards.showCard(currActor);
 
         changeWeaponsWithPlayer();
         setLayout(new GridLayout(1,0));
@@ -42,26 +50,42 @@ public class PlayerCardsPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
-                for(int i = 0; i< playerBoard.getNormalBoards().length; i++){
-                    if(playerBoard.getNormalBoards()[i].equals(playerBoard.getYourNormalBoard())){
-                        if(i!=playerBoard.getNormalBoards().length-1){
-                            playerBoard.drawBoard(playerBoard.getNormalBoards()[i+1]);
-                            playerBoard.setYourBoards(i+1);
-                        } else {
-                            playerBoard.drawBoard(playerBoard.getNormalBoards()[0]);
-                            playerBoard.setYourBoards(0);
-                        }
-                        break;
-                    }
-                }
+
+                int pos = actorViews.indexOf(currActor);
+                currActor = actorViews.get((pos+1)%actorViews.size());
+
+                weaponCards.showCard(currActor);
+                playerBoard.drawBoard(playerBoard.getNormalBoards()[(pos+1)%actorViews.size()]);
+                playerBoard.setYourBoards((pos+1)%actorViews.size());
             }
         });
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        GameBuilder game = new GameBuilder(5);
+        GameBuilder game = new GameBuilder(3);
 
         GameMapView mv = game.getMap().generateView(game.getActorList().get(0).pawnID());
+
+        WeaponView w11 = new WeaponView();
+        WeaponView w12 = new WeaponView();
+        WeaponView w21 = new WeaponView();
+        WeaponView w22 = new WeaponView();
+        WeaponView w23 = new WeaponView();
+
+        w11.setName("martello ionico");
+        w12.setName("lanciagranate");
+        mv.players().get(0).setColorString("yellow");
+        mv.players().get(0).setUnloadedWeapon(List.of(w11));
+        mv.players().get(0).setLoadedWeapon(List.of(w12));
+
+        w21.setName("lanciarazzi");
+        w22.setName("cannone vortex");
+        w23.setName("fucile al plasma");
+        mv.players().get(1).setColorString("green");
+        mv.players().get(1).setUnloadedWeapon(List.of(w21, w22, w23));
+
+        mv.players().get(2).setColorString("gray");
+
 
         java.util.List<TargetView> targetViewList = new ArrayList<>();
         java.util.List<TileUID> tileUIDS = new ArrayList<>();

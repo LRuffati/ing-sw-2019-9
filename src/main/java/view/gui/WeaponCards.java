@@ -47,6 +47,13 @@ public class WeaponCards extends JPanel {
         }
     }
 
+    public void showCard(ActorView actorView) {
+        showedWeaponCards = cardMap.get(actorView);
+        weaponButtons[0].setIcon(new ImageIcon(cardMap.get(actorView)[0]));
+        weaponButtons[1].setIcon(new ImageIcon(cardMap.get(actorView)[1]));
+        weaponButtons[2].setIcon(new ImageIcon(cardMap.get(actorView)[2]));
+    }
+
     private void setYourShowedWeaponCards(){
         int i = 0;
         for(WeaponView weapon : gmv.you().getUnloadedWeapon()){
@@ -79,6 +86,10 @@ public class WeaponCards extends JPanel {
             }
             for(WeaponView weapon : player.getLoadedWeapon()){
                 playerCards[i] = linkWeaponToCard(weapon);
+                i++;
+            }
+            while(i<3) {
+                playerCards[i] = linkWeaponToCard(new WeaponView());
                 i++;
             }
             cardMap.put(player,playerCards);

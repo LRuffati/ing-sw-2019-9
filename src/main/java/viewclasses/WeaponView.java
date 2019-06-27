@@ -4,8 +4,6 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import uid.GrabbableUID;
 
-
-import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -18,7 +16,6 @@ public class WeaponView implements Serializable {
     private Map<AmmoColor, Integer> reloadCost;
     private Map<AmmoColor, Integer> buyCost;
     private GrabbableUID uid;
-    private BufferedImage card;
 
     public WeaponView(){
         name = "";
@@ -56,10 +53,5 @@ public class WeaponView implements Serializable {
     public void setUid(GrabbableUID uid) {
         this.uid = uid;
     }
-
-    public BufferedImage card() {
-        return card;
-    }
-
 }
 

@@ -30,7 +30,7 @@ public class Pawn {
     private transient GameMap map;
 
     private Color color = Color.yellow;
-    private String colorString = "";
+    private String colorString = "yellow";
     private String username = "";
 
     /**
