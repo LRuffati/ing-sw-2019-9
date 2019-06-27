@@ -573,8 +573,7 @@ public class ParserWeapon {
 
         ActionInfo actionInfo = parseInfo(actionID, actionName, actionDes, cost, follows, targetsExist,xor,contemp);
 
-        Matcher targetMatcher = Pattern.compile("target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))? +(?=&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?\\n").matcher(header.group(3));
-        targetMatcher.find();
+
 
 
         return null;
