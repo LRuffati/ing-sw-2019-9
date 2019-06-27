@@ -45,6 +45,7 @@ public class WeaponView implements Serializable {
     }
 
     public void setBuyCost(AmmoAmount buyCost) {
+
         this.buyCost = buyCost.getAmounts();
     }
 

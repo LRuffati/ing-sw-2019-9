@@ -17,9 +17,14 @@ public class ParserWeaponTest {
 
     @BeforeEach
     void setup(){
+
+    }
+
+    @Test
+    void voidTest(){
         String path = "test/weaponToTest";
         try{
-            weaponCollection = ParserWeapon.parse(path);
+            weaponCollection = ParserWeapon.parseWeapons(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -49,13 +54,16 @@ public class ParserWeaponTest {
 
     @Test
     void realFile(){
-        String path = "weapons.txt";
+        String path = "src/main/resources/weapons.txt";
         try{
             weaponCollection = ParserWeapon.parse(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
+
+
         System.out.println(weaponCollection.size());
     }
+
 }

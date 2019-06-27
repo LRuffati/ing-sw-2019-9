@@ -45,8 +45,6 @@ public class WeaponCards extends JPanel {
             add(btn);
 
         }
-
-
     }
 
     private void setYourShowedWeaponCards(){

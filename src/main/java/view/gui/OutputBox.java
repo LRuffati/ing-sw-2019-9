@@ -16,7 +16,6 @@ public class OutputBox extends JPanel {
                 "(4,5)!");
         //setLayout(new BorderLayout());
         add(screenPane, BorderLayout.CENTER);
-        setBackground(Color.yellow);
         setSize(new Dimension(300,400));
         setPreferredSize(new Dimension(300,400));
         setLayout(new BorderLayout());

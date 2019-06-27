@@ -30,9 +30,12 @@ public class Weapon extends Grabbable{
         this.buyCost = buyCost;
         this.reloadCost = reloadCost;
 
+        System.out.println(name);
+
         this.actions = new HashMap<>();
         for (ActionTemplate i: actions){
             this.actions.put(i.getInfo().getActionId(), i);
+            System.out.println("\t" + i.getInfo().getName());
         }
 
         this.weaponID = name;

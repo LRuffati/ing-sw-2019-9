@@ -7,3 +7,18 @@ descrizioneAction: ciao pietro
 target targ1 pawn (SEEN GFself & not DISTANT (0,1) self)
 effect damage 3 targ1
 stop
+weapon distruttore BB:
+nomeWeapon: Distruttore
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni e un marchio a un bersaglio che puoi vedere
+target targ1 pawn (SEEN self) new
+effect DAMAGE 2 targ1
+effect MARK 1 targ1
+action secondo R follows [main]:
+nomeAction: Secondo aggancio
+descrizioneAction: Dai 1 marchio a un altro bersaglio che puoi vedere
+target targ2 pawn (SEEN self) new
+effect MARK 1 targ2
+stop

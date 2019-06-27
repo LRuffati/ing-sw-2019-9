@@ -1,4 +1,4 @@
-weapon distruttore BB:
+﻿weapon distruttore BB:
 nomeWeapon: Distruttore
 descrizioneWeapon: descrizione mancante
 action main:
@@ -15,6 +15,7 @@ effect MARK 1 targ2
 stop
 weapon mitragliatrice BR:
 nomeWeapon: Mitragliatrice
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: Scegli uno o due bersagli che puoi vedere e dai un danno a entrambi
@@ -40,6 +41,7 @@ effect DAMAGE 1 targ1
 stop
 weapon torpedine BR:
 nomeWeapon: Torpedine
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 danni ad un bersaglio che puoi vedere
@@ -76,6 +78,7 @@ effect damage 1 targ1
 stop
 weapon precisione BBY:
 nomeWeapon: Fucile di precisione
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto
 descrizioneAction: Dai 3 danni e 1 marchio a un bersaglio distante 2 o più movimenti e che puoi vedere
@@ -85,6 +88,7 @@ effect mark 1 targ1
 stop
 weapon falce B:
 nomeWeapon: Falce protonica
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
 descrizioneAction: Dai 1 danno a ogni altro giocatore nel tuo quadrato
@@ -116,6 +120,7 @@ effect damage 3 targ1
 stop
 weapon vortex RB:
 nomeWeapon: Cannone vortex
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: scegli un quadrato visibile e un giocatore distante al massimo 1 movimento. Sposta il giocatore nella cella e dagli 1 danno
@@ -135,6 +140,7 @@ effect damage 1 targ3
 stop
 weapon vulcan RB:
 nomeWeapon: Vulcanizzatore
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
 descrizioneAction: Scegli una stanza diversa dalla tua che puoi vedere, dai 1 danno a tutti i giocatori nella stanza
@@ -158,6 +164,7 @@ effect damage 3 targ1
 stop
 weapon solare RY:
 nomeWeapon: Raggio Solare
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
 descrizioneAction: Dai un danno ad un bersaglio visibile e non sulla stessa cella, poi marchia tutti i bersagli nella stessa cella
@@ -197,7 +204,7 @@ effect damage 1 tile2
 stop
 weapon granate R:
 nomeWeapon: Lanciagranate
-descrizioneWeapon: a
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: a
@@ -213,7 +220,7 @@ effect damage 1 tile1
 stop
 weapon razzi RR:
 nomeWeapon: Lanciarazzi
-descrizioneWeapon: a
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: a
@@ -234,7 +241,7 @@ effect damage 1 tile2
 stop
 weapon zx YR:
 nomeWeapon: ZX-2
-descrizioneWeapon: a
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
 descrizioneAction: d
@@ -253,7 +260,7 @@ effect mark 1 targ4
 stop
 weapon pompa YY:
 nomeWeapon: Fucile a pompa
-descrizioneWeapon: f
+descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
 descrizioneAction: d
@@ -319,7 +326,7 @@ target targ1 pawn (DISTANT (0,0) self)
 effect damage 2 targ1
 action polverizza R xor [main]:
 nomeAction: Modalità polverizzare
-descizioneAction: d
+descrizioneAction: d
 target targ1 pawn (DISTANT (0,0) self)
 target tile1 tile (REACHED (0,2) targ1)
 target dircheck direction (HAS self & HAS tile1) automatic

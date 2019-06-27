@@ -14,6 +14,10 @@ import grabbables.Weapon;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,6 +26,7 @@ public class ParserWeapon {
     ParserWeapon(){}
 
     public static Collection<Weapon> parse(String path) throws FileNotFoundException{
+        parseWeapons(path);
         Collection<Weapon> weaponCollection = new ArrayList<>();
         Scanner scanner;
         Scanner sLine;
@@ -30,15 +35,11 @@ public class ParserWeapon {
         AmmoAmount reloadWeapon = null;
         Collection<ActionTemplate> actions = new ArrayList<>();
         String mainAction = null;
-        int weaponCount = 0;
+        int countWeap = 0;
+
 
 
         scanner = new Scanner(ClassLoader.getSystemResourceAsStream(path));
-        /*try{
-            scanner = new Scanner(new File(path));
-        } catch (FileNotFoundException e) {
-            throw new FileNotFoundException("File Weapons not found");
-        }*/
 
         while(scanner.hasNextLine()){
             String weaponId = null;
@@ -54,7 +55,7 @@ public class ParserWeapon {
             int R = 0;
             switch(toBegin) {
                 case "weapon":
-                    weaponCount+=1;
+                    countWeap +=1;
                     weaponId = sLine.next();
                     String ammoColour = sLine.next();
                     for(int i = 0; i < ammoColour.length()-1; i++){
@@ -407,10 +408,12 @@ public class ParserWeapon {
                     mainAction=null;
                     actions.add(new ActionTemplate(new ActionInfo(actionName, actionId,actionPrice,actionRequirements,
                             targetRequirements, Optional.ofNullable(mainAction),true),targeters,effects));
+                    effects.clear();
                     break;
 
                 case "stop":
                     weaponCollection.add(new Weapon(name,buyWeapon,reloadWeapon,actions));
+                    actions.clear();
                     break;
 
                 default:
@@ -420,5 +423,134 @@ public class ParserWeapon {
         }
         scanner.close();
         return weaponCollection;
+    }
+
+    public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
+
+        Set<Weapon> weapons = new HashSet<>();
+        Scanner scanner = new Scanner( ClassLoader.getSystemResourceAsStream(path));
+        String wholeFile = scanner.useDelimiter("\\A").next();
+        scanner.close();
+
+
+        Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:([\\w\\W]+?)\\nstop").matcher(wholeFile);
+
+        while (wholeFileMatcher.find()) {
+            Matcher wIdMatcher = Pattern.compile("weapon +(\\w+)").matcher(wholeFile);
+            wIdMatcher.find();
+            String weaponId = wIdMatcher.group().split(" ")[1];
+
+            Matcher costMatcher = Pattern.compile("([RBY]([RYB]*))").matcher(wholeFile);
+            costMatcher.find();
+            String fullCost = costMatcher.group();
+            AmmoAmount reloadCost = parseAmmo(fullCost);
+            AmmoAmount buyCost;
+            if(fullCost.length()>1){
+                buyCost = parseAmmo(fullCost.substring(0, fullCost.length()-1));
+            } else buyCost = reloadCost;
+
+            Matcher bodyMatcher = Pattern.compile("([\\w\\W]+?)\\n(?=stop)").matcher(wholeFile);
+            bodyMatcher.find();
+            String body = bodyMatcher.group();
+
+            weapons.add(parseSingleWeapon(weaponId, reloadCost, buyCost, body));
+
+        }
+
+        // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
+        // Per ogni match:
+        //          Gruppo 1: weaponId
+        //          2: Ricarica
+        //          3: BuyCost
+        //          4: body
+        return weapons;
+    }
+
+    private static AmmoAmount parseAmmo(String ammoamount){
+        int red = (int)ammoamount.chars().filter(ch -> ch == 'R').count();
+        int blue = (int)ammoamount.chars().filter(ch -> ch == 'B').count();
+        int yellow = (int)ammoamount.chars().filter(ch -> ch == 'Y').count();
+
+        Map<AmmoColor, Integer> amount = new HashMap<>();
+        amount.put(AmmoColor.YELLOW, yellow);
+        amount.put(AmmoColor.BLUE, blue);
+        amount.put(AmmoColor.RED, red);
+        return new AmmoAmount(amount);
+    }
+
+    private static Weapon parseSingleWeapon(String weaponId, AmmoAmount reloadCost, AmmoAmount buyCost, String body){
+
+        // regex1:= nomeWeapon: +([ \w]+?) *\ndescrizioneWeapon: +([ \w]+?) *\n(action[\w\W]+)$
+        // gruppo 1: nome
+        // gruppo 2: descrizione
+        // gruppo 3: actions
+        //
+
+        Matcher weaponNameMatcher = Pattern.compile("nomeWeapon: +([ \\w]+) *").matcher(body);
+        weaponNameMatcher.find();
+        String weaponName = weaponNameMatcher.group().split(" ")[1];
+
+        Matcher weaponDesMatcher = Pattern.compile("descrizioneWeapon: +([ \\w]+) *").matcher(body);
+        weaponDesMatcher.find();
+        String weaponDescription = weaponDesMatcher.group().split(" ")[1];
+
+        Matcher actioBody = Pattern.compile("(action[\\w\\W]+)$").matcher(body);
+        actioBody.find();
+        String allActions = actioBody.group();
+
+        // regex2:= action +(\w+)(?: +([RYB]*))?(?: +follows +\[(.+?)\])?(?: +exist +\[(.+?)\])?(?: +xor +\[(.+?)\])?(?: +contemp +(\w+))? *:\n([\w\W]+?)(?=action|$)
+        // 1: idAzione
+        // 2: costo
+        // 3: listaFollows ex "!main ciao"
+        // 4: listaexist ^
+        // 5: listaxor "act1 act2"
+        // 6: contemp "main"
+        // 7: body
+        //
+        // Per ogni match di regex2 chiama prima parseInfo e poi parseTarget
+        // Dopo aver raccolto tutte le azioni verificare per i contemp
+
+        Matcher allActionsMatcher = Pattern.compile("action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+)\\])?(?: +exist +\\[(.+)\\])?(?: +xor +\\[(.+)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+)(?=action|$)").matcher(allActions);
+
+        //TODO non entrerà nel while così
+
+        while (allActionsMatcher.find()) {
+
+            Matcher actionIdMatcher = Pattern.compile("action +(\\w+)").matcher(allActions);
+            actionIdMatcher.find();
+            String actionId = actionIdMatcher.group();
+
+            Matcher actionCostMatcher = Pattern.compile("(?: +([RYB]*))?").matcher(allActions);
+            actionCostMatcher.find();
+            AmmoAmount actionCost = parseAmmo(actionCostMatcher.group());
+
+        }
+        Collection<ActionTemplate> actions = new ArrayList<>();
+
+        return new Weapon(weaponName,buyCost,reloadCost,actions);
+    }
+
+    private static ActionTemplate parseAction(ActionInfo info,
+                                              String body){
+        return null;
+    }
+
+    private static Tuple<String, TargeterTemplate> parseTarget(String line){
+        return null;
+    }
+
+    private static EffectTemplate parseEffect(String body){
+        return null;
+    }
+
+    private static ActionInfo parseInfo(String nomeId,
+                                        String nome,
+                                        String descrizione,
+                                        AmmoAmount cost,
+                                        String followsList,
+                                        String existList,
+                                        String xorList,
+                                        String contemp){
+        return null;
     }
 }
