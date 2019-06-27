@@ -12,6 +12,7 @@ import actions.utils.AmmoColor;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
+import javax.swing.text.html.Option;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -482,8 +483,6 @@ public class ParserWeapon {
         String nome = header.group(1);
         String descrizione = header.group(2);
 
-
-
         // regex2:= action +(\w+)(?: +([RYB]*))?(?: +follows +\[(.+?)\])?(?: +exist +\[(.+?)\])?(?: +xor +\[(.+?)\])?(?: +contemp +(\w+))? *:\n([\w\W]+?)(?=action|$)
         // 1: idAzione
         // 2: costo
@@ -496,13 +495,55 @@ public class ParserWeapon {
         // Per ogni match di regex2 chiama prima parseInfo e poi parseTarget
         // Dopo aver raccolto tutte le azioni verificare per i contemp
 
+        String regexAction = "action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+?)\\])?(?: +exist " +
+                "+\\[(.+?)\\])?(?: +xor +\\[(.+?)\\])?(?: +contemp +(\\w+))? *:\n([\\w\\W]+?)" +
+                "(?=\\naction|$)";
+
+        Matcher actionsBody = Pattern.compile(regexAction).matcher(body);
+
+        List<ActionTemplate> actions = actionsBody.results()
+                .map(match -> {
+                    String id = match.group(1);
+
+                    String costString = match.group(2);
+                    if (costString==null)
+                        costString="";
+
+                    String follows = match.group(3);
+                    if (follows==null)
+                        follows="";
+
+                    String exists = match.group(4);
+                    if (exists==null)
+                        exists="";
+
+                    String xor = match.group(5);
+                    if (xor==null)
+                        xor="";
+
+                    String contemp = match.group(6);
+                    if (contemp==null)
+                        contemp="";
+
+                    String bodyAction = match.group(7);
+
+                    AmmoAmount cost = parseAmmo(match.group());
+                    List<Tuple<Boolean, String>> followsList = ...
+                })
+                .collect(Collectors.toList());
+
         //Matcher allActionsMatcher = Pattern.compile("action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+)\\])?(?: +exist +\\[(.+)\\])?(?: +xor +\\[(.+)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+?)(?=\\naction|$)").matcher(allActions);
 
        return null;
     }
 
 
-    private static ActionTemplate parseAction(ActionInfo info,
+    private static ActionTemplate parseAction(String actionID,
+                                              AmmoAmount cost,
+                                              List<Tuple<Boolean, String>> follows,
+                                              List<Tuple<Boolean, String>> targetsExist,
+                                              List<String> xor,
+                                              String contemp,
                                               String body){
         return null;
     }
