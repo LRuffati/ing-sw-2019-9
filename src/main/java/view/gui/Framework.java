@@ -1,5 +1,6 @@
 package view.gui;
 
+import controller.GameMode;
 import controller.Message;
 import view.View;
 import network.Player;
@@ -301,7 +302,7 @@ public class Framework implements View {
     }
 
     @Override
-    public void onStarting(String map) {
+    public void onStarting(String map, GameMode mode) {
         phase = PhaseType.GAME;
         changeFrameFlag = true;
         waitingScreen.dispatchEvent(new WindowEvent(waitingScreen, WindowEvent.WINDOW_CLOSING));

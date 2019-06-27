@@ -1,11 +1,14 @@
 package viewclasses;
 
 import board.Coord;
+import controller.GameMode;
 import player.Actor;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -17,6 +20,9 @@ public class GameMapView implements Serializable{
     private ActorView you;
     private List<ActorView> players;
     private List<Map<ActorView, Integer>> skullBox;
+    private Map<Color, List<ActorView>> spawnTracker;
+
+    private GameMode gameMode;
 
 
     public GameMapView(){
@@ -75,6 +81,14 @@ public class GameMapView implements Serializable{
         return skullBox;
     }
 
+    public Map<Color, List<ActorView>> spawnTracker() {
+        return spawnTracker;
+    }
+
+    public GameMode gameMode() {
+        return gameMode;
+    }
+
     public void setTiles(Map<Coord, TileView> tiles){
         this.tiles = tiles;
     }
@@ -92,6 +106,21 @@ public class GameMapView implements Serializable{
 
     public void setPlayers(List<ActorView> players) {
         this.players = players;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public void setSpawnTracker(Map<Color, List<Actor>> spawnTracker) {
+        this.spawnTracker = new HashMap<>();
+        for(Map.Entry<Color, List<Actor>> entry : spawnTracker.entrySet()) {
+            List<ActorView> toPut = new ArrayList<>();
+            for(Actor actor : entry.getValue()) {
+                toPut.add(players.stream().filter(x -> x.uid().equals(actor.pawnID())).collect(Collectors.toList()).get(0));
+            }
+            this.spawnTracker.put(entry.getKey(), toPut);
+        }
     }
 
     public void setSkullBox(List<Map<Actor, Integer>> skullBox){

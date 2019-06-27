@@ -1,5 +1,6 @@
 package view;
 
+import controller.GameMode;
 import network.Player;
 import controller.Message;
 import viewclasses.*;
@@ -96,7 +97,7 @@ public interface View {
      * Method used to notify that the game is starting
      * @param map the name of the configuration Map used in the game. Useful for the GUI
      */
-    void onStarting(String map);
+    void onStarting(String map, GameMode gameMode);
 
     /**
      * Method used to notify the user that an action must be performed in a certain amount of time.
