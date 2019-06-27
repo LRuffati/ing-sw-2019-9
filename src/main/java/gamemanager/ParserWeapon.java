@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 public class ParserWeapon {
@@ -433,7 +434,8 @@ public class ParserWeapon {
         scanner.close();
 
 
-        Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:([\\w\\W]+?)\\nstop").matcher(wholeFile);
+        Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:\\n" +
+                "([\\w\\W]+?)\\nstop").matcher(wholeFile);
 
         return wholeFileMatcher.results()
                 .map(m -> {
@@ -476,8 +478,9 @@ public class ParserWeapon {
         //
 
         Matcher header = Pattern.compile("nomeWeapon: +([ \\w]+?) *\\ndescrizioneWeapon: +([ \\w]+?) *\\n").matcher(body);
-        List<String> list = header.results().map(m -> m.group(1)+", "+m.group(2)).collect(Collectors.toList());
-        list.size();
+        header.find();
+        String nome = header.group(1);
+        String descrizione = header.group(2);
 
 
 
