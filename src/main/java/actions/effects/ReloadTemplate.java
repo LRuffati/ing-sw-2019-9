@@ -55,7 +55,7 @@ public class ReloadTemplate implements EffectTemplate{
                     tot.add(scariche.get(i).x);
                     reloaded.add(new ReloadEffect(scariche.get(i).y));
                 }
-                if (new AmmoAmountUncapped(sandbox.getUpdatedTotalAmmoAvailable().getAmounts()).compareTo(tot)<0){
+                if (!new AmmoAmountUncapped(sandbox.getUpdatedTotalAmmoAvailable().getAmounts()).canBuy(tot)){
                     return new RollbackMessage("Not enough ammo");
                 } else {
                     //1. Create sandbox with reloads effect

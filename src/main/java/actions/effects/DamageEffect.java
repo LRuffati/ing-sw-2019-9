@@ -4,6 +4,7 @@ import player.Actor;
 import controller.SlaveController;
 import uid.DamageableUID;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -25,7 +26,7 @@ public class DamageEffect implements Effect{
      * @param amount the amount of damage
      * @param raw if true use a function which doesn't trigger the tagback grenade
      */
-    DamageEffect(DamageableUID uid, int amount, boolean raw){
+    public DamageEffect(DamageableUID uid, int amount, boolean raw){
 
         this.uid = uid;
         this.amount = amount;
@@ -34,6 +35,8 @@ public class DamageEffect implements Effect{
 
     @Override
     public EffectType type() {
+        if (raw)
+            return EffectType.DAMAGERAW;
         return EffectType.DAMAGE;
     }
 
@@ -52,5 +55,10 @@ public class DamageEffect implements Effect{
     String effectString(Actor pov) {
         return String.format("%s ha dato %d danni a %s", pov.pawn().getUsername(), amount,
                 pov.getGm().getPawn(uid).getActor().pawn().getUsername());
+    }
+
+    @Override
+    public Set<DamageableUID> targetedPlayers() {
+        return Set.of(uid);
     }
 }

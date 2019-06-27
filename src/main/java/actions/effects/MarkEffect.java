@@ -4,6 +4,7 @@ import player.Actor;
 import controller.SlaveController;
 import uid.DamageableUID;
 
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class MarkEffect implements Effect {
@@ -35,5 +36,10 @@ public class MarkEffect implements Effect {
                 amount,
                 pov.getGm().getPawn(uid).getUsername()
         );
+    }
+
+    @Override
+    public Set<DamageableUID> targetedPlayers() {
+        return Set.of(uid);
     }
 }
