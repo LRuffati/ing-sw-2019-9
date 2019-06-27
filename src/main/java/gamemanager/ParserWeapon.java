@@ -675,14 +675,14 @@ public class ParserWeapon {
                         conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
                         condition = new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), true,m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(3),condition);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
                         break;
 
                     case "reached":
                         conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
                         condition = new ReachesCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), m.group(1)==null);
-                        toReturn = new Tuple<>(m.group(3),condition);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
                         break;
 
                     default:
