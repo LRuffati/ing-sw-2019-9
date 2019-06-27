@@ -573,10 +573,17 @@ public class ParserWeapon {
 
         ActionInfo actionInfo = parseInfo(actionID, actionName, actionDes, cost, follows, targetsExist,xor,contemp);
 
+        Pattern matchTargetDef = Pattern.compile("target.+\\n");
+        List<Tuple<String, TargeterTemplate>> targTemplates= matchTargetDef.matcher(body).results()
+                .map(m->parseTarget(m.group(0)))
+                .collect(Collectors.toList());
 
+        Pattern matchEffectDef = Pattern.compile("effect.+\\n");
+        List<EffectTemplate> effectTemplates = matchEffectDef.matcher(body).results()
+                .map(m->parseEffect(m.group(0)))
+                .collect(Collectors.toList());
 
-
-        return null;
+        return new ActionTemplate(actionInfo, targTemplates, effectTemplates);
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
