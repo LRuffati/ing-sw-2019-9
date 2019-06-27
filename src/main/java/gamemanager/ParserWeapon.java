@@ -523,20 +523,38 @@ public class ParserWeapon {
                     if (xor==null)
                         xor="";
 
+                    //TODO probably to change
                     String contemp = match.group(6);
                     if (contemp==null)
                         contemp="";
 
                     String bodyAction = match.group(7);
 
-                    AmmoAmount cost = parseAmmo(match.group());
-                    List<Tuple<Boolean, String>> followsList = ...
+                    AmmoAmount cost = parseAmmo(costString);
+
+                    Matcher followMatcher = Pattern.compile("(!)?(\\w+)").matcher(follows);
+                    List<Tuple<Boolean, String>> followsList = followMatcher.results().map(m ->
+                    {
+                        return new Tuple<>(m.group(1)==null, m.group(2));
+                    }).collect(Collectors.toList());
+
+                    Matcher existsMatcher = Pattern.compile("(!)?(\\w+)").matcher(exists);
+                    List<Tuple<Boolean, String>> existsList = existsMatcher.results().map(m ->
+                    {
+                        return new Tuple<>(m.group(1)==null, m.group(2));
+                    }).collect(Collectors.toList());
+
+                    Matcher xorMatcher = Pattern.compile("(\\w+)").matcher(xor);
+                    List<String> xorList = xorMatcher.results().map(m ->
+                    {
+                        return m.group();
+                    }).collect(Collectors.toList());
+
+                    return parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
                 })
                 .collect(Collectors.toList());
 
-        //Matcher allActionsMatcher = Pattern.compile("action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+)\\])?(?: +exist +\\[(.+)\\])?(?: +xor +\\[(.+)\\])?(?: +contemp +(\\w+))? *:\\n([\\w\\W]+?)(?=\\naction|$)").matcher(allActions);
-
-       return null;
+        return new Weapon(nome,buyCost,reloadCost,actions);
     }
 
 
@@ -547,6 +565,14 @@ public class ParserWeapon {
                                               List<String> xor,
                                               String contemp,
                                               String body){
+
+        Matcher header = Pattern.compile("nomeAction: +([ \\w]+?) *\\ndescrizioneAction: +([ \\w]+?) *\\n").matcher(body);
+        header.find();
+        String actionName = header.group(1);
+        String actionDes = header.group(2);
+
+
+
         return null;
     }
 
@@ -566,6 +592,8 @@ public class ParserWeapon {
                                         String existList,
                                         String xorList,
                                         String contemp){
+
+
         return null;
     }
 }
