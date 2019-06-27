@@ -571,13 +571,131 @@ public class ParserWeapon {
         String actionName = header.group(1);
         String actionDes = header.group(2);
 
+        ActionInfo actionInfo = parseInfo(actionID, actionName, actionDes, cost, follows, targetsExist,xor,contemp);
+
+        Matcher targetMatcher = Pattern.compile("target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))? +(?=&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?\\n").matcher(header.group(3));
+        targetMatcher.find();
 
 
         return null;
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
-        return null;
+        Matcher targetMatcher = Pattern.compile("target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))? +(?=&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?\\n").matcher(line);
+        targetMatcher.find();
+        String targName = targetMatcher.group(1);
+        String targType = targetMatcher.group(2);
+        String selectorType = targetMatcher.group(3);
+        String selectorParam = targetMatcher.group(4);
+        if(selectorParam==null) selectorParam = "";
+
+        Matcher selectorParamMatcher;
+        Tuple<String, Selector> selector = new Tuple<>(null,null);
+
+        switch (selectorType.toLowerCase()){
+            case "in":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(),new ContainedSelector());
+                break;
+            case "is":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(),new ExistSelector());
+                break;
+            case "has":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(),new HasSelector());
+                break;
+            case "seen":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(),new VisibleSelector());
+                break;
+
+            case "distant":
+                selectorParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(3),
+                        new DistanceSelector(Integer.parseInt(selectorParamMatcher.group(1)), Integer.parseInt(selectorParamMatcher.group(2)), false));
+                break;
+            case "reached":
+                selectorParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(3),
+                        new ReachableSelector(Integer.parseInt(selectorParamMatcher.group(1)), Integer.parseInt(selectorParamMatcher.group(2))));
+                break;
+
+            default:
+                break;
+        }
+
+        String conditions = targetMatcher.group(5);
+        List<Tuple<String, Condition>> conditionsList = new ArrayList<>();
+        if(conditions==null) {
+            conditions = "";
+        } else {
+            Matcher conditionsMatcher = Pattern.compile("(DISTANT|HAS|IN|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
+
+
+            conditionsList = conditionsMatcher.results().map(m -> {
+                Matcher conditionParamMatcher;
+                Condition condition;
+                Tuple<String, Condition> toReturn = null;
+                switch (m.group(1).toLowerCase()){
+                    case "in":
+                        conditionParamMatcher = Pattern.compile("(!)?(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher.find();
+                        condition = new InCondition(m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(2),condition);
+                        break;
+
+                    case "has":
+                        conditionParamMatcher = Pattern.compile("(!)?(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher.find();
+                        condition = new HasCondition(m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(2),condition);
+                        break;
+
+                    case "seen":
+                        conditionParamMatcher = Pattern.compile("(!)?(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher.find();
+                        condition = new SeenCondition(m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(2),condition);
+                        break;
+
+                    case "distant":
+                        conditionParamMatcher = Pattern.compile("(!)?\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher.find();
+                        condition = new DistantCondition(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), true,m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(4),condition);
+                        break;
+
+                    case "reached":
+                        conditionParamMatcher = Pattern.compile("(!)?\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(conditionsMatcher.group(2));
+                        conditionParamMatcher.find();
+                        condition = new ReachesCondition(Integer.parseInt(m.group(2)), Integer.parseInt(m.group(3)), m.group(1)==null);
+                        toReturn = new Tuple<>(m.group(4),condition);
+                        break;
+
+                    default:
+                        break;
+
+                }
+                return toReturn;
+            }).collect(Collectors.toList());
+
+
+
+
+        }
+
+        String isNew = targetMatcher.group(6);
+        String isAuto = targetMatcher.group(7);
+        String isOpt = targetMatcher.group(8);
+
+        return new Tuple<>(targName, new TargeterTemplate(selector,conditionsList,targType,isOpt!=null,isNew!=null, isAuto!=null));
     }
 
     private static EffectTemplate parseEffect(String body){
@@ -588,12 +706,15 @@ public class ParserWeapon {
                                         String nome,
                                         String descrizione,
                                         AmmoAmount cost,
-                                        String followsList,
-                                        String existList,
-                                        String xorList,
+                                        List<Tuple<Boolean, String>> followsList,
+                                        List<Tuple<Boolean, String>> existList,
+                                        List<String> xorList,
                                         String contemp){
+
+
 
 
         return null;
     }
+
 }
