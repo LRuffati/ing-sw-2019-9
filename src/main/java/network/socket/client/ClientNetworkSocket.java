@@ -1,6 +1,8 @@
 package network.socket.client;
 
+import controller.GameMode;
 import genericitems.Tuple;
+import genericitems.Tuple3;
 import network.socket.messages.notify.*;
 import controller.controllerclient.ClientControllerNetworkInterface;
 import network.ClientInterface;
@@ -8,7 +10,6 @@ import network.exception.InvalidLoginException;
 import network.socket.messages.*;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.List;
 
 /**
@@ -101,14 +102,14 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     }
 
     @Override
-    public Tuple<Boolean, Boolean> reconnect(String username, String password) throws InvalidLoginException {
+    public Tuple3<Boolean, Boolean, Tuple<String, GameMode>> reconnect(String username, String password) throws InvalidLoginException {
         client.request(new ReconnectRequest(username, password));
         sync();
         ClientContext c = ClientContext.get();
         if(c.getConnectionResult()) {
             String token = ClientContext.get().getToken();
             System.out.println("Reconnected with: token\n" + token);
-            return new Tuple<>(true, ClientContext.get().getIsStarted());
+            return new Tuple3<>(true, ClientContext.get().getIsStarted(), ClientContext.get().getTupleReconnection());
         }
         else {
             throw new InvalidLoginException("Invalid reconnection", c.getLoginException().x, c.getLoginException().y);
@@ -162,6 +163,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         if(!response.result) ClientContext.get().setLoginException(response.wrongUsername, response.wrongColor);
         ClientContext.get().setToken(response.token);
         ClientContext.get().setIsStarted(response.isStarted);
+        ClientContext.get().setTupleReconnection(response.tuple);
         desync();
     }
 

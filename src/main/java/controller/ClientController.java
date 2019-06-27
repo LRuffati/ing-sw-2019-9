@@ -2,6 +2,7 @@ package controller;
 
 import controller.controllerstates.PickTypes;
 import genericitems.Tuple;
+import genericitems.Tuple3;
 import view.cli.CLIDemo;
 import gamemanager.ParserConfiguration;
 import network.ClientInterface;
@@ -141,12 +142,13 @@ public class ClientController implements ClientControllerClientInterface, Client
             public void run() {
                 super.run();
                 try {
-                    Tuple<Boolean, Boolean> res = network.reconnect(username, password);
+                    Tuple3<Boolean, Boolean, Tuple<String, GameMode>> res = network.reconnect(username, password);
                     System.out.println(res.x + "\t" + res.y);
                     view.loginResponse(true, false, false);
 
                     if(res.y) {
                         setPolling(true);
+                        view.onStarting(res.z.x, res.z.y);
                     }
                     add();
                 }

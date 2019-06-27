@@ -32,10 +32,10 @@ public class GameBuilder {
     private List<Actor> actorList;
     private GameMap map;
     private Scoreboard scoreboard;
-    private String mapName;
+    private String mapName = "map1";
 
     private Actor dominationPointActor;
-    private GameMode gameMode;
+    private GameMode gameMode = GameMode.NORMAL;
 
     /**
      * Constructor of the class. It builds all the modules needed for the game to start.

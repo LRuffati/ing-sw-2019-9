@@ -42,6 +42,11 @@ public class CLIDemo implements View {
                 commandParser.parseCommand(string);
             }
         });
+
+        Consumer<String> consumer =
+                string -> System.out.println(string);
+        commandParser.bind(consumer);
+
         greetings();
     }
 
@@ -116,17 +121,6 @@ public class CLIDemo implements View {
      */
     private void waitForStart(int timeLeft){
         System.out.println("Wait for other players to join the game.");
-    }
-
-    void quitGame(){
-        System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
-                "want to go back.");
-        if(in.nextLine().equalsIgnoreCase("y")){
-            client.quit();
-            endGame();
-        } else if (in.nextLine().equalsIgnoreCase("n")){
-            client.rollback();
-        }
     }
 
 
@@ -681,6 +675,15 @@ public class CLIDemo implements View {
             }
             i++;
         }
+    }
+
+    void quitGame(){
+        System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
+                "want to go back.");
+    }
+
+    void confirmqQuit() {
+        client.quit();
     }
 
     void endGame(){

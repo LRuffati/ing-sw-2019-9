@@ -1,6 +1,8 @@
 package network.socket.server;
 
 import controller.GameMode;
+import gamemanager.GameBuilder;
+import genericitems.Tuple;
 import network.*;
 import network.exception.InvalidTokenException;
 import network.socket.messages.*;
@@ -119,7 +121,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
             String tokenFromDb = Database.get().login(this, request.username, request.password);
             player = Database.get().getUserByToken(tokenFromDb);
             boolean isStarted = Database.get().getMainController().isGameStarted();
-            return new ReconnectResponse(tokenFromDb, isStarted);
+            return new ReconnectResponse(tokenFromDb, isStarted, new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode()));
         }
         catch (InvalidLoginException e) {
             return new RegisterResponse(e.wrongUsername, false);

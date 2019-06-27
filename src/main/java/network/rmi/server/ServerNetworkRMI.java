@@ -1,5 +1,9 @@
 package network.rmi.server;
 
+import controller.GameMode;
+import gamemanager.GameBuilder;
+import genericitems.Tuple;
+import genericitems.Tuple3;
 import network.Database;
 import network.ObjectMap;
 import network.ServerInterface;
@@ -57,10 +61,14 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     }
 
     @Override
-    public String reconnect(ServerInterface client, String username, String password) throws RemoteException, InvalidLoginException{
+    public Tuple3<String, Boolean, Tuple<String, GameMode>> reconnect(ServerInterface client, String username, String password) throws RemoteException, InvalidLoginException{
         if(username == null || password == null)
-            return "";
-        return Database.get().login(client, username, password);
+            return new Tuple3<>("", false, null);
+        return new Tuple3<>(
+                Database.get().login(client, username, password),
+                Database.get().getMainController().isGameStarted(),
+                new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode())
+        );
     }
 
     @Override
