@@ -21,20 +21,11 @@ public class AmmoCardView implements Serializable {
         numOfPowerUp = 0;
     }
 
-    public void setNumOfBlue(int numOfBlue) {
+    public void setAll(int numOfBlue, int numOfRed, int numOfYellow, int numOfPowerUp) {
         this.numOfBlue = numOfBlue;
-    }
-
-    public void setNumOfPowerUp(int numOfPowerUp) {
-        this.numOfPowerUp = numOfPowerUp;
-    }
-
-    public void setNumOfRed(int numOfRed) {
         this.numOfRed = numOfRed;
-    }
-
-    public void setNumOfYellow(int numOfYellow) {
         this.numOfYellow = numOfYellow;
+        this.numOfPowerUp = numOfPowerUp;
     }
 
     public void setUid(GrabbableUID uid) {
