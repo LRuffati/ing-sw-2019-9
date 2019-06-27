@@ -698,7 +698,72 @@ public class ParserWeapon {
     }
 
     private static EffectTemplate parseEffect(String body){
-        return null;
+
+        EffectTemplate effect = null;
+        Matcher effectMatcher = Pattern.compile("effect +(FIRE|DAMAGE|RELOAD|GRAB|MARK|MOVE|PAY) *(.*)(?:$|\\n)").matcher(body);
+        effectMatcher.find();
+
+        Matcher effectParamMatcher;
+        switch (effectMatcher.group(1).toLowerCase()){
+            case "fire":
+                effect = new Fire();
+                break;
+
+            case "damage":
+                effectParamMatcher = Pattern.compile(" *([1-9]?\\d+) +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher.find();
+                effect = new DamageTemplate(effectParamMatcher.group(2), Integer.parseInt(effectParamMatcher.group(1)));
+                break;
+
+            case "reload":
+                effect = new ReloadTemplate();
+                break;
+
+            case "grab":
+                effect = new GrabTemplate();
+                break;
+
+            case "mark":
+                effectParamMatcher = Pattern.compile(" *([1-9]?\\d+) +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher.find();
+                effect = new MarkTemplate(effectParamMatcher.group(2), Integer.parseInt(effectParamMatcher.group(1)));
+                break;
+
+            case "move":
+                effectParamMatcher = Pattern.compile(" +(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher.find();
+                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(1));
+                break;
+
+            case "pay":
+                effectParamMatcher = Pattern.compile("(\\d+ (R|Y|B), )+").matcher(effectMatcher.group(2));
+                Map<AmmoColor, Integer> amountMap = new HashMap<>();
+                List<String> sad = effectParamMatcher.results().map(m -> {
+                    switch (m.group(2).toLowerCase()){
+                        case "r":
+                            amountMap.put(AmmoColor.RED, Integer.parseInt(m.group(1)));
+                            break;
+
+                        case "y":
+                            amountMap.put(AmmoColor.YELLOW, Integer.parseInt(m.group(1)));
+                            break;
+
+                        case "b":
+                            amountMap.put(AmmoColor.BLUE, Integer.parseInt(m.group(1)));
+                            break;
+
+                    }
+                    return "asd";
+                }).collect(Collectors.toList());
+                effect = new PayTemplate(new AmmoAmount(amountMap));
+                break;
+
+            default:
+                break;
+
+        }
+
+        return effect;
     }
 
     private static ActionInfo parseInfo(String nomeId,
@@ -710,10 +775,23 @@ public class ParserWeapon {
                                         List<String> xorList,
                                         String contemp){
 
+        Collection<Tuple<Boolean, String>> actionRequirements = new ArrayList<>();
+        Collection<Tuple<Boolean, String>> targetRequirements = new ArrayList<>();
 
+        for(Tuple<Boolean,String> follow : followsList){
+            actionRequirements.add(new Tuple<>(follow.x, follow.y));
+        }
 
+        for(Tuple<Boolean, String> exist : existList){
+            targetRequirements.add(new Tuple<>(exist.x, exist.y));
+        }
 
-        return null;
+        for(String xor : xorList){
+            actionRequirements.add(new Tuple<>(false,xor));
+        }
+        //TODO Contemp
+
+        return new ActionInfo(nome, nomeId,cost,actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
     }
 
 }
