@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ParserWeapon {
+    private static String regexNomeDescr = "[\\/ \\w'-.,òèàùé]";
     ParserWeapon(){}
 
     public static Collection<Weapon> parse(String path) throws FileNotFoundException{
@@ -470,7 +471,8 @@ public class ParserWeapon {
         // gruppo 3: actions
         //
 
-        Matcher header = Pattern.compile("nomeWeapon: +([ \\w]+?) *\\ndescrizioneWeapon: +([ \\w]+?) *\\n").matcher(body);
+        Matcher header = Pattern.compile("nomeWeapon: +("+regexNomeDescr+"+?) " +
+                "*\\ndescrizioneWeapon: +("+regexNomeDescr+"+?) *\\n").matcher(body);
         header.find();
         String nome = header.group(1);
         String descrizione = header.group(2);
@@ -558,14 +560,15 @@ public class ParserWeapon {
                                               String contemp,
                                               String body){
 
-        Matcher header = Pattern.compile("nomeAction: +([ \\w]+?) *\\ndescrizioneAction: +([ \\w]+?) *\\n").matcher(body);
+        Matcher header = Pattern.compile("nomeAction: +("+regexNomeDescr+"+?) *\\ndescrizioneAction: " +
+                "+("+regexNomeDescr+"+?) *(?:\\n|$)").matcher(body);
         header.find();
         String actionName = header.group(1);
         String actionDes = header.group(2);
 
         ActionInfo actionInfo = parseInfo(actionID, actionName, actionDes, cost, follows, targetsExist,xor,contemp);
 
-        Pattern matchTargetDef = Pattern.compile("target.+\\n");
+        Pattern matchTargetDef = Pattern.compile("\\ntarget.+\\n");
         List<Tuple<String, TargeterTemplate>> targTemplates= matchTargetDef.matcher(body).results()
                 .map(m->parseTarget(m.group(0)))
                 .collect(Collectors.toList());
@@ -579,7 +582,8 @@ public class ParserWeapon {
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
-        Matcher targetMatcher = Pattern.compile("target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))?(?= +&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?(?:\\n|$)", Pattern.CASE_INSENSITIVE).matcher(line);
+        Matcher targetMatcher = Pattern.compile("\\ntarget +(\\w+) +" +
+                "(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))?(?= +&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?(?:\\n|$)", Pattern.CASE_INSENSITIVE).matcher(line);
         targetMatcher.find();
         String targName = targetMatcher.group(1);
         String targType = targetMatcher.group(2);
@@ -749,7 +753,8 @@ public class ParserWeapon {
                 break;
 
             case "move":
-                effectParamMatcher = Pattern.compile(" +(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher =
+                        Pattern.compile(" *(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
                 effectParamMatcher.find();
                 effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(1));
                 break;
