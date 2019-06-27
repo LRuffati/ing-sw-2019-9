@@ -495,8 +495,10 @@ public class ParserWeapon {
         // Per ogni match di regex2 chiama prima parseInfo e poi parseTarget
         // Dopo aver raccolto tutte le azioni verificare per i contemp
 
-        String regexAction = "action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[(.+?)\\])?(?: +exist " +
-                "+\\[(.+?)\\])?(?: +xor +\\[(.+?)\\])?(?: +contemp +(\\w+))? *:\n([\\w\\W]+?)" +
+        String regexAction = "action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[ *(.+?) *\\])?(?: " +
+                "+exist " +
+                "+\\[ *(.+?) *\\])?(?: +xor +\\[ *(.+?) *\\])?(?: +contemp +(\\w+))? *:\n" +
+                "([\\w\\W]+?)" +
                 "(?=\\naction|$)";
 
         Matcher actionsBody = Pattern.compile(regexAction).matcher(body);
