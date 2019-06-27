@@ -1,6 +1,5 @@
 package gamemanager;
 
-import actions.Action;
 import actions.ActionInfo;
 import actions.ActionTemplate;
 import actions.conditions.*;
@@ -12,20 +11,14 @@ import actions.utils.AmmoColor;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
-import javax.swing.text.html.Option;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 public class ParserWeapon {
+    private static String regexNomeDescr = "[\\/ \\w'-.,òèàùé]";
     ParserWeapon(){}
 
     public static Collection<Weapon> parse(String path) throws FileNotFoundException{
@@ -478,7 +471,8 @@ public class ParserWeapon {
         // gruppo 3: actions
         //
 
-        Matcher header = Pattern.compile("nomeWeapon: +([ \\w]+?) *\\ndescrizioneWeapon: +([ \\w]+?) *\\n").matcher(body);
+        Matcher header = Pattern.compile("nomeWeapon: +("+regexNomeDescr+"+?) " +
+                "*\\ndescrizioneWeapon: +("+regexNomeDescr+"+?) *\\n").matcher(body);
         header.find();
         String nome = header.group(1);
         String descrizione = header.group(2);
@@ -566,34 +560,262 @@ public class ParserWeapon {
                                               String contemp,
                                               String body){
 
-        Matcher header = Pattern.compile("nomeAction: +([ \\w]+?) *\\ndescrizioneAction: +([ \\w]+?) *\\n").matcher(body);
+        Matcher header = Pattern.compile("nomeAction: +("+regexNomeDescr+"+?) *\\ndescrizioneAction: " +
+                "+("+regexNomeDescr+"+?) *(?:\\n|$)").matcher(body);
         header.find();
         String actionName = header.group(1);
         String actionDes = header.group(2);
 
+        ActionInfo actionInfo = parseInfo(actionID, actionName, actionDes, cost, follows, targetsExist,xor,contemp);
 
+        Pattern matchTargetDef = Pattern.compile("\\ntarget.+\\n");
+        List<Tuple<String, TargeterTemplate>> targTemplates= matchTargetDef.matcher(body).results()
+                .map(m->parseTarget(m.group(0)))
+                .collect(Collectors.toList());
 
-        return null;
+        Pattern matchEffectDef = Pattern.compile("effect.+(?:\\n|$)");
+        List<EffectTemplate> effectTemplates = matchEffectDef.matcher(body).results()
+                .map(m->parseEffect(m.group(0)))
+                .collect(Collectors.toList());
+
+        return new ActionTemplate(actionInfo, targTemplates, effectTemplates);
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
-        return null;
+        Matcher targetMatcher = Pattern.compile("\\ntarget +(\\w+) +" +
+                "(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))?(?= +&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?(?:\\n|$)", Pattern.CASE_INSENSITIVE).matcher(line);
+        targetMatcher.find();
+        String targName = targetMatcher.group(1);
+        String targType = targetMatcher.group(2);
+        String selectorType = targetMatcher.group(3);
+        String selectorParam = targetMatcher.group(4);
+        if(selectorParam==null) selectorParam = "";
+
+        Matcher selectorParamMatcher;
+        Tuple<String, Selector> selector = null; // This should always be updated, a
+        // nullpointerexception is desired if it isn't
+
+        switch (selectorType.toLowerCase()){
+            case "in":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(1),new ContainedSelector());
+                break;
+            case "is":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(1),new IsSelector());
+                break;
+            case "has":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(1),new HasSelector());
+                break;
+            case "seen":
+                selectorParamMatcher = Pattern.compile("(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(1),new VisibleSelector());
+                break;
+
+            case "distant":
+                selectorParamMatcher = Pattern.compile(" *\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+) *").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(3),
+                        new DistanceSelector(Integer.parseInt(selectorParamMatcher.group(1)),
+                                Integer.parseInt(selectorParamMatcher.group(2)), true));
+                break;
+            case "distantph":
+                selectorParamMatcher = Pattern.compile(" *\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+) *").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(3),
+                        new DistanceSelector(Integer.parseInt(selectorParamMatcher.group(1)), Integer.parseInt(selectorParamMatcher.group(2)), false));
+                break;
+            case "reached":
+                selectorParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(selectorParam);
+                selectorParamMatcher.find();
+                selector = new Tuple<>(selectorParamMatcher.group(3),
+                        new ReachableSelector(Integer.parseInt(selectorParamMatcher.group(1)), Integer.parseInt(selectorParamMatcher.group(2))));
+                break;
+            case "exists":
+                selector = new Tuple<>("self", new ExistSelector());
+                break;
+            default:
+                break;
+        }
+
+        String conditions = targetMatcher.group(5);
+        List<Tuple<String, Condition>> conditionsList = new ArrayList<>();
+        if(conditions==null) {
+            conditions = "";
+        } else {
+            Matcher conditionsMatcher = Pattern.compile("(NOT|not) +(DISTANT|DISTANTPH|HAS|IN" +
+                    "|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
+
+
+            conditionsList = conditionsMatcher.results().map(m -> {
+                Matcher conditionParamMatcher;
+                Condition condition;
+                Tuple<String, Condition> toReturn = null;
+                switch (m.group(2).toLowerCase()){
+                    case "in":
+                        conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition = new InCondition(m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
+                        break;
+
+                    case "has":
+                        conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition = new HasCondition(m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
+                        break;
+
+                    case "seen":
+                        conditionParamMatcher = Pattern.compile("(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition = new SeenCondition(m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(1),condition);
+                        break;
+
+                    case "distant":
+                        conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition =
+                                new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), true,m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
+                        break;
+                    case "distantph":
+                        conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition =
+                                new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), false,m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
+                        break;
+                    case "reached":
+                        conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
+                        conditionParamMatcher.find();
+                        condition =
+                                new ReachesCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), m.group(1)!=null);
+                        toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
+                        break;
+
+                    default:
+                        break;
+
+                }
+                return toReturn;
+            }).collect(Collectors.toList());
+
+
+
+
+        }
+
+        String isNew = targetMatcher.group(6);
+        String isAuto = targetMatcher.group(7);
+        String isOpt = targetMatcher.group(8);
+
+        return new Tuple<>(targName, new TargeterTemplate(selector,conditionsList,targType,isOpt!=null,isNew!=null, isAuto!=null));
     }
 
     private static EffectTemplate parseEffect(String body){
-        return null;
+
+        EffectTemplate effect = null;
+        Matcher effectMatcher = Pattern.compile("effect +(FIRE|DAMAGE|RELOAD|GRAB|MARK|MOVE|PAY) " +
+                "*(.*)(?:$|\\n)", Pattern.CASE_INSENSITIVE).matcher(body);
+        effectMatcher.find();
+
+        Matcher effectParamMatcher;
+        switch (effectMatcher.group(1).toLowerCase()){
+            case "fire":
+                effect = new Fire();
+                break;
+
+            case "damage":
+                effectParamMatcher = Pattern.compile(" *([1-9]?\\d+) +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher.find();
+                effect = new DamageTemplate(effectParamMatcher.group(2), Integer.parseInt(effectParamMatcher.group(1)));
+                break;
+
+            case "reload":
+                effect = new ReloadTemplate();
+                break;
+
+            case "grab":
+                effect = new GrabTemplate();
+                break;
+
+            case "mark":
+                effectParamMatcher = Pattern.compile(" *([1-9]?\\d+) +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher.find();
+                effect = new MarkTemplate(effectParamMatcher.group(2), Integer.parseInt(effectParamMatcher.group(1)));
+                break;
+
+            case "move":
+                effectParamMatcher =
+                        Pattern.compile(" *(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
+                effectParamMatcher.find();
+                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(1));
+                break;
+
+            case "pay":
+                effectParamMatcher = Pattern.compile("(\\d+ (R|Y|B), )+").matcher(effectMatcher.group(2));
+                Map<AmmoColor, Integer> amountMap = new HashMap<>();
+                List<String> sad = effectParamMatcher.results().map(m -> {
+                    switch (m.group(2).toLowerCase()){
+                        case "r":
+                            amountMap.put(AmmoColor.RED, Integer.parseInt(m.group(1)));
+                            break;
+
+                        case "y":
+                            amountMap.put(AmmoColor.YELLOW, Integer.parseInt(m.group(1)));
+                            break;
+
+                        case "b":
+                            amountMap.put(AmmoColor.BLUE, Integer.parseInt(m.group(1)));
+                            break;
+
+                    }
+                    return "asd";
+                }).collect(Collectors.toList());
+                effect = new PayTemplate(new AmmoAmount(amountMap));
+                break;
+
+            default:
+                break;
+
+        }
+
+        return effect;
     }
 
     private static ActionInfo parseInfo(String nomeId,
                                         String nome,
                                         String descrizione,
                                         AmmoAmount cost,
-                                        String followsList,
-                                        String existList,
-                                        String xorList,
+                                        List<Tuple<Boolean, String>> followsList,
+                                        List<Tuple<Boolean, String>> existList,
+                                        List<String> xorList,
                                         String contemp){
 
+        Collection<Tuple<Boolean, String>> actionRequirements = new ArrayList<>();
+        Collection<Tuple<Boolean, String>> targetRequirements = new ArrayList<>();
 
-        return null;
+        for(Tuple<Boolean,String> follow : followsList){
+            actionRequirements.add(new Tuple<>(follow.x, follow.y));
+        }
+
+        for(Tuple<Boolean, String> exist : existList){
+            targetRequirements.add(new Tuple<>(exist.x, exist.y));
+        }
+
+        for(String xor : xorList){
+            actionRequirements.add(new Tuple<>(false,xor));
+        }
+        //TODO Contemp
+
+        return new ActionInfo(nome, nomeId,cost,actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
     }
+
 }
