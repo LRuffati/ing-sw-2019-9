@@ -30,6 +30,7 @@ public class Pawn {
     private transient GameMap map;
 
     private Color color = Color.yellow;
+    private String colorString = "yellow";
     private String username = "";
 
     /**
@@ -113,6 +114,9 @@ public class Pawn {
         this.color = color;
     }
 
+    public void setColorString(String colorString) {
+        this.colorString = colorString;
+    }
 
     /**
      * This method sets the name of the Pawn
@@ -161,6 +165,7 @@ public class Pawn {
 
 
         actorView.setColor(color);
+        actorView.setColorString(colorString);
         actorView.setUsername(username);
         actorView.setHp(ParserConfiguration.parseInt("Hp"));
 

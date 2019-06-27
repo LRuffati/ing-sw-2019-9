@@ -9,9 +9,8 @@ import java.util.stream.Collectors;
  * This class implements the Scoreboard for the Deathmatch games. It checks if the Final Frenzy is starting and add
  * every kills to the Scoreboard with the player who committed the frag and how many tokens he got from it.
  */
-//TODO: see what is part of the model and what part of the controller
 public class Scoreboard {
-    private final List<Actor> actorsList;
+    private List<Actor> actorsList;
     private int numOfDeaths;
     private final int maxDeaths;
     private ArrayList<Map<Actor, Integer>> skullBox;
@@ -27,24 +26,30 @@ public class Scoreboard {
     /**
      * Constructor for a standard game (8 skulls).
      */
-    public Scoreboard(List<Actor> actorList){
-        this(actorList, ParserConfiguration.parseInt("numOfDeaths"));
+    public Scoreboard(){
+        this(ParserConfiguration.parseInt("numOfDeaths"));
     }
 
     /**
      * Constructor for a custom game.
      * @param skulls will be the lenght of the scoreboard.
      */
-    public Scoreboard(List<Actor> actorList, int skulls){
+    public Scoreboard(int skulls){
+        this.actorsList = new ArrayList<>();
+        this.maxDeaths = skulls;
+        this.numOfDeaths = 0;
+        this.skullBox = new ArrayList<>();
+    }
+
+    public Scoreboard(List<Actor> actorList, int skulls) {
         this.actorsList = actorList;
         this.maxDeaths = skulls;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();
     }
 
-    Scoreboard(){
-        this.actorsList = new ArrayList<>();
-        this.maxDeaths = 0;
+    void setActor(List<Actor> actorList) {
+        this.actorsList = actorList;
     }
 
     /**

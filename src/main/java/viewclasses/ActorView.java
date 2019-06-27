@@ -14,6 +14,7 @@ import java.util.Map;
  * This class contains the Actor that is used by the view and transmitted from the server to the client
  */
 public class ActorView implements Serializable {
+    private String colorString;
     private Color color;
     private String username;
 
@@ -163,16 +164,14 @@ public class ActorView implements Serializable {
     public List<PowerUpView> powerUp() {
         return powerUp;
     }
-/*
-    public String getAnsi(){
-        if(color.equals(Color.white)) return "\u001B[37m";
-        if(color.equals(Color.pink)) return "\u001B[35m";
-        if(color.equals(Color.green)) return "\u001B[32m";
-        if(color.equals(Color.yellow)) return "\u001B[33m";
-        if(color.equals(Color.blue)) return "\u001B[34m";
-        return "\u001B[0m";
+
+    public void setColorString(String colorString) {
+        this.colorString = colorString;
     }
-*/
+
+    public String colorString() {
+        return colorString;
+    }
 
 
     @Override
@@ -188,4 +187,5 @@ public class ActorView implements Serializable {
     public int hashCode() {
         return super.hashCode();
     }
+
 }

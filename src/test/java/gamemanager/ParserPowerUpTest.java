@@ -70,7 +70,7 @@ class ParserPowerUpTest {
         assertEquals(PowerUpType.NEWTON, c2.getType());
         assertEquals(c1.getType() , c2.getType());
 
-        //assertFalse(c1.getAmmo().compareTo(c2.getAmmo()) > 0);
+        assertFalse(c1.getAmmo().canBuy(c2.getAmmo()));
         assertNotEquals(c1,c2);
     }
 

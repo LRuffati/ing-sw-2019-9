@@ -10,7 +10,6 @@ import uid.DamageableUID;
 import uid.RoomUID;
 import uid.TileUID;
 
-import java.awt.*;
 import java.util.Map;
 
 public class DominationPointTile extends Tile {
@@ -44,7 +43,7 @@ public class DominationPointTile extends Tile {
         if(map.tile(actor.pawnID()).equals(
                 ((DominationPoint)controlPointActor.pawn()).getDominationPointTile().tileID)
         ) {
-            actor.damageRaw(actor, 1);
+            actor.damageRaw(controlPointActor, 1);
             controlPointActor.addDamageList(actor, getColor());
         }
 

@@ -63,7 +63,7 @@ ADRENALINE_GROUP_9
 8000
 
 -TimeBeforeStarting
-1000
+20000
 
 -TimeForMove
 120

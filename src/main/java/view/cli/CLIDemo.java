@@ -330,14 +330,10 @@ public class CLIDemo implements View {
             PowerUpView pu = puIterator.next();
             builder.append(i);
             builder.append(". ");
-            if(pu.ammo().toColor().equals(Color.RED))
-                builder.append("\u001B[31m");
-            if(pu.ammo().toColor().equals(Color.YELLOW))
-                builder.append("\u001B[33m");
-            if(pu.ammo().toColor().equals(Color.BLUE))
-                builder.append("\u001B[34m");
+            builder.append(AnsiColor.getAnsi(pu.ammo().toColor()));
             builder.append(pu.type().toString());
-            builder.append("\u001B[0m \n");
+            builder.append(AnsiColor.getDefault());
+            builder.append("\n");
             i+=1;
         }
         builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
@@ -563,7 +559,11 @@ public class CLIDemo implements View {
     String printListOfColor(List<ActorView> actorViews) {
         StringBuilder builder = new StringBuilder();
         for(ActorView actorView : actorViews) {
-            builder.append( AnsiColor.getAnsi(actorView.color()) );
+            //todo: should be changed
+            if(actorView == null && climap.getMp().gameMode().equals(GameMode.DOMINATION))
+                builder.append(AnsiColor.getAnsi(Color.orange));
+            else
+                builder.append( AnsiColor.getAnsi(actorView.color()) );
             builder.append("█ ");
             builder.append(AnsiColor.getDefault());
         }
@@ -592,21 +592,21 @@ public class CLIDemo implements View {
         System.out.println(player.ammo().get(AmmoColor.YELLOW) + "\tYELLOW");
 
         int i = 0;
-        if(player.getLoadedWeapon().size() > 0) {
+        if(!player.getLoadedWeapon().isEmpty()) {
             System.out.println("\n>> He's got the following loaded weapons: ");
             for (WeaponView w : player.getLoadedWeapon()) {
                 System.out.println(i + ". " + w.name());
                 i++;
             }
         }
-        if(player.getUnloadedWeapon().size() > 0) {
+        if(!player.getUnloadedWeapon().isEmpty()) {
             System.out.println("\n>> He's got the following unloaded weapons: ");
             for (WeaponView w : player.getUnloadedWeapon()) {
                 System.out.println(i + ". " + w.name());
                 i++;
             }
         }
-        if(player.getPowerUp().size() > 0) {
+        if(!player.getPowerUp().isEmpty()) {
             System.out.println("\n>> He's got the following powerUps: ");
             for (PowerUpView w : player.getPowerUp()) {
                 System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());

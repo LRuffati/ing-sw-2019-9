@@ -11,6 +11,7 @@ import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
 import player.Actor;
+import player.ControlPointActor;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -50,7 +51,7 @@ public class GameMap {
     /**
      * Map between DamageableUID and Damageable Class
      */
-    private final Map<DamageableUID, Pawn> damageableUIDMap; //TODO: doesn't contain dominationPoints
+    private final Map<DamageableUID, Pawn> damageableUIDMap;
 
     /**
      * A tile used to store dead players waiting to be spawned
@@ -526,6 +527,8 @@ public class GameMap {
             gameMapView.setSkullBox(((DominationMode) GameBuilder.get().getScoreboard()).getSkullBox());
             gameMapView.setSpawnTracker(((DominationMode) GameBuilder.get().getScoreboard()).getSpawnTracker());
         }
+        else
+            gameMapView.setSkullBox(GameBuilder.get().getScoreboard().getSkullBox());
         return gameMapView;
     }
 }

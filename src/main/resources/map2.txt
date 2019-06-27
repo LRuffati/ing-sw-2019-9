@@ -15,7 +15,7 @@ blue
 Room
 0 3
 Color
-Green
+green
 
 Room
 2 1

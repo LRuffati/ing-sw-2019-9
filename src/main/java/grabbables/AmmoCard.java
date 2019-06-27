@@ -44,11 +44,12 @@ public class AmmoCard extends Grabbable {
 
     public AmmoCardView generateView(){
         AmmoCardView ammoCardView = new AmmoCardView();
-        ammoCardView.setNumOfBlue(ammoAmount.getAmounts().get(AmmoColor.BLUE));
-        ammoCardView.setNumOfRed(ammoAmount.getAmounts().get(AmmoColor.RED));
-        ammoCardView.setNumOfYellow(ammoAmount.getAmounts().get(AmmoColor.YELLOW));
-        ammoCardView.setNumOfPowerUp(numOfPowerUp);
-
+        ammoCardView.setAll(
+                ammoAmount.getAmounts().get(AmmoColor.BLUE),
+                ammoAmount.getAmounts().get(AmmoColor.RED),
+                ammoAmount.getAmounts().get(AmmoColor.YELLOW),
+                numOfPowerUp
+        );
         ammoCardView.setUid(super.getId());
         return ammoCardView;
     }

@@ -30,8 +30,8 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 1000;//ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 2;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;
@@ -96,6 +96,7 @@ public class MainController {
      */
     public void reconnect(Player player) {
         numOfPlayer++;
+        player.setOnLine(true);
         logger.log(Level.INFO, "Reconnection");
         notifyConnection(numOfPlayer, player);
         checkGameStart();
@@ -122,6 +123,7 @@ public class MainController {
      */
     public void logout(Player player) {
         numOfPlayer--;
+        player.setOnLine(false);
         notifyDisconnection(numOfPlayer, player);
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
@@ -161,14 +163,13 @@ public class MainController {
 
     private void startGame() {
 
-        GameMode gameMode = 2*normalMode>=numOfPlayer ? GameMode.NORMAL : GameMode.DOMINATION;
+        gameMode = 2*normalMode>=numOfPlayer ? GameMode.NORMAL : GameMode.DOMINATION;
 
         gameStarted = true;
         createGame(gameMode);
 
         this.scoreboard = game.getScoreboard();
         this.gameMap = game.getMap();
-        this.gameMode = gameMode;
 
         for (SlaveController i: slaveControllerList){
             slaveMap.put(i.getSelf().pawnID(), i);
@@ -201,6 +202,7 @@ public class MainController {
                 player.setActor(actor);
                 player.setUid(actor.pawnID());
                 actor.pawn().setUsername(player.getUsername());
+                actor.pawn().setColorString(player.getColor());
                 actor.pawn().setColor((Color) Color.class.getField(player.getColor()).get(null));
             }
         }
@@ -329,11 +331,16 @@ public class MainController {
 
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
+        currIndex++;
+        while(!slaveControllerList.get(currIndex%size).isOnline()) currIndex = (currIndex+1)%size;
+        currIndex--;
+        next = slaveControllerList.get((currIndex+1)%size);
+        /*
         if (currIndex<(size-1)){
             next = slaveControllerList.get(currIndex+1);
         } else {
             next = slaveControllerList.get(0);
-        }
+        }*/
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){

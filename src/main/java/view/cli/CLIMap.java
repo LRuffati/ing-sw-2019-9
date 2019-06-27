@@ -7,7 +7,6 @@ import uid.TileUID;
 import viewclasses.*;
 
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.List;
 
@@ -19,6 +18,9 @@ public class CLIMap {
     private Map<ActorView,Character> players;
     private GameMapView mp;
     private Map<Character,Coord> playerPos;
+
+    private Map<TileView, List<String>> colorsOfAmmo = new HashMap<>();
+    private char charForAmmo = '@';
 
     /**
      * The object will generate an ASCII map to be printed on the command line.
@@ -49,7 +51,6 @@ public class CLIMap {
      * Finally it places the doors.
      */
     private void generateMap(){
-
         for(TileView t: mp.allTiles()){
             int x = mp.getCoord(t).getY()* DIM_TILE;
             int y = mp.getCoord(t).getX()* DIM_TILE;
@@ -70,12 +71,11 @@ public class CLIMap {
             tiles[x+2][y+4] = '═';
             tiles[x+3][y+4] = '═';
             tiles[x+4][y+4] = '╝';
-            if(t.spawnPoint()){
+            if(t.spawnPoint())
                 tiles[x+1][y+1] = 's';
-            } else {
+            else
+                setAmmoCard(t,x,y);
 
-                tiles[x+1][y+1] = 't';
-            }
             for(Map.Entry<Direction,String> entry: t.nearTiles().entrySet()){
                 if(entry.getValue().equals("Door")){
                     switch (entry.getKey()){
@@ -132,6 +132,18 @@ public class CLIMap {
         }
     }
 
+    private void setAmmoCard(TileView t, int x, int y) {
+        List<String> elem = new ArrayList<>();
+        for(int i=0; i<t.ammoCard().numOfBlue(); i++)       elem.add(AnsiColor.getAnsi(Color.blue));
+        for(int i=0; i<t.ammoCard().numOfRed(); i++)        elem.add(AnsiColor.getAnsi(Color.red));
+        for(int i=0; i<t.ammoCard().numOfYellow(); i++)     elem.add(AnsiColor.getAnsi(Color.yellow));
+        for(int i=0; i<t.ammoCard().numOfPowerUp(); i++)    elem.add(AnsiColor.getAnsi(Color.darkGray));
+        Collections.shuffle(elem);
+        colorsOfAmmo.put(t, elem);
+        for(int i=1; i<=elem.size(); i++)
+            tiles[x+1][y+i] = charForAmmo;
+    }
+
     /**
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
@@ -142,14 +154,22 @@ public class CLIMap {
                 Coord cord = new Coord(r/ DIM_TILE, c/ DIM_TILE);
                 boolean flag = true;
                 if(mp.allCoord().contains(cord)) {
-                    for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
-                        if(tiles[c][r].equals(entry.getValue())){
-                            System.out.print(AnsiColor.getAnsi(entry.getKey().color()) + tiles[c][r] + "\u001B[0m");
-                            flag = false;
-                            break;
-                        }
+                    if(tiles[c][r].equals(charForAmmo)) {
+                        System.out.print(colorsOfAmmo.get(mp.getPosition(cord)).remove(0)
+                                + tiles[c][r]
+                                + AnsiColor.getDefault());
                     }
-                    if(flag) System.out.print(AnsiColor.getAnsi(mp.getPosition(cord).color()) + tiles[c][r] + "\u001B[0m");
+                    else {
+                        for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
+                            if (tiles[c][r].equals(entry.getValue())) {
+                                System.out.print(AnsiColor.getAnsi(entry.getKey().color()) + tiles[c][r] + "\u001B[0m");
+                                flag = false;
+                                break;
+                            }
+                        }
+                        if (flag)
+                            System.out.print(AnsiColor.getAnsi(mp.getPosition(cord).color()) + tiles[c][r] + "\u001B[0m");
+                    }
                 } else System.out.print(" ");
             }
         }

@@ -28,7 +28,7 @@ class CLIMapTest {
         GameBuilder builder = null;
         try {
             builder = new GameBuilder(
-                    null, null, null, null, 4);
+                    null, null, null, null, 5);
         }
         catch (FileNotFoundException ignored){
         }

@@ -37,13 +37,13 @@ public class DominationMode extends Scoreboard{
 
 
 
-    public DominationMode(List<Actor> actorList){
-        this(actorList, ParserConfiguration.parseInt("numOfDeaths"));
+    public DominationMode(){
+        this(ParserConfiguration.parseInt("numOfDeaths"));
     }
 
-    public DominationMode(List<Actor> actorList, int numOfdeaths) {
-        super(actorList, numOfdeaths);
-        this.actorList = actorList;
+    public DominationMode(int numOfdeaths) {
+        super(numOfdeaths);
+        this.actorList = new ArrayList<>();
         this.maxDeaths = numOfdeaths;
         this.numOfDeaths = 0;
         this.skullBox = new ArrayList<>();

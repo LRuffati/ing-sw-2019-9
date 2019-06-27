@@ -68,9 +68,10 @@ public class GameBuilder {
 
         map = parserMap(gameMode, mapPath, numOfPlayer, decks);
 
-        scoreboard = gameMode.equals(GameMode.NORMAL) ? new Scoreboard(actorList) : new DominationMode(actorList);
+        scoreboard = gameMode.equals(GameMode.NORMAL) ? new Scoreboard() : new DominationMode();
 
         actorList = buildActor(map);
+        scoreboard.setActor(actorList);
 
         instance = this;
     }

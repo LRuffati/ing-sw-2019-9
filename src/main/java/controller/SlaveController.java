@@ -373,6 +373,10 @@ public class SlaveController {
         }
     }
 
+    public boolean isOnline() {
+        return player.isOnLine();
+    }
+
     public Actor getSelf() {
         return player.getActor();
     }
