@@ -37,6 +37,8 @@ class ReloadEffect implements Effect{
             e.printStackTrace();
         }
         broadcaster.accept(effectString(pov.getSelf()));
+        new Thread(()->finalize.run()).start();
+        return;
     }
 
     String effectString(Actor pov) {

@@ -49,6 +49,8 @@ public class DamageEffect implements Effect{
         } else {
             pov.getSelf().getGm().getPawn(uid).getActor().damage(pov.getSelf(), amount);
         }
+        new Thread(()->finalize.run()).start();
+        return;
 
     }
 

@@ -37,5 +37,9 @@ public interface Targetable {
         return pawns && tiles;
     }
 
+    default boolean isSelf(DamageableUID selfUid){
+        return false;
+    }
+
     TargetView generateView(Sandbox sandbox);
 }

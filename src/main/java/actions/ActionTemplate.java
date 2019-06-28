@@ -79,7 +79,6 @@ public class ActionTemplate {
         for (Tuple<Boolean, String> i: actionRequirements){
             //TODO: test that contains checks equality, not just reference
             result &= i.x.equals(previousActions.contains(i.y));
-            result &= !(i.y.equals(this.info.getActionId())); //Every action just once
         }
         return result;
     }

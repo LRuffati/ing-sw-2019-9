@@ -154,7 +154,8 @@ public class Targeter {
             targets = targets.filter(t -> i.y.checkTarget(sandbox,t, previousTargets.get(i.x)));
 
         }
-
+        targets =
+                targets.filter(t -> !t.isSelf(previousTargets.get("self").getSelectedPawns(sandbox).iterator().next()));
         List<Targetable> validTargets = targets.collect(Collectors.toCollection(LinkedList::new));
 
         if (type.equals(groupString) && !validTargets.isEmpty()) {

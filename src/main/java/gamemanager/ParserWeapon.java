@@ -135,6 +135,7 @@ public class ParserWeapon {
                     {
                         return new Tuple<>(m.group(1)==null, m.group(2));
                     }).collect(Collectors.toList());
+                    followsList.add(new Tuple<>(Boolean.FALSE, id));
 
                     Matcher existsMatcher = Pattern.compile("(!)?(\\w+)").matcher(exists);
                     List<Tuple<Boolean, String>> existsList = existsMatcher.results().map(m ->
