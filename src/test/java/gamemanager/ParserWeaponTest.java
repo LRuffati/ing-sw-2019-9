@@ -13,7 +13,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserWeaponTest {
-    private Collection<Weapon> weaponCollection;
+    private Set<Weapon> weaponCollection;
 
     @BeforeEach
     void setup(){
@@ -28,6 +28,7 @@ public class ParserWeaponTest {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+        System.out.println(weaponCollection.size());
     }
 
     @Test
@@ -60,8 +61,6 @@ public class ParserWeaponTest {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-
 
         System.out.println(weaponCollection.size());
     }
