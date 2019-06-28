@@ -47,12 +47,6 @@ class PawnTest {
     }
 
     @Test
-    void domPointConstrTest(){
-        pietro = new Pawn();
-        assertNull(pietro.getMap());
-    }
-
-    @Test
     void moveTest() throws NoSuchFieldException {
         pietro = actorList.get(0).pawn();
         TileUID tomove;

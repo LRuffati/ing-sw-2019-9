@@ -84,7 +84,7 @@ public class WeaponUse implements ActionPicker {
             action = availableActions.get(choice);
         } else return new RollbackMessage("Devi scegliere un'azione valida");
 
-        final List<String> updatedActions = new LinkedList<>(previousActions);
+        List<String> updatedActions = new LinkedList<>(previousActions);
         updatedActions.add(action.x);
         Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> fun =
                 tup -> {
