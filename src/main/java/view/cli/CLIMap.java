@@ -155,7 +155,10 @@ public class CLIMap {
                 boolean flag = true;
                 if(mp.allCoord().contains(cord)) {
                     if(tiles[c][r].equals(charForAmmo) && colorsOfAmmo.get(mp.getPosition(cord)).size()>0) {
-                        System.out.print(colorsOfAmmo.get(mp.getPosition(cord)).remove(0)
+                        String col = colorsOfAmmo.get(mp.getPosition(cord)).remove(0);
+                        colorsOfAmmo.get(mp.getPosition(cord)).add(col);
+                        System.out.print(
+                                col
                                 + tiles[c][r]
                                 + AnsiColor.getDefault());
                     }

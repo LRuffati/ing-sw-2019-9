@@ -12,6 +12,7 @@ import uid.TileUID;
 import viewclasses.*;
 
 import java.awt.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -579,10 +580,14 @@ public class CLIDemo implements View {
         for(int i = 0; i<blue; i++){
             out.append("■");
         }
+        //todo: change
+        //fixme: change
+        /*
         if(parenthesis && out.length() != 0){
             out.insert(1,'(');
             out.insert(out.length()-1,')');
         }
+        */
         out.append(" ");
         out.append(AnsiColor.getDefault());
         return out.toString();
@@ -617,7 +622,13 @@ public class CLIDemo implements View {
                     marks.add((ActorView)entry.getKey());
             System.out.println(printListOfColor(marks));
         }
-        System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
+
+        try {
+            System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
+        }
+        catch (InvalidParameterException e) {
+            //skip
+        }
         System.out.println("\n>> He's got the following ammo: ");
         System.out.println(player.ammo().get(AmmoColor.RED) + "\tRED");
         System.out.println(player.ammo().get(AmmoColor.BLUE) + "\tBLUE");
