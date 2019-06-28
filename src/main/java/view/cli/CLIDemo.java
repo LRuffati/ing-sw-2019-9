@@ -1,6 +1,7 @@
 package view.cli;
 
 import actions.utils.AmmoColor;
+import board.Coord;
 import controller.GameMode;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 public class CLIDemo implements View {
     private static CLIMap climap;
+    private GameMapView gameMapView;
     private Scanner in = new Scanner(System.in);
     private ClientControllerClientInterface client;
     private boolean inputTake = true;
@@ -401,7 +403,28 @@ public class CLIDemo implements View {
             System.out.println(yourPlayerChar);
             System.out.println(AnsiColor.getDefault());
         }
-        climap.printMap();
+        if(!areEquals(this.gameMapView, gameMapView))
+            climap.printMap();
+        this.gameMapView = gameMapView;
+    }
+
+    private boolean areEquals(GameMapView map1, GameMapView map2) {
+        if(map1 == null || map2 == null)    return false;
+        for(Coord coord : map1.allCoord()) {
+            TileView tile1 = map1.getPosition(coord);
+            TileView tile2 = map2.getPosition(coord);
+            if(
+                    !tile1.players().stream().map(ActorView::name).collect(Collectors.toList())
+                    .containsAll(tile2.players().stream().map(ActorView::name).collect(Collectors.toList()))
+                            ||
+                            !(tile1.ammoCard().numOfBlue() == tile2.ammoCard().numOfBlue() &&
+                                    tile1.ammoCard().numOfRed() == tile2.ammoCard().numOfRed() &&
+                                    tile1.ammoCard().numOfYellow() == tile2.ammoCard().numOfYellow() &&
+                                    tile1.ammoCard().numOfPowerUp() == tile2.ammoCard().numOfPowerUp())
+            )
+                return false;
+        }
+        return true;
     }
 
     @Override

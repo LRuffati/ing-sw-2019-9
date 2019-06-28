@@ -83,29 +83,5 @@ public class TileView implements Serializable {
     public List<WeaponView> weapons() {
         return weapons;
     }
-
-    /*
-    public String getAnsi() {
-        if(color.equals(Color.white)) return "\u001B[37m";
-        if(color.equals(Color.black)) return "\u001B[30m";
-        if(color.equals(Color.red)) return "\u001B[31m";
-        if(color.equals(Color.green)) return "\u001B[32m";
-        if(color.equals(Color.yellow)) return "\u001B[33m";
-        if(color.equals(Color.blue)) return "\u001B[34m";
-        if(color.equals(Color.magenta)) return "\u001B[35m";
-        return "\u001B[0m";
-    }
-
-    public String getColorName() {
-        if(color.equals(Color.white)) return "white";
-        if(color.equals(Color.black)) return "black";
-        if(color.equals(Color.red)) return "red";
-        if(color.equals(Color.green)) return "green";
-        if(color.equals(Color.yellow)) return "yellow";
-        if(color.equals(Color.blue)) return "blue";
-        if(color.equals(Color.magenta)) return "magenta";
-        return "gray";
-    }
-    */
 }
 
