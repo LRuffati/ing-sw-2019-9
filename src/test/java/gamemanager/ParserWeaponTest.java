@@ -25,6 +25,7 @@ public class ParserWeaponTest {
         String path = "test/weaponToTest";
         try{
             weaponCollection = ParserWeapon.parseWeapons(path);
+            System.out.println(weaponCollection.size());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

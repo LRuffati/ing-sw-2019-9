@@ -245,14 +245,14 @@ descrizioneWeapon: d
 action main:
 nomeAction: Modalità base
 descrizioneAction: Scegli una direzione e colpisci un bersaglio in quella direzione
-target dirsel tile (DISTANT (1,1) self): Scegli la cella corrispondente alla direzione
+target dirsel tile (DISTANTPH (1,1) self): Scegli la cella corrispondente alla direzione
 target direz directionph (HAS dirsel & HAS self) automatic
 target targ1 pawn (IN direz): Scegli il bersaglio a cui dare 3 danni
 effect damage 3 targ1
 action perf:
 nomeAction: Modalità perforazione
 descrizioneAction: Scegli una direzione e dai due danni a bersagli in quella direzione
-target dirsel tile (DISTANT (1,1) self): Scegli la cella corrispondente alla direzione
+target dirsel tile (DISTANTPH (1,1) self): Scegli la cella corrispondente alla direzione
 target direz directionph (HAS dirsel & HAS self) automatic
 target targ1 pawn (IN direz) new: Scegli il primo bersaglio
 target targ2 pawn (IN direz) new: Scegli il secondo bersaglio

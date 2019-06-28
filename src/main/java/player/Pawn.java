@@ -45,14 +45,6 @@ public class Pawn {
     }
 
     /**
-     * Constructor used for DominationPoint class.
-     */
-    public Pawn(){
-        this.damageableUID = new DamageableUID();
-        this.map = null;
-    }
-
-    /**
      * The method set a bound between an unbounded player and the pawn.
      */
     void setBinding(Actor player){

@@ -76,6 +76,11 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
         return new HashSet<>(tiles);
     }
 
+    @Override
+    public boolean isSelf(DamageableUID selfUid) {
+        return selfUid.equals(this.selfUID);
+    }
+
     /*
      Implementing PointLike
     */

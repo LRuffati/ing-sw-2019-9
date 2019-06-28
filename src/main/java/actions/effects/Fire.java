@@ -73,6 +73,8 @@ public class Fire implements EffectTemplate {
                                                    Consumer<String> broadcaster) {
                             pov.getSelf().useWeapon(weapUsed);
                             broadcaster.accept(effectString(pov.getSelf()));
+                            new Thread(()->finalize.run()).start();
+                            return;
                         }
 
                         String effectString(Actor pov) {
