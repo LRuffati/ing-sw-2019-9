@@ -194,7 +194,7 @@ action main:
 nomeAction: Effetto base
 descrizioneAction: a
 target targ0 pawn (SEEN self)
-target tild tile (REACHED (0,1) targ0
+target tild tile (REACHED (0,1) targ0)
 effect damage 1 targ0
 effect move targ0 to tild
 action extra R:
