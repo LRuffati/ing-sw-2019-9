@@ -407,15 +407,14 @@ public class CLIDemo implements View {
     /**
      * See documentation in the View interface.
      */
-    @Override
-    public void updateMap(GameMapView gameMapView) {
+    public void updateMap(GameMapView gameMapView, boolean forced) {
         climap = new CLIMap(gameMapView);
         if(yourPlayerChar == null) {
             yourPlayerChar = "You're the player " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
             System.out.println(yourPlayerChar);
             System.out.println(AnsiColor.getDefault());
         }
-        if(!areEquals(this.gameMapView, gameMapView))
+        if(!forced && !areEquals(this.gameMapView, gameMapView))
             climap.printMap();
         this.gameMapView = gameMapView;
     }
