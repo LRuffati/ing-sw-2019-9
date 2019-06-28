@@ -116,6 +116,7 @@ public class Action {
 
         return new ChoiceMaker() {
 
+            private String description;
             Function<Integer, Targetable> action;
             List<Tuple<Integer, TargetView>> listTargets = new ArrayList<>();
             boolean optional = optionalTarg;
@@ -128,6 +129,22 @@ public class Action {
                         .mapToObj(i -> new Tuple<>(i, possibilities.get(i)))
                         .collect(Collectors.toList());
 
+                this.description = "";
+
+            }
+
+            @Override
+            public void giveTargetsWithDescr(String targetId, List<TargetView> possibilities, Function<Integer, Targetable> action, String description) {
+                this.action = action;
+                listTargets = IntStream.range(0, possibilities.size())
+                        .mapToObj(i -> new Tuple<>(i, possibilities.get(i)))
+                        .collect(Collectors.toList());
+                this.description = description;
+            }
+
+            @Override
+            public String getDescription() {
+                return description;
             }
 
             @Override
@@ -200,7 +217,7 @@ public class Action {
             if (thisTargeter.y.automatic)
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
-                return new PickTargetMessage(choiceMaker, "Scegli un bersaglio", sandbox);
+                return new PickTargetMessage(choiceMaker, sandbox);
         } else if (false){
             /*
             TODO: implement contemporaneous effects

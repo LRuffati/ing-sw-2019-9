@@ -66,7 +66,7 @@ public class ReloadTemplate implements EffectTemplate{
                 }
             }
         };
-        return new PickWeaponMessage(chooser, "Pick weapons to reload", sandbox);
+        return new PickWeaponMessage(chooser, "Seleziona le armi da ricaricare", sandbox);
     }
 }
 

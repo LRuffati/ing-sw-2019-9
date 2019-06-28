@@ -9,6 +9,7 @@ import actions.utils.ChoiceMaker;
 import board.Sandbox;
 import genericitems.Tuple;
 import uid.TileUID;
+import viewclasses.TargetView;
 
 import java.util.*;
 import java.util.function.Function;
@@ -30,8 +31,9 @@ public class Targeter {
     static {
         targetBuilders.put("pawn",sandbox-> tileUID -> sandbox.containedPawns(tileUID).stream().map(sandbox::getBasic));
         targetBuilders.put("tile",sandbox-> tileUID -> Stream.of(sandbox.getTile(tileUID)));
-        targetBuilders.put("direction_l",sandbox-> tileUID -> sandbox.neighbors(tileUID, true).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),true)));
-        targetBuilders.put("direction_p",sandbox-> tileUID -> sandbox.neighbors(tileUID, false).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),false)));
+        targetBuilders.put("direction",sandbox-> tileUID -> sandbox.neighbors(tileUID, true).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),true)));
+        targetBuilders.put("directionph",
+                sandbox-> tileUID -> sandbox.neighbors(tileUID, false).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),false)));
         targetBuilders.put("room",sandbox-> tileUID -> Stream.of(sandbox.getRoom(sandbox.room(tileUID))));
     }
 
@@ -86,6 +88,7 @@ public class Targeter {
     private final boolean optional;
 
     private final Predicate<Targetable> isNew;
+    private final String description;
 
     /**
      * This creates the targeter for an instance of the weapon being used
@@ -108,6 +111,7 @@ public class Targeter {
         this.targetID = targetID;
         this.optional = template.optional;
         this.type = template.type;
+        this.description = template.description;
         this.isNew =
                 target -> previousTargets.values().stream().noneMatch(o-> target.equals(o,sandbox));
 
@@ -167,14 +171,21 @@ public class Targeter {
 
         final List<Targetable> passedTargets = new ArrayList<>(validTargets);
 
-        //master.giveTargets(targetID, validTargets, integer -> {
-        master.giveTargets(targetID, validTargets.stream().map(x -> x.generateView(sandbox)).collect(Collectors.toList()) , integer -> {
+        Function<Integer, Targetable> pickFun = integer -> {
             if (optional && integer<0)
                 return null;
             else if (integer >= passedTargets.size()){
                 return passedTargets.get(passedTargets.size()-1);
             } else return passedTargets.get(integer);
-        });
+        };
+
+        List<TargetView> views =
+                validTargets.stream().map(x -> x.generateView(sandbox)).collect(Collectors.toList());
+
+        if (description.length()==0)
+            master.giveTargets(targetID, views, pickFun);
+        else master.giveTargetsWithDescr(targetID,views,pickFun,description);
+
         return true;
     }
 

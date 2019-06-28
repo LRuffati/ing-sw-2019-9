@@ -50,10 +50,12 @@ public class TargeterTemplate {
      */
     public final boolean automatic;
 
+    public final String description;
+
     public TargeterTemplate(Tuple<String, Selector> selector,
                      List<Tuple<String, Condition>> filters,
                      String type,
-                     boolean optional, boolean newTarg, boolean automatic) {
+                     boolean optional, boolean newTarg, boolean automatic, String description) {
 
         this.selector = selector;
         this.filters = filters;
@@ -61,6 +63,7 @@ public class TargeterTemplate {
         this.optional = optional;
         this.newTarg = newTarg;
         this.automatic = automatic;
+        this.description = description;
     }
 
 }
