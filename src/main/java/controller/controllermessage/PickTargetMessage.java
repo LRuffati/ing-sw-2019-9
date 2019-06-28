@@ -24,6 +24,20 @@ public class PickTargetMessage implements ControllerMessage{
     }
 
     /**
+     * Used for targets with a description embedded
+     * @param choiceMaker
+     * @param sandbox
+     */
+    public PickTargetMessage(ChoiceMaker choiceMaker, Sandbox sandbox){
+        String descr = choiceMaker.getDescription();
+        if (descr.length()==0)
+            descr = "Scegli un bersaglio";
+        options = new ChoiceBoard(choiceMaker, descr);
+        fun = choiceMaker::pick;
+        this.sandbox = sandbox;
+    }
+
+    /**
      * This denotes the current state of the player turn
      *
      * @return

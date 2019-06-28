@@ -34,7 +34,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli in quale cella spostarti"
                             )
                     )
             ),
@@ -65,7 +66,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli in quale cella spostarti"
                             )
                     )
             ),
@@ -96,7 +98,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli in quale cella raccogliere"
                                 )
                     )
                     ),
@@ -142,7 +145,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli in quale cella raccogliere"
                                 )
                     )
                     ),
@@ -174,7 +178,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli da quale cella sparare"
                                 )
                     )
                     ),
@@ -206,7 +211,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli da quale cella sparare"
                                 )
                     )
                     ),
@@ -239,7 +245,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli da quale cella sparare"
                                 )
                     )
                     ),
@@ -272,7 +279,8 @@ class ActionTemplateOptions {
                                     "tile",
                                     false,
                                     false,
-                                    false
+                                    false,
+                                    "Scegli in quale cella raccogliere"
                                 )
                     )
                     ),

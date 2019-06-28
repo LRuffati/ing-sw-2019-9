@@ -17,6 +17,14 @@ public interface ChoiceMaker {
     void giveTargets(String targetId, List<TargetView> possibilities,
                      Function<Integer, Targetable> action);
 
+    default void giveTargetsWithDescr(String targetId, List<TargetView> possibilities,
+                                      Function<Integer, Targetable> action, String description){
+        return;
+    }
+
+    default String getDescription(){
+        return "";
+    }
     /**
      * This function will be called by the controller
      *

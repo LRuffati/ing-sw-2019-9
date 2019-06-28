@@ -1,3 +1,18 @@
+weapon distruttore BB:
+nomeWeapon: Distruttore
+descrizioneWeapon: d
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni e 1 marchio a un bersaglio che puoi vedere
+target targ1 pawn (SEEN self) new
+effect DAMAGE 2 targ1
+effect MARK 1 targ1
+action secondo R follows [main]:
+nomeAction: Secondo aggancio
+descrizioneAction: Dai 1 marchio a un altro bersaglio
+target targ2 pawn (SEEN self) new
+effect MARK 1 targ2
+stop
 weapon mitragliatrice BR:
 nomeWeapon: Mitragliatrice
 descrizioneWeapon: descrizione mancante
@@ -183,7 +198,7 @@ nomeAction: Modalità barbecue
 descrizioneAction: Dai 2 danni nel primo quadrato e 1 nel secondo
 target tile1 tile (DISTANT (1,1) self)
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN direction & DISTANT (2,2) self) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic
 effect damage 2 tile1
 effect damage 1 tile2
 stop
@@ -223,6 +238,45 @@ nomeAction: Testata a frammentazione
 descrizioneAction: c
 target tile2 tile (HAS targ0) automatic
 effect damage 1 tile2
+stop
+weapon laser YYB:
+nomeWeapon: Fucile laser
+descrizioneWeapon: d
+action main:
+nomeAction: Modalità base
+descrizioneAction: Scegli una direzione e colpisci un bersaglio in quella direzione
+target dirsel tile (DISTANT (1,1) self): Scegli la cella corrispondente alla direzione
+target direz directionph (HAS dirsel & HAS self) automatic
+target targ1 pawn (IN direz): Scegli il bersaglio a cui dare 3 danni
+effect damage 3 targ1
+action perf:
+nomeAction: Modalità perforazione
+descrizioneAction: Scegli una direzione e dai due danni a bersagli in quella direzione
+target dirsel tile (DISTANT (1,1) self): Scegli la cella corrispondente alla direzione
+target direz directionph (HAS dirsel & HAS self) automatic
+target targ1 pawn (IN direz) new: Scegli il primo bersaglio
+target targ2 pawn (IN direz) new: Scegli il secondo bersaglio
+effect damage 2 targ1
+effect damage 2 targ2
+stop
+weapon spadafot YR:
+nomeWeapon: Spada fotonica
+descrizioneWeapon: d
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni a un bersaglio nel tuo quadrato
+target targ1 pawn (DISTANT (0,0) self) new: Scegli un giocatore a cui dare 2 danni
+effect damage 2 targ1
+action passo:
+nomeAction: Passo d'ombra
+descrizioneAction: Spostati di un movimento
+target tile1 tile (DISTANT (1,1) self): Scegli dove spostarti
+effect move self to tile1
+action sminuzza Y follows [main] exists [targ1]:
+nomeAction: Modalità sminuzzare
+descrizioneAction: Dai 2 danni ad un secondo giocatore nella tua cella
+target targ2 pawn (DISTANT (0,0) self) new: Scegli il secondo giocatore cui fare danno
+effect damage 2 targ2
 stop
 weapon zx YR:
 nomeWeapon: ZX-2
@@ -273,7 +327,8 @@ effect mark 2 targ1
 action cento B xor [main]:
 nomeAction: Modalità cento pugni
 descrizioneAction: d
-target dir direction (HAS self)
+target dirsel tile (DISTANT (1,1) self)
+target dir direction (HAS self & HAS dirsel) automatic
 target tile1 tile (DISTANT (1,1) self & IN dir) automatic
 target tile2 tile (DISTANT (2,2) self & IN dir) automatic
 target targ1 pawn (IN tile1) optional

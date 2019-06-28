@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 public class ParserWeapon {
     private static String regexNomeDescr = "[\\/ \\w'-.,òèàùé]";
-    private static String regexEndLine = "\\r?\\n";
+    private static String regexEndLine = System.getProperty("line.separator");
     ParserWeapon(){}
 
     public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
@@ -185,7 +185,11 @@ public class ParserWeapon {
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
-        Matcher targetMatcher = Pattern.compile(""+regexEndLine+"target +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN) *(.*?)(?= *&| *\\))(?: *& +(.+))?\\)( +new)?( +automatic)?( +optional)?(?:"+regexEndLine+"|$)", Pattern.CASE_INSENSITIVE).matcher(line);
+        Matcher targetMatcher = Pattern.compile(""+regexEndLine+"target +(\\w+) +" +
+                "(pawn|tile|room|direction|group|directionph) +\\( *" +
+                "(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN) *(.*?)(?= *&| *\\))(?: *& +(" +
+                ".+))?\\)( +new)?( +automatic)?( +optional)?(?: *: *("+regexNomeDescr+"+))?(?:"+regexEndLine+"|$)",
+                Pattern.CASE_INSENSITIVE).matcher(line);
         targetMatcher.find();
         String targName = targetMatcher.group(1);
         String targType = targetMatcher.group(2);
@@ -323,8 +327,12 @@ public class ParserWeapon {
         String isNew = targetMatcher.group(6);
         String isAuto = targetMatcher.group(7);
         String isOpt = targetMatcher.group(8);
+        String descr = targetMatcher.group(9);
+        if (descr==null)
+            descr="";
 
-        return new Tuple<>(targName, new TargeterTemplate(selector,conditionsList,targType,isOpt!=null,isNew!=null, isAuto!=null));
+        return new Tuple<>(targName, new TargeterTemplate(selector,conditionsList,targType,
+                isOpt!=null,isNew!=null, isAuto!=null, descr));
     }
 
     private static EffectTemplate parseEffect(String body){
