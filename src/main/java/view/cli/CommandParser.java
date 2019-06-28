@@ -18,7 +18,8 @@ class CommandParser{
         this.strings = strings;
     }
 
-    void parseCommand(String str){
+    void parseCommand(String str) {
+        System.out.println("parsing\t" + str);
         switch (state) {
             case MAIN:
                 if (str.equalsIgnoreCase("info")) {
@@ -27,6 +28,7 @@ class CommandParser{
                     break;
                 }
                 if (str.equalsIgnoreCase("quit")) {
+                    state = State.QUIT;
                     cliDemo.quitGame();
                     break;
                 }
@@ -71,6 +73,21 @@ class CommandParser{
                 System.out.println(cliDemo.pickStringMessage);
                 break;
 
+            case QUIT:
+                switch (str) {
+                    case "y":
+                        cliDemo.confirmqQuit();
+                        break;
+                    case "n":
+                    default:
+                        state = State.MAIN;
+                        cliDemo.getPrintedMap();
+                        System.out.println(cliDemo.pickStringMessage);
+                        break;
+                }
+                break;
+
+
             default:
                 System.out.println("type info or quit");
                 break;
@@ -78,6 +95,6 @@ class CommandParser{
     }
 
     private enum State {
-        MAIN, INFO, CHOOSEPLAYER, CHOOSETILE
+        MAIN, INFO, CHOOSEPLAYER, CHOOSETILE, QUIT
     }
 }

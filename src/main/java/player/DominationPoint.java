@@ -10,7 +10,7 @@ import uid.DamageableUID;
 import java.awt.*;
 
 public class DominationPoint extends Pawn {
-    private final Tile tile;
+    private final DominationPointTile tile;
     private final DamageableUID uid;
 
     //TODO: what to do for the actor field
@@ -18,13 +18,13 @@ public class DominationPoint extends Pawn {
     public DominationPoint(DamageableUID uid, Tile tile, GameMap map){
         super(uid, tile.tileID, map);
         this.uid = uid;
-        this.tile = tile;
+        this.tile = (DominationPointTile)tile;
 
-        this.setColor(Color.ORANGE);
+        this.setColor(Color.darkGray);
         this.setUsername("Domination Point");
     }
 
-    public Tile getDominationPointTile() {
+    public DominationPointTile getDominationPointTile() {
         return tile;
     }
 

@@ -80,6 +80,6 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
 
     @Override
     public TargetView generateView(Sandbox sandbox) {
-        return sandbox.generateTargetView(tiles);
+        return sandbox.generateTargetView(tiles, true);
     }
 }

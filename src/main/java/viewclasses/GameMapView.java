@@ -21,7 +21,7 @@ public class GameMapView implements Serializable{
     private List<ActorView> players;
     private List<Map<ActorView, Integer>> skullBox;
     private Map<Color, List<ActorView>> spawnTracker;
-
+    private ActorView dominationPointActor;
     private GameMode gameMode;
 
 
@@ -89,6 +89,10 @@ public class GameMapView implements Serializable{
         return gameMode;
     }
 
+    public ActorView dominationPointActor() {
+        return dominationPointActor;
+    }
+
     public void setTiles(Map<Coord, TileView> tiles){
         this.tiles = tiles;
     }
@@ -106,6 +110,10 @@ public class GameMapView implements Serializable{
 
     public void setPlayers(List<ActorView> players) {
         this.players = players;
+    }
+
+    public void setDominationPointActor(ActorView dominationPointActor) {
+        this.dominationPointActor = dominationPointActor;
     }
 
     public void setGameMode(GameMode gameMode) {

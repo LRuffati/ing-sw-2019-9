@@ -1,7 +1,9 @@
 package network;
 
+import controller.GameMode;
 import gamemanager.ParserConfiguration;
 import genericitems.Tuple;
+import genericitems.Tuple3;
 import network.rmi.RMIServerLauncher;
 import network.rmi.client.ClientNetworkRMI;
 import network.rmi.server.ServerRMIInterface;
@@ -155,7 +157,7 @@ public class Main {
             System.out.print("Insert password:\t");
             String password = scanner.next();
             try {
-                Tuple<Boolean, Boolean> resu = clientInterface.reconnect(username, password);
+                Tuple3<Boolean, Boolean, Tuple<String, GameMode>> resu = clientInterface.reconnect(username, password);
                 res = resu.x;
             }
             catch (InvalidLoginException e){

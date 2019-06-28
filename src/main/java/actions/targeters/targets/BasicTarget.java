@@ -185,6 +185,6 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
 
     @Override
     public TargetView generateView(Sandbox sandbox) {
-        return sandbox.generateTargetView(selfUID);
+        return sandbox.generateTargetView(selfUID,false);
     }
 }

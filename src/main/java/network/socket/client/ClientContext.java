@@ -1,5 +1,6 @@
 package network.socket.client;
 
+import controller.GameMode;
 import genericitems.Tuple;
 import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
@@ -91,5 +92,14 @@ public class ClientContext {
     }
     boolean getIsStarted(){
         return isStarted;
+    }
+
+
+    private Tuple<String, GameMode> tuple;
+    public void setTupleReconnection(Tuple<String, GameMode> tuple) {
+        this.tuple = tuple;
+    }
+    public Tuple<String, GameMode> getTupleReconnection() {
+        return tuple;
     }
 }

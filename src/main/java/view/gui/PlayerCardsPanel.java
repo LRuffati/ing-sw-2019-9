@@ -91,8 +91,8 @@ public class PlayerCardsPanel extends JPanel {
         java.util.List<TileUID> tileUIDS = new ArrayList<>();
         tileUIDS.add(mv.getTiles().get(new Coord(1,0)).uid());
         List<DamageableUID> damageableUIDS = new ArrayList<>();
-        targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
-        targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS));
+        targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS,false));
+        targetViewList.add(new TargetView(null,damageableUIDS,tileUIDS,false));
 
         JFrame frame = new JFrame("frame");
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 1080.0) {
