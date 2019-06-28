@@ -64,10 +64,9 @@ class CLIMapTest {
 
     void printTargetTest(){
         CLIDemo demo = new CLIDemo(client);
-        TargetView tw = new TargetView("asd", new ArrayList<>(), new ArrayList<>());
+        TargetView tw = new TargetView("asd", new ArrayList<>(), new ArrayList<>(), false);
         List<TargetView> targetViewList = new ArrayList<>();
         targetViewList.add(tw);
-        demo.printAppliedTarget(targetViewList);
         demo.getPrintedMap();
     }
 

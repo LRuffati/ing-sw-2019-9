@@ -126,11 +126,6 @@ public class CLIDemo implements View {
     }
 
 
-    void printAppliedTarget(List<TargetView> targetViewList){
-        climap.applyTarget(targetViewList);
-
-    }
-
     private void pick(String choiceId) {
         pickStringMessage = "";
 
@@ -199,48 +194,63 @@ public class CLIDemo implements View {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
 
+        List<Color> colorsOfTargets = List.of(Color.green, Color.yellow, Color.pink, Color.red, Color.blue);
         CLIMap map = new CLIMap(gameMap);
-        map.applyTarget(target);
+        map.applyTarget(target, colorsOfTargets);
         //printAppliedTarget(target);
         builder.append("Choose your target(s):\n0. Exit Selection\n");
+
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
-        while(targetIterator.hasNext()){
+        while(targetIterator.hasNext()) {
             TargetView tw = targetIterator.next();
             List<DamageableUID> dmg = tw.getDamageableUIDList();
             List<TileUID> tile = tw.getTileUIDList();
 
-            // TODO: this can be substituted by a visitor pattern. You add to targetView
-            if (!dmg.isEmpty()){
-                for(ActorView a: gameMap.players()){
-                    if(a.uid().equals(dmg.iterator().next())){
-                        builder.append(i);
-                        builder.append(". ");
-                        builder.append(AnsiColor.getAnsi(a.color()));
-                        builder.append(a.name());
-                        builder.append(AnsiColor.getDefault());
-                        builder.append(" whom character on the map is '");
-                        builder.append(climap.getPlayers().get(a));
-                        builder.append("'.\n");
-                        i+=1;
-                        break;
-                    }
-                }
+            if (tw.isDedicatedColor()) {
+                builder.append(i);
+                builder.append(". ");
+                Color col = colorsOfTargets.get(i - 1);
+                builder.append("Option ");
+                builder.append(AnsiColor.getAnsi(col));
+                builder.append(AnsiColor.getColorName(col));
+                builder.append(AnsiColor.getDefault());
+                builder.append(".\n");
+                i += 1;
             } else {
-                for(TileView t : gameMap.allTiles()){
-                    if(t.uid().equals(tile.iterator().next())){
-                        builder.append(i);
-                        builder.append(". ");
-                        builder.append(AnsiColor.getAnsi(t.color()));
-                        builder.append(gameMap.getCoord(t).toString());
-                        builder.append(AnsiColor.getDefault());
-                        builder.append(".\n");
-                        i+=1;
-                        break;
+
+                if (!dmg.isEmpty()) {
+                    for (ActorView a : gameMap.players()) {
+                        if (a.uid().equals(dmg.iterator().next())) {
+                            builder.append(i);
+                            builder.append(". ");
+                            builder.append(AnsiColor.getAnsi(a.color()));
+                            builder.append(a.name());
+                            builder.append(AnsiColor.getDefault());
+                            builder.append(" whom character on the map is '");
+                            builder.append(climap.getPlayers().get(a));
+                            builder.append("'.\n");
+                            i += 1;
+                            break;
+                        }
+                    }
+                } else {
+                    for (TileView t : gameMap.allTiles()) {
+                        if (t.uid().equals(tile.iterator().next())) {
+                            builder.append(i);
+                            builder.append(". ");
+                            builder.append(AnsiColor.getAnsi(t.color()));
+                            builder.append(gameMap.getCoord(t).toString());
+                            builder.append(AnsiColor.getDefault());
+                            builder.append(".\n");
+                            i += 1;
+                            break;
+                        }
                     }
                 }
             }
         }
+
         builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
