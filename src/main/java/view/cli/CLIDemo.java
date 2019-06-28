@@ -205,7 +205,7 @@ public class CLIDemo implements View {
 
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target);
-        //printAppliedTarget(target);
+        builder.append(description).append("\n");
         builder.append("Choose your target(s):\n0. Exit Selection\n");
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
