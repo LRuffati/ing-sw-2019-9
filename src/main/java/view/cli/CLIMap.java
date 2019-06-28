@@ -20,7 +20,7 @@ public class CLIMap {
     private Map<Character,Coord> playerPos;
 
     private Map<TileView, List<String>> colorsOfAmmo = new HashMap<>();
-    private char charForAmmo = '@';
+    private char charForAmmo = '■';
 
     /**
      * The object will generate an ASCII map to be printed on the command line.

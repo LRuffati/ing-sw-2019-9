@@ -1,19 +1,4 @@
-﻿weapon distruttore BB:
-nomeWeapon: Distruttore
-descrizioneWeapon: descrizione mancante
-action main:
-nomeAction: Effetto base
-descrizioneAction: Dai 2 danni e un marchio a un bersaglio che puoi vedere
-target targ1 pawn (SEEN self) new
-effect DAMAGE 2 targ1
-effect MARK 1 targ1
-action secondo R follows [main]:
-nomeAction: Secondo aggancio
-descrizioneAction: Dai 1 marchio a un altro bersaglio che puoi vedere
-target targ2 pawn (SEEN self) new
-effect MARK 1 targ2
-stop
-weapon mitragliatrice BR:
+﻿weapon mitragliatrice BR:
 nomeWeapon: Mitragliatrice
 descrizioneWeapon: descrizione mancante
 action main:
@@ -34,7 +19,7 @@ target targ3 pawn (IS targ2) optional
 target targ4 pawn (SEEN self) new optional
 effect DAMAGE 1 targ3
 effect DAMAGE 1 targ4
-action tripode2 B follows [main] exist [!targ2] xor [focalizzato, tripode1]:
+action tripode2 B follows [main] exist [!targ2] xor [focalizzato tripode1]:
 nomeAction: Tripode di supporto
 descrizioneAction: Dai un danno aggiuntivo al target 1 pagando blu
 effect DAMAGE 1 targ1
@@ -48,8 +33,8 @@ descrizioneAction: Dai 2 danni ad un bersaglio che puoi vedere
 target targ1 pawn (SEEN self) new
 effect DAMAGE 2 targ1
 action reazione B follows [main]:
-nomeAction: Colpo focalizzato
-descrizioneAction: Dai 1 danno ad un bersaglio che il primo bersaglio può vedere
+nomeAction: Reazione a catena
+descrizioneAction: Dai 1 danno ad un bersaglio che il primo bersaglio puo' vedere
 target targ2 pawn (SEEN targ1) new
 effect DAMAGE 1 targ2
 action tensione B follows [reazione]:
@@ -69,7 +54,7 @@ effect damage 2 targ1
 action slitta:
 nomeAction: Slittamento di fase
 descrizioneAction: Muoviti di uno o due quadrati prima o dopo l'effetto base
-target tile1 tile (distance (1,2) self)
+target tile1 tile (distant (1,2) self)
 effect move self to tile1
 action sovracc B follows [main]:
 nomeAction: Colpo sovraccarico
@@ -209,7 +194,7 @@ action main:
 nomeAction: Effetto base
 descrizioneAction: a
 target targ0 pawn (SEEN self)
-target tild tile (REACHED (0,1) targ0
+target tild tile (REACHED (0,1) targ0)
 effect damage 1 targ0
 effect move targ0 to tild
 action extra R:
@@ -276,7 +261,7 @@ effect damage 2 targ2
 stop
 weapon guanto YB:
 nomeWeapon: Cyberguanto
-descrizionWeapon: f
+descrizioneWeapon: f
 action main:
 nomeAction: Modalità base
 descrizioneAction: f
