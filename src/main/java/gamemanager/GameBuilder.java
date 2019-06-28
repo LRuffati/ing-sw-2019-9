@@ -128,8 +128,8 @@ public class GameBuilder {
 
     private Deck<Weapon> parserWeapon(String weaponPath) throws FileNotFoundException {
         return weaponPath==null
-                ? new Deck<>(ParserWeapon.parse(ParserConfiguration.parsePath("weaponPath")))
-                : new Deck<>(ParserWeapon.parse(weaponPath));
+                ? new Deck<>(ParserWeapon.parseWeapons(ParserConfiguration.parsePath("weaponPath")))
+                : new Deck<>(ParserWeapon.parseWeapons(weaponPath));
 
     }
 
