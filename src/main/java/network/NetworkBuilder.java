@@ -57,6 +57,6 @@ public class NetworkBuilder {
         };
 
         Timer timer  = new Timer("pingTimer");
-        //timer.scheduleAtFixedRate(repeatedTask, 1000, 300);
+        //timer.scheduleAtFixedRate(repeatedTask, 1000, 500);
     }
 }

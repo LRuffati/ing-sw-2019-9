@@ -154,8 +154,11 @@ public class CLIMap {
                 Coord cord = new Coord(r/ DIM_TILE, c/ DIM_TILE);
                 boolean flag = true;
                 if(mp.allCoord().contains(cord)) {
-                    if(tiles[c][r].equals(charForAmmo)) {
-                        System.out.print(colorsOfAmmo.get(mp.getPosition(cord)).remove(0)
+                    if(tiles[c][r].equals(charForAmmo) && colorsOfAmmo.get(mp.getPosition(cord)).size()>0) {
+                        String col = colorsOfAmmo.get(mp.getPosition(cord)).remove(0);
+                        colorsOfAmmo.get(mp.getPosition(cord)).add(col);
+                        System.out.print(
+                                col
                                 + tiles[c][r]
                                 + AnsiColor.getDefault());
                     }
@@ -249,13 +252,37 @@ public class CLIMap {
      * It shows a version of the Map on the CLI where only the selectable targets are colored.
      * @param targetViewList is the list of the selectable targets.
      */
-    public void applyTarget(List<TargetView> targetViewList){
+    public void applyTarget(List<TargetView> targetViewList, List<Color> colors){
         GameMapView targetMap = new GameMapView(mp);
         List<TileUID> tiless = new ArrayList<>();
         List<DamageableUID> actors = new ArrayList<>();
         Map<TileView, Color> tilesColor = new HashMap<>();
         Map<ActorView, Color> actorsColor = new HashMap<>();
-        System.out.println(targetViewList.size());
+
+        if(targetViewList.get(0).isDedicatedColor()) {
+            int i = 0;
+            for(TargetView target : targetViewList) {
+                for(TileUID tileUID : target.getTileUIDList()) {
+                    for (TileView t : targetMap.allTiles()) {
+                        if (t.uid().equals(tileUID)) {
+                            tilesColor.put(t, t.color());
+                            t.setColor(colors.get(i));
+                            i++;
+                        }
+                    }
+                }
+                for(DamageableUID damageableUID : target.getDamageableUIDList()) {
+                    for (ActorView a : targetMap.players()) {
+                        if (a.uid().equals(damageableUID)) {
+                            actorsColor.put(a, a.color());
+                            a.setColor(colors.get(i));
+                            i++;
+                        }
+                    }
+                }
+            }
+        }
+
         for(TargetView target :  targetViewList) {
             tiless.addAll(target.getTileUIDList());
             actors.addAll(target.getDamageableUIDList());

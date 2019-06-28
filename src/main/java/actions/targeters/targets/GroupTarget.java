@@ -47,6 +47,6 @@ public class GroupTarget implements Targetable {
 
     @Override
     public TargetView generateView(Sandbox sandbox) {
-        return sandbox.generateTargetView(targets);
+        return sandbox.generateTargetView(targets,true);
     }
 }

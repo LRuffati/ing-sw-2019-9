@@ -524,6 +524,12 @@ public class GameMap {
 
 
         if (gameMapView.gameMode().equals(GameMode.DOMINATION)) {
+            gameMapView.setDominationPointActor(
+                    GameBuilder.get().getDominationPointActor().pawn().generateView(
+                            gameMapView,
+                            GameBuilder.get().getDominationPointActor().pawnID(),
+                            pointOfView
+                    ));
             gameMapView.setSkullBox(((DominationMode) GameBuilder.get().getScoreboard()).getSkullBox());
             gameMapView.setSpawnTracker(((DominationMode) GameBuilder.get().getScoreboard()).getSpawnTracker());
         }

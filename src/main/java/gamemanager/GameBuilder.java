@@ -32,9 +32,10 @@ public class GameBuilder {
     private List<Actor> actorList;
     private GameMap map;
     private Scoreboard scoreboard;
-    private String mapName;
+    private String mapName = "map1";
 
-    private GameMode gameMode;
+    private Actor dominationPointActor;
+    private GameMode gameMode = GameMode.NORMAL;
 
     /**
      * Constructor of the class. It builds all the modules needed for the game to start.
@@ -149,7 +150,7 @@ public class GameBuilder {
                 dominationPointTile.getControlPointActor().setBinding();
 
                 dominationPointTile.addTrack(scoreboard);
-                //((DominationMode)scoreboard).addTrack(((DominationPoint)actor.pawn()).getTile());
+                dominationPointActor = ((DominationPoint)map.getPawn(pawnID)).getDominationPointTile().getControlPointActor();
             }
         }
         return actors;
@@ -179,6 +180,9 @@ public class GameBuilder {
     }
     public GameMode getGameMode() {
         return gameMode;
+    }
+    public Actor getDominationPointActor() {
+        return dominationPointActor;
     }
 }
 

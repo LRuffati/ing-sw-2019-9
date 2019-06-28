@@ -33,6 +33,7 @@ public class ParserWeaponTest {
 
     @Test
     void simpleWeaponTest(){
+        System.out.println("DIM\t" + weaponCollection.size());
         assertEquals(1, weaponCollection.size());
         Weapon weaponToTest = weaponCollection.iterator().next();
         assertEquals(weaponCollection.size(),1);
@@ -55,14 +56,13 @@ public class ParserWeaponTest {
 
     @Test
     void realFile(){
-        String path = "src/main/resources/weapons.txt";
+        String path = "weapons.txt";
         try{
             weaponCollection = ParserWeapon.parseWeapons(path);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        System.out.println(weaponCollection.size());
+        System.out.println("Dimensione del set di armi:\t" + weaponCollection.size());
     }
 
 }

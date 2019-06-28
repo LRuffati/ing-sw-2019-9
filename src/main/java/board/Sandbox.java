@@ -297,29 +297,29 @@ public class Sandbox {
     /**
      * This method generates a TargetView (TileView) given a TileUID
      */
-    public TargetView generateTargetView(TileUID tileUID) {
-        return new TargetView(uid, new ArrayList<>(), new ArrayList<>(List.of(tileUID)));
+    public TargetView generateTargetView(TileUID tileUID, boolean dedicatedColor) {
+        return new TargetView(uid, new ArrayList<>(), new ArrayList<>(List.of(tileUID)),dedicatedColor);
     }
 
     /**
      * This method generates a TargetView (TileListView) given a Collection of TileUid
      */
-    public TargetView generateTargetView(Collection<TileUID> tiles) {
-        return new TargetView(uid, new ArrayList<>(), new ArrayList<>(tiles));
+    public TargetView generateTargetView(Collection<TileUID> tiles, boolean dedicatedColor) {
+        return new TargetView(uid, new ArrayList<>(), new ArrayList<>(tiles),dedicatedColor);
     }
 
     /**
      * This method generates a TargetView (ActorView) given a DamageableUID
      */
-    public TargetView generateTargetView(DamageableUID damageableUID) {
-        return new TargetView(uid, new ArrayList<>(List.of(damageableUID)), new ArrayList<>());
+    public TargetView generateTargetView(DamageableUID damageableUID, boolean dedicatedColor) {
+        return new TargetView(uid, new ArrayList<>(List.of(damageableUID)), new ArrayList<>(),dedicatedColor);
     }
 
     /**
      * This method generates a TargetView (ActorListView) given a Collection of DamageableUID
      */
-    public TargetView generateTargetView(Set<DamageableUID> targets) {
-        return new TargetView(uid, new ArrayList<>(targets), new ArrayList<>());
+    public TargetView generateTargetView(Set<DamageableUID> targets, boolean dedicatedColor) {
+        return new TargetView(uid, new ArrayList<>(targets), new ArrayList<>(),dedicatedColor);
     }
 
     /**

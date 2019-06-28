@@ -2,6 +2,7 @@ package network;
 
 import controller.MainController;
 import controller.SlaveController;
+import gamemanager.GameBuilder;
 import network.exception.InvalidLoginException;
 
 import java.rmi.RemoteException;
@@ -174,7 +175,6 @@ public class Database {
             connectedToken.add(token);
             //TimerForDisconnection.add(token);
         }
-
 
         return token;
     }

@@ -1,6 +1,7 @@
 package view.cli;
 
 import actions.utils.AmmoColor;
+import board.Coord;
 import controller.GameMode;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
@@ -11,6 +12,7 @@ import uid.TileUID;
 import viewclasses.*;
 
 import java.awt.*;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 
 public class CLIDemo implements View {
     private static CLIMap climap;
+    private GameMapView gameMapView;
     private Scanner in = new Scanner(System.in);
     private ClientControllerClientInterface client;
     private boolean inputTake = true;
@@ -42,6 +45,11 @@ public class CLIDemo implements View {
                 commandParser.parseCommand(string);
             }
         });
+
+        Consumer<String> consumer =
+                string -> System.out.println(string);
+        commandParser.bind(consumer);
+
         greetings();
     }
 
@@ -118,22 +126,6 @@ public class CLIDemo implements View {
         System.out.println("Wait for other players to join the game.");
     }
 
-    void quitGame(){
-        System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
-                "want to go back.");
-        if(in.nextLine().equalsIgnoreCase("y")){
-            client.quit();
-            endGame();
-        } else if (in.nextLine().equalsIgnoreCase("n")){
-            client.rollback();
-        }
-    }
-
-
-    void printAppliedTarget(List<TargetView> targetViewList){
-        climap.applyTarget(targetViewList);
-
-    }
 
     private void pick(String choiceId) {
         pickStringMessage = "";
@@ -203,48 +195,64 @@ public class CLIDemo implements View {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
 
+        List<Color> colorsOfTargets = List.of(Color.green, Color.yellow, Color.pink, Color.red, Color.blue);
         CLIMap map = new CLIMap(gameMap);
-        map.applyTarget(target);
+        map.applyTarget(target, colorsOfTargets);
+        //printAppliedTarget(target);
         builder.append(description).append("\n");
         builder.append("Choose your target(s):\n0. Exit Selection\n");
+
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
-        while(targetIterator.hasNext()){
+        while(targetIterator.hasNext()) {
             TargetView tw = targetIterator.next();
             List<DamageableUID> dmg = tw.getDamageableUIDList();
             List<TileUID> tile = tw.getTileUIDList();
 
-            // TODO: this can be substituted by a visitor pattern. You add to targetView
-            if (!dmg.isEmpty()){
-                for(ActorView a: gameMap.players()){
-                    if(a.uid().equals(dmg.iterator().next())){
-                        builder.append(i);
-                        builder.append(". ");
-                        builder.append(AnsiColor.getAnsi(a.color()));
-                        builder.append(a.name());
-                        builder.append(AnsiColor.getDefault());
-                        builder.append(" whom character on the map is '");
-                        builder.append(climap.getPlayers().get(a));
-                        builder.append("'.\n");
-                        i+=1;
-                        break;
-                    }
-                }
+            if (tw.isDedicatedColor()) {
+                builder.append(i);
+                builder.append(". ");
+                Color col = colorsOfTargets.get(i - 1);
+                builder.append("Option ");
+                builder.append(AnsiColor.getAnsi(col));
+                builder.append(AnsiColor.getColorName(col));
+                builder.append(AnsiColor.getDefault());
+                builder.append(".\n");
+                i += 1;
             } else {
-                for(TileView t : gameMap.allTiles()){
-                    if(t.uid().equals(tile.iterator().next())){
-                        builder.append(i);
-                        builder.append(". ");
-                        builder.append(AnsiColor.getAnsi(t.color()));
-                        builder.append(gameMap.getCoord(t).toString());
-                        builder.append(AnsiColor.getDefault());
-                        builder.append(".\n");
-                        i+=1;
-                        break;
+
+                if (!dmg.isEmpty()) {
+                    for (ActorView a : gameMap.players()) {
+                        if (a.uid().equals(dmg.iterator().next())) {
+                            builder.append(i);
+                            builder.append(". ");
+                            builder.append(AnsiColor.getAnsi(a.color()));
+                            builder.append(a.name());
+                            builder.append(AnsiColor.getDefault());
+                            builder.append(" whom character on the map is '");
+                            builder.append(climap.getPlayers().get(a));
+                            builder.append("'.\n");
+                            i += 1;
+                            break;
+                        }
+                    }
+                } else {
+                    for (TileView t : gameMap.allTiles()) {
+                        if (t.uid().equals(tile.iterator().next())) {
+                            builder.append(i);
+                            builder.append(". ");
+                            builder.append(AnsiColor.getAnsi(t.color()));
+                            builder.append(gameMap.getCoord(t).toString());
+                            builder.append(AnsiColor.getDefault());
+                            builder.append(".\n");
+                            i += 1;
+                            break;
+                        }
                     }
                 }
             }
         }
+
         builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
@@ -405,9 +413,30 @@ public class CLIDemo implements View {
         if(yourPlayerChar == null) {
             yourPlayerChar = "You're the player " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
             System.out.println(yourPlayerChar);
-            System.out.println(AnsiColor.getAnsi(Color.gray));
+            System.out.println(AnsiColor.getDefault());
         }
-        climap.printMap();
+        if(!areEquals(this.gameMapView, gameMapView))
+            climap.printMap();
+        this.gameMapView = gameMapView;
+    }
+
+    private boolean areEquals(GameMapView map1, GameMapView map2) {
+        if(map1 == null || map2 == null)    return false;
+        for(Coord coord : map1.allCoord()) {
+            TileView tile1 = map1.getPosition(coord);
+            TileView tile2 = map2.getPosition(coord);
+            if(
+                    !tile1.players().stream().map(ActorView::name).collect(Collectors.toList())
+                    .containsAll(tile2.players().stream().map(ActorView::name).collect(Collectors.toList()))
+                            ||
+                            !(tile1.ammoCard().numOfBlue() == tile2.ammoCard().numOfBlue() &&
+                                    tile1.ammoCard().numOfRed() == tile2.ammoCard().numOfRed() &&
+                                    tile1.ammoCard().numOfYellow() == tile2.ammoCard().numOfYellow() &&
+                                    tile1.ammoCard().numOfPowerUp() == tile2.ammoCard().numOfPowerUp())
+            )
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -551,21 +580,25 @@ public class CLIDemo implements View {
         for(int i = 0; i<blue; i++){
             out.append("■");
         }
+        //todo: change
+        //fixme: change
+        /*
         if(parenthesis && out.length() != 0){
             out.insert(1,'(');
             out.insert(out.length()-1,')');
         }
+        */
         out.append(" ");
         out.append(AnsiColor.getDefault());
         return out.toString();
     }
 
-    String printListOfColor(List<ActorView> actorViews) {
+    private String printListOfColor(List<ActorView> actorViews) {
         StringBuilder builder = new StringBuilder();
         for(ActorView actorView : actorViews) {
             //todo: should be changed
             if(actorView == null && climap.getMp().gameMode().equals(GameMode.DOMINATION))
-                builder.append(AnsiColor.getAnsi(Color.orange));
+                builder.append(AnsiColor.getAnsi(climap.getMp().dominationPointActor().color()));
             else
                 builder.append( AnsiColor.getAnsi(actorView.color()) );
             builder.append("█ ");
@@ -589,7 +622,13 @@ public class CLIDemo implements View {
                     marks.add((ActorView)entry.getKey());
             System.out.println(printListOfColor(marks));
         }
-        System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
+
+        try {
+            System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
+        }
+        catch (InvalidParameterException e) {
+            //skip
+        }
         System.out.println("\n>> He's got the following ammo: ");
         System.out.println(player.ammo().get(AmmoColor.RED) + "\tRED");
         System.out.println(player.ammo().get(AmmoColor.BLUE) + "\tBLUE");
@@ -685,6 +724,15 @@ public class CLIDemo implements View {
             }
             i++;
         }
+    }
+
+    void quitGame(){
+        System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
+                "want to go back.");
+    }
+
+    void confirmqQuit() {
+        client.quit();
     }
 
     void endGame(){
