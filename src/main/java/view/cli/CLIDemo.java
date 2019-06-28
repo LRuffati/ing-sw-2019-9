@@ -690,21 +690,14 @@ public class CLIDemo implements View {
 
     void askPlayer() {
         int i = 0;
-        for (Map.Entry<ActorView, Character> actor : climap.getPlayers().entrySet()) {
-            System.out.println(i + ". " + actor.getKey().name());
+        for(ActorView actor : gameMapView.players()) {
+            System.out.println(i + ". " + actor.name());
             i++;
         }
     }
 
     void choosePlayer(String str) {
-        int value = Integer.parseInt(str);
-        int i = 0;
-        for(Map.Entry entry : climap.getPlayers().entrySet()) {
-            if(i == value) {
-                playerInfo((ActorView)entry.getKey());
-            }
-            i++;
-        }
+        playerInfo(gameMapView.players().get(Integer.parseInt(str)));
     }
 
     void askTile() {

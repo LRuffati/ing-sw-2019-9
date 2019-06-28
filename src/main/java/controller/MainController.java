@@ -332,7 +332,9 @@ public class MainController {
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
         currIndex++;
+        int pre = currIndex;
         while(!slaveControllerList.get(currIndex%size).isOnline()) currIndex = (currIndex+1)%size;
+        if(!firstRoundOver && pre >= currIndex)  firstRoundOver = true;
         currIndex--;
         next = slaveControllerList.get((currIndex+1)%size);
         /*
