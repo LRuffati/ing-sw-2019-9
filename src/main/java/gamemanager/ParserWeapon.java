@@ -431,13 +431,15 @@ public class ParserWeapon {
         Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:\\n" +
                 "([\\w\\W]+?)\\nstop").matcher(wholeFile);
 
-        return wholeFileMatcher.results()
+        Set<Weapon> weaponSet = wholeFileMatcher.results()
                 .map(m -> {
                     String weaponId = m.group(1);
                     AmmoAmount reloadCost = parseAmmo(m.group(2));
                     AmmoAmount buyCost = parseAmmo(m.group(3));
-                    return parseSingleWeapon(weaponId,reloadCost,buyCost,m.group(4));
+                    return parseSingleWeapon(weaponId, reloadCost, buyCost, m.group(4));
                 }).collect(Collectors.toSet());
+
+        return weaponSet;
 
         // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
         // Per ogni match:
@@ -568,7 +570,7 @@ public class ParserWeapon {
 
         ActionInfo actionInfo = parseInfo(actionID, actionName, actionDes, cost, follows, targetsExist,xor,contemp);
 
-        Pattern matchTargetDef = Pattern.compile("\\ntarget.+\\n");
+        Pattern matchTargetDef = Pattern.compile("\\ntarget.+(?=\\n|$)");
         List<Tuple<String, TargeterTemplate>> targTemplates= matchTargetDef.matcher(body).results()
                 .map(m->parseTarget(m.group(0)))
                 .collect(Collectors.toList());
@@ -582,8 +584,7 @@ public class ParserWeapon {
     }
 
     private static Tuple<String, TargeterTemplate> parseTarget(String line){
-        Matcher targetMatcher = Pattern.compile("\\ntarget +(\\w+) +" +
-                "(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN)(?: +(.+?))?(?= +&|\\))(?:& +(.+?) *)?\\)( +new)?( +automatic)?( +optional)?(?:\\n|$)", Pattern.CASE_INSENSITIVE).matcher(line);
+        Matcher targetMatcher = Pattern.compile("\\ntarget +(\\w+) +(pawn|tile|room|direction|group) +\\( *(DISTANTPH|DISTANT|IN|EXISTS|IS|HAS|REACHED|SEEN) *(.*?)(?= *&| *\\))(?: *& +(.+))?\\)( +new)?( +automatic)?( +optional)?(?:\\n|$)", Pattern.CASE_INSENSITIVE).matcher(line);
         targetMatcher.find();
         String targName = targetMatcher.group(1);
         String targType = targetMatcher.group(2);
@@ -648,7 +649,8 @@ public class ParserWeapon {
         if(conditions==null) {
             conditions = "";
         } else {
-            Matcher conditionsMatcher = Pattern.compile("(NOT|not) +(DISTANT|DISTANTPH|HAS|IN" +
+            Matcher conditionsMatcher = Pattern.compile(" *(?:(NOT|not) +)?" +
+                    "(DISTANT|DISTANTPH|HAS|IN" +
                     "|REACHES|SEEN) +(.+?) *(?:&|$)").matcher(conditions);
 
 
@@ -692,7 +694,7 @@ public class ParserWeapon {
                                 new DistantCondition(Integer.parseInt(conditionParamMatcher.group(1)), Integer.parseInt(conditionParamMatcher.group(2)), false,m.group(1)!=null);
                         toReturn = new Tuple<>(conditionParamMatcher.group(3),condition);
                         break;
-                    case "reached":
+                    case "reaches":
                         conditionParamMatcher = Pattern.compile("\\( *([1-9]?\\d+) *, *([1-9]?\\d+) *\\) +(\\w+)").matcher(m.group(3));
                         conditionParamMatcher.find();
                         condition =
@@ -701,6 +703,11 @@ public class ParserWeapon {
                         break;
 
                     default:
+                        try {
+                            throw new Exception("No match");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         break;
 
                 }
