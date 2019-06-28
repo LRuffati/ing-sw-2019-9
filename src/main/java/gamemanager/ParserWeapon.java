@@ -12,6 +12,7 @@ import genericitems.Tuple;
 import grabbables.Weapon;
 
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +25,9 @@ public class ParserWeapon {
 
     public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
 
-        Scanner scanner = new Scanner( ClassLoader.getSystemResourceAsStream(path));
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        InputStream stream = classLoader.getResourceAsStream(path);
+        Scanner scanner = new Scanner(stream);
         String wholeFile = scanner.useDelimiter("\\A").next();
         scanner.close();
 
@@ -32,15 +35,13 @@ public class ParserWeapon {
         Matcher wholeFileMatcher = Pattern.compile("weapon +(\\w+) +([RBY]([RYB]*)) *:"+regexEndLine+"" +
                 "([\\w\\W]+?)"+regexEndLine+"stop").matcher(wholeFile);
 
-        Set<Weapon> weaponSet = wholeFileMatcher.results()
+        return wholeFileMatcher.results()
                 .map(m -> {
                     String weaponId = m.group(1);
                     AmmoAmount reloadCost = parseAmmo(m.group(2));
                     AmmoAmount buyCost = parseAmmo(m.group(3));
                     return parseSingleWeapon(weaponId, reloadCost, buyCost, m.group(4));
                 }).collect(Collectors.toSet());
-
-        return weaponSet;
 
         // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
         // Per ogni match:
