@@ -198,6 +198,7 @@ public class CLIDemo implements View {
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target, colorsOfTargets);
         //printAppliedTarget(target);
+        builder.append(description).append("\n");
         builder.append("Choose your target(s):\n0. Exit Selection\n");
 
         Iterator<TargetView> targetIterator = target.iterator();
@@ -308,9 +309,9 @@ public class CLIDemo implements View {
             toChoose.append(". ");
             toChoose.append(wv.name());
             toChoose.append("\n\tBuy cost: ");
-            toChoose.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE)));
+            toChoose.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE), false));
             toChoose.append("\n\tReload cost: ");
-            toChoose.append(printCost(wv.reloadCost().get(AmmoColor.RED),wv.reloadCost().get(AmmoColor.YELLOW),wv.reloadCost().get(AmmoColor.BLUE)));
+            toChoose.append(printCost(wv.reloadCost().get(AmmoColor.RED),wv.reloadCost().get(AmmoColor.YELLOW),wv.reloadCost().get(AmmoColor.BLUE), false));
             toChoose.append("\n");
             i+=1;
         }
@@ -534,13 +535,13 @@ public class CLIDemo implements View {
             if(t.weapons() != null) {
                 System.out.println(">> You can pick up: ");
                 for (WeaponView w : t.weapons()) {
-                    System.out.println("+ " + w.name() + " that costs " + printCost(w.buyCost()));
+                    System.out.println("+ " + w.name() + " that costs " + printCost(w.reloadCost()));
                 }
             }
         } else {
             if(t.ammoCard() != null) {
                 System.out.print(">> There is a spawn point for the following ammunition in the tile:  ");
-                System.out.println(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue()));
+                System.out.println(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue(), false));
                 System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
                 System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
                 System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
@@ -560,10 +561,10 @@ public class CLIDemo implements View {
 
 
     private String printCost(Map<AmmoColor, Integer> map) {
-        return printCost(map.get(AmmoColor.RED), map.get(AmmoColor.YELLOW), map.get(AmmoColor.BLUE));
+        return printCost(map.get(AmmoColor.RED), map.get(AmmoColor.YELLOW), map.get(AmmoColor.BLUE), true);
     }
 
-    private String printCost(int red, int yellow, int blue){
+    private String printCost(int red, int yellow, int blue, boolean parenthesis){
         StringBuilder out = new StringBuilder();
         out.append(AnsiColor.getAnsi(Color.red));
         for(int i = 0; i<red; i++){
@@ -577,6 +578,10 @@ public class CLIDemo implements View {
         out.append(AnsiColor.getAnsi(Color.blue));
         for(int i = 0; i<blue; i++){
             out.append("■");
+        }
+        if(parenthesis && out.length() != 0){
+            out.insert(1,'(');
+            out.insert(out.length()-1,')');
         }
         out.append(" ");
         out.append(AnsiColor.getDefault());
