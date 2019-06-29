@@ -11,7 +11,8 @@
            at network.rmi.server.ServerNetworkRMI.pick(ServerNetworkRMI.java:97)
 
 ##Lanciafiamme
-+ propone solo modalità base e non barbecue, mi fa scegliere tra delle tile ed entro in un loop
++ propone solo modalità base e non barbecue, mi fa scegliere tra delle tile ed entro in un loop (Pietro)
++ lanciafiamme, solo modalità base come Pietro ma mi fa scegliere due tile e non entro in nessun loop (Carmelo)
 
 ##Mitragliatrice:
 + Modalità base, bersaglio nella tua stessa tile (down 0,left 2):
@@ -40,7 +41,8 @@ at controller.controllermessage.PickTargetMessage.pick(PickTargetMessage.java:96
 
 ##Falce Protonica:
 + Modalità base => nessun errore evidente
-        +
++ Modalità mietitore => mi obbliga ad annidare anche la modalità base, poi esegue entrambe. Non posso eseguire solo 
+mietitore
 
 ##Raggio Traente:
 + Modalità base => nessun errore evidente (danno + spostamento)
