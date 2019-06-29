@@ -95,7 +95,7 @@ public class ParserWeapon {
 
         String regexAction = "action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[ *(.+?) *\\])?(?: " +
                 "+exist " +
-                "+\\[ *(.+?) *\\])?(?: +xor +\\[ *(.+?) *\\])?(?: +contemp +(\\w+))? *:\n" +
+                "+\\[ *(.+?) *\\])?(?: +xor +\\[ *(.+?) *\\])?(?: +contemp +(\\w+))? *:"+regexEndLine +
                 "([\\w\\W]+?)" +
                 "(?="+regexEndLine+"action|$)";
 

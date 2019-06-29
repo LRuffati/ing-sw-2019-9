@@ -271,6 +271,7 @@ public class CLIDemo implements View {
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        builder.append(description).append("\n");
         builder.append("Choose your action(s):\n0. Exit selection\n");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 1;
@@ -300,6 +301,7 @@ public class CLIDemo implements View {
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder toChoose = new StringBuilder();
+        toChoose.append(description).append("\n");
         toChoose.append("Choose your weapons:\n0. Exit selection\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
@@ -331,6 +333,7 @@ public class CLIDemo implements View {
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        builder.append(description).append("\n");
         builder.append("Choose your PowerUp(s):\n0. Exit selection\n");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
@@ -359,6 +362,7 @@ public class CLIDemo implements View {
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        builder.append(description).append("\n");
         builder.append("Choose an option:\n0. Exit selection\n");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
@@ -408,14 +412,14 @@ public class CLIDemo implements View {
      * See documentation in the View interface.
      */
     @Override
-    public void updateMap(GameMapView gameMapView) {
+    public void updateMap(GameMapView gameMapView, boolean forced) {
         climap = new CLIMap(gameMapView);
         if(yourPlayerChar == null) {
             yourPlayerChar = "You're the player " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
             System.out.println(yourPlayerChar);
             System.out.println(AnsiColor.getDefault());
         }
-        if(!areEquals(this.gameMapView, gameMapView))
+        if(forced || (!forced && !areEquals(this.gameMapView, gameMapView)))
             climap.printMap();
         this.gameMapView = gameMapView;
     }
@@ -488,7 +492,8 @@ public class CLIDemo implements View {
             case TURRET:
                 System.out.println("Turret mode");
         }
-        scanThread.start();
+        if(!scanThread.isAlive())
+            scanThread.start();
     }
 
     @Override
@@ -536,7 +541,7 @@ public class CLIDemo implements View {
             if(t.weapons() != null) {
                 System.out.println(">> You can pick up: ");
                 for (WeaponView w : t.weapons()) {
-                    System.out.println("+ " + w.name() + " that costs " + printCost(w.reloadCost()));
+                    System.out.println("+ " + w.name() + " that costs " + printCost(w.buyCost()));
                 }
             }
         } else {
@@ -681,7 +686,7 @@ public class CLIDemo implements View {
                 builder.append("\n\t");
                 builder.append(AnsiColor.getColorName(entry.getKey()));
                 builder.append(" :\t");
-                printListOfColor(entry.getValue());
+                builder.append(printListOfColor(entry.getValue()));
             }
             builder.append("\n");
             System.out.println(builder.toString());
@@ -690,8 +695,8 @@ public class CLIDemo implements View {
 
     void askPlayer() {
         int i = 0;
-        for (Map.Entry<ActorView, Character> actor : climap.getPlayers().entrySet()) {
-            System.out.println(i + ". " + actor.getKey().name());
+        for(ActorView actor : gameMapView.players()) {
+            System.out.println(i + ". " + actor.name());
             i++;
         }
     }
@@ -702,9 +707,9 @@ public class CLIDemo implements View {
             value = Integer.parseInt(str);
         }
         int i = 0;
-        for(Map.Entry<ActorView, Character> entry : climap.getPlayers().entrySet()) {
-            if(str.equals(entry.getKey().name())||(i == value)) {
-                playerInfo(entry.getKey());
+        for(ActorView actorView : gameMapView.players()) {
+            if(str.equals(actorView.name())||(i == value)) {
+                playerInfo(actorView);
             }
             i++;
         }
@@ -719,17 +724,15 @@ public class CLIDemo implements View {
     }
 
     void chooseTile(String str) {
-        if(str.matches(" ?\\d+ ?")) {
-            int value = Integer.parseInt(str);
-            int i = 0;
-            for (TileView tile : climap.getMp().allTiles()) {
-                if (i == value) {
-                    tileInfo(tile);
-                }
-                i++;
+        if(!str.matches(" ?\\d+ ?"))
+            return;
+        int value = Integer.parseInt(str);
+        int i = 0;
+        for(TileView tile : climap.getMp().allTiles()) {
+            if(i == value) {
+                tileInfo(tile);
             }
-        } else {
-            System.out.println("Scegli solo l'indice della tile.");
+            i++;
         }
     }
 

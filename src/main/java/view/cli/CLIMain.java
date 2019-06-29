@@ -31,7 +31,7 @@ public class CLIMain {
             e.printStackTrace();
         }*/
         CLIDemo demo = new CLIDemo(client);
-        demo.updateMap(gmv);
+        demo.updateMap(gmv, true);
         System.out.println();
         demo.endGame();
     }

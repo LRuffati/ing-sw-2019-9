@@ -85,7 +85,7 @@ public class Framework implements View {
     }
 
     @Override
-    public void updateMap(GameMapView gameMapView) {
+    public void updateMap(GameMapView gameMapView, boolean forced) {
         this.gmv = gameMapView;
         if(game == null) game = new GameFrame(gmv);
     }
