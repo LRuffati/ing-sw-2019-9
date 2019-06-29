@@ -10,6 +10,9 @@
            at network.ObjectMap.pick(ObjectMap.java:108)
            at network.rmi.server.ServerNetworkRMI.pick(ServerNetworkRMI.java:97)
 
+##Lanciafiamme
++ propone solo modalità base e non barbecue, mi fa scegliere tra delle tile ed entro in un loop
+
 ##Mitragliatrice:
 + Modalità base, bersaglio nella tua stessa tile (down 0,left 2):
     + java.lang.IndexOutOfBoundsException: Index -1 out of bounds for length 0
