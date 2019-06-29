@@ -210,12 +210,7 @@ public class Database {
         TimerForDisconnection.stop(token);
             connectedToken.remove(token);
 
-        System.out.println("logout");
         mainController.logout(getUserByToken(token));
-
-
-        System.out.println("finito");
-
     }
 
     /**

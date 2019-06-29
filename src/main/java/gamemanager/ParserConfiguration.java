@@ -54,16 +54,6 @@ public class ParserConfiguration {
                 File.separator,
                 Arrays.asList(parse(configuration).split(" ")
                 ));
-        /*
-        return ClassLoader.getSystemResource(String.join(
-                File.separator,
-                Arrays.asList(parse(configuration).split(" ")
-                ))).getFile();*/
-        /*return String.join(
-                File.separator,
-                Arrays.asList(parse(configuration).split(" ")
-                )
-        );*/
     }
 
     public static int parseInt(String configuration) {

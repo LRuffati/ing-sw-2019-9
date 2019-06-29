@@ -9,17 +9,18 @@ import java.util.stream.Collectors;
  * This class implements the Scoreboard for the Deathmatch games. It checks if the Final Frenzy is starting and add
  * every kills to the Scoreboard with the player who committed the frag and how many tokens he got from it.
  */
-public class Scoreboard {
-    private List<Actor> actorsList;
-    private int numOfDeaths;
-    private final int maxDeaths;
-    private ArrayList<Map<Actor, Integer>> skullBox;
 
-    private final List<Integer> pointForDeath
+public class Scoreboard {
+    List<Actor> actorsList;
+    int numOfDeaths;
+    int maxDeaths;
+    ArrayList<Map<Actor, Integer>> skullBox;
+
+    final List<Integer> pointForDeath
             = Arrays.stream(ParserConfiguration.parse("scoreBeforeFrenzy").split(","))
             .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
 
-    private final List<Integer> pointForDeathFinal
+    final List<Integer> pointForDeathFinal
             = Arrays.stream(ParserConfiguration.parse("scoreAfterFrenzy").split(","))
             .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
 

@@ -1,12 +1,19 @@
 package network;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+/**
+ * This class contains all the methods needed to check and handle forced disconnections
+ */
 public class TimerForDisconnection {
     private static Map<TimerTask, String> timerMap = new HashMap<>();
     private static Map<String, Timer> tokenToTimerMap = new HashMap<>();
     private static Map<Timer, TimerTask> timerTimerTaskMap = new HashMap<>();
     private static Map<TimerTask, Integer> numOfErrors = new HashMap<>();
+
+    private static Logger logger = Logger.getLogger(TimerForDisconnection.class.getSimpleName());
 
     private TimerForDisconnection(){}
 
@@ -18,10 +25,12 @@ public class TimerForDisconnection {
                 try {
                     numOfErrors.put(this, numOfErrors.get(this) + 1);
 
+                    /*
                     int num = numOfErrors.get(this);
                     if (num >= 2) {
-                        System.out.println("NumOfErrors\t" + num + "\t\t" + Database.get().getUserByToken(token).getUsername());
+                        logger.log(Level.INFO, "NumOfErrors\t" + num + "\t\t" + Database.get().getUserByToken(token).getUsername());
                     }
+                    */
 
                     if (numOfErrors.get(this) == 10) {
                         Database.get().logout(timerMap.get(this));
@@ -29,8 +38,7 @@ public class TimerForDisconnection {
                     }
                 }
                 catch (NullPointerException e) {
-                    System.out.println("NULLPOINTER\t\t" + Database.get().getUserByToken(token).getUsername());
-                    e.printStackTrace();
+                    logger.log(Level.INFO, e.getMessage());
                 }
             }
         };
@@ -73,11 +81,12 @@ public class TimerForDisconnection {
 
     public static void stop(String token) {
         if(tokenToTimerMap.containsKey(token)) {
-            System.out.println("Stopping the timer");
+            logger.log(Level.INFO, "Stopping the timer");
             timerTimerTaskMap.get(tokenToTimerMap.get(token)).cancel();
             tokenToTimerMap.get(token).cancel();
         }
-        else System.out.println("NoTimerForDisconnection");
+        else
+            logger.log(Level.INFO, "NoTimerForDisconnection");
 
         TimerTask toBeDeleted = timerTimerTaskMap.get(tokenToTimerMap.get(token));
         numOfErrors.remove(toBeDeleted);
