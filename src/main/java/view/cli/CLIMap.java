@@ -267,18 +267,18 @@ public class CLIMap {
                         if (t.uid().equals(tileUID)) {
                             tilesColor.put(t, t.color());
                             t.setColor(colors.get(i));
-                            i++;
                         }
                     }
+                    i++;
                 }
                 for(DamageableUID damageableUID : target.getDamageableUIDList()) {
                     for (ActorView a : targetMap.players()) {
                         if (a.uid().equals(damageableUID)) {
                             actorsColor.put(a, a.color());
                             a.setColor(colors.get(i));
-                            i++;
                         }
                     }
+                    i++;
                 }
             }
         }

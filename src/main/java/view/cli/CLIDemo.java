@@ -574,16 +574,16 @@ public class CLIDemo implements View {
         StringBuilder out = new StringBuilder();
         out.append(AnsiColor.getAnsi(Color.red));
         for(int i = 0; i<red; i++){
-            out.append("■");
+            out.append("■ ");
         }
         out.append(AnsiColor.getAnsi(Color.yellow));
         for(int i = 0; i<yellow; i++){
-            out.append("■");
+            out.append("■ ");
         }
 
         out.append(AnsiColor.getAnsi(Color.blue));
         for(int i = 0; i<blue; i++){
-            out.append("■");
+            out.append("■ ");
         }
         //todo: change
         //fixme: change
@@ -593,7 +593,6 @@ public class CLIDemo implements View {
             out.insert(out.length()-1,')');
         }
         */
-        out.append(" ");
         out.append(AnsiColor.getDefault());
         return out.toString();
     }
