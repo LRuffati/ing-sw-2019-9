@@ -697,11 +697,14 @@ public class CLIDemo implements View {
     }
 
     void choosePlayer(String str) {
-        int value = Integer.parseInt(str);
+        int value = 100000;
+        if(str.matches(" ?\\d+ ?")) {
+            value = Integer.parseInt(str);
+        }
         int i = 0;
-        for(Map.Entry entry : climap.getPlayers().entrySet()) {
-            if(i == value) {
-                playerInfo((ActorView)entry.getKey());
+        for(Map.Entry<ActorView, Character> entry : climap.getPlayers().entrySet()) {
+            if(str.equals(entry.getKey().name())||(i == value)) {
+                playerInfo(entry.getKey());
             }
             i++;
         }
@@ -716,13 +719,17 @@ public class CLIDemo implements View {
     }
 
     void chooseTile(String str) {
-        int value = Integer.parseInt(str);
-        int i = 0;
-        for(TileView tile : climap.getMp().allTiles()) {
-            if(i == value) {
-                tileInfo(tile);
+        if(str.matches(" ?\\d+ ?")) {
+            int value = Integer.parseInt(str);
+            int i = 0;
+            for (TileView tile : climap.getMp().allTiles()) {
+                if (i == value) {
+                    tileInfo(tile);
+                }
+                i++;
             }
-            i++;
+        } else {
+            System.out.println("Scegli solo l'indice della tile.");
         }
     }
 
