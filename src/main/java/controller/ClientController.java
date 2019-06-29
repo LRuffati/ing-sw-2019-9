@@ -193,6 +193,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         if(stack.isEmpty())
             poll();
         else {
+            //todo: getLast?
             ControllerMessage first = stack.getFirst();
             stack.clear();
             elaborate(first);
