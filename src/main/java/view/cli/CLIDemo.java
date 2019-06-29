@@ -200,7 +200,7 @@ public class CLIDemo implements View {
         map.applyTarget(target, colorsOfTargets);
         //printAppliedTarget(target);
         builder.append(description).append("\n");
-        builder.append("Choose your target(s):\n0. Exit Selection\n");
+        builder.append("\nChoose your target(s):\n0. Exit Selection\n");
 
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
@@ -271,6 +271,7 @@ public class CLIDemo implements View {
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        builder.append(description).append("\n");
         builder.append("Choose your action(s):\n0. Exit selection\n");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 1;
@@ -300,6 +301,7 @@ public class CLIDemo implements View {
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder toChoose = new StringBuilder();
+        toChoose.append(description).append("\n");
         toChoose.append("Choose your weapons:\n0. Exit selection\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
@@ -331,6 +333,7 @@ public class CLIDemo implements View {
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        builder.append(description).append("\n");
         builder.append("Choose your PowerUp(s):\n0. Exit selection\n");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
@@ -359,6 +362,7 @@ public class CLIDemo implements View {
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        builder.append(description).append("\n");
         builder.append("Choose an option:\n0. Exit selection\n");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
@@ -414,7 +418,7 @@ public class CLIDemo implements View {
             System.out.println(yourPlayerChar);
             System.out.println(AnsiColor.getDefault());
         }
-        if(!forced && !areEquals(this.gameMapView, gameMapView))
+        if(forced || (!forced && !areEquals(this.gameMapView, gameMapView)))
             climap.printMap();
         this.gameMapView = gameMapView;
     }
@@ -535,7 +539,7 @@ public class CLIDemo implements View {
             if(t.weapons() != null) {
                 System.out.println(">> You can pick up: ");
                 for (WeaponView w : t.weapons()) {
-                    System.out.println("+ " + w.name() + " that costs " + printCost(w.reloadCost()));
+                    System.out.println("+ " + w.name() + " that costs " + printCost(w.buyCost()));
                 }
             }
         } else {
@@ -680,7 +684,7 @@ public class CLIDemo implements View {
                 builder.append("\n\t");
                 builder.append(AnsiColor.getColorName(entry.getKey()));
                 builder.append(" :\t");
-                printListOfColor(entry.getValue());
+                builder.append(printListOfColor(entry.getValue()));
             }
             builder.append("\n");
             System.out.println(builder.toString());
