@@ -72,6 +72,10 @@ public class Player implements Serializable {
         return password;
     }
 
+    public void setServerInterface(ServerInterface serverInterface) {
+        this.serverInterface = serverInterface;
+    }
+
     public ServerInterface getServerInterface() {
         return serverInterface;
     }

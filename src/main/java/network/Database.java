@@ -4,6 +4,7 @@ import controller.MainController;
 import controller.SlaveController;
 import gamemanager.GameBuilder;
 import network.exception.InvalidLoginException;
+import network.rmi.server.ProxyForRMI;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UID;
@@ -84,7 +85,7 @@ public class Database {
      * @return The token associated with the user
      * @throws InvalidLoginException If username and/or color are already used, this Exception is thrown
      */
-    public synchronized String login(ServerInterface network, String username, String password, String color) throws InvalidLoginException {
+    public synchronized String login(ServerInterface network, boolean isrmi, String username, String password, String color) throws InvalidLoginException {
         boolean wrongUsername = false;
         boolean wrongColor = false;
 
@@ -110,9 +111,10 @@ public class Database {
 
         Player user = usersByUsername.get(username);
         if(user == null) {
-            user = new Player(username, password, color, isFirst, token, network);
+            ServerInterface proxy = isrmi ? new ProxyForRMI(network) : network;
+            user = new Player(username, password, color, isFirst, token, proxy);
             usersByUsername.put(token, user);
-            networkByToken.put(token, network);
+            networkByToken.put(token, proxy);
             usersByToken.put(token, user);
 
             try {
@@ -145,7 +147,7 @@ public class Database {
      * @param password A user-set password used to check the identity of the Client
      * @return The token used by the Client before the disconnection. An empty string is returned in case of errors.
      */
-    public synchronized String login(ServerInterface network, String username, String password) throws InvalidLoginException{
+    public synchronized String login(ServerInterface network, boolean isrmi, String username, String password) throws InvalidLoginException{
         boolean present = false;
         String token = "-1";
         for(String t : disconnectedToken) {
@@ -158,15 +160,17 @@ public class Database {
         if(!present)
             throw new InvalidLoginException("Reconnection exception", true, false);
 
+        ServerInterface proxy = isrmi ? new ProxyForRMI(network) : network;
+        getUserByToken(token).setServerInterface(proxy);
         try {
-            network.setToken(token);
+            proxy.setToken(token);
         }
         catch (RemoteException e) {
             e.printStackTrace();
             logout(token);
         }
 
-        networkByToken.put(token, network);
+        networkByToken.put(token, proxy);
         disconnectedToken.remove(token);
 
         mainController.reconnect(getUserByToken(token));

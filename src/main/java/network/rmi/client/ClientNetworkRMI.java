@@ -1,6 +1,5 @@
 package network.rmi.client;
 
-import board.GameMap;
 import controller.GameMode;
 import gamemanager.GameBuilder;
 import genericitems.Tuple;
