@@ -109,9 +109,15 @@ public class Database {
             isFirst = true;
         }
 
+        ServerInterface proxy = null;
+        try {
+            proxy = isrmi ? new ProxyForRMI(network) : network;
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
         Player user = usersByUsername.get(username);
         if(user == null) {
-            ServerInterface proxy = isrmi ? new ProxyForRMI(network) : network;
             user = new Player(username, password, color, isFirst, token, proxy);
             usersByUsername.put(token, user);
             networkByToken.put(token, proxy);
@@ -128,13 +134,13 @@ public class Database {
         colors.remove(color);
 
 
-        controllerByToken.put(token, mainController.bind(user, network));
+        controllerByToken.put(token, mainController.bind(user, proxy));
         mainController.connect(user);
 
         synchronized (wait) {
             connectedToken.add(token);
 
-            //TimerForDisconnection.add(token);
+            TimerForDisconnection.add(token);
         }
 
         return token;
@@ -160,7 +166,13 @@ public class Database {
         if(!present)
             throw new InvalidLoginException("Reconnection exception", true, false);
 
-        ServerInterface proxy = isrmi ? new ProxyForRMI(network) : network;
+        ServerInterface proxy = null;
+        try {
+            proxy = isrmi ? new ProxyForRMI(network) : network;
+        }
+        catch (RemoteException e) {
+            e.printStackTrace();
+        }
         getUserByToken(token).setServerInterface(proxy);
         try {
             proxy.setToken(token);
@@ -177,7 +189,7 @@ public class Database {
 
         synchronized (wait) {
             connectedToken.add(token);
-            //TimerForDisconnection.add(token);
+            TimerForDisconnection.add(token);
         }
 
         return token;
@@ -192,16 +204,17 @@ public class Database {
         if(token == null || !connectedToken.contains(token))
             return;
 
-
-        synchronized (wait) {
-            //TimerForDisconnection.stop(token);
-            connectedToken.remove(token);
-        }
-
-        mainController.logout(getUserByToken(token));
-
         networkByToken.remove(token);
         disconnectedToken.add(token);
+
+        TimerForDisconnection.stop(token);
+            connectedToken.remove(token);
+
+        System.out.println("logout");
+        mainController.logout(getUserByToken(token));
+
+
+        System.out.println("finito");
 
     }
 

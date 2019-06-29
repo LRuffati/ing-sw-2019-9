@@ -7,16 +7,17 @@ import network.ServerInterface;
 import viewclasses.GameMapView;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ProxyForRMI implements ServerInterface {
+public class ProxyForRMI extends UnicastRemoteObject implements ServerInterface {
 
-    private ServerInterface remoteObject;
-    private Logger logger = Logger.getLogger(getClass().getSimpleName());
-    private ServerInterface thisObj = ProxyForRMI.this;
+    private transient ServerInterface remoteObject;
+    private transient Logger logger = Logger.getLogger(getClass().getSimpleName());
+    private transient ServerInterface thisObj = ProxyForRMI.this;
 
-    public ProxyForRMI(ServerInterface remoteObject1) {
+    public ProxyForRMI(ServerInterface remoteObject1) throws RemoteException{
         remoteObject = remoteObject1;
     }
 
@@ -84,7 +85,7 @@ public class ProxyForRMI implements ServerInterface {
                 }
                 catch (RemoteException e){
                     logger.log(Level.INFO, "ping", e.getMessage());
-                    Database.get().logout(thisObj);
+                    //Database.get().logout(thisObj);
                 }
                 Thread.currentThread().interrupt();
             }
@@ -200,5 +201,15 @@ public class ProxyForRMI implements ServerInterface {
             }
         };
         thread.start();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

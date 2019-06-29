@@ -37,21 +37,9 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         return Database.get().getConnectedTokens().contains(token);
     }
 
-    public void sendPing() throws RemoteException {
-        Database d = Database.get();
-        for(ServerInterface client :  d.getConnectedTokens().stream().map(d::getNetworkByToken).collect(Collectors.toList())){
-            try {
-                client.ping();
-            }
-            catch (ConnectException e) {
-                d.logout(client);
-            }
-        }
-    }
-
     @Override
     public void pingResponse(String token) {
-        //TimerForDisconnection.reset(token);
+        TimerForDisconnection.reset(token);
     }
 
 

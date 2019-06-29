@@ -97,7 +97,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(PingResponse response) {
-        //TimerForDisconnection.reset(player.getToken());
+        TimerForDisconnection.reset(player.getToken());
         return null;
     }
 
