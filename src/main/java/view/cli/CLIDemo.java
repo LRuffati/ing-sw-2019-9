@@ -194,12 +194,12 @@ public class CLIDemo implements View {
     public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
+        System.out.println(description);
 
         List<Color> colorsOfTargets = List.of(Color.green, Color.yellow, Color.pink, Color.red, Color.blue);
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target, colorsOfTargets);
         //printAppliedTarget(target);
-        builder.append(description).append("\n");
         builder.append("Choose your target(s):\n0. Exit Selection\n");
 
         Iterator<TargetView> targetIterator = target.iterator();
@@ -271,7 +271,7 @@ public class CLIDemo implements View {
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
-        builder.append(description).append("\n");
+        System.out.println(description);
         builder.append("Choose your action(s):\n0. Exit selection\n");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 1;
@@ -301,7 +301,7 @@ public class CLIDemo implements View {
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder toChoose = new StringBuilder();
-        toChoose.append(description).append("\n");
+        System.out.println(description);
         toChoose.append("Choose your weapons:\n0. Exit selection\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
@@ -333,7 +333,7 @@ public class CLIDemo implements View {
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
-        builder.append(description).append("\n");
+        System.out.println(description);
         builder.append("Choose your PowerUp(s):\n0. Exit selection\n");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
@@ -362,7 +362,7 @@ public class CLIDemo implements View {
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
-        builder.append(description).append("\n");
+        System.out.println(description);
         builder.append("Choose an option:\n0. Exit selection\n");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
@@ -498,7 +498,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onTimer(int timeToCount) {
-        System.out.println("From now on you have " + timeToCount + " seconds to choose.");
+        System.out.println("Game will start in " + timeToCount/1000 + "seconds");
         waitForStart(timeToCount);
     }
 
@@ -653,6 +653,7 @@ public class CLIDemo implements View {
                 i++;
             }
         }
+        i=0;
         if(!player.getPowerUp().isEmpty()) {
             System.out.println("\n>> He's got the following powerUps: ");
             for (PowerUpView w : player.getPowerUp()) {
