@@ -52,7 +52,7 @@ public class ReloadTemplate implements EffectTemplate{
                     return consumer.apply(sandbox);
                 }
                 for(int i: choice){
-                    tot.add(scariche.get(i).x);
+                    tot = tot.add(scariche.get(i).x);
                     reloaded.add(new ReloadEffect(scariche.get(i).y));
                 }
                 if (!new AmmoAmountUncapped(sandbox.getUpdatedTotalAmmoAvailable().getAmounts()).canBuy(tot)){
