@@ -84,6 +84,9 @@ public class PayTemplate implements EffectTemplate{
                     }
                 };
 
+        if (useful.isEmpty())
+            return onChoice.apply(List.of());
+
         return new PickPowerupMessage(useful, onChoice, optional, options);
     }
 }
