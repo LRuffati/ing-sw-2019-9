@@ -200,7 +200,7 @@ public class CLIDemo implements View {
         map.applyTarget(target, colorsOfTargets);
         //printAppliedTarget(target);
         builder.append(description).append("\n");
-        builder.append("\nChoose your target(s):\n0. Exit Selection\n");
+        builder.append("Choose your target(s):\n0. Exit Selection\n");
 
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
@@ -411,6 +411,7 @@ public class CLIDemo implements View {
     /**
      * See documentation in the View interface.
      */
+    @Override
     public void updateMap(GameMapView gameMapView, boolean forced) {
         climap = new CLIMap(gameMapView);
         if(yourPlayerChar == null) {
@@ -701,7 +702,17 @@ public class CLIDemo implements View {
     }
 
     void choosePlayer(String str) {
-        playerInfo(gameMapView.players().get(Integer.parseInt(str)));
+        int value = 100000;
+        if(str.matches(" ?\\d+ ?")) {
+            value = Integer.parseInt(str);
+        }
+        int i = 0;
+        for(ActorView actorView : gameMapView.players()) {
+            if(str.equals(actorView.name())||(i == value)) {
+                playerInfo(actorView);
+            }
+            i++;
+        }
     }
 
     void askTile() {
@@ -713,6 +724,8 @@ public class CLIDemo implements View {
     }
 
     void chooseTile(String str) {
+        if(!str.matches(" ?\\d+ ?"))
+            return;
         int value = Integer.parseInt(str);
         int i = 0;
         for(TileView tile : climap.getMp().allTiles()) {
