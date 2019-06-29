@@ -491,7 +491,8 @@ public class CLIDemo implements View {
             case TURRET:
                 System.out.println("Turret mode");
         }
-        scanThread.start();
+        if(!scanThread.isAlive())
+            scanThread.start();
     }
 
     @Override
