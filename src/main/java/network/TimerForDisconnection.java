@@ -48,7 +48,7 @@ public class TimerForDisconnection {
         tokenToTimerMap.put(token, timer);
         timerTimerTaskMap.put(timer, repeatedTask);
         numOfErrors.put(repeatedTask, 0);
-        timer.schedule(repeatedTask, 300,500);
+        //timer.schedule(repeatedTask, 300,500);
     }
 
     public static void reset(String token) {
