@@ -187,6 +187,7 @@ public class ParserWeapon {
         List<EffectTemplate> effectTemplates = matchEffectDef.matcher(body).results()
                 .map(m->parseEffect(m.group(0)))
                 .collect(Collectors.toList());
+        effectTemplates.add(new PayTemplate(cost));
 
         return new ActionTemplate(actionInfo, targTemplates, effectTemplates);
     }

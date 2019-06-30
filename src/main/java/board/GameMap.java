@@ -261,7 +261,7 @@ public class GameMap {
             if (containedPawns(t).contains(pawn))
                 return t;
         }
-        return new TileUID(); //FIXME
+        return emptyTile; //FIXME
         //throw new NoSuchElementException("The pawn is not in the map");
     }
 

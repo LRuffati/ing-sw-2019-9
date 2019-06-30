@@ -29,8 +29,9 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 1000;// ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 2;// ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt
+    // ("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;

@@ -46,11 +46,9 @@ public class DominationPointTile extends Tile {
 
     @Override
     public void endTurn(Actor actor) {
-        if(map.tile(actor.pawnID()).equals(
-                ((DominationPoint)controlPointActor.pawn()).getDominationPointTile().tileID)
-        ) {
-            actor.damageRaw(controlPointActor, 1);
-            controlPointActor.addDamageList(actor, getColor());
+        if(map.tile(actor.pawnID()).equals(this.tileID)) {
+            actor.damageRaw(actor, 1);
+            controlPointActor.steppedOn(actor);
         }
 
     }
@@ -58,7 +56,7 @@ public class DominationPointTile extends Tile {
     @Override
     protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap) {
         super.setMap(map, damageableUIDPawnMap);
-        this.controlPointActor = new ControlPointActor(map, pawnID, false);
+        this.controlPointActor = new ControlPointActor(map, pawnID, false, getColor());
         damageableUIDPawnMap.put(pawnID, new DominationPoint(pawnID, this, map));
     }
 
