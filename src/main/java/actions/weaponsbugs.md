@@ -10,6 +10,9 @@
            at network.ObjectMap.pick(ObjectMap.java:108)
            at network.rmi.server.ServerNetworkRMI.pick(ServerNetworkRMI.java:97)
 
+##fucile laser
++ effetto base: mi ha fatto scegliere la cella e non la direzione, prima mi ha deto che non ci sono bersagli validi, poi l'ho rifatto, ha eseguito lo sparo ma non ha danneggiato il bersaglio nella direzione
+
 ##Lanciafiamme
 + propone solo modalità base e non barbecue, mi fa scegliere tra delle tile ed entro in un loop (Pietro)
 + lanciafiamme, solo modalità base come Pietro ma mi fa scegliere due tile e non entro in nessun loop (Carmelo)
