@@ -294,10 +294,8 @@ public class CLIDemo implements View {
             i+=1;
         }
         builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
-        builder.append("\n>> You've got the following ammo: ");
-        builder.append(gameMapView.you().ammo().get(AmmoColor.RED)).append("\tRED");
-        builder.append(gameMapView.you().ammo().get(AmmoColor.BLUE)).append("\tBLUE");
-        builder.append(gameMapView.you().ammo().get(AmmoColor.YELLOW)).append("\tYELLOW");
+        builder.append("\n>> You've got the following ammo:\t");
+        builder.append(printCost(gameMapView.you().ammo())).append(" \n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
@@ -315,32 +313,30 @@ public class CLIDemo implements View {
     @Override
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
-        StringBuilder toChoose = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         System.out.println(description);
-        toChoose.append("Choose your weapons:\n0. Exit selection\n");
+        builder.append("Choose your weapons:\n0. Exit selection\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
         while(weaponIterator.hasNext()){
             WeaponView wv = weaponIterator.next();
-            toChoose.append(i);
-            toChoose.append(". ");
-            toChoose.append(wv.name());
-            toChoose.append("\n\tBuy cost: ");
-            toChoose.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE), false));
-            toChoose.append("\n\tReload cost: ");
-            toChoose.append(printCost(wv.reloadCost().get(AmmoColor.RED),wv.reloadCost().get(AmmoColor.YELLOW),wv.reloadCost().get(AmmoColor.BLUE), false));
-            toChoose.append("\n");
+            builder.append(i);
+            builder.append(". ");
+            builder.append(wv.name());
+            builder.append("\n\tBuy cost: ");
+            builder.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE), false));
+            builder.append("\n\tReload cost: ");
+            builder.append(printCost(wv.reloadCost().get(AmmoColor.RED),wv.reloadCost().get(AmmoColor.YELLOW),wv.reloadCost().get(AmmoColor.BLUE), false));
+            builder.append("\n");
             i+=1;
         }
-        toChoose.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
 
-        toChoose.append("\n>> You've got the following ammo: \n");
-        toChoose.append(gameMapView.you().ammo().get(AmmoColor.RED)).append("\tRED\n");
-        toChoose.append(gameMapView.you().ammo().get(AmmoColor.BLUE)).append("\tBLUE\n");
-        toChoose.append(gameMapView.you().ammo().get(AmmoColor.YELLOW)).append("\tYELLOW\n");
+        builder.append("\n>> You've got the following ammo: \t");
+        builder.append(printCost(gameMapView.you().ammo())).append(" \n");
 
-        pickStringMessage = toChoose.toString();
+        pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
         int finalI = i;
