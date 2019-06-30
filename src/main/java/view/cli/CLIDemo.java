@@ -605,7 +605,7 @@ public class CLIDemo implements View {
             out.insert(out.length()-1,')');
         }
         */
-        out.append(AnsiColor.getDefault());
+        out.append(" ").append(AnsiColor.getDefault()).append(" ");
         return out.toString();
     }
 

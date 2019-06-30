@@ -34,6 +34,7 @@ public class GameMapView implements Serializable{
         this.maxPos = toCopy.maxPos();
         this.you = toCopy.you();
         this.players = toCopy.players();
+        this.dominationPointActor = toCopy.dominationPointActor();
     }
 
     public Coord maxPos(){

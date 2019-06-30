@@ -30,7 +30,7 @@ public class ControlPointActor extends Actor{
 
     @Override
     public void damage(Actor shooter, int numOfDmg) {
-        super.damage(shooter, numOfDmg);
+        damageRaw(shooter, numOfDmg);
     }
 
     @Override
@@ -45,5 +45,11 @@ public class ControlPointActor extends Actor{
             ((DominationMode)scoreboard).addSpawnTrackerPoint(t.y, t.x);
         }
         return false;
+    }
+
+    @Override
+    public int addMark(Actor attackerActor, int numOfMarks) {
+        //does nothing
+        return 0;
     }
 }
