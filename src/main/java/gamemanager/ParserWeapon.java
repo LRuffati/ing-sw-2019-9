@@ -155,7 +155,12 @@ public class ParserWeapon {
                         actions.get(i).getInfo().getActionRequirements().add(new Tuple<>(false, id));
                     }
 
-                    actions.put(id, parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction));
+                    ActionTemplate template = parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
+                    Optional<String> masterAction = template.getInfo().getMasterAction();
+                    if(masterAction.isPresent()){
+                        actions.get(masterAction).getInfo().getContempList().add(template);
+
+                    } else actions.put(id, template);
                 });
 
         return new Weapon(nome,buyCost,reloadCost,actions.values());
