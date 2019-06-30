@@ -9,6 +9,7 @@ import viewclasses.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CLIMap {
     private static final int DIM_TILE = 5;
@@ -278,6 +279,12 @@ public class CLIMap {
                             a.setColor(colors.get(i));
                         }
                     }
+                    for (Map.Entry<Coord, ActorView> entry : targetMap.dominationPointActor().entrySet()) {
+                        if (entry.getValue().uid().equals(damageableUID)) {
+                            tilesColor.put(targetMap.getPosition(entry.getKey()), targetMap.getPosition(entry.getKey()).color());
+                            targetMap.getPosition(entry.getKey()).setColor(colors.get(i));
+                        }
+                    }
                     i++;
                 }
             }
@@ -286,6 +293,13 @@ public class CLIMap {
         for(TargetView target :  targetViewList) {
             tiless.addAll(target.getTileUIDList());
             actors.addAll(target.getDamageableUIDList());
+            List<DamageableUID> domination = target.getDamageableUIDList().stream()
+                    .filter(x ->
+                            targetMap.dominationPointActor().values().stream().map(y -> y.uid()).collect(Collectors.toList())
+                            .contains(x)
+                    ).collect(Collectors.toList());
+            tiless.addAll(targetMap.dominationPointActor().entrySet().stream().filter(x -> domination.contains(x.getValue().uid()))
+                    .map(x -> targetMap.getPosition(x.getKey()).uid()).collect(Collectors.toList()));
         }
 
         for (TileView t : targetMap.allTiles()) {

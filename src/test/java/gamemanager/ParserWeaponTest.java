@@ -21,14 +21,10 @@ class ParserWeaponTest {
     }
 
     @Test
-    void voidTest(){
+    void voidTest() {
         String path = "test/weaponToTest";
-        try{
-            weaponCollection = ParserWeapon.parseWeapons(path);
-            System.out.println(weaponCollection.size());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        weaponCollection = ParserWeapon.parseWeapons(path);
+        System.out.println(weaponCollection.size());
     }
 
     @Test
@@ -55,13 +51,9 @@ class ParserWeaponTest {
     }
 
     @Test
-    void realFile(){
+    void realFile() {
         String path = "weapons.txt";
-        try{
-            weaponCollection = ParserWeapon.parseWeapons(path);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        weaponCollection = ParserWeapon.parseWeapons(path);
         System.out.println("Dimensione del set di armi:\t" + weaponCollection.size());
     }
 
