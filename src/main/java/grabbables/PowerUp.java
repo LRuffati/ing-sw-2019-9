@@ -105,6 +105,7 @@ public abstract class PowerUp extends Grabbable {
                 ret = new TagBack(color);
                 break;
             case TARGETINGSCOPE:
+                ret = new TargScope(color);
                 break;
         }
         return ret;

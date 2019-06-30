@@ -508,7 +508,6 @@ public class GameMap {
         gameMapView.setYou(you);
         gameMapView.setPlayers(players2);
 
-        //TODO: tiles.put(getCoord(tile), null) ?? is this correct?
         Map<Coord, TileView> tiles = new HashMap<>();
         for (TileUID tile : position) {
             if (allTiles().contains(tile))
@@ -525,13 +524,8 @@ public class GameMap {
 
 
         if (gameMapView.gameMode().equals(GameMode.DOMINATION)) {
-            gameMapView.setDominationPointActor(
-                    GameBuilder.get().getDominationPointActor().pawn().generateView(
-                            gameMapView,
-                            GameBuilder.get().getDominationPointActor().pawnID(),
-                            pointOfView
-                    ));
-            gameMapView.setSkullBox(((DominationMode) GameBuilder.get().getScoreboard()).getSkullBox());
+            gameMapView.setDominationPointActor(GameBuilder.get().getDominationPointActor());
+            gameMapView.setSkullBox(GameBuilder.get().getScoreboard().getSkullBox());
             gameMapView.setSpawnTracker(((DominationMode) GameBuilder.get().getScoreboard()).getSpawnTracker());
         }
         else

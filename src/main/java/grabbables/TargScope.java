@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class TargScope extends PowerUp {
-    public TargScope(PowerUpType type, AmmoColor color) {
+    public TargScope(AmmoColor color) {
         super(PowerUpType.TARGETINGSCOPE, color);
     }
 

@@ -18,6 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Class used to parse a file containing weapons.
+ */
 public class ParserWeapon {
     private static String regexNomeDescr = "[\\/ \\w'-.,òèàùé]";
     private static String regexEndLine = System.getProperty("line.separator");

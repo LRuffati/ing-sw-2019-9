@@ -4,8 +4,6 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import grabbables.AmmoCard;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -21,9 +19,8 @@ public class  ParserAmmoTile {
      * Static method that parse the file
      * @param path the Path of the file that has to be parsed
      * @return A collection containing all the Card parsed
-     * @throws FileNotFoundException If the file is not found
      */
-    public static Collection<AmmoCard> parse(String path) throws FileNotFoundException {
+    public static Collection<AmmoCard> parse(String path) {
 
         Collection<AmmoCard> ammoCardCollection = new ArrayList<>();
         int numOfPowerUp;

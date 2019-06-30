@@ -1,8 +1,8 @@
 package gamemanager;
 
+import board.Coord;
 import board.DominationPointTile;
 import board.GameMap;
-import board.Tile;
 import controller.GameMode;
 import genericitems.Tuple3;
 import grabbables.*;
@@ -12,7 +12,9 @@ import uid.DamageableUID;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class is used to create a new Game. It creates the GameMap, all the Decks and the Scoreboard.
@@ -34,7 +36,7 @@ public class GameBuilder {
     private Scoreboard scoreboard;
     private String mapName = "map1";
 
-    private Actor dominationPointActor;
+    private Map<Coord, Actor> dominationPointActor = new HashMap<>();
     private GameMode gameMode = GameMode.NORMAL;
 
     /**
@@ -145,12 +147,14 @@ public class GameBuilder {
                 firstPlayer = false;
             }
             else {
-                Tile tile = ((DominationPoint) map.getPawn(pawnID)).getDominationPointTile();
-                DominationPointTile dominationPointTile = (DominationPointTile) tile;
-                dominationPointTile.getControlPointActor().setBinding();
+                DominationPointTile tile = ((DominationPoint) map.getPawn(pawnID)).getDominationPointTile();
+                tile.getControlPointActor().setBinding();
 
-                dominationPointTile.addTrack(scoreboard);
-                dominationPointActor = ((DominationPoint)map.getPawn(pawnID)).getDominationPointTile().getControlPointActor();
+                tile.addTrack(scoreboard);
+                dominationPointActor.put(
+                        map.getCoord(((DominationPoint)map.getPawn(pawnID)).getDominationPointTile().getTileID()),
+                        ((DominationPoint)map.getPawn(pawnID)).getDominationPointTile().getControlPointActor()
+                );
             }
         }
         return actors;
@@ -181,7 +185,7 @@ public class GameBuilder {
     public GameMode getGameMode() {
         return gameMode;
     }
-    public Actor getDominationPointActor() {
+    public Map<Coord, Actor> getDominationPointActor() {
         return dominationPointActor;
     }
 }
