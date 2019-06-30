@@ -104,8 +104,9 @@ public class ParserWeapon {
 
         Matcher actionsBody = Pattern.compile(regexAction).matcher(body);
 
-        List<ActionTemplate> actions = actionsBody.results()
-                .map(match -> {
+        Map<String, ActionTemplate> actions = new HashMap<>();
+        actionsBody.results()
+                .forEach(match -> {
                     String id = match.group(1);
 
                     String costString = match.group(2);
@@ -147,16 +148,17 @@ public class ParserWeapon {
                     }).collect(Collectors.toList());
 
                     Matcher xorMatcher = Pattern.compile("(\\w+)").matcher(xor);
-                    List<String> xorList = xorMatcher.results().map(m ->
-                    {
-                        return m.group();
-                    }).collect(Collectors.toList());
 
-                    return parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
-                })
-                .collect(Collectors.toList());
+                    List<String> xorList = xorMatcher.results().map(m -> m.group()).collect(Collectors.toList());
 
-        return new Weapon(nome,buyCost,reloadCost,actions);
+                    for (String i: xorList){
+                        actions.get(i).getInfo().getTargetRequirements().add(new Tuple<>(false, id));
+                    }
+
+                    actions.put(id, parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction));
+                });
+
+        return new Weapon(nome,buyCost,reloadCost,actions.values());
     }
 
 
