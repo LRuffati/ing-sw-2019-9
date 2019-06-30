@@ -61,8 +61,7 @@ public class ReloadTemplate implements EffectTemplate{
                     //1. Create sandbox with reloads effect
                     Sandbox reloadedSandbox = new Sandbox(sandbox, reloaded);
                     EffectTemplate payTemplate = new PayTemplate(tot);
-                    return payTemplate.spawn(targets, sandbox, consumer);
-
+                    return payTemplate.spawn(targets, reloadedSandbox, consumer);
                 }
             }
         };
