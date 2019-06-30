@@ -346,7 +346,8 @@ public class Sandbox {
             tileView.setPlayers(players);
         }
 
-        gameMapView.you().setAmmo(new AmmoAmount(getUpdatedTotalAmmoAvailable()));
+        //gameMapView.you().setAmmo(new AmmoAmount(getUpdatedTotalAmmoAvailable()));
+        gameMapView.you().setAmmo(new AmmoAmount(updatedAmmoAvailable.getAmounts()));
 
         gameMapView.you().setLoadedWeapon(getArsenal().stream()
                 .filter(i -> i.x == Boolean.TRUE)

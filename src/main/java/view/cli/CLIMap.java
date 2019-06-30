@@ -298,11 +298,6 @@ public class CLIMap {
                             targetMap.dominationPointActor().values().stream().map(ActorView::uid).collect(Collectors.toList())
                             .contains(x)
                     ).collect(Collectors.toList());
-            System.out.println("Target\t" + target.getDamageableUIDList());
-            System.out.println(targetMap.dominationPointActor().values().stream().map(ActorView::uid).collect(Collectors.toList()));
-            System.out.println(domination);
-            System.out.println(targetMap.dominationPointActor().entrySet().stream().filter(x -> domination.contains(x.getValue().uid()))
-                    .map(x -> targetMap.getPosition(x.getKey()).uid()).collect(Collectors.toList()));
             tiless.addAll(targetMap.dominationPointActor().entrySet().stream().filter(x -> domination.contains(x.getValue().uid()))
                     .map(x -> targetMap.getPosition(x.getKey()).uid()).collect(Collectors.toList()));
         }

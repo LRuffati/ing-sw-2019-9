@@ -650,10 +650,8 @@ public class CLIDemo implements View {
         catch (InvalidParameterException e) {
             //skip
         }
-        System.out.println("\n>> He's got the following ammo: ");
-        System.out.println(player.ammo().get(AmmoColor.RED) + "\tRED");
-        System.out.println(player.ammo().get(AmmoColor.BLUE) + "\tBLUE");
-        System.out.println(player.ammo().get(AmmoColor.YELLOW) + "\tYELLOW");
+        System.out.print("\n>> He's got the following ammo:\t");
+        System.out.println(printCost(player.ammo()));
 
         int i = 0;
         if(!player.getLoadedWeapon().isEmpty()) {
