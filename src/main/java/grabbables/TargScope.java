@@ -83,6 +83,7 @@ public class TargScope extends PowerUp {
                             sandbox1 -> {
                                 //Apply effects to gamemap and run onPowerupFinalized
                                 pov.setCurrentMessage(new WaitMessage(List.of()));
+                                pov.getSelf().discardPowerUp(TargScope.this);
                                 new Thread(()->pov.main.resolveEffect(pov,
                                         sandbox1.getEffectsHistory(), onPowerupFinalized)).start();
 

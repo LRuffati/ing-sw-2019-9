@@ -189,6 +189,7 @@ public class ParserWeapon {
         List<EffectTemplate> effectTemplates = matchEffectDef.matcher(body).results()
                 .map(m->parseEffect(m.group(0)))
                 .collect(Collectors.toList());
+        effectTemplates.add(new PayTemplate(cost));
 
         return new ActionTemplate(actionInfo, targTemplates, effectTemplates);
     }
@@ -381,7 +382,7 @@ public class ParserWeapon {
                 effectParamMatcher =
                         Pattern.compile(" *(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
                 effectParamMatcher.find();
-                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(1));
+                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(2));
                 break;
 
             case "pay":
