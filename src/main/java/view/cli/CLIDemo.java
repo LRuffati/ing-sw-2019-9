@@ -294,6 +294,10 @@ public class CLIDemo implements View {
             i+=1;
         }
         builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        builder.append("\n>> You've got the following ammo: ");
+        builder.append(gameMapView.you().ammo().get(AmmoColor.RED)).append("\tRED");
+        builder.append(gameMapView.you().ammo().get(AmmoColor.BLUE)).append("\tBLUE");
+        builder.append(gameMapView.you().ammo().get(AmmoColor.YELLOW)).append("\tYELLOW");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
@@ -330,6 +334,11 @@ public class CLIDemo implements View {
             i+=1;
         }
         toChoose.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+
+        toChoose.append("\n>> You've got the following ammo: \n");
+        toChoose.append(gameMapView.you().ammo().get(AmmoColor.RED)).append("\tRED\n");
+        toChoose.append(gameMapView.you().ammo().get(AmmoColor.BLUE)).append("\tBLUE\n");
+        toChoose.append(gameMapView.you().ammo().get(AmmoColor.YELLOW)).append("\tYELLOW\n");
 
         pickStringMessage = toChoose.toString();
         System.out.println(pickStringMessage);
