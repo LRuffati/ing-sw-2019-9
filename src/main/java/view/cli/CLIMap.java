@@ -148,6 +148,8 @@ public class CLIMap {
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
+        //TODO change to create a list of StringBuilder to manage the space after the map
+        List<String> rowList = new ArrayList<>();
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
@@ -161,8 +163,7 @@ public class CLIMap {
                                 col
                                 + tiles[c][r]
                                 + AnsiColor.getDefault());
-                    }
-                    else {
+                    } else {
                         for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
                             if (tiles[c][r].equals(entry.getValue())) {
                                 System.out.print(AnsiColor.getAnsi(entry.getKey().color()) + tiles[c][r] + "\u001B[0m");

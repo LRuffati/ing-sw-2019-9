@@ -23,7 +23,7 @@ public class ParserWeapon {
     private static String regexEndLine = System.getProperty("line.separator");
     ParserWeapon(){}
 
-    public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
+    public static List<Weapon> parseWeapons(String path) throws FileNotFoundException {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);
@@ -41,7 +41,7 @@ public class ParserWeapon {
                     AmmoAmount reloadCost = parseAmmo(m.group(2));
                     AmmoAmount buyCost = parseAmmo(m.group(3));
                     return parseSingleWeapon(weaponId, reloadCost, buyCost, m.group(4));
-                }).collect(Collectors.toSet());
+                }).collect(Collectors.toList());
 
         // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
         // Per ogni match:

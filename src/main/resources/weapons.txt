@@ -4,13 +4,13 @@ descrizioneWeapon: d
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 danni e 1 marchio a un bersaglio che puoi vedere
-target targ1 pawn (SEEN self) new
+target targ1 pawn (SEEN self) new: Scegli un giocatore a cui fare due danni e applicare un marchio
 effect DAMAGE 2 targ1
 effect MARK 1 targ1
 action secondo R follows [main]:
 nomeAction: Secondo aggancio
 descrizioneAction: Dai 1 marchio a un altro bersaglio
-target targ2 pawn (SEEN self) new
+target targ2 pawn (SEEN self) new: Scegli un giocatore a cui dare un altro marchio
 effect MARK 1 targ2
 stop
 weapon mitragliatrice BR:
@@ -19,8 +19,8 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: Scegli uno o due bersagli che puoi vedere e dai un danno a entrambi
-target targ1 pawn (SEEN self) new
-target targ2 pawn (SEEN self) new optional
+target targ1 pawn (SEEN self) new: Scegli un bersaglio a cui infliggere un danno.
+target targ2 pawn (SEEN self) new optional: Puoi scegliere un secondo bersaglio a cui infliggere un danno.
 effect DAMAGE 1 targ1
 effect DAMAGE 1 targ2
 action focalizzato Y follows [main]:
@@ -30,8 +30,8 @@ effect DAMAGE 1 targ1
 action tripode1 B follows [main] exist [targ2]:
 nomeAction: Tripode di supporto
 descrizioneAction: Dai 1 danno aggiuntivo all'altro bersaglio e/o un
-target targ3 pawn (IS targ2) optional
-target targ4 pawn (SEEN self) new optional
+target targ3 pawn (IS targ2) optional: Puoi infliggere un danno
+target targ4 pawn (SEEN self) new optional: Puoi scegliere un altro bersaglio a cui infliggere un danno.
 effect DAMAGE 1 targ3
 effect DAMAGE 1 targ4
 action tripode2 B follows [main] exist [!targ2] xor [focalizzato tripode1]:
@@ -45,17 +45,17 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 danni ad un bersaglio che puoi vedere
-target targ1 pawn (SEEN self) new
+target targ1 pawn (SEEN self) new: Scegli un bersaglio a cui infliggere due danni.
 effect DAMAGE 2 targ1
 action reazione B follows [main]:
 nomeAction: Reazione a catena
 descrizioneAction: Dai 1 danno ad un bersaglio che il primo bersaglio puo' vedere
-target targ2 pawn (SEEN targ1) new
+target targ2 pawn (SEEN targ1) new: Scegli un secondo bersaglio a cui infliggere un danno.
 effect DAMAGE 1 targ2
 action tensione B follows [reazione]:
 nomeAction: Alta tensione
 descrizioneAction: Dai 2 danni ad un bersaglio che il secondo bersaglio può vedere
-target targ3 pawn (SEEN targ2) new
+target targ3 pawn (SEEN targ2) new: Scegli un terzo bersaglio a cui infliggere due danni.
 effect damage 2 targ3
 stop
 weapon plasma BY:
@@ -64,12 +64,12 @@ descrizioneWeapon: Se ci si muove prima di sparare i bersagli visibili devono es
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 di danno ad un bersaglio visibile
-target targ1 pawn (seen SELF) new
+target targ1 pawn (seen SELF) new: Scegli un bersaglio a cui infliggere due danni.
 effect damage 2 targ1
 action slitta:
 nomeAction: Slittamento di fase
 descrizioneAction: Muoviti di uno o due quadrati prima o dopo l'effetto base
-target tile1 tile (distant (1,2) self)
+target tile1 tile (distant (1,2) self): Scegli dove spostarti.
 effect move self to tile1
 action sovracc B follows [main]:
 nomeAction: Colpo sovraccarico
@@ -82,7 +82,7 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto
 descrizioneAction: Dai 3 danni e 1 marchio a un bersaglio distante 2 o più movimenti e che puoi vedere
-target targ1 pawn (SEEN self & not DISTANT (0,1) self)
+target targ1 pawn (SEEN self & not DISTANT (0,1) self): Scegli un bersaglio a cui infliggere tre danni e dare un marchio.
 effect damage 3 targ1
 effect mark 1 targ1
 stop
@@ -106,15 +106,15 @@ descrizioneWeapon: Puoi muovere il bersaglio anche se non lo vedi, basta che il 
 action main:
 nomeAction: Modalità base
 descrizioneAction: Muovi un bersaglio in un quadrato visibile e dagli un danno
-target targ1 pawn (EXISTS) new
-target tiled tile (REACHED (0,2) targ1 & SEEN self)
+target targ1 pawn (EXISTS) new: Scegli un bersaglio da muovere e a cui infliggere un danno.
+target tiled tile (REACHED (0,2) targ1 & SEEN self): Scegli dove muovere il bersaglio.
 effect move targ1 to tiled
 effect damage  1 targ1
 action punisher BR xor [main]:
 nomeAction: Modalità punitore
 descrizioneAction: Scegli un giocatore distante al massimo due movimenti, spostalo nel tuo quadrato e dagli 3 di danno
 target tiles tile (HAS self) automatic
-target targ1 pawn (EXISTS & REACHES (0,2) tiles) new
+target targ1 pawn (EXISTS & REACHES (0,2) tiles) new: Scegli un giocatore da spostare nella tua posizione e a cui infliggere 3 danni.
 effect move targ1 to tiles
 effect damage 3 targ1
 stop
@@ -124,15 +124,15 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: scegli un quadrato visibile e un giocatore distante al massimo 1 movimento. Sposta il giocatore nella cella e dagli 1 danno
-target buco tile (SEEN self)
-target targ1 pawn (EXISTS & REACHES (0,1) buco) new
+target buco tile (SEEN self): Scegli dove spostare il bersaglio.
+target targ1 pawn (EXISTS & REACHES (0,1) buco) new: Scegli un bersaglio da spostare e infliggigli un danno.
 effect move targ1 to buco
 effect damage 2 targ1
 action nero R follows [main]:
 nomeAction: Buco nero
 descrizioneAction: Scegli due altri bersagli distanti 0 o 1 dalla cella di prima, dai 1 danno ciascuno
-target targ2 pawn (EXISTS & REACHES (0,1) buco) new optional
-target targ3 pawn (EXISTS & REACHES (0,1) buco) new optional
+target targ2 pawn (EXISTS & REACHES (0,1) buco) new optional: Scegli un bersaglio a cui dare un danno.
+target targ3 pawn (EXISTS & REACHES (0,1) buco) new optional: Scegli un secondo bersaglio a cui dare un danno.
 effect move targ2 to buco
 effect move targ3 to buco
 effect damage 1 targ2
@@ -144,12 +144,12 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
 descrizioneAction: Scegli una stanza diversa dalla tua che puoi vedere, dai 1 danno a tutti i giocatori nella stanza
-target room1 room (SEEN self & not HAS self)
+target room1 room (SEEN self & not HAS self): Scegli una stanza in cui infliggere un danno a ogni giocare dentro.
 effect damage 1 room1
 action fuoco xor [main]:
 nomeAction: Modalità fuoco confortevole
-descrizioneAction: Scegli un quadrato distante 1
-target tile1 tile (DISTANT (1,1) self)
+descrizioneAction: Scegli una tile distante 1 movimento, dai 1 danno e un marchio a tutti i giocatori nella stanza.
+target tile1 tile (DISTANT (1,1) self): Scegli una tile in cui infliggere un danno e aggiungere un marchio a ogni giocatore dentro.
 effect damage 1 tile1
 effect mark 1 tile1
 stop
@@ -159,7 +159,7 @@ descrizioneWeapon: Può colpire solo bersagli NON visibili
 action main:
 nomeAction: Effetto
 descrizioneAction: Scegli un bersaglio non visibile e dagli 3 danni
-target targ1 pawn (EXISTS & not SEEN self)
+target targ1 pawn (EXISTS & not SEEN self): Scegli un bersaglio a cui infliggere 3 danni.
 effect damage 3 targ1
 stop
 weapon solare RY:
@@ -167,15 +167,15 @@ nomeWeapon: Raggio Solare
 descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Modalità base
-descrizioneAction: Dai un danno ad un bersaglio visibile e non sulla stessa cella, poi marchia tutti i bersagli nella stessa cella
-target targ1 pawn (SEEN self & not DISTANT (0,0) self)
+descrizioneAction: Dai un danno ad un bersaglio visibile e non sulla stessa cella, poi marchia tutti i bersagli nella stessa cella.
+target targ1 pawn (SEEN self & not DISTANT (0,0) self): Scegli un bersaglio a cui infliggere un danno. Applicherai un marchio a tutti i giocatori dentro la sua cella.
 target tile1 tile (HAS targ1) automatic
 effect damage 1 targ1
 effect mark 1 tile1
 action nano R xor [main]:
 nomeAction: Modalità nano traccianti
 descrizioneAction: Dai un 1 danno a un giocatore visibile non sulla stessa cella, dai 2 marchi a chiunque su quella cella
-target targ2 pawn (SEEN self & not DISTANT (0,0) self)
+target targ2 pawn (SEEN self & not DISTANT (0,0) self): Scegli un giocatore a cui infliggere un danno. Applicherai due marchi a chiunque si trovi nella sua cella.
 target tile2 tile (HAS targ1) automatic
 effect damage 1 targ2
 effect mark 2 tile2
@@ -186,9 +186,9 @@ descrizioneWeapon: Quest'arma non può colpire attraverso muri o nel tuo quadrat
 action main:
 nomeAction: Modalità base
 descrizioneAction: Scegli
-target tile1 tile (DISTANT (1,1) self)
+target tile1 tile (DISTANT (1,1) self):
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN dir & DISTANT (2,2) self) optional automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic
 target targ1 pawn (IN tile1) optional
 target targ2 pawn (IN tile2) optional
 effect damage 1 targ1
@@ -208,7 +208,7 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: a
-target targ0 pawn (SEEN self)
+target targ0 pawn (SEEN self):
 target tild tile (REACHED (0,1) targ0)
 effect damage 1 targ0
 effect move targ0 to tild
