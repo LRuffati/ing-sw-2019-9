@@ -382,7 +382,7 @@ public class ParserWeapon {
                 effectParamMatcher =
                         Pattern.compile(" *(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
                 effectParamMatcher.find();
-                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(1));
+                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(2));
                 break;
 
             case "pay":
