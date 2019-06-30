@@ -1,6 +1,6 @@
 ##Fucile al plasma
 + prima slittamento di fase, poi effetto base:
-    + Solo il client che spara va in crash, l'altro client e il server continuano normalmente (sembra)
++ anche solo con effetto base
     + Exception in thread "Thread-1" java.lang.IllegalStateException: The selector requires an unavailable
     target
            at actions.targeters.Targeter.giveChoices(Targeter.java:144)
