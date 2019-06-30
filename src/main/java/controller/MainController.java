@@ -4,7 +4,6 @@ import actions.effects.Effect;
 import board.GameMap;
 import board.Tile;
 import gamemanager.GameBuilder;
-import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import grabbables.PowerUp;
 import network.Database;
@@ -33,7 +32,7 @@ public class MainController {
     private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt
     // ("TimeBeforeStarting");
     private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
-    private static final int MAX_PLAYER = 3;// ParserConfiguration.parseInt("maxNumOfPlayers");
+    private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;
 

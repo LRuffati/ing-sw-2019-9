@@ -43,7 +43,7 @@ public class NetworkBuilder {
                                 //System.out.println(Database.get().getUserByToken(token).getUsername());
                                 network.ping();
                             } catch (RemoteException | IllegalArgumentException e) {
-                                //e.printStackTrace();
+                                e.printStackTrace();
                                 Database.get().logout(token);
                             }
                             Thread.currentThread().interrupt();
@@ -57,6 +57,6 @@ public class NetworkBuilder {
         };
 
         Timer timer  = new Timer("pingTimer");
-        //timer.scheduleAtFixedRate(repeatedTask, 1000, 500);
+        timer.scheduleAtFixedRate(repeatedTask, 1000, 500);
     }
 }

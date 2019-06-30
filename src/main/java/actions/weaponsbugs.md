@@ -1,6 +1,6 @@
 ##Fucile al plasma
 + prima slittamento di fase, poi effetto base:
-    + Solo il client che spara va in crash, l'altro client e il server continuano normalmente (sembra)
++ anche solo con effetto base
     + Exception in thread "Thread-1" java.lang.IllegalStateException: The selector requires an unavailable
     target
            at actions.targeters.Targeter.giveChoices(Targeter.java:144)
@@ -10,8 +10,12 @@
            at network.ObjectMap.pick(ObjectMap.java:108)
            at network.rmi.server.ServerNetworkRMI.pick(ServerNetworkRMI.java:97)
 
+##fucile laser
++ effetto base: mi ha fatto scegliere la cella e non la direzione, prima mi ha deto che non ci sono bersagli validi, poi l'ho rifatto, ha eseguito lo sparo ma non ha danneggiato il bersaglio nella direzione
+
 ##Lanciafiamme
-+ propone solo modalità base e non barbecue, mi fa scegliere tra delle tile ed entro in un loop
++ propone solo modalità base e non barbecue, mi fa scegliere tra delle tile ed entro in un loop (Pietro)
++ lanciafiamme, solo modalità base come Pietro ma mi fa scegliere due tile e non entro in nessun loop (Carmelo)
 
 ##Mitragliatrice:
 + Modalità base, bersaglio nella tua stessa tile (down 0,left 2):
@@ -40,7 +44,8 @@ at controller.controllermessage.PickTargetMessage.pick(PickTargetMessage.java:96
 
 ##Falce Protonica:
 + Modalità base => nessun errore evidente
-        +
++ Modalità mietitore => mi obbliga ad annidare anche la modalità base, poi esegue entrambe. Non posso eseguire solo 
+mietitore
 
 ##Raggio Traente:
 + Modalità base => nessun errore evidente (danno + spostamento)

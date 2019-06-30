@@ -6,6 +6,7 @@ import board.DominationPointTile;
 import board.GameMap;
 import board.Tile;
 import uid.DamageableUID;
+import uid.TileUID;
 
 import java.awt.*;
 
@@ -39,5 +40,10 @@ public class DominationPoint extends Pawn {
     @Override
     public DamageableUID getDamageableUID() {
         return uid;
+    }
+
+    @Override
+    public void move(TileUID tile) {
+        //does nothing
     }
 }

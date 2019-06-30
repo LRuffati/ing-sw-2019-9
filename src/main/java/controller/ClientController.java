@@ -125,8 +125,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 } catch (
                         InvalidLoginException e) {
                     view.loginResponse(false, e.wrongUsername, e.wrongColor);
-                } catch (
-                        RemoteException e) {
+                } catch (RemoteException e) {
                     logger.log(Level.SEVERE, "Exception in login (register)", e);
                 }
             }

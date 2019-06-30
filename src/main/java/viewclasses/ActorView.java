@@ -29,7 +29,7 @@ public class ActorView implements Serializable {
     private List<ActorView> damageTaken;
     private Map<ActorView, Integer> marks;
 
-    private List<WeaponView> loadedWeapon;
+    private List<WeaponView> loadedWeapon = new ArrayList<>();
     private List<WeaponView> unloadedWeapon;
     private List<PowerUpView> powerUp;
     private int hp;
@@ -49,6 +49,7 @@ public class ActorView implements Serializable {
     public List<PowerUpView> getPowerUp() {
         return powerUp;
     }
+
 
     public ActorView(){
         loadedWeapon = new ArrayList<>();

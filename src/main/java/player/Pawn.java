@@ -137,10 +137,12 @@ public class Pawn {
 
         boolean pointOfView = uid.equals(pov);
 
-        ActorView actorView = new ActorView();
-        for(ActorView a : gameMapView.players())
-            if(a.uid().equals(damageableUID))
+        ActorView actorView = new ActorView(uid);
+        for(ActorView a : gameMapView.players()) {
+            if (a.uid().equals(damageableUID))
                 actorView = a;
+        }
+
 
 
         List<ActorView> damageTaken = new ArrayList<>();

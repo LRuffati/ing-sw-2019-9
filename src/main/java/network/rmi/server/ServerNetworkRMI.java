@@ -37,27 +37,15 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         return Database.get().getConnectedTokens().contains(token);
     }
 
-    public void sendPing() throws RemoteException {
-        Database d = Database.get();
-        for(ServerInterface client :  d.getConnectedTokens().stream().map(d::getNetworkByToken).collect(Collectors.toList())){
-            try {
-                client.ping();
-            }
-            catch (ConnectException e) {
-                d.logout(client);
-            }
-        }
-    }
-
     @Override
     public void pingResponse(String token) {
-        //TimerForDisconnection.reset(token);
+        TimerForDisconnection.reset(token);
     }
 
 
     @Override
     public String register(ServerInterface serverInterface, String username, String password, String color) throws RemoteException, InvalidLoginException {
-        return Database.get().login(serverInterface, username, password, color);
+        return Database.get().login(serverInterface, true, username, password, color);
     }
 
     @Override
@@ -65,7 +53,7 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
         if(username == null || password == null)
             return new Tuple3<>("", false, null);
         return new Tuple3<>(
-                Database.get().login(client, username, password),
+                Database.get().login(client, true, username, password),
                 Database.get().getMainController().isGameStarted(),
                 new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode())
         );

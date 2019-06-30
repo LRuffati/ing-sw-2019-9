@@ -12,6 +12,9 @@ import uid.TileUID;
 
 import java.util.Map;
 
+/**
+ * This class is an extension of Tile and identify the Tiles containing Domination Points
+ */
 public class DominationPointTile extends Tile {
 
     private ControlPointActor controlPointActor;
@@ -30,6 +33,9 @@ public class DominationPointTile extends Tile {
         this.pawnID = new DamageableUID();
     }
 
+    /**
+     * Updates the scoreboard such that it will contain also a track of this color
+     */
     public void addTrack(Scoreboard scoreboard) {
         ((DominationMode)scoreboard).addTrack(this.getColor());
     }

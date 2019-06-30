@@ -30,14 +30,19 @@ public class ControlPointActor extends Actor{
 
     @Override
     public void damage(Actor shooter, int numOfDmg) {
-        super.damage(shooter, numOfDmg);
+        //does nothing
     }
 
     @Override
     public void damageRaw(Actor shooter, int numOfDmg) {
-        super.damageRaw(shooter, numOfDmg);
+        //does nothing
     }
 
+    @Override
+    public int addMark(Actor attackerActor, int numOfMarks) {
+        //does nothing
+        return 0;
+    }
 
     @Override
     public boolean endTurn(Actor player, Scoreboard scoreboard) {
@@ -46,4 +51,6 @@ public class ControlPointActor extends Actor{
         }
         return false;
     }
+
+
 }

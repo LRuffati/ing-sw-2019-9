@@ -11,19 +11,26 @@ import actions.utils.AmmoColor;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Class used to parse a file containing weapons.
+ */
 public class ParserWeapon {
     private static String regexNomeDescr = "[\\/ \\w'-.,òèàùé]";
     private static String regexEndLine = System.getProperty("line.separator");
     ParserWeapon(){}
 
-    public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
+    /**
+     * Static method that parses the file
+     * @param path the Path of the file that has to be parsed
+     * @return A set containing all the weapons parsed
+     */
+    public static Set<Weapon> parseWeapons(String path) {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);

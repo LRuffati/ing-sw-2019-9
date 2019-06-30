@@ -97,7 +97,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
     @Override
     public Response handle(PingResponse response) {
-        //TimerForDisconnection.reset(player.getToken());
+        TimerForDisconnection.reset(player.getToken());
         return null;
     }
 
@@ -105,7 +105,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
     public Response handle(RegisterRequest request) {
         String token;
         try {
-            token = Database.get().login(this, request.username, request.password, request.color);
+            token = Database.get().login(this, false, request.username, request.password, request.color);
             player = Database.get().getUserByToken(token);
             return new RegisterResponse(token);
         } catch (InvalidLoginException e) {
@@ -118,7 +118,7 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         if(request.username == null || request.password == null)
             return new ReconnectResponse(true);
         try {
-            String tokenFromDb = Database.get().login(this, request.username, request.password);
+            String tokenFromDb = Database.get().login(this, false, request.username, request.password);
             player = Database.get().getUserByToken(tokenFromDb);
             boolean isStarted = Database.get().getMainController().isGameStarted();
             return new ReconnectResponse(tokenFromDb, isStarted, new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode()));
