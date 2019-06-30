@@ -16,6 +16,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 3",
                     "muovi3",
+                    "Muovi di 3",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -28,7 +29,7 @@ class ActionTemplateOptions {
                             new TargeterTemplate(
                                     new Tuple<>(
                                             "self",
-                                            new DistanceSelector(1,3,true)
+                                            new DistanceSelector(0,3,true)
                                     ),
                                     List.of(),
                                     "tile",
@@ -48,6 +49,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 4",
                     "muovi4",
+                    "muovi di 4",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -60,7 +62,7 @@ class ActionTemplateOptions {
                             new TargeterTemplate(
                                     new Tuple<>(
                                             "self",
-                                            new DistanceSelector(1,4,true)
+                                            new DistanceSelector(0,4,true)
                                     ),
                                     List.of(),
                                     "tile",
@@ -80,6 +82,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 1 e raccogli",
                     "muovigrab",
+                    "muovi di uno e raccogli",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -113,6 +116,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Spara",
                     "spara",
+                    "spara",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -127,6 +131,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 2 e raccogli",
                     "muovi2grab",
+                    "muovi di due e raccogli",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -160,6 +165,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 1 e spara",
                     "muovishoot",
+                    "muovi di uno e spara",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -193,6 +199,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 1, ricarica e spara",
                     "muovirelshoot",
+                    "Muoviti di 1, ricarica e spara",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -227,6 +234,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 2, ricarica e spara",
                     "muovi2ricshoot",
+                    "Muoviti di 2, ricarica e spara",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
@@ -261,6 +269,7 @@ class ActionTemplateOptions {
             new ActionInfo(
                     "Muoviti di 3 e raccogli",
                     "muovi3grab",
+                    "muovi di tre e raccogli",
                     new AmmoAmount(),
                     List.of(),
                     List.of(),
