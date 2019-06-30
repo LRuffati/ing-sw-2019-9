@@ -108,7 +108,7 @@ public class ActionInfo {
 
     public Collection<Tuple<Boolean, String>> getActionRequirements() {
         // Tuple is immutable, so I can not worry about doing a deep copy
-        return new ArrayList<>(actionRequirements);
+        return actionRequirements;
     }
 
     public Collection<Tuple<Boolean, String>> getTargetRequirements() {

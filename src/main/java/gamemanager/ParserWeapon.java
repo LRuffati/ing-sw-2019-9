@@ -152,7 +152,7 @@ public class ParserWeapon {
                     List<String> xorList = xorMatcher.results().map(m -> m.group()).collect(Collectors.toList());
 
                     for (String i: xorList){
-                        actions.get(i).getInfo().getTargetRequirements().add(new Tuple<>(false, id));
+                        actions.get(i).getInfo().getActionRequirements().add(new Tuple<>(false, id));
                     }
 
                     actions.put(id, parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction));
