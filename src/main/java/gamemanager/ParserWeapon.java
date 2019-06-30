@@ -160,7 +160,7 @@ public class ParserWeapon {
                 })
                 .collect(Collectors.toList());
 
-        return new Weapon(nome,buyCost,reloadCost,actions);
+        return new Weapon(nome,buyCost,reloadCost,actions, descrizione);
     }
 
 
@@ -441,7 +441,7 @@ public class ParserWeapon {
         }
         //TODO Contemp
 
-        return new ActionInfo(nome, nomeId,cost,actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
+        return new ActionInfo(nome, nomeId,descrizione, cost , actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
     }
 
 }

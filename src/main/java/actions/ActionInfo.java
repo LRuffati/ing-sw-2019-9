@@ -23,6 +23,7 @@ public class ActionInfo {
      */
     private final String name;
 
+    private final String description;
     /**
      * Whether the action should be displayed or not.
      * Use case: when an action described as an unitary entity in natural language actually
@@ -73,13 +74,14 @@ public class ActionInfo {
      */
     private final Optional<String> masterAction;
 
-    public ActionInfo (String name, String actionId, @NotNull AmmoAmount cost,
+    public ActionInfo (String name, String actionId, String actionDescription, @NotNull AmmoAmount cost,
                 Collection<Tuple<Boolean, String>> actionRequirements,
                 Collection<Tuple<Boolean, String>> targetRequirements,
                 Optional<String> masterAction, boolean show){
 
         this.name = name;
         this.actionId = actionId;
+        this.description = actionDescription;
         this.cost = cost;
         this.actionRequirements = actionRequirements;
         this.targetRequirements = targetRequirements;
@@ -90,6 +92,10 @@ public class ActionInfo {
     public String getName() {
         //Strings are immutable so it's safe to provide the reference
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public boolean isShow() {
