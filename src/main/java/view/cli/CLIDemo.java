@@ -230,7 +230,9 @@ public class CLIDemo implements View {
                                 builder.append(a.name());
                                 builder.append(AnsiColor.getDefault());
                                 builder.append(" whom character on the map is '");
-                                builder.append(climap.getPlayers().get(a));
+                                builder.append(climap.getPlayers().entrySet()
+                                        .stream().filter(x -> x.getKey().name().equals(a.name()))
+                                        .map(Map.Entry::getValue).collect(Collectors.toList()).get(0));
                                 builder.append("'.\n");
                                 i += 1;
                                 break;
