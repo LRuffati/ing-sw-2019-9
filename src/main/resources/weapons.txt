@@ -185,7 +185,7 @@ nomeWeapon: Lanciafiamme
 descrizioneWeapon: Quest'arma non può colpire attraverso muri o nel tuo quadrato ma può attraversare le porte tra stanze
 action main:
 nomeAction: Modalità base
-descrizioneAction: Scegli
+descrizioneAction: Infliggi 1 danno a un giocatore distante 1 movimento e possibilmente 1 danno a un altro giocatore distante 1 movimento (dal primo) e nella stessa direzione del primo.
 target tile1 tile (DISTANT (1,1) self):
 target dir direction (HAS self & HAS tile1) automatic
 target tile2 tile (IN dir & DISTANT (2,2) self) automatic
