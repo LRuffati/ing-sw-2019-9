@@ -8,28 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class implements the Domination Mode for the game.
+ * This class implements the scoreboard for the domination mode
  */
-
 public class DominationMode extends Scoreboard{
     private Map<Color, List<Actor>> spawnTracker;
 
     public void addTrack(Color color){
         spawnTracker.put(color, new ArrayList<>());
     }
-
-    private ArrayList<Map<Actor, Integer>> skullBox;
-    private int maxDeaths;
-    private int numOfDeaths;
-    private final List<Actor> actorList;
-
-    private final List<Integer> pointForDeath
-            = Arrays.stream(ParserConfiguration.parse("scoreBeforeFrenzy").split(","))
-            .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
-
-    private final List<Integer> pointForDeathFinal
-            = Arrays.stream(ParserConfiguration.parse("scoreAfterFrenzy").split(","))
-            .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
 
     private final List<Integer> pointForSpawnTracker
             = Arrays.stream(ParserConfiguration.parse("scoreSpawnTracker").split(","))
@@ -43,10 +29,6 @@ public class DominationMode extends Scoreboard{
 
     public DominationMode(int numOfdeaths) {
         super(numOfdeaths);
-        this.actorList = new ArrayList<>();
-        this.maxDeaths = numOfdeaths;
-        this.numOfDeaths = 0;
-        this.skullBox = new ArrayList<>();
         this.spawnTracker = new HashMap<>();
     }
 
@@ -82,29 +64,13 @@ public class DominationMode extends Scoreboard{
     }
 
     /**
-     * Remove a skull and add the killer marker(s).
-     * @param killer is the player who got the kill.
-     */
-    @Override
-    public void addKill(Actor killer, Actor victim){
-        int numPoints = 1;
-        if(victim.getDamageTaken().size()>10 && victim.getDamageTaken().get(11)!= null) {
-            //todo: aggiungere punto al track giusto
-            //TODO: probably should't be done here
-            victim.addMark(killer, 1);
-        }
-        skullBox.add(Map.of(killer, numPoints));
-        numOfDeaths++;
-    }
-
-    /**
      * Parse the players list and return the player with more points.
      * @return the actor controller by the winner player.
      */
     @Override
     public Actor claimWinner() {
         Actor maxA = null;
-        for (Actor a : actorList) {
+        for (Actor a : actorsList) {
             if (maxA == null || a.getPoints() > maxA.getPoints()) maxA = a;
         }
         return maxA;

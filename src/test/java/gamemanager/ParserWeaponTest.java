@@ -12,23 +12,18 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ParserWeaponTest {
-    private Set<Weapon> weaponCollection;
+class ParserWeaponTest {
+    private Collection<Weapon> weaponCollection;
 
     @BeforeEach
     void setup(){
-
+         voidTest();
     }
 
     @Test
-    void voidTest(){
+    void voidTest() {
         String path = "test/weaponToTest";
-        try{
-            weaponCollection = ParserWeapon.parseWeapons(path);
-            System.out.println(weaponCollection.size());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        //weaponCollection = ParserWeapon.parseWeapons(path);
         System.out.println(weaponCollection.size());
     }
 
@@ -56,13 +51,9 @@ public class ParserWeaponTest {
     }
 
     @Test
-    void realFile(){
+    void realFile() {
         String path = "weapons.txt";
-        try{
-            weaponCollection = ParserWeapon.parseWeapons(path);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+       // weaponCollection = ParserWeapon.parseWeapons(path);
         System.out.println("Dimensione del set di armi:\t" + weaponCollection.size());
     }
 

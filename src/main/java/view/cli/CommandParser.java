@@ -54,6 +54,7 @@ class CommandParser{
 
                         default:
                             state = State.MAIN;
+                            cliDemo.getPrintedMap();
                             System.out.println(cliDemo.pickStringMessage);
                             break;
                 }

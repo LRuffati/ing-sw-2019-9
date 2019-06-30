@@ -68,7 +68,7 @@ public interface View {
      * This method gives to the View the last valid GameMap
      * @param gameMapView The map
      */
-    void updateMap(GameMapView gameMapView);
+    void updateMap(GameMapView gameMapView, boolean forced);
 
 
     /**

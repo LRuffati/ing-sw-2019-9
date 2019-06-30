@@ -456,8 +456,7 @@ public class Actor {
         if (!frenzy){
             return ActionTemplateOptions.getActionsStandard(damageTaken.size());
         } else {
-            return ActionTemplateOptions.getFrenzyActions(!afterFirst, flipBoard,
-                    damageTaken.size());
+            return ActionTemplateOptions.getFrenzyActions(!afterFirst);
         }
     }
 

@@ -3,7 +3,7 @@
 ammoTile.txt
 
 -weaponPath
-test/weaponToTest
+weapons.txt
 
 -powerUpPath
 powerUp.txt

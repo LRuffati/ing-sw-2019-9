@@ -15,18 +15,18 @@ import java.util.stream.Collectors;
  * This class contains the GameMap that is used by the view and transmitted from the server to the client
  */
 public class GameMapView implements Serializable{
-    private Map<Coord, TileView> tiles;
+    private Map<Coord, TileView> tiles = new HashMap<>();;
     private Coord maxPos;
     private ActorView you;
     private List<ActorView> players;
     private List<Map<ActorView, Integer>> skullBox;
     private Map<Color, List<ActorView>> spawnTracker;
-    private ActorView dominationPointActor;
+    private Map<Coord, ActorView> dominationPointActor = new HashMap<>();
     private GameMode gameMode;
 
 
     public GameMapView(){
-        tiles = new HashMap<>();
+
     }
 
     public GameMapView(GameMapView toCopy){
@@ -34,6 +34,7 @@ public class GameMapView implements Serializable{
         this.maxPos = toCopy.maxPos();
         this.you = toCopy.you();
         this.players = toCopy.players();
+        this.dominationPointActor = toCopy.dominationPointActor();
     }
 
     public Coord maxPos(){
@@ -89,7 +90,7 @@ public class GameMapView implements Serializable{
         return gameMode;
     }
 
-    public ActorView dominationPointActor() {
+    public Map<Coord, ActorView> dominationPointActor() {
         return dominationPointActor;
     }
 
@@ -112,12 +113,16 @@ public class GameMapView implements Serializable{
         this.players = players;
     }
 
-    public void setDominationPointActor(ActorView dominationPointActor) {
-        this.dominationPointActor = dominationPointActor;
-    }
-
     public void setGameMode(GameMode gameMode) {
         this.gameMode = gameMode;
+    }
+
+    public void setDominationPointActor(Map<Coord, Actor> dominationPointActor) {
+        for(Map.Entry<Coord, Actor> entry : dominationPointActor.entrySet()) {
+            //todo: check pov null
+            ActorView actorView = entry.getValue().pawn().generateView(this, entry.getValue().pawnID(), null);
+            this.dominationPointActor.put(entry.getKey(), actorView);
+        }
     }
 
     public void setSpawnTracker(Map<Color, List<Actor>> spawnTracker) {

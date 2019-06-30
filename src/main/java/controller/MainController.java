@@ -4,7 +4,6 @@ import actions.effects.Effect;
 import board.GameMap;
 import board.Tile;
 import gamemanager.GameBuilder;
-import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import grabbables.PowerUp;
 import network.Database;
@@ -30,9 +29,10 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 1000;//ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
-    private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt
+    // ("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 2;// ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;
 
@@ -70,8 +70,7 @@ public class MainController {
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
-            //todo: change
-            startGame();
+            timerStart(1000);
         }
         if(numOfPlayer<MAX_PLAYER && numOfPlayer>=MIN_PLAYER && !timerRunning){
             timerStart(TIME_BEFORE_STARTING);
@@ -128,8 +127,8 @@ public class MainController {
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
                 timerClose();
-            if(gameStarted)
-                endGame();
+            //if(gameStarted)
+            //   endGame();
         }
     }
 
@@ -331,8 +330,10 @@ public class MainController {
 
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
+        int pre = currIndex;
         currIndex++;
         while(!slaveControllerList.get(currIndex%size).isOnline()) currIndex = (currIndex+1)%size;
+        //if(!firstRoundOver && pre >= currIndex)  firstRoundOver = true;
         currIndex--;
         next = slaveControllerList.get((currIndex+1)%size);
         /*
@@ -344,7 +345,7 @@ public class MainController {
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){
-            firstRoundOver = currIndex==slaveControllerList.size()-1;
+            firstRoundOver = pre>currIndex ||currIndex==slaveControllerList.size()-1;
             nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
         /*

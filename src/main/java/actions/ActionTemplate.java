@@ -18,26 +18,6 @@ public class ActionTemplate {
     private final ActionInfo info;
 
     /**
-     * Each element of the Collection is a couple:
-     * Second element: The {@link #info#actionId} of another action in the same weapon
-     * First element: {@link Boolean#TRUE} if this action must follow the one with ID above
-     *                {@link Boolean#FALSE} if it can't follow the action
-     */
-    private final Collection<Tuple<Boolean, String>> actionRequirements;
-
-    /**
-     * Each element of the Collection is a couple:
-     * <br/><br/>
-     * First element: <ul><li>{@link Boolean#TRUE} if this action requires the above mentioned target
-     * to have been acquired already</li>
-     *                <li>{@link Boolean#FALSE} if the action requires the target not to
-     *                have been acquired (e.g. an optional target being left unassigned)</li></ul>
-     * <br/><br/>
-     * Second element: The identifier of another target in the same weapon
-     */
-    private final Collection<Tuple<Boolean, String>> targetRequirements;
-
-    /**
      * The list shows in order which targets will be acquired.
      * The first element of the Tuple is the identifier of the Target
      * The second element is the Template of the Targeter to be used
@@ -54,9 +34,6 @@ public class ActionTemplate {
                    List<EffectTemplate> effects){
 
         this.info = info;
-
-        actionRequirements = new ArrayList<>(info.getActionRequirements());
-        targetRequirements = new ArrayList<>(info.getTargetRequirements());
 
         this.targeters = targeters;
         this.effects = effects;
@@ -76,7 +53,7 @@ public class ActionTemplate {
      */
     private boolean verifyActions(Collection<String> previousActions){
         boolean result = true;
-        for (Tuple<Boolean, String> i: actionRequirements){
+        for (Tuple<Boolean, String> i: info.getActionRequirements()){
             //TODO: test that contains checks equality, not just reference
             result &= i.x.equals(previousActions.contains(i.y));
         }
@@ -90,7 +67,7 @@ public class ActionTemplate {
      */
     private boolean verifyTargets(Collection<String> previousTargets){
         boolean result = true;
-        for (Tuple<Boolean, String> i: targetRequirements){
+        for (Tuple<Boolean, String> i: info.getTargetRequirements()){
             //TODO: test that contains checks equality, not just reference
             result &= i.x.equals(previousTargets.contains(i.y));
         }

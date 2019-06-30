@@ -18,13 +18,8 @@ public class AmmoAmount extends AmmoAmountUncapped{
      */
     private static Integer maximumAmmo = ParserConfiguration.parseInt("maximumAmmoPerCard");
 
-    /**
-     * The amount represented by the class
-     */
-    private final Map<AmmoColor, Integer> amounts;
-
-    public AmmoAmount(AmmoAmountUncapped a){
-        amounts = a.getAmounts();
+    private static Map<AmmoColor, Integer> limit(AmmoAmountUncapped a){
+        Map<AmmoColor, Integer> amounts = a.getAmounts();
         for (AmmoColor c: amounts.keySet()){
             if (amounts.get(c) <0){
                 amounts.put(c, 0);
@@ -32,6 +27,11 @@ public class AmmoAmount extends AmmoAmountUncapped{
                 amounts.put(c, maximumAmmo);
             }
         }
+        return amounts;
+    }
+
+    public AmmoAmount(AmmoAmountUncapped a){
+        super(limit(a));
     }
 
     /**
@@ -40,38 +40,11 @@ public class AmmoAmount extends AmmoAmountUncapped{
      * @param amountGiven is an existing map which may or may not have a value for each color
      */
     public AmmoAmount(Map<AmmoColor, Integer> amountGiven){
-        Map<AmmoColor, Integer> temp = new EnumMap<>(amountGiven);
-        for (AmmoColor i: AmmoColor.values()){
-            Integer amount = temp.putIfAbsent(i,0);
-            if (amount!=null && (amount<0)){
-                temp.put(i, 0);
-            }
-        }
-        amounts = temp;
-        for (AmmoColor c: amounts.keySet()){
-            if (amounts.get(c) <0){
-                amounts.put(c, 0);
-            } else if (amounts.get(c)>maximumAmmo){
-                amounts.put(c, maximumAmmo);
-            }
-        }
+        super(limit(new AmmoAmountUncapped(amountGiven)));
     }
 
     public AmmoAmount(){
-        Map<AmmoColor, Integer> temp = new EnumMap<>(AmmoColor.class);
-        for (AmmoColor i: AmmoColor.values()){
-            temp.put(i,0);
-        }
-        amounts=temp;
-    }
-
-    /**
-     * Returns a Map containing the number of ammo in this AmmoAmount
-     * @return a Map containing the number of ammo in this AmmoAmount
-     */
-    @Override
-    public Map<AmmoColor, Integer> getAmounts(){
-        return new EnumMap<>(amounts);
+        super();
     }
 
     /**

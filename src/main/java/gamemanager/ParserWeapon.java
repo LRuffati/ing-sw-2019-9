@@ -18,12 +18,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * Class used to parse a file containing weapons.
+ */
 public class ParserWeapon {
     private static String regexNomeDescr = "[\\/ \\w'-.,òèàùé]";
     private static String regexEndLine = System.getProperty("line.separator");
     ParserWeapon(){}
 
-    public static Set<Weapon> parseWeapons(String path) throws FileNotFoundException {
+    public static List<Weapon> parseWeapons(String path) throws FileNotFoundException {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);
@@ -41,7 +44,7 @@ public class ParserWeapon {
                     AmmoAmount reloadCost = parseAmmo(m.group(2));
                     AmmoAmount buyCost = parseAmmo(m.group(3));
                     return parseSingleWeapon(weaponId, reloadCost, buyCost, m.group(4));
-                }).collect(Collectors.toSet());
+                }).collect(Collectors.toList());
 
         // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
         // Per ogni match:
@@ -95,14 +98,15 @@ public class ParserWeapon {
 
         String regexAction = "action +(\\w+)(?: +([RYB]*))?(?: +follows +\\[ *(.+?) *\\])?(?: " +
                 "+exist " +
-                "+\\[ *(.+?) *\\])?(?: +xor +\\[ *(.+?) *\\])?(?: +contemp +(\\w+))? *:"+ regexEndLine +
+                "+\\[ *(.+?) *\\])?(?: +xor +\\[ *(.+?) *\\])?(?: +contemp +(\\w+))? *:"+regexEndLine +
                 "([\\w\\W]+?)" +
                 "(?="+regexEndLine+"action|$)";
 
         Matcher actionsBody = Pattern.compile(regexAction).matcher(body);
 
-        List<ActionTemplate> actions = actionsBody.results()
-                .map(match -> {
+        Map<String, ActionTemplate> actions = new HashMap<>();
+        actionsBody.results()
+                .forEach(match -> {
                     String id = match.group(1);
 
                     String costString = match.group(2);
@@ -144,16 +148,22 @@ public class ParserWeapon {
                     }).collect(Collectors.toList());
 
                     Matcher xorMatcher = Pattern.compile("(\\w+)").matcher(xor);
-                    List<String> xorList = xorMatcher.results().map(m ->
-                    {
-                        return m.group();
-                    }).collect(Collectors.toList());
 
-                    return parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
-                })
-                .collect(Collectors.toList());
+                    List<String> xorList = xorMatcher.results().map(m -> m.group()).collect(Collectors.toList());
 
-        return new Weapon(nome,buyCost,reloadCost,actions);
+                    for (String i: xorList){
+                        actions.get(i).getInfo().getActionRequirements().add(new Tuple<>(false, id));
+                    }
+
+                    ActionTemplate template = parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
+                    Optional<String> masterAction = template.getInfo().getMasterAction();
+                    if(masterAction.isPresent()){
+                        actions.get(masterAction).getInfo().getContempList().add(template);
+
+                    } else actions.put(id, template);
+                });
+
+        return new Weapon(nome,buyCost,reloadCost,actions.values());
     }
 
 
@@ -182,6 +192,7 @@ public class ParserWeapon {
         List<EffectTemplate> effectTemplates = matchEffectDef.matcher(body).results()
                 .map(m->parseEffect(m.group(0)))
                 .collect(Collectors.toList());
+        effectTemplates.add(new PayTemplate(cost));
 
         return new ActionTemplate(actionInfo, targTemplates, effectTemplates);
     }
@@ -374,7 +385,7 @@ public class ParserWeapon {
                 effectParamMatcher =
                         Pattern.compile(" *(\\w+) to +(\\w+)").matcher(effectMatcher.group(2));
                 effectParamMatcher.find();
-                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(1));
+                effect = new MoveTemplate(effectParamMatcher.group(1), effectParamMatcher.group(2));
                 break;
 
             case "pay":

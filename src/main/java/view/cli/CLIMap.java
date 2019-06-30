@@ -9,6 +9,7 @@ import viewclasses.*;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CLIMap {
     private static final int DIM_TILE = 5;
@@ -148,6 +149,8 @@ public class CLIMap {
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
     void printMap(){
+        //TODO change to create a list of StringBuilder to manage the space after the map
+        List<String> rowList = new ArrayList<>();
         for (int r = 0; r < maxY; r++) {
             System.out.println();
             for (int c = 0; c < maxX; c++) {
@@ -161,8 +164,7 @@ public class CLIMap {
                                 col
                                 + tiles[c][r]
                                 + AnsiColor.getDefault());
-                    }
-                    else {
+                    } else {
                         for (Map.Entry<ActorView, Character> entry : players.entrySet()) {
                             if (tiles[c][r].equals(entry.getValue())) {
                                 System.out.print(AnsiColor.getAnsi(entry.getKey().color()) + tiles[c][r] + "\u001B[0m");
@@ -267,18 +269,24 @@ public class CLIMap {
                         if (t.uid().equals(tileUID)) {
                             tilesColor.put(t, t.color());
                             t.setColor(colors.get(i));
-                            i++;
                         }
                     }
+                    i++;
                 }
                 for(DamageableUID damageableUID : target.getDamageableUIDList()) {
                     for (ActorView a : targetMap.players()) {
                         if (a.uid().equals(damageableUID)) {
                             actorsColor.put(a, a.color());
                             a.setColor(colors.get(i));
-                            i++;
                         }
                     }
+                    for (Map.Entry<Coord, ActorView> entry : targetMap.dominationPointActor().entrySet()) {
+                        if (entry.getValue().uid().equals(damageableUID)) {
+                            tilesColor.put(targetMap.getPosition(entry.getKey()), targetMap.getPosition(entry.getKey()).color());
+                            targetMap.getPosition(entry.getKey()).setColor(colors.get(i));
+                        }
+                    }
+                    i++;
                 }
             }
         }
@@ -286,6 +294,13 @@ public class CLIMap {
         for(TargetView target :  targetViewList) {
             tiless.addAll(target.getTileUIDList());
             actors.addAll(target.getDamageableUIDList());
+            List<DamageableUID> domination = target.getDamageableUIDList().stream()
+                    .filter(x ->
+                            targetMap.dominationPointActor().values().stream().map(ActorView::uid).collect(Collectors.toList())
+                            .contains(x)
+                    ).collect(Collectors.toList());
+            tiless.addAll(targetMap.dominationPointActor().entrySet().stream().filter(x -> domination.contains(x.getValue().uid()))
+                    .map(x -> targetMap.getPosition(x.getKey()).uid()).collect(Collectors.toList()));
         }
 
         for (TileView t : targetMap.allTiles()) {

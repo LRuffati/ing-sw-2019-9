@@ -125,8 +125,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 } catch (
                         InvalidLoginException e) {
                     view.loginResponse(false, e.wrongUsername, e.wrongColor);
-                } catch (
-                        RemoteException e) {
+                } catch (RemoteException e) {
                     logger.log(Level.SEVERE, "Exception in login (register)", e);
                 }
             }
@@ -193,6 +192,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         if(stack.isEmpty())
             poll();
         else {
+            //todo: getLast?
             ControllerMessage first = stack.getFirst();
             stack.clear();
             elaborate(first);
@@ -329,7 +329,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                     quitForDisconnection();
                 }
             } else if (message.genView().type != PickTypes.TARGET)
-                view.updateMap(message.sandboxView());
+                view.updateMap(message.sandboxView(), true);
         } else if (!filterWait) {
             try {
                 network.getMap();
@@ -386,7 +386,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     @Override
     public void updateMap(GameMapView gameMap) {
         this.gameMap = gameMap;
-        view.updateMap(gameMap);
+        view.updateMap(gameMap, false);
     }
 
     @Override

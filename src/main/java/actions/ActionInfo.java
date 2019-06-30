@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,6 +18,8 @@ import java.util.Optional;
  * view
  */
 public class ActionInfo {
+
+    private List<ActionTemplate> contempList;
     /**
      * The name to display, this and {@link #show} might be substituted by an ad-hoc
      * object depending on the view being used
@@ -78,6 +81,7 @@ public class ActionInfo {
                 Collection<Tuple<Boolean, String>> targetRequirements,
                 Optional<String> masterAction, boolean show){
 
+        this.contempList = new ArrayList<>();
         this.name = name;
         this.actionId = actionId;
         this.cost = cost;
@@ -108,7 +112,7 @@ public class ActionInfo {
 
     public Collection<Tuple<Boolean, String>> getActionRequirements() {
         // Tuple is immutable, so I can not worry about doing a deep copy
-        return new ArrayList<>(actionRequirements);
+        return actionRequirements;
     }
 
     public Collection<Tuple<Boolean, String>> getTargetRequirements() {
@@ -119,5 +123,9 @@ public class ActionInfo {
     public Optional<String> getMasterAction() {
         // Tuple is immutable, so I can not worry about doing a deep copy
         return masterAction;
+    }
+
+    public List<ActionTemplate> getContempList() {
+        return contempList;
     }
 }

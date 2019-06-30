@@ -1,15 +1,11 @@
 package gamemanager;
 
-import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import grabbables.PowerUp;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -19,12 +15,11 @@ public class ParserPowerUp {
     ParserPowerUp() {}
 
     /**
-     * Static method that parse the file
+     * Static method that parses the file
      * @param path the Path of the file that has to be parsed
      * @return A collection containing all the Card parsed
-     * @throws FileNotFoundException If the file is not found
      */
-    public static Collection<PowerUp> parse(String path) throws FileNotFoundException {
+    public static Collection<PowerUp> parse(String path) {
         Collection<PowerUp> powerUpCollection = new ArrayList<>();
 
         Scanner scanner;
