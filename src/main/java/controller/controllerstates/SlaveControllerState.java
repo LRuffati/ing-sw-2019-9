@@ -40,6 +40,11 @@ public enum SlaveControllerState {
      * option but terminating the operation is likewise not acceptable.
      * A Message of this type should never appear as the result from SlaveController.giveMessage
      */
-    ROLLBACK
+    ROLLBACK,
+
+    /**
+     * The client should discard this and repeat the last action
+     */
+    REPEAT
 }
 

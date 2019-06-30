@@ -30,8 +30,9 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 1000;//ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 2;// ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt
+    // ("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = 3;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public int timeoutTime;
@@ -243,10 +244,6 @@ public class MainController {
     }
 
     public static void main(String[] str) {
-        try {
-            GameBuilder gameBuilder = new GameBuilder(4);
-        }
-        catch (FileNotFoundException e){}
         MainController initGame = new MainController();
         NetworkBuilder network = new NetworkBuilder(initGame);
     }
