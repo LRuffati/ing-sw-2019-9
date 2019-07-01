@@ -29,6 +29,7 @@ public class Framework implements View {
     private static boolean changeFrameFlag = false;
     private WaitingScreen waitingScreen;
     private GameMapView gmv;
+    private String toPick;
 
     private Framework(ClientControllerClientInterface controller){
         controller.attachView(this);
@@ -87,15 +88,19 @@ public class Framework implements View {
     @Override
     public void updateMap(GameMapView gameMapView, boolean forced) {
         this.gmv = gameMapView;
-        if(game == null) game = new GameFrame(gmv);
+        if(game == null) game = new GameFrame(gmv, this);
+    }
+
+    public void pick(List<Integer> picked) {
+        clientController.pick(toPick, picked);
     }
 
     @Override
     public void chooseTarget(List<TargetView> target, boolean single, boolean optional, String description, GameMapView gameMap, String choiceId){
         game.getOutputBox().writeOnOutput(description);
 
-        clientController.pick(choiceId,game.getMap().clickableButton(target,"Choose your target.", single, optional));
-
+        toPick = choiceId;
+        game.getMap().clickableButton(target,"Choose your target.", single, optional);
     }
 
     @Override
@@ -174,7 +179,8 @@ public class Framework implements View {
                     super.mouseClicked(e);
                     res.add(finalI);
                     puPopUp.dispose();
-                    flag[0] = false;
+                    //flag[0] = false;
+                    clientController.pick(choiceId, res);
                 }
             });
 
@@ -182,15 +188,15 @@ public class Framework implements View {
         }
 
         puPopUp.setSize(170*i,264);
-        while (flag[0]){
+        /*while (flag[0]){
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
-        clientController.pick(choiceId, res);
+        //clientController.pick(choiceId, res);
     }
 
     @Override

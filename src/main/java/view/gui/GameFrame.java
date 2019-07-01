@@ -18,8 +18,10 @@ public class GameFrame extends JFrame {
     private GUIScoreBoard scoreBoard;
     private OutputBox outputBox;
     private BufferedImage background;
+    private Framework framework;
 
-    public GameFrame(GameMapView gmv){
+    public GameFrame(GameMapView gmv, Framework framework){
+        this.framework = framework;
 
         try {
             this.background = ImageIO.read(new File("src/resources/gui/background.png"));
@@ -29,7 +31,7 @@ public class GameFrame extends JFrame {
 
         setContentPane(new Background(background));
 
-        this.map = new GUIMap1(gmv);
+        this.map = new GUIMap1(gmv, framework);
         try {
             this.scoreBoard = new GUIScoreBoard();
         } catch (IOException e) {
@@ -62,7 +64,7 @@ public class GameFrame extends JFrame {
 
         GameMapView mv = game.getMap().generateView(game.getActorList().get(0).pawnID());
 
-        new GameFrame(mv);
+        new GameFrame(mv, null);
     }
 
     public OutputBox getOutputBox() {

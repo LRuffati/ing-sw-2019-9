@@ -33,8 +33,10 @@ public class GUIMap1 extends JPanel implements GUIMap{
     private BufferedImage scoreBoard;
     private BufferedImage pg;
     private GameMapView gmv;
+    private Framework framework;
 
-    public GUIMap1(GameMapView gmv){
+    public GUIMap1(GameMapView gmv, Framework framework){
+        this.framework = framework;
 
         this.gmv = gmv;
 
@@ -86,7 +88,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
 
         frame.setResizable(true);
 
-        GUIMap1 guiMap1 = new GUIMap1(mv);
+        GUIMap1 guiMap1 = new GUIMap1(mv, null);
 
         frame.add(guiMap1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -163,7 +165,7 @@ public class GUIMap1 extends JPanel implements GUIMap{
      * Simple method to set a button based on the action to be applied.
      * @param question based on the kind of action to be executed.
      */
-    public List<Integer> clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
+    public void clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
         List<Coord> coords = getTargetCoordinates(targets);
         List<Integer> indexList = new ArrayList<>();
         final int[] j = {0};
@@ -232,12 +234,11 @@ public class GUIMap1 extends JPanel implements GUIMap{
                                 break;
                             }
                         }
-
+                        framework.pick(indexList);
                     }
                 });
             }
         }
-        return indexList;
     }
 
     private static boolean isNotNumeric(String str) {
