@@ -16,6 +16,7 @@ public class WeaponView implements Serializable {
     private Map<AmmoColor, Integer> reloadCost;
     private Map<AmmoColor, Integer> buyCost;
     private GrabbableUID uid;
+    private Map<String, String> actionDescriptions;
 
     public WeaponView(){
         name = "";
@@ -51,6 +52,14 @@ public class WeaponView implements Serializable {
 
     public void setUid(GrabbableUID uid) {
         this.uid = uid;
+    }
+
+    public void setActionDescriptions(Map<String, String> description) {
+        this.actionDescriptions = description;
+    }
+
+    public Map<String, String> actionDescription() {
+        return actionDescriptions;
     }
 }
 

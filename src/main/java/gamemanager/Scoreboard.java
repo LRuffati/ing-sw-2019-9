@@ -115,8 +115,9 @@ public class Scoreboard {
             numPoints = 2;
             //TODO: probably should't be done here
             victim.addMark(killer, 1);
+            skullBox.add(Map.of(killer, 1));
         }
-        skullBox.add(Map.of(killer, numPoints));
+        skullBox.add(Map.of(killer, 1));
         numOfDeaths++;
     }
 

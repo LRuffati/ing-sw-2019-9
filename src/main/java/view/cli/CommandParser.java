@@ -52,6 +52,11 @@ class CommandParser{
                         cliDemo.askTile();
                         break;
 
+                    case "3":
+                        state = State.WEAPON;
+                        cliDemo.askWeapon();
+                        break;
+
                         default:
                             state = State.MAIN;
                             cliDemo.getPrintedMap();
@@ -69,6 +74,13 @@ class CommandParser{
 
             case CHOOSETILE:
                 cliDemo.chooseTile(str);
+                state = State.MAIN;
+                cliDemo.getPrintedMap();
+                System.out.println(cliDemo.pickStringMessage);
+                break;
+
+            case WEAPON:
+                cliDemo.chooseWeapon(str);
                 state = State.MAIN;
                 cliDemo.getPrintedMap();
                 System.out.println(cliDemo.pickStringMessage);
@@ -96,6 +108,6 @@ class CommandParser{
     }
 
     private enum State {
-        MAIN, INFO, CHOOSEPLAYER, CHOOSETILE, QUIT
+        MAIN, INFO, CHOOSEPLAYER, CHOOSETILE, WEAPON, QUIT
     }
 }

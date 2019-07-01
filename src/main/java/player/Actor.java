@@ -189,7 +189,6 @@ public class Actor {
     /**
      * Check if the weapon is owned by the player, if the player owns enough ammo and then reloads the weapon.
      * @param weapon is the weapon to be reloaded.
-     * @throws AmmoException if the player doesn't have enough ammo
      */
     public void reloadWeapon(Weapon weapon) {
         if(!unloadedWeapon.contains(weapon) && !loadedWeapon.contains(weapon))

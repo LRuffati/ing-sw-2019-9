@@ -57,6 +57,8 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     private boolean normalMode;
 
+    private boolean firstMap = true;
+
     /**
      * Builder of the class. This generates the View (view.cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
      * @param socket true if a socket connection is required. False if a RMI connection is required
@@ -142,7 +144,6 @@ public class ClientController implements ClientControllerClientInterface, Client
                 super.run();
                 try {
                     Tuple3<Boolean, Boolean, Tuple<String, GameMode>> res = network.reconnect(username, password);
-                    System.out.println(res.x + "\t" + res.y);
                     view.loginResponse(true, false, false);
 
                     if(res.y) {
@@ -192,10 +193,19 @@ public class ClientController implements ClientControllerClientInterface, Client
         if(stack.isEmpty())
             poll();
         else {
-            //todo: getLast?
-            ControllerMessage first = stack.getFirst();
+            ControllerMessage first = stack.getLast();
             stack.clear();
             elaborate(first);
+        }
+    }
+
+    private void rollbackFromServer() {
+        if(stack.isEmpty() || stack.size() == 1)
+            rollback();
+        else {
+            //removes the rolback message
+            stack.pop();
+            rollback();
         }
     }
 
@@ -254,7 +264,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 break;
             case ROLLBACK:
                 view.onRollback();
-                rollback();
+                rollbackFromServer();
                 break;
 
                 default:
@@ -294,6 +304,11 @@ public class ClientController implements ClientControllerClientInterface, Client
                                     choice.description, id);
                             break;
                         case POWERUP:
+                            if(firstMap) {
+                                poll();
+                                firstMap = false;
+                                break;
+                            }
                             if(choice.powerUpViews.isEmpty())    emptyPick(choice.optional, id);
                             else
                                 view.choosePowerUp(choice.powerUpViews, choice.single, choice.optional,
@@ -434,10 +449,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 }
             }
         };
-
         //timer.schedule(timerTask, 200,500);
-
-
     }
 
     public void reset() {

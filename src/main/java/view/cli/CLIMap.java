@@ -148,7 +148,7 @@ public class CLIMap {
     /**
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
-    void printMap(){
+    void printMap() {
         //TODO change to create a list of StringBuilder to manage the space after the map
         List<String> rowList = new ArrayList<>();
         for (int r = 0; r < maxY; r++) {

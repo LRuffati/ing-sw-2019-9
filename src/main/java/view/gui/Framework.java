@@ -105,6 +105,7 @@ public class Framework implements View {
         String[] names = new String[100];
         int i = 0;
         for(ActionView av : actions){
+            game.getOutputBox().writeOnOutput(i + ". " + av.getName());
             names[i] = av.getName();
             i++;
         }
@@ -117,9 +118,13 @@ public class Framework implements View {
         Integer choice;
         boolean flag = true;
         while(flag){
+            String input  = JOptionPane.showInputDialog("Scegli un'azione.");
 
-            choice = JOptionPane.showOptionDialog(null, "Choose your next Action!", "ACTION", JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.INFORMATION_MESSAGE,null, names,names[0]);
+            while(!input.matches(" ?\\d+")){
+                JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                input  = JOptionPane.showInputDialog("Scegli un'azione.");
+            }
+                choice = Integer.parseInt(input);
 
             if(choice.equals(i-2)){
                 if(res.isEmpty()&&optional){
@@ -144,7 +149,7 @@ public class Framework implements View {
 
     @Override
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
-//        game.getOutputBox().writeOnOutput(description);
+        game.getOutputBox().writeOnOutput(description);
         int i = 0;
         List<Integer> res = new ArrayList<>();
         JFrame puPopUp = new JFrame();
@@ -179,7 +184,7 @@ public class Framework implements View {
         puPopUp.setSize(170*i,264);
         while (flag[0]){
             try {
-                Thread.sleep(1000000_000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -27,10 +27,11 @@ public class OutputBox extends JPanel {
     }
 
     public void writeOnOutput(String str){
-        this.screenPane.setText(str);
+        if(this.screenPane.getText()!=null) {
+            this.screenPane.setText(this.screenPane.getText() + "\n" + str);
+        } else {
+            this.screenPane.setText(str);
+        }
     }
 
-    public JTextPane getScreenPane() {
-        return screenPane;
-    }
 }

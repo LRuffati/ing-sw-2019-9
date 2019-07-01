@@ -11,7 +11,6 @@ import actions.utils.AmmoColor;
 import genericitems.Tuple;
 import grabbables.Weapon;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -26,7 +25,12 @@ public class ParserWeapon {
     private static String regexEndLine = System.getProperty("line.separator");
     ParserWeapon(){}
 
-    public static List<Weapon> parseWeapons(String path) throws FileNotFoundException {
+    /**
+     * Static method that parses the file
+     * @param path the Path of the file that has to be parsed
+     * @return A set containing all the weapons parsed
+     */
+    public static List<Weapon> parseWeapons(String path) {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);
@@ -156,12 +160,12 @@ public class ParserWeapon {
                     ActionTemplate template = parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
                     Optional<String> masterAction = template.getInfo().getMasterAction();
                     if(masterAction.isPresent()){
-                        actions.get(masterAction).getInfo().getContempList().add(template);
+                        actions.get(masterAction.get()).getInfo().getContempList().add(template);
 
                     } else actions.put(id, template);
                 });
 
-        return new Weapon(nome,buyCost,reloadCost,actions.values());
+        return new Weapon(nome,buyCost,reloadCost,actions.values(), descrizione);
     }
 
 
@@ -442,7 +446,7 @@ public class ParserWeapon {
         }
         //TODO Contemp
 
-        return new ActionInfo(nome, nomeId,cost,actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
+        return new ActionInfo(nome, nomeId,descrizione, cost , actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
     }
 
 }
