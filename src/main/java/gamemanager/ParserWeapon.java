@@ -129,10 +129,7 @@ public class ParserWeapon {
                     if (xor==null)
                         xor="";
 
-                    //TODO probably to change
                     String contemp = match.group(6);
-                    if (contemp==null)
-                        contemp="";
 
                     String bodyAction = match.group(7);
 
@@ -162,7 +159,7 @@ public class ParserWeapon {
                     ActionTemplate template = parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
                     Optional<String> masterAction = template.getInfo().getMasterAction();
                     if(masterAction.isPresent()){
-                        actions.get(masterAction).getInfo().getContempList().add(template);
+                        actions.get(masterAction.get()).getInfo().getContempList().add(template);
 
                     } else actions.put(id, template);
                 });
