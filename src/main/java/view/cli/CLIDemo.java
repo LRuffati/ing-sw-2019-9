@@ -710,6 +710,7 @@ public class CLIDemo implements View {
             for(Map.Entry<Color, List<ActorView>> entry : climap.getMp().spawnTracker().entrySet()) {
                 builder.append("\n\t");
                 builder.append(AnsiColor.getColorName(entry.getKey()));
+                if(!entry.getKey().equals(Color.yellow))    builder.append("\t");
                 builder.append(" :\t");
                 builder.append(printListOfColor(entry.getValue()));
             }
