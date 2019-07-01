@@ -55,7 +55,7 @@ public class CLIDemo implements View {
         });
 
         Consumer<String> consumer =
-                string -> System.out.println(string);
+                string -> {};
         commandParser.bind(consumer);
 
         greetings();
@@ -141,9 +141,11 @@ public class CLIDemo implements View {
         List<Integer> toReturn = new ArrayList<>(chosenList);
         chosenList.clear();
 
-        System.out.print("Chosen option(s) ");
-        for(Integer i : toReturn) System.out.println(i + " ");
-        System.out.println();
+        StringBuilder builder = new StringBuilder();
+        builder.append("Chosen option(s):\t[ ");
+        for(Integer i : toReturn) builder.append(i).append(" ");
+        builder.append("]");
+        System.out.println(builder.toString());
         client.pick(choiceId, toReturn.stream().map(x -> x-1).collect(Collectors.toList()));
     }
 
@@ -182,9 +184,9 @@ public class CLIDemo implements View {
 
             default:
                 if(n<0 || n>=max){
-                    System.out.println("You must choose one valid option.\n");
+                    System.out.println("You must choose a number lower than " + max+1 + "\n");
                 } else {
-                    System.out.println("adding " + n);
+                    System.out.println("Adding " + n);
                     chosenList.add(n);
                     if (single) {
                         pick(choiceId);
@@ -415,7 +417,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void onRollback() {
-        System.out.println("Rollback executed.");
+        //does nothing
     }
 
     @Override
@@ -492,31 +494,35 @@ public class CLIDemo implements View {
 
     @Override
     public void onConnection(Player player, boolean connected, int numOfPlayer) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Player ").append(player.getUsername()).append(" just logged ");
         if(connected){
-            System.out.println("Player " + player.getUsername() + " just logged in! There are now " + numOfPlayer
-            + " in the game");
+            builder.append("in");
         } else {
-            System.out.println("Player " + player.getUsername() + " just logged out! There are now " + numOfPlayer
-                    + " in the game");
+            builder.append("out");
         }
+        builder.append("! There are now ").append(numOfPlayer).append(" in the game");
+        System.out.println(builder.toString());
     }
 
     @Override
     public void onStarting(String map, GameMode gameMode) {
-        System.out.println("The game is goin' to start in a moment...");
+        StringBuilder builder = new StringBuilder();
+        builder.append("The game is goin' to start in a moment...");
         switch (gameMode) {
             case NORMAL:
-                System.out.println("Normal mode");
+                builder.append("Normal mode");
                 break;
             case DOMINATION:
-                System.out.println("Domination mode");
+                builder.append("Domination mode");
                 break;
             case TERMINATOR:
-                System.out.println("Terminator mode");
+                builder.append("Terminator mode");
                 break;
             case TURRET:
-                System.out.println("Turret mode");
+                builder.append("Turret mode");
         }
+        System.out.println(builder.toString());
         if(!scanThread.isAlive())
             scanThread.start();
     }
@@ -549,7 +555,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onCredits() {
-        System.out.println("Adrenaline™ is a game by Group9\nLorenzo Ruffati\nCarmelo Sarta\nPietro Tenani");
+        System.out.println("\n\nAdrenaline™ is a game by Group9\nLorenzo Ruffati\nCarmelo Sarta\nPietro Tenani");
         endGame();
     }
 
@@ -559,32 +565,34 @@ public class CLIDemo implements View {
      * @param t to get the info from.
      */
     private void tileInfo(TileView t){
-        System.out.print("\n>> The tile belongs to the ");
-        System.out.print(AnsiColor.getAnsi(t.color()) + AnsiColor.getColorName(t.color()) + AnsiColor.getDefault() + " room\n");
+        StringBuilder builder = new StringBuilder();
+        builder.append("\n>> The tile belongs to the ");
+        builder.append(AnsiColor.getAnsi(t.color())).append(AnsiColor.getColorName(t.color())).append(AnsiColor.getDefault()).append(" room\n");
         if(t.spawnPoint()){
-            System.out.println(">> There is a spawn point for weapons in the tile.\n");
+            builder.append(">> There is a spawn point for weapons in the tile.\n\n");
             if(t.weapons() != null) {
-                System.out.println(">> You can pick up: ");
+                builder.append(">> You can pick up:\n");
                 for (WeaponView w : t.weapons()) {
-                    System.out.println("+ " + w.name() + " that costs " + printCost(w.buyCost()));
+                    builder.append("+ ").append(w.name()).append(" that costs ").append(printCost(w.buyCost())).append("\n");
                 }
             }
         } else {
             if(t.ammoCard() != null) {
-                System.out.print(">> There is a spawn point for the following ammunition in the tile:  ");
-                System.out.println(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue(), false));
+                builder.append(">> There is a spawn point for the following ammunition in the tile:\t");
+                builder.append(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue(), false)).append("\n");
             }
         }
         int i = 0;
         if(t.players().isEmpty()){
-            System.out.println(">> There are no players in the tile.");
+            builder.append(">> There are no players in the tile.\n");
         } else {
-            System.out.println(">> The following players are in the tile: ");
+            builder.append(">> The following players are in the tile: \n");
             for(ActorView a: t.players()){
-                System.out.println(i + ". " + AnsiColor.getAnsi(a.color()) + a.name() + "\u001B[0m \n");
+                builder.append(i).append(". ").append(AnsiColor.getAnsi(a.color())).append(a.name()).append("\u001B[0m \n");
                 i++;
             }
         }
+        System.out.println(builder.toString());
     }
 
 
@@ -690,10 +698,9 @@ public class CLIDemo implements View {
         clearScreen();
         getPrintedMap();
         printScoreboard();
-        System.out.println(">> 0. Exit");
-        System.out.println(">> 1. Players");
-        System.out.println(">> 2. Tiles");
-        System.out.println(">> 3. Weapons");
+        String out;
+        out = (">> 0. Exit\n") + (">> 1. Players\n") + (">> 2. Tiles\n") + (">> 3. Weapons\n");
+        System.out.println(out);
     }
 
     private void printScoreboard() {

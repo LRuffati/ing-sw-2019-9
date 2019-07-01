@@ -97,11 +97,6 @@ public class ClientController implements ClientControllerClientInterface, Client
         stack = new ArrayDeque<>();
 
         initPolling();
-
-        //Main.register(network);
-        //Main.run(network);
-
-        //login("username", "password", "blue");
     }
 
     /**
@@ -179,7 +174,6 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void pick(String id, List<Integer> choices) {
-        System.out.println("\t\t\tSELECTED ITEMS\t"+choices);
         try {
             network.pick(id, choices);
         } catch (RemoteException e) {
@@ -203,7 +197,7 @@ public class ClientController implements ClientControllerClientInterface, Client
         if(stack.isEmpty() || stack.size() == 1)
             rollback();
         else {
-            //removes the rolback message
+            //removes the rollback message
             stack.pop();
             rollback();
         }
@@ -243,12 +237,7 @@ public class ClientController implements ClientControllerClientInterface, Client
             if(polling)    setPolling(false);
         }
 
-        System.out.print(controllerMessage.type() + "\t\t");
-        if(controllerMessage.genView() == null) System.out.println("null");
-        else System.out.println(controllerMessage.genView().type);
-
         handlePrintMap(controllerMessage);
-
 
         switch (controllerMessage.type()) {
             case MAIN:
