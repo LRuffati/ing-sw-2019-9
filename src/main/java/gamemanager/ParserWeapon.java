@@ -126,9 +126,7 @@ public class ParserWeapon {
                         xor="";
 
                     //TODO probably to change
-                    String contemp = match.group(6);
-                    if (contemp==null)
-                        contemp="";
+                    String  contemp = match.group(6);
 
                     String bodyAction = match.group(7);
 

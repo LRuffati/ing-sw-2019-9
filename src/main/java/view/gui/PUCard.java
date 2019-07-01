@@ -4,6 +4,7 @@ import viewclasses.PowerUpView;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -89,7 +90,7 @@ public class PUCard {
                 break;
         }
         try {
-            card = ImageIO.read(Objects.requireNonNull(ClassLoader.getSystemResourceAsStream(path)));
+            card = ImageIO.read(new File(path));
         } catch (IOException e) {
             System.out.println("Problema con lettura dell'immagine della carta " + pu.type() + pu.ammo().toString());
         }

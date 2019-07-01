@@ -8,14 +8,11 @@ public class OutputBox extends JPanel {
     private JTextPane screenPane;
 
     public OutputBox(){
-        screenPane = new JTextPane(new DefaultStyledDocument());
-        screenPane.setEditable(false);
-        screenPane.setSize(new Dimension(300,400));
-        screenPane.setPreferredSize(new Dimension(300,400));
-        screenPane.setText(">>Giocatore A spara a B\nC ha lasciato la partita!\nGiocatore E si è mosso nella tile" +
-                "(4,5)!");
-        //setLayout(new BorderLayout());
-        add(screenPane, BorderLayout.CENTER);
+        this.screenPane = new JTextPane(new DefaultStyledDocument());
+        this.screenPane.setEditable(false);
+        this.screenPane.setSize(new Dimension(300,400));
+        this.screenPane.setPreferredSize(new Dimension(300,400));
+        add(this.screenPane, BorderLayout.CENTER);
         setSize(new Dimension(300,400));
         setPreferredSize(new Dimension(300,400));
         setLayout(new BorderLayout());
@@ -30,6 +27,10 @@ public class OutputBox extends JPanel {
     }
 
     public void writeOnOutput(String str){
-        screenPane.setText(str);
+        this.screenPane.setText(str);
+    }
+
+    public JTextPane getScreenPane() {
+        return screenPane;
     }
 }

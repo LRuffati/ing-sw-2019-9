@@ -72,6 +72,10 @@ public class GameFrame extends JFrame {
     public GUIMap1 getMap() {
         return map;
     }
+
+    public void setOutputBox(OutputBox outputBox) {
+        this.outputBox = outputBox;
+    }
 }
 
 class Background extends JComponent {

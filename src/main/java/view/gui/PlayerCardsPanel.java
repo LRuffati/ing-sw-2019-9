@@ -40,7 +40,7 @@ public class PlayerCardsPanel extends JPanel {
         weaponCards.showCard(currActor);
 
         changeWeaponsWithPlayer();
-        setLayout(new GridLayout(1,0));
+        setLayout(new GridLayout(2,0));
         add(playerBoard);
         add(weaponCards);
     }
