@@ -51,7 +51,7 @@ public class CLIMap {
      * Then it places spawn points and AmmoTiles;
      * Finally it places the doors.
      */
-    private void generateMap(){
+    private synchronized void generateMap(){
         for(TileView t: mp.allTiles()){
             int x = mp.getCoord(t).getY()* DIM_TILE;
             int y = mp.getCoord(t).getX()* DIM_TILE;
@@ -148,7 +148,7 @@ public class CLIMap {
     /**
      * Print on the command line the map generated with the correct ASCII characters and ANSI colors.
      */
-    void printMap() {
+    synchronized void printMap() {
         //TODO change to create a list of StringBuilder to manage the space after the map
         List<String> rowList = new ArrayList<>();
         for (int r = 0; r < maxY; r++) {
@@ -254,7 +254,7 @@ public class CLIMap {
      * It shows a version of the Map on the CLI where only the selectable targets are colored.
      * @param targetViewList is the list of the selectable targets.
      */
-    public void applyTarget(List<TargetView> targetViewList, List<Color> colors){
+    void applyTarget(List<TargetView> targetViewList, List<Color> colors){
         GameMapView targetMap = new GameMapView(mp);
         List<TileUID> tiless = new ArrayList<>();
         List<DamageableUID> actors = new ArrayList<>();
@@ -271,7 +271,6 @@ public class CLIMap {
                             t.setColor(colors.get(i));
                         }
                     }
-                    i++;
                 }
                 for(DamageableUID damageableUID : target.getDamageableUIDList()) {
                     for (ActorView a : targetMap.players()) {
@@ -286,8 +285,8 @@ public class CLIMap {
                             targetMap.getPosition(entry.getKey()).setColor(colors.get(i));
                         }
                     }
-                    i++;
                 }
+                i++;
             }
         }
 
@@ -327,6 +326,9 @@ public class CLIMap {
         for(Map.Entry<ActorView,Color> entry: actorsColor.entrySet()){
             entry.getKey().setColor(entry.getValue());
         }
+    }
+
+    private void handleTargetViewIfDedicated() {
 
     }
 

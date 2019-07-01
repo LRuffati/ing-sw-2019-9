@@ -302,11 +302,11 @@ class ActionTemplateOptions {
     public static List<List<ActionTemplate>> getActionsStandard(int n){
         List<ActionTemplate> ret = new ArrayList<>(List.of(muovi3, grab, shoot));
         if (n>2) {
-            ret.add(muovi2grab);
+            ret.add(ret.indexOf(grab), muovi2grab);
             ret.remove(grab);
         }
         if (n>5) {
-            ret.add(muovi1spara);
+            ret.add(ret.indexOf(shoot), muovi1spara);
             ret.remove(shoot);
         }
         return List.of(ret, ret);

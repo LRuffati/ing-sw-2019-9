@@ -573,9 +573,6 @@ public class CLIDemo implements View {
             if(t.ammoCard() != null) {
                 System.out.print(">> There is a spawn point for the following ammunition in the tile:  ");
                 System.out.println(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue(), false));
-                System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
-                System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
-                System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
             }
         }
         int i = 0;
