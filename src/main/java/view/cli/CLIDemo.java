@@ -706,12 +706,12 @@ public class CLIDemo implements View {
         System.out.println(builder.toString());
         builder = new StringBuilder();
         if(climap.getMp().gameMode().equals(GameMode.DOMINATION)) {
-            builder.append("Colortrack :");
+            builder.append("Colortrack");
             for(Map.Entry<Color, List<ActorView>> entry : climap.getMp().spawnTracker().entrySet()) {
                 builder.append("\n\t");
                 builder.append(AnsiColor.getColorName(entry.getKey()));
-                if(!entry.getKey().equals(Color.yellow))    builder.append("\t");
-                builder.append(" :\t");
+                if(entry.getKey().equals(Color.red))    builder.append("\t");
+                builder.append("\t :\t");
                 builder.append(printListOfColor(entry.getValue()));
             }
             builder.append("\n");
