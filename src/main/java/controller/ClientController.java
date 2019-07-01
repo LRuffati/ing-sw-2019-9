@@ -192,10 +192,19 @@ public class ClientController implements ClientControllerClientInterface, Client
         if(stack.isEmpty())
             poll();
         else {
-            //todo: getLast?
-            ControllerMessage first = stack.getFirst();
+            ControllerMessage first = stack.getLast();
             stack.clear();
             elaborate(first);
+        }
+    }
+
+    private void rollbackFromServer() {
+        if(stack.isEmpty() || stack.size() == 1)
+            rollback();
+        else {
+            //removes the rolback message
+            stack.pop();
+            rollback();
         }
     }
 
@@ -254,7 +263,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 break;
             case ROLLBACK:
                 view.onRollback();
-                rollback();
+                rollbackFromServer();
                 break;
 
                 default:
@@ -434,10 +443,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 }
             }
         };
-
         //timer.schedule(timerTask, 200,500);
-
-
     }
 
     public void reset() {
