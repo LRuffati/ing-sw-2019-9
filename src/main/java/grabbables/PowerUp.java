@@ -5,6 +5,7 @@ import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Tile;
+import controller.SetMessageProxy;
 import controller.SlaveController;
 import controller.controllermessage.ControllerMessage;
 import uid.TileUID;
@@ -38,7 +39,7 @@ public abstract class PowerUp extends Grabbable {
      * @param onPowerupFinalized the function to call once the effects have been merged in Main
      * @return the controller message to show the use
      */
-    public abstract ControllerMessage usePowup(SlaveController pov,
+    public abstract ControllerMessage usePowup(SetMessageProxy pov,
                                                List<Effect> lastEffects,
                                                Runnable onPowerupFinalized);
 

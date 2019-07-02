@@ -4,6 +4,7 @@ import actions.effects.*;
 import actions.targeters.targets.Targetable;
 import actions.utils.*;
 import board.Sandbox;
+import controller.SetMessageProxy;
 import controller.SlaveController;
 import controller.controllermessage.ControllerMessage;
 import controller.controllermessage.PickTargetMessage;
@@ -38,13 +39,15 @@ public class TargScope extends PowerUp {
     /**
      * Uses and discards the powerup
      *
-     * @param pov                the actor using the powerup (if this not in pov.powerups then onPowerupFinalized)
+     * @param proxy
      * @param lastEffects        effects prior to this powerup (used for targeting scope   )
      * @param onPowerupFinalized the function to call once the effects have been merged in Main
      * @return the controller message to show the use
      */
     @Override
-    public ControllerMessage usePowup(SlaveController pov, List<Effect> lastEffects, Runnable onPowerupFinalized) {
+    public ControllerMessage usePowup(SetMessageProxy proxy, List<Effect> lastEffects,
+                                      Runnable onPowerupFinalized) {
+        SlaveController pov = proxy.slave;
         List<DamageableUID> possibleTargets = lastEffects.stream()
                 .filter(e->e.type().equals(EffectType.DAMAGE))
                 .flatMap(effect -> effect.targetedPlayers().stream())
@@ -70,8 +73,9 @@ public class TargScope extends PowerUp {
             @Override
             public ControllerMessage pick(int choice) {
                 if (choice==-1){
-                    pov.setCurrentMessage(new WaitMessage(List.of()));
-                    onPowerupFinalized.run();
+                    if (proxy.setControllerMessage(new WaitMessage(List.of()))){
+                        onPowerupFinalized.run();
+                    }
                     return new WaitMessage(List.of());
                 } else {
                     DamageableUID target = possibleTargets.get(choice);
@@ -82,10 +86,11 @@ public class TargScope extends PowerUp {
                             new Sandbox(sandbox,List.of(addDamage)),
                             sandbox1 -> {
                                 //Apply effects to gamemap and run onPowerupFinalized
-                                pov.setCurrentMessage(new WaitMessage(List.of()));
-                                pov.getSelf().discardPowerUp(TargScope.this);
-                                new Thread(()->pov.main.resolveEffect(pov,
+                                if (proxy.setControllerMessage(new WaitMessage(List.of()))){
+                                    pov.getSelf().discardPowerUp(TargScope.this);
+                                    new Thread(()->pov.main.resolveEffect(pov,
                                         sandbox1.getEffectsHistory(), onPowerupFinalized)).start();
+                                }
 
                                 return new WaitMessage(List.of());
                             });

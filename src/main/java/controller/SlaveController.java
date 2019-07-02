@@ -24,6 +24,7 @@ import viewclasses.TargetView;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -64,6 +65,7 @@ public class SlaveController {
     private List<String> notificationList;
     private Runnable onTimeout;
     private int timeoutWindow;
+    public ReentrantLock lockMessageSet;
 
     public SlaveController(MainController main, Player player, ServerInterface network) {
         this.player = player;
@@ -72,14 +74,21 @@ public class SlaveController {
         this.main = main;
         this.timeoutWindow = main.timeoutTime;
         notificationList = new ArrayList<>();
+        lockMessageSet = new ReentrantLock();
     }
 
     /**
      * This function sets in motion the main turn line
      */
     public void startMainAction(){
-        this.onTimeout = () -> new Thread(() -> main.endTurn(getSelf())).start();
-        this.setCurrentMessage(setPowUps(new ArrayList<>(), getSelf().getActions()));
+        if (!player.isOnLine()) {
+            main.endTurn(getSelf());
+            return;
+        }
+
+        this.onTimeout = () -> main.endTurn(getSelf());
+        this.setCurrentMessage(setPowUps(new ArrayList<>(), getSelf().getActions())); //
+        // setPowUps include il proxy
     }
 
     /**
@@ -93,7 +102,7 @@ public class SlaveController {
      * @return the action that should be executed next
      */
     private ControllerMessage setPowUps(List<Effect> lastEffects,
-                                      List<List<ActionTemplate>> nextActs){
+                                        List<List<ActionTemplate>> nextActs){
 
         // Which powerups can I use
         List<PowerUp> pows = getSelf().getPowerUp().stream()
@@ -101,7 +110,7 @@ public class SlaveController {
                                     .collect(Collectors.toList());
 
         // Check that I can pay the targeting scope
-        if (getSelf().getPowerUp().size()==1 & AmmoAmountUncapped.zeroAmmo.canBuy(getSelf().getAmmo())){
+        if (getSelf().getPowerUp().size()==1 && AmmoAmountUncapped.zeroAmmo.canBuy(getSelf().getAmmo())){
             pows = pows.stream()
                     .filter(p -> p.getType().equals(PowerUpType.TARGETINGSCOPE))
                     .collect(Collectors.toList());
@@ -109,10 +118,15 @@ public class SlaveController {
 
         Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
 
+        SetMessageProxy proxy = new SetMessageProxy(this);
+
         Function<Sandbox, ControllerMessage> reloadMerger = // Will take the effects in
                 // sandbox and
                 sandbox1 -> { // merge them into MainController
-                    this.setCurrentMessage(new WaitMessage(List.of()));
+                    if (!proxy.setControllerMessage(new WaitMessage(List.of()))){
+                        return new WaitMessage(List.of());
+                    }
+
                     List<Effect> effects = sandbox1.getEffectsHistory();
                     Runnable onResolved = () -> this.main.endTurn(this.getSelf());
                     new Thread(()-> this.main.resolveEffect(this, effects, onResolved)).start();
@@ -125,9 +139,12 @@ public class SlaveController {
         // Used if I might run an actionbundle after
         Function<List<List<ActionTemplate>>, Function<List<Effect>, ControllerMessage>> bundleFinalizer =
                 bundlesTail -> effectList -> {
-                    this.setCurrentMessage(new WaitMessage(List.of()));
+                    if (!proxy.setControllerMessage(new WaitMessage(List.of()))){
+                        return new WaitMessage(List.of());
+                    }
 
                     Runnable onResolved = () -> this.setCurrentMessage(this.setPowUps(effectList, bundlesTail));
+                    // setPowUps include il proxy
 
                     new Thread(() -> main.resolveEffect(this, effectList, onResolved)).start();
 
@@ -136,14 +153,15 @@ public class SlaveController {
 
         List<List<ActionTemplate>> tail = nextActs.subList(Math.min(1,nextActs.size()), nextActs.size());
 
+        ControllerMessage ret;
 
-        if ((pows.isEmpty()) & (nextActs.isEmpty())){ // No powUp available, only reload left
-            return reloadMessage;
+        if ((pows.isEmpty()) && (nextActs.isEmpty())){ // No powUp available, only reload left
+            ret = reloadMessage;
 
-        } else if ((pows.isEmpty()) & !nextActs.isEmpty()){ // No powerups but ActionBundle
+        } else if ((pows.isEmpty()) && !nextActs.isEmpty()){ // No powerups but ActionBundle
             // available
             ActionBundle action = new ActionBundle(sandbox, nextActs.get(0), bundleFinalizer.apply(tail));
-            return new PickActionMessage(action, "Scegli un'azione",
+            ret = new PickActionMessage(action, "Scegli un'azione",
                 sandbox, getNotifications());
 
         } else { // Powerups
@@ -163,12 +181,14 @@ public class SlaveController {
                                         this.setCurrentMessage(this.setPowUps(lastEffects, nextActs));
                                     };
                             //2. Apply powerup
-                            return list.get(0).usePowup(this, lastEffects, onApplied);
+                            return list.get(0).usePowup(proxy, lastEffects, onApplied);
                         }
                     };
-            return new PickPowerupMessage(SlaveControllerState.MAIN, pows, onPowupPick,
+            ret = new PickPowerupMessage(SlaveControllerState.MAIN, pows, onPowupPick,
                     "Scegli un powerup da usare", true, getNotifications());
         }
+        proxy.setMessage(ret);
+        return ret;
     }
 
     private List<String> getNotifications() {
@@ -185,25 +205,34 @@ public class SlaveController {
     public void startRespawn(Consumer<PowerUp> onRespawned){
         List<PowerUp> powups = new ArrayList<>(getSelf().getPowerUp());
 
+        SetMessageProxy proxy = new SetMessageProxy(this);
+
         Function<List<PowerUp>, ControllerMessage> onPick =
                 list -> {
-                    this.setCurrentMessage(new WaitMessage(List.of()));
-                    new Thread(()-> onRespawned.accept(list.get(0))).start();
+                    if (proxy.setControllerMessage(new WaitMessage(List.of()))){
+                        new Thread(()-> onRespawned.accept(list.get(0))).start();
+                    }
                     return new WaitMessage(List.of());
                 };
 
+        if (!player.isOnLine()) {
+            onRespawned.accept(powups.get(0));
+            return;
+        }
         // If timeout is triggered I should spawn in a random location
         // onRespawned is blocking so I should start it in a thread
-        this.onTimeout = () -> new Thread(() -> onRespawned.accept(powups.get(0))).start();
+        this.onTimeout = () -> onRespawned.accept(powups.get(0));
 
-        this.setCurrentMessage(new PickPowerupMessage(
+        ControllerMessage msg = new PickPowerupMessage(
                 SlaveControllerState.RESPAWN,
                 powups,
                 onPick,
                 "Scegli lo spawn point",
                 true,
                 List.of()
-                ));
+                );
+        proxy.setMessage(msg);
+        this.setCurrentMessage(msg);
     }
 
     /**
@@ -226,6 +255,7 @@ public class SlaveController {
 
         Sandbox sandbox = getSelf().getGm().createSandbox(getSelf().pawnID());
         BasicTarget other = sandbox.getBasic(offender.pawnID());
+        SetMessageProxy proxy = new SetMessageProxy(this);
 
         if (other.seen(sandbox, sandbox.getBasic(getSelf().pawnID()),true)){ // 1a
             new Thread(()->onFinished.accept(Optional.empty())).start();
@@ -247,11 +277,12 @@ public class SlaveController {
          *  the client (by return) in wait
          */
         Function<List<PowerUp>, ControllerMessage> powUpPickerAccept = lista -> {
-            this.setCurrentMessage(new WaitMessage(List.of()));
-            if (lista.isEmpty()){
-                new Thread(()->onFinished.accept(Optional.empty())).start(); //2a
-            } else {
-                new Thread(()->onFinished.accept(Optional.of(lista.get(0)))).start();
+            if (proxy.setControllerMessage(new WaitMessage(List.of()))) {
+                if (lista.isEmpty()) {
+                    new Thread(() -> onFinished.accept(Optional.empty())).start(); //2a
+                } else {
+                    new Thread(() -> onFinished.accept(Optional.of(lista.get(0)))).start();
+                }
             }
             return new WaitMessage(List.of());
         };
@@ -282,8 +313,9 @@ public class SlaveController {
                 if (choice==0){
                     return askWhichTagBack;
                 } else {
-                    SlaveController.this.setCurrentMessage(new WaitMessage(List.of()));
-                    new Thread(()->onFinished.accept(Optional.empty())).start();
+                    if (proxy.setControllerMessage(new WaitMessage(List.of()))) {
+                        new Thread(() -> onFinished.accept(Optional.empty())).start();
+                    }
                     return new WaitMessage(List.of());
                 }
             }
@@ -294,7 +326,12 @@ public class SlaveController {
                 "Vuoi dare un marchio a questo giocatore?",
                 sandbox);
 
-        this.onTimeout = () -> new Thread( () -> onFinished.accept(Optional.empty())).start();
+        if (!player.isOnLine()){
+            onFinished.accept(Optional.empty());
+            return;
+        }
+        this.onTimeout = () -> onFinished.accept(Optional.empty());
+        proxy.setMessage(askTargetConfirmation);
         this.setCurrentMessage(askTargetConfirmation);
     }
 
@@ -398,29 +435,35 @@ public class SlaveController {
         return currentMessage;
     }
 
-    public synchronized void setCurrentMessage(ControllerMessage currentMessage) {
-        this.currentMessage = currentMessage;
-        if (!currentMessage.type().equals(SlaveControllerState.WAIT)){
-            new Thread(()->{
-                try {
-                    Thread.sleep(timeoutWindow*(long)1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+    public synchronized void setCurrentMessage(ControllerMessage nextMessage) {
+        if (!nextMessage.type().equals(SlaveControllerState.WAIT)){
+            this.currentMessage = nextMessage;
+            TimerTask task = new TimerTask() {
+                public void run() {
+                    if (SlaveController.this.lockMessageSet.tryLock()){
+                        if (SlaveController.this.currentMessage==currentMessage){
+                            //TODO: di alla rete di pulire la sua memoria
+                            //TODO: main notify timeout (shouldn't do anything, just send a
+                            // notification that the player went in timeout)
+                            SlaveController.this.setCurrentMessage(new WaitMessage(List.of()));
+                            new Thread(SlaveController.this.onTimeout).start();
+                        }
+                        SlaveController.this.lockMessageSet.unlock();
+                    }
+                    return; // If there's a lock something is about to put a message in
                 }
-                if (this.currentMessage.equals(currentMessage)){
-                    //FIXME: gestire il caso in cui il timer scade subito dopo che il client ha
-                    // fatto pick per finalizzare l'azione quindi: 1. Dico alla rete di non
-                    // accettare più richieste a parte "getInstruction" 2. Aspetto qualche
-                    // secondo nel caso avesse appena terminato. 3. Ricontrollo currentMessage e
-                    // faccio le mie cose se è uguale
-
-                    //TODO @LORENZO timeout da sistemare qui
-                    //network.interrupt();
-                    //main.notifyTimeout(this);
-
-                }
-            }).start();
-        } //TODO merge old and new wait messages
+            };
+            Timer timer = new Timer("Timer");
+            timer.schedule(task, timeoutWindow*1000);
+        } else { //TODO merge old and new wait messages
+            if (this.currentMessage.type().equals(SlaveControllerState.WAIT)){
+                List<String> old = new ArrayList<>(this.currentMessage.getMessage().getChanges());
+                old.addAll(nextMessage.getMessage().getChanges());
+                this.currentMessage = new WaitMessage(old);
+            } else {
+                this.currentMessage = nextMessage
+            }
+        }
     }
 
     /**
@@ -446,7 +489,9 @@ public class SlaveController {
         boolean haveToDrop =
                 (getSelf().getLoadedWeapon().size()+getSelf().getUnloadedWeapon().size()) >= 3;
 
-        BiFunction<Weapon, Sandbox, ControllerMessage>  afterPay = (weapPicked, sandPay) ->{
+        SetMessageProxy proxy = new SetMessageProxy(this);
+
+        BiFunction<Weapon, Sandbox, ControllerMessage>  afterPay = (weapPicked, sandPay) -> {
             if (haveToDrop){
                 // Choose weapon to drop
                 // Apply effects
@@ -481,13 +526,13 @@ public class SlaveController {
                         "Scegli che arma lasciare",
                         sandPay);
             } else {
-                Runnable onRes = () -> onChoice.accept(weapPicked, Optional.empty());
-                this.setCurrentMessage(new WaitMessage(List.of()));
-                new Thread(()-> main.resolveEffect(
-                        SlaveController.this,
-                        sandPay.getEffectsHistory(),
-                        onRes)).start();
-
+                if (proxy.setControllerMessage(new WaitMessage(List.of()))) {
+                    Runnable onRes = () -> onChoice.accept(weapPicked, Optional.empty());
+                    new Thread(() -> main.resolveEffect(
+                            SlaveController.this,
+                            sandPay.getEffectsHistory(),
+                            onRes)).start();
+                }
                 return new WaitMessage(List.of());
             }
         };
@@ -524,6 +569,8 @@ public class SlaveController {
                 weaponToPick,
                 "Scegli che arma raccogliere",
                 sandbox);
+
+        proxy.setMessage(pickWeaponToGrab);
 
         this.setCurrentMessage(pickWeaponToGrab);
     }

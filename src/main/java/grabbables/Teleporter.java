@@ -10,6 +10,7 @@ import actions.utils.AmmoColor;
 import actions.utils.ChoiceMaker;
 import actions.utils.PowerUpType;
 import board.Sandbox;
+import controller.SetMessageProxy;
 import genericitems.Tuple;
 import player.Actor;
 import controller.SlaveController;
@@ -43,15 +44,15 @@ public class Teleporter extends PowerUp {
     }
 
     /**
-     * @param povC               the controller using the powerup (if this not in pov.powerups the
-     *                           onPowerupFinalized)
+     * @param proxy
      * @param lastEffects        effects prior to this powerup (used for targeting scope)
      * @param onPowerupFinalized the function to call once the effects have been merged in Main
      * @return the controller message to show the user
      */
     @Override
-    public ControllerMessage usePowup(SlaveController povC, List<Effect> lastEffects,
+    public ControllerMessage usePowup(SetMessageProxy proxy, List<Effect> lastEffects,
                                       Runnable onPowerupFinalized) {
+        SlaveController povC = proxy.slave;
         Actor pov = povC.getSelf();
         Sandbox sandbox = pov.getGm().createSandbox(pov.pawnID());
         BasicTarget povT = sandbox.getBasic(pov.pawnID());
@@ -78,13 +79,15 @@ public class Teleporter extends PowerUp {
 
             @Override
             public ControllerMessage pick(int choice) {
-                povC.setCurrentMessage(new WaitMessage(List.of()));
-                TileUID destination = targs.get(choice).getSelectedTiles(sandbox).iterator().next();
-                Effect effect = new MoveEffect(pov.pawnID(), destination);
-                new Thread(() -> {
-                    pov.discardPowerUp(Teleporter.this);
-                    povC.main.resolveEffect(povC, List.of(effect), onPowerupFinalized);
-                }).start();
+                if (proxy.setControllerMessage(new WaitMessage(List.of()))){
+                    TileUID destination = targs.get(choice).getSelectedTiles(sandbox).iterator().next();
+                    Effect effect = new MoveEffect(pov.pawnID(), destination);
+                    new Thread(() -> {
+                        pov.discardPowerUp(Teleporter.this);
+                        povC.main.resolveEffect(povC, List.of(effect), onPowerupFinalized);
+                    }).start();
+                }
+
                 return new WaitMessage(List.of());
             }
         };
