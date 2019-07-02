@@ -35,6 +35,8 @@ public class MainController {
 
     public int timeoutTime;
 
+    private boolean closeGameAtEndTurn = false;
+
     private int numOfPlayer;
 
     private Timer timerForStarting;
@@ -126,8 +128,8 @@ public class MainController {
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
                 timerClose();
-            //if(gameStarted)
-            //   endGame();
+            if(gameStarted)
+                closeGameAtEndTurn = true;
         }
     }
 
@@ -396,6 +398,11 @@ public class MainController {
         if (!firstRoundOver){ // If the first round isn't over
             Function<List<SlaveController>, Runnable> runnableFunction = nextLis -> () -> firstRound(next, nextLis);
             nextAction = runnableFunction.apply(nextnext);
+        }
+
+        if(closeGameAtEndTurn) {
+            endGame();
+            return;
         }
 
         this.startRespawn(dead, 1, nextAction); // LAST LINE OF THE FUNCTION
