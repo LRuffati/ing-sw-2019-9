@@ -431,7 +431,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onLostTurn(Player player) {
-        System.out.println(player.getUsername() + "lost his turn!");
+        System.out.println(player.getUsername() + " lost his turn!");
     }
 
     /**

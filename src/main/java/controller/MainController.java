@@ -143,8 +143,12 @@ public class MainController {
     void notifyDisconnection(int numOfPlayer, Player player, boolean lostTurn) {
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onDisconnection(player, numOfPlayer, lostTurn);
-        logger.log(Level.INFO, "Disconnection");
-        logger.log(Level.INFO, player.toString());
+        if(lostTurn)
+            logger.log(Level.INFO, player.getUsername() + "lost his turn");
+        else {
+            logger.log(Level.INFO, "Disconnection");
+            logger.log(Level.INFO, player.toString());
+        }
     }
 
     private void notifyStarting(String map){

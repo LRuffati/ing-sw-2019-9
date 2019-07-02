@@ -3,6 +3,7 @@ package grabbables;
 import actions.effects.Effect;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
+import controller.SetMessageProxy;
 import controller.SlaveController;
 import controller.controllermessage.ControllerMessage;
 
@@ -17,15 +18,14 @@ public class Newton extends PowerUp {
         super(PowerUpType.TAGBACKGRANADE, color);
     }
 
-    //todo
     @Override
-    public boolean canUse(List<Effect> lastEffects) {
-        return false;
+    public ControllerMessage usePowup(SetMessageProxy pov, List<Effect> lastEffects, Runnable onPowerupFinalized) {
+        return null;
     }
 
     //todo
     @Override
-    public ControllerMessage usePowup(SlaveController pov, List<Effect> lastEffects, Runnable onPowerupFinalized) {
-        return null;
+    public boolean canUse(List<Effect> lastEffects) {
+        return false;
     }
 }
