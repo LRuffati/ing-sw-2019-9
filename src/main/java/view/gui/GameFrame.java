@@ -14,7 +14,7 @@ import java.io.IOException;
 public class GameFrame extends JFrame {
 
     //TODO sostituire GUIMap1 con interfaccia GUIMap
-    private GUIMap1 map;
+    private GUIMap map;
     private GUIScoreBoard scoreBoard;
     private OutputBox outputBox;
     private BufferedImage background;
@@ -71,7 +71,7 @@ public class GameFrame extends JFrame {
         return outputBox;
     }
 
-    public GUIMap1 getMap() {
+    public GUIMap getMap() {
         return map;
     }
 
