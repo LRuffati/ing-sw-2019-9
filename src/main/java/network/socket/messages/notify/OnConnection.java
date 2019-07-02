@@ -9,11 +9,13 @@ public class OnConnection implements Response {
     public final Player playerConnected;
     public final boolean connected;
     public final int numOfPlayer;
+    public final boolean lostTurn;
 
-    public OnConnection(Player player, boolean connected, int numOfPlayer) {
+    public OnConnection(Player player, boolean connected, int numOfPlayer, boolean lostTurn) {
         this.playerConnected = player;
         this.connected = connected;
         this.numOfPlayer = numOfPlayer;
+        this.lostTurn = lostTurn;
     }
 
     @Override

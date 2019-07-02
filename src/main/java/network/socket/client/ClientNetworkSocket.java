@@ -222,7 +222,7 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
 
     @Override
     public void handle(OnConnection response) {
-        clientController.onConnection(response.playerConnected, response.connected, response.numOfPlayer);
+        clientController.onConnection(response.playerConnected, response.connected, response.numOfPlayer, response.lostTurn);
     }
 
     @Override

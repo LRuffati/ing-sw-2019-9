@@ -144,4 +144,10 @@ public interface View {
      * Message should contain a List of element that only holds a printable message
      */
     void onMessage(Message message);
+
+    /**
+     * Method used to notify the user that a player lost his turn because his timer finished
+     * @param player
+     */
+    void onLostTurn(Player player);
 }

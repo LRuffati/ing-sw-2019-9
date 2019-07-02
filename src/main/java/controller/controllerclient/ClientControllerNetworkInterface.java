@@ -23,7 +23,7 @@ public interface ClientControllerNetworkInterface {
     /**
      * This method notifies that a player just logged in or logged out
      */
-    void onConnection(Player player, boolean connection, int numOfPlayer);
+    void onConnection(Player player, boolean connection, int numOfPlayer, boolean lostTurn);
 
     /**
      * This method notifies that the game is going to start

@@ -387,6 +387,11 @@ public class Framework implements View {
     }
 
     @Override
+    public void onLostTurn(Player player) {
+        game.getOutputBox().writeOnOutput(player.getUsername() + "lost his turn!");
+    }
+
+    @Override
     public void onRespawn() {
         if(game!=null) game.getOutputBox().writeOnOutput("You're respawing now...");
     }

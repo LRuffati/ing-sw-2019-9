@@ -13,6 +13,7 @@ import genericitems.Tuple;
 import grabbables.PowerUp;
 import network.Database;
 import grabbables.Weapon;
+import network.ObjectMap;
 import network.Player;
 import network.ServerInterface;
 import player.Actor;
@@ -380,9 +381,9 @@ public class SlaveController {
     /**
      * Method used to notify the client that a new player just left the game
      */
-    void onDisconnection(Player player, int numOfPlayer) {
+    void onDisconnection(Player player, int numOfPlayer, boolean lostTurn) {
         try {
-            network.onDisconnection(player, numOfPlayer);
+            network.onDisconnection(player, numOfPlayer, lostTurn);
         }
         catch (RemoteException e) {
             Database.get().logout(this.player.getToken());
@@ -456,10 +457,9 @@ public class SlaveController {
             TimerTask task = new TimerTask() {
                 public void run() {
                     if (SlaveController.this.lockMessageSet.tryLock()){
-                        if (SlaveController.this.currentMessage==currentMessage){
-                            //TODO: di alla rete di pulire la sua memoria
-                            //TODO: main notify timeout (shouldn't do anything, just send a
-                            // notification that the player went in timeout)
+                        if (SlaveController.this.currentMessage==nextMessage){
+                            ObjectMap.get().clearCache(player.getToken());
+                            main.notifyDisconnection(0, player, true);
                             SlaveController.this.setCurrentMessage(new WaitMessage(List.of()));
                             new Thread(SlaveController.this.onTimeout).start();
                         }

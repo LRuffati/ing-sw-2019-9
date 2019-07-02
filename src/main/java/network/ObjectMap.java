@@ -141,8 +141,7 @@ public class ObjectMap {
      * This methods add the token to the blackList and removes all the ControllerMessages already associated
      * @param token the token of the player
      */
-    public void clearCacheAndBlock(String token) {
+    public void clearCache(String token) {
         clearChache(token);
-        canNotSend.add(token);
     }
 }

@@ -55,6 +55,7 @@ public class MainController {
     private List<SlaveController> slaveControllerList;
     private Map<DamageableUID, SlaveController> slaveMap;
     private boolean firstRoundOver;
+    private boolean gameOver = false;
 
     public SlaveController getSlaveByUID(DamageableUID uid){
         return slaveMap.get(uid);
@@ -107,7 +108,7 @@ public class MainController {
      * @return True iif the game is not started and the number of player is below the maximum
      */
     public boolean canConnect() {
-        return numOfPlayer<MAX_PLAYER && !gameStarted;
+        return numOfPlayer<MAX_PLAYER && !gameStarted && !gameOver;
     }
 
     public boolean isGameStarted(){
@@ -124,7 +125,7 @@ public class MainController {
     public void logout(Player player) {
         numOfPlayer--;
         player.setOnLine(false);
-        notifyDisconnection(numOfPlayer, player);
+        notifyDisconnection(numOfPlayer, player, false);
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
                 timerClose();
@@ -139,9 +140,9 @@ public class MainController {
         logger.log(Level.INFO, player.toString());
     }
 
-    private void notifyDisconnection(int numOfPlayer, Player player) {
+    void notifyDisconnection(int numOfPlayer, Player player, boolean lostTurn) {
         for(SlaveController slaveController : slaveControllerList)
-            slaveController.onDisconnection(player, numOfPlayer);
+            slaveController.onDisconnection(player, numOfPlayer, lostTurn);
         logger.log(Level.INFO, "Disconnection");
         logger.log(Level.INFO, player.toString());
     }
@@ -460,6 +461,7 @@ public class MainController {
      * Called to count
      */
     void endGame() {
+        gameOver = true;
         Actor winner = scoreboard.claimWinner();
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
     }

@@ -43,7 +43,7 @@ public interface ServerInterface extends Remote {
     /**
      * This method is used to notify the player that someone left the game
      */
-    void onDisconnection(Player player, int numOfPlayer) throws RemoteException;
+    void onDisconnection(Player player, int numOfPlayer, boolean lostTurn) throws RemoteException;
 
     /**
      * This method is used to notify the player that the game is starting

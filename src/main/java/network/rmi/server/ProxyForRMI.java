@@ -136,12 +136,12 @@ public class ProxyForRMI extends UnicastRemoteObject implements ServerInterface 
     }
 
     @Override
-    public void onDisconnection(Player player, int numOfPlayer) {
+    public void onDisconnection(Player player, int numOfPlayer, boolean lostTurn) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
-                    remoteObject.onDisconnection(player, numOfPlayer);
+                    remoteObject.onDisconnection(player, numOfPlayer, lostTurn);
                 }
                 catch (RemoteException e){
                     logger.log(Level.INFO, "ondisconnection", e.getMessage());

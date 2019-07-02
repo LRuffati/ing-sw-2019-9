@@ -49,7 +49,6 @@ public class CLIDemo implements View {
         this.commandParser = new CommandParser(this);
         this.scanThread = new Thread(()->{
             while (inputTake) {
-                //todo: verify
                 String string = in.nextLine();
                 commandParser.parseCommand(string);
             }
@@ -301,7 +300,9 @@ public class CLIDemo implements View {
             ActionView next = actionIterator.next();
             builder.append(i);
             builder.append(". ");
-            builder.append(next.getName()).append(" that costs ").append(printCost(next.getCost()));
+            builder.append(next.getName());
+            if(next.getCost().values().stream().filter(x -> x>0).count() > 0)
+                builder.append(" that costs ").append(printCost(next.getCost()));
             builder.append("\n");
             i+=1;
         }
@@ -426,6 +427,11 @@ public class CLIDemo implements View {
         for(String str : message.getChanges()){
             System.out.println(str);
         }
+    }
+
+    @Override
+    public void onLostTurn(Player player) {
+        System.out.println(player.getUsername() + "lost his turn!");
     }
 
     /**

@@ -408,8 +408,11 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void onConnection(Player player, boolean connection, int numOfPlayer) {
-        view.onConnection(player, connection, numOfPlayer);
+    public void onConnection(Player player, boolean connection, int numOfPlayer, boolean lostTurn) {
+        if(lostTurn)
+            view.onLostTurn(player);
+        else
+            view.onConnection(player, connection, numOfPlayer);
     }
 
     @Override
