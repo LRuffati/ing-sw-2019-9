@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 
@@ -29,11 +30,12 @@ public class GUIMap2 extends GUIMap {
 
     private BufferedImage emptyMap;
     private BufferedImage tile;
-    private Map<JButton, Coord> buttonCoord;
+    private Map<TileButton, Coord> buttonCoord;
     private BufferedImage scoreBoard;
     private BufferedImage pg;
     private GameMapView gmv;
     private Framework framework;
+    private ActorView[] playersToPaint = new ActorView[5];
 
     public GUIMap2(GameMapView gmv, Framework framework){
         this.framework = framework;
@@ -116,7 +118,7 @@ public class GUIMap2 extends GUIMap {
             imgAmmo = tile.getScaledInstance((int) tilewid, (int) tilehid, SCALE_SMOOTH);
         }
         ImageIcon iconAmmo = new ImageIcon(imgAmmo);
-        JButton ammoButton = new JButton();
+        TileButton ammoButton = new TileButton();
         ammoButton.setIcon(iconAmmo);
         //come aggiungere azione a bottone:
         ammoButton.addActionListener(e -> {
@@ -138,7 +140,7 @@ public class GUIMap2 extends GUIMap {
         List<Integer> indexList = new ArrayList<>();
         final int[] j = {0};
         for(Coord coord : coords){
-            for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
+            for(Map.Entry<TileButton,Coord> entry : buttonCoord.entrySet()){
                 if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -205,4 +207,29 @@ public class GUIMap2 extends GUIMap {
             }
         }
     }
+    public void drawPlayers(GameMapView gmv){
+        this.gmv = gmv;
+
+        int i = 0;
+        for(ActorView player: gmv.players()){
+            playersToPaint[i] = player;
+
+            for (Map.Entry<TileButton, Coord> entry : buttonCoord.entrySet()) {
+                try {
+                    if (Objects.equals(gmv.getCoord(player.position()), entry.getValue())) {
+                        entry.getKey().paintPlayers(gmv);
+                        entry.getKey().getGraphics().setColor(playersToPaint[i].color());
+                        entry.getKey().getGraphics().fillOval(90*i,0,90,90);
+                        entry.getKey().repaint();
+                        //entry.getKey().paintImmediately(90 * i, 0, 90, 90);
+                    }
+                } catch (InvalidParameterException ignored){ }
+            }
+
+            i++;
+
+        }
+        repaint();
+    }
+
 }

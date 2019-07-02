@@ -13,7 +13,6 @@ import java.io.IOException;
 
 public class GameFrame extends JFrame {
 
-    //TODO sostituire GUIMap1 con interfaccia GUIMap
     private GUIMap map;
     private GUIScoreBoard scoreBoard;
     private OutputBox outputBox;
@@ -66,7 +65,7 @@ public class GameFrame extends JFrame {
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight()==1080){
             setSize(1538,1045);
         } else {
-            setSize(1094,743);
+            setSize(1085,743);
         }
         setVisible(true);
         setResizable(true);

@@ -116,8 +116,10 @@ public class PlayerBoard extends JPanel {
 
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight() == 768.0){
             for(int j=0; j<=i; j++) {
-                normalBoards[j] = scaleImage(normalBoards[j]);
-                frenzyBoards[j] = scaleImage(frenzyBoards[j]);
+                if(normalBoards[j]!=null) {
+                    normalBoards[j] = scaleImage(normalBoards[j]);
+                    frenzyBoards[j] = scaleImage(frenzyBoards[j]);
+                }
             }
 
         }
