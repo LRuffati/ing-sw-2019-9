@@ -4,6 +4,7 @@ import actions.effects.Effect;
 import board.GameMap;
 import board.Tile;
 import gamemanager.GameBuilder;
+import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import grabbables.PowerUp;
 import network.Database;
@@ -33,7 +34,7 @@ public class MainController {
     private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
-    public int timeoutTime;
+    public static final int timeoutTime = ParserConfiguration.parseInt("TimeForAction");
 
     private boolean closeGameAtEndTurn = false;
 
@@ -63,7 +64,6 @@ public class MainController {
 
     MainController(){
         slaveControllerList = new ArrayList<>();
-        timeoutTime = 30;
         slaveMap = new HashMap<>(MAX_PLAYER);
     }
 

@@ -71,9 +71,9 @@ public class SlaveController {
     public SlaveController(MainController main, Player player, ServerInterface network) {
         this.player = player;
         this.network = network;
-        this.setCurrentMessage(new WaitMessage(List.of()));
+        currentMessage = new WaitMessage(List.of());
         this.main = main;
-        this.timeoutWindow = main.timeoutTime;
+        this.timeoutWindow = MainController.timeoutTime;
         notificationList = new ArrayList<>();
         lockMessageSet = new ReentrantLock();
     }
@@ -476,7 +476,7 @@ public class SlaveController {
                 old.addAll(nextMessage.getMessage().getChanges());
                 this.currentMessage = new WaitMessage(old);
             } else {
-                this.currentMessage = nextMessage
+                this.currentMessage = nextMessage;
             }
         }
     }
