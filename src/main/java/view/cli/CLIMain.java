@@ -6,22 +6,17 @@ import gamemanager.GameBuilder;
 import player.Actor;
 import viewclasses.GameMapView;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 
 public class CLIMain {
-    public static void main(String[] str){
+    public static void main(String[] str) {
         GameMap map;
         GameMapView gmv;
         ClientController client = null;
         List<Actor> actorList;
         GameBuilder builder = null;
-        try {
-            builder = new GameBuilder(
-                    null, null, null, null, 5);
-        }
-        catch (FileNotFoundException ignored){
-        }
+        builder = new GameBuilder(
+                null, null, null, null, 5);
         map = builder.getMap();
         actorList = builder.getActorList();
         gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());

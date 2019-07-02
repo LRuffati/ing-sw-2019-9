@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 /**
  * This class contains all the information that link an Actor with the corresponding client
+ * It only contains getters and setters
  */
 public class Player implements Serializable {
     private transient Actor actor;
@@ -21,6 +22,9 @@ public class Player implements Serializable {
 
     private boolean onLine;
 
+    /**
+     * Constructor of the class
+     */
     public Player(String username,
                   String password,
                   String color,

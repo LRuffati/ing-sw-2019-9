@@ -17,8 +17,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This class implements the Targeting Scope powerUp.
+ */
 public class TargScope extends PowerUp {
-    public TargScope(AmmoColor color) {
+    TargScope(AmmoColor color) {
         super(PowerUpType.TARGETINGSCOPE, color);
     }
 

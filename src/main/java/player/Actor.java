@@ -4,7 +4,6 @@ import actions.ActionTemplate;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.GameMap;
-import exception.AmmoException;
 import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import genericitems.Tuple3;
@@ -123,7 +122,7 @@ public class Actor {
     public void discardPowerUp(PowerUp powerUp) {
         powerUps.remove(powerUp);
         gm.discardPowerUp(powerUp);
-        logger.log(Level.INFO, "discardPowerUp " + powerUp.toString());
+        logger.log(Level.INFO, () -> "discardPowerUp " + powerUp.toString());
 
     }
 
@@ -167,7 +166,7 @@ public class Actor {
             throw new InvalidParameterException("There isn't this item here");
 
         if((loadedWeapon.size() + unloadedWeapon.size()) >= MAX_WEAPON) {
-            if(weaponToDiscard.isEmpty()) {
+            if(weaponToDiscard.isEmpty() || !weaponToDiscard.isPresent()) {
                 throw new InvalidParameterException("A weapon must be discarded");
             }
 
@@ -200,6 +199,10 @@ public class Actor {
         loadedWeapon.add(weapon);
     }
 
+    /**
+     * Once a weapon is used, it is removed from the loadedSet and added to the unloadedSet
+     * @param weapon the weapon that has been used
+     */
     public void useWeapon(Weapon weapon){
         loadedWeapon.remove(weapon);
         unloadedWeapon.add(weapon);
@@ -232,16 +235,6 @@ public class Actor {
         return points;
     }
 
-
-
-
-
-    /*
-    TODO: Rework damage methods, make damageRaw be called when I don't want to trigger mark
-    conversion or the tagback grenade. Make damage convert marks into damage
-    Make them update damagedBy and check damaged by after effect resolution to call the tagback
-    grenade.
-     */
 
     /**
      * Damages the player without applying the Marks nor triggering the tagback
@@ -500,15 +493,6 @@ public class Actor {
             flipBoard = true;
 
         return true;
-    }
-
-    /**
-     * This method drops a weapon.
-     * Given a weapon, it discards the weapon and removes it from the loaded or unloaded container
-     * @param weapUsed
-     */
-    public void drop(Weapon weapUsed) {
-        //TODO
     }
 }
 

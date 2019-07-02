@@ -164,12 +164,8 @@ public class PlayerBoard extends JPanel {
 
     private static void createAndShowGui() {
         GameBuilder builder = null;
-        try {
-            builder = new GameBuilder(
-                    null, null, null, null, 5);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        builder = new GameBuilder(
+                null, null, null, null, 5);
 
         GameMap map = builder.getMap();
         List<Actor> actorList = builder.getActorList();
@@ -187,7 +183,7 @@ public class PlayerBoard extends JPanel {
         frame.getContentPane().add(mainPanel);
         frame.pack();
 
-        frame.setSize(new Dimension(1000,1000));
+        frame.setSize(new Dimension(1000, 1000));
         frame.setLocationByPlatform(true);
         frame.setVisible(true);
     }

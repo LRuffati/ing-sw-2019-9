@@ -65,7 +65,7 @@ ADRENALINE_GROUP_9
 -TimeBeforeStarting
 20000
 
--TimeForMove
+-TimeForAction
 120
 
 -minNumOfPlayers

@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 
@@ -238,7 +239,7 @@ public class Framework implements View {
 
 
 
-        clientController.pick(choiceId, res);
+        clientController.pick(choiceId, res.stream().map(x->x-1).collect(Collectors.toList()));
         game.getOutputBox().writeOnOutput("clear");
     }
 

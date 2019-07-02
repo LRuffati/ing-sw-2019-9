@@ -328,6 +328,9 @@ public class SlaveController {
         else return mess;
     }
 
+    /**
+     * Method used to notify the client that a new player just joined the game
+     */
     void onConnection(Player player, int numOfPlayer) {
         try {
             network.onConnection(player, numOfPlayer);
@@ -337,6 +340,9 @@ public class SlaveController {
         }
     }
 
+    /**
+     * Method used to notify the client that a new player just left the game
+     */
     void onDisconnection(Player player, int numOfPlayer) {
         try {
             network.onDisconnection(player, numOfPlayer);
@@ -346,6 +352,9 @@ public class SlaveController {
         }
     }
 
+    /**
+     * Method used to notify the client that the game is starting
+     */
     void onStarting(String map, GameMode gameMode) {
             try {
                 network.onStarting(map, gameMode);
@@ -355,6 +364,9 @@ public class SlaveController {
             }
     }
 
+    /**
+     * Method used to notify the client that a new timer is starting
+     */
     void onTimer(int ms) {
             try {
                 network.onTimer(ms);
@@ -364,6 +376,9 @@ public class SlaveController {
         }
     }
 
+    /**
+     * Method used to notify the client that the game is finished, it also contains the winner of the game
+     */
     void onWinner(String winner, int winnerPoints) {
         try {
             network.onWinner(winner, winnerPoints, player.getActor().getPoints());

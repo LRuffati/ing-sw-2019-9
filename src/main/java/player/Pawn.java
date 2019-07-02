@@ -127,7 +127,7 @@ public class Pawn {
     }
 
     /**
-     *
+     * Generates a new {@link viewclasses.ActorView actorView} of this pawn, containing all the information needed by the client
      * @param gameMapView the gameMap connected to the ActorView
      * @param uid the player that is being created
      * @param pov the owner of the map
@@ -182,22 +182,10 @@ public class Pawn {
         return actorView;
     }
 
-    /**
-     *
-     * @param gameMapView
-     * @param pawn
-     * @return
-     */
     private ActorView getActorView(GameMapView gameMapView, DamageableUID pawn){
         return getActorView(gameMapView, map.getPawn(pawn).getActor());
     }
 
-    /**
-     *
-     * @param gameMapView
-     * @param actor
-     * @return
-     */
     private ActorView getActorView(GameMapView gameMapView, Actor actor){
         for(ActorView actorView : gameMapView.players()) {
             if (actor.pawnID().equals(actorView.uid())) {

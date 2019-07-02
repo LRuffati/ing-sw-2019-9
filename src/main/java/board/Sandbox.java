@@ -19,6 +19,11 @@ import java.rmi.server.UID;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * This class is used as an extension of a {@link GameMap gameMap} during the choices of the player.
+ * It continuously get updated and recreated, allowing a more flexible way to manage actions and effects.
+ * @see actions.Action Actions
+ */
 public class Sandbox {
     private final Sandbox father;
 
@@ -38,6 +43,9 @@ public class Sandbox {
 
     public final String uid;
 
+    /**
+     * Basic constructor, it builds the first sandbox
+     */
     public Sandbox(GameMap map, DamageableUID pov){
 
         this.roomsTargeted = new HashMap<>();
@@ -58,6 +66,11 @@ public class Sandbox {
         this.uid = new UID().toString();
     }
 
+    /**
+     * A sandbox that already has a parent
+     * @param parent sandbox from where it takes most of its parameters
+     * @param effects a list of {@link actions.effects effects} that has to be inserted in the sandbox
+     */
     public Sandbox(Sandbox parent, List<Effect> effects){
         this.roomsTargeted = new HashMap<>(parent.roomsTargeted);
         this.tilesTargeted = new HashMap<>(parent.tilesTargeted);
@@ -346,7 +359,6 @@ public class Sandbox {
             tileView.setPlayers(players);
         }
 
-        //gameMapView.you().setAmmo(new AmmoAmount(getUpdatedTotalAmmoAvailable()));
         gameMapView.you().setAmmo(new AmmoAmount(updatedAmmoAvailable.getAmounts()));
 
         gameMapView.you().setLoadedWeapon(getArsenal().stream()
@@ -373,6 +385,10 @@ public class Sandbox {
         return cubes.add(pows);
     }
 
+    /**
+     * Checks if the actor that holds the sandbox can grab anything in his current tile
+     * @return true iif the actor can grab something
+     */
     public boolean canGrab(){
         TileUID position = tile(pov);
         Tile posTile = map.getTile(position);

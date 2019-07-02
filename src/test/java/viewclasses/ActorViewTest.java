@@ -24,14 +24,9 @@ class ActorViewTest {
     private List<Actor> actors;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         gameBuilder = null;
-        try {
-            gameBuilder = new GameBuilder(null, null, null, null, 2);
-        }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
+        gameBuilder = new GameBuilder(null, null, null, null, 2);
         map = gameBuilder.getMap();
         actors = gameBuilder.getActorList();
     }
@@ -82,7 +77,7 @@ class ActorViewTest {
 
 
         assertEquals(2,map.generateView(act1.pawnID()).getPosition(new Coord(1,0)).weapons().size());
-        assertNull(map.generateView(act1.pawnID()).getPosition(new Coord(1,1)).ammoCard());
+        assertNotNull(map.generateView(act1.pawnID()).getPosition(new Coord(1,1)).ammoCard());
     }
 
 

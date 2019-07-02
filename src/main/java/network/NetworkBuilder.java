@@ -11,7 +11,14 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * This class initializes the network layer.
+ * it creates the rmi and socket classes and then it sets up the timer used for checking if a player logged out
+ */
 public class NetworkBuilder {
+    /**
+     * Initialize rmi and socket connections
+     */
     public NetworkBuilder(MainController controller) {
         String host;
 

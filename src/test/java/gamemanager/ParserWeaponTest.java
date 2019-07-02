@@ -23,17 +23,16 @@ class ParserWeaponTest {
     @Test
     void voidTest() {
         String path = "test/weaponToTest";
-        //weaponCollection = ParserWeapon.parseWeapons(path);
+        weaponCollection = ParserWeapon.parseWeapons(path);
         System.out.println(weaponCollection.size());
     }
 
     @Test
     void simpleWeaponTest(){
         System.out.println("DIM\t" + weaponCollection.size());
-        assertEquals(1, weaponCollection.size());
+        assertEquals(21, weaponCollection.size());
         Weapon weaponToTest = weaponCollection.iterator().next();
-        assertEquals(weaponCollection.size(),1);
-        assertEquals("precisione asd",weaponToTest.getName());
+        assertEquals(weaponCollection.size(),21);
 
         Map<AmmoColor, Integer> amountGiven = new HashMap<>();
         amountGiven.put(AmmoColor.BLUE,2);

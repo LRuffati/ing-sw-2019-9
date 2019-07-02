@@ -8,6 +8,10 @@ import viewclasses.GameMapView;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * This class is an implementation of {@link ControllerMessage ControllerMessage}
+ * and is used when no choices can be done
+ */
 public class WaitMessage implements ControllerMessage, Serializable {
 
     private final Message message;

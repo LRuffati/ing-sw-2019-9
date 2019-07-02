@@ -22,19 +22,14 @@ class PawnTest {
     private List<Actor> actorList;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         GameBuilder builder = null;
         String tilePath = "ammoTile.txt";
         String mapPath = "map1.txt";
-        try {
-            builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 2);
-        }
-        catch (FileNotFoundException e){
-        }
+        builder = new GameBuilder(
+                mapPath, null, null, tilePath, 2);
         map = builder.getMap();
         actorList = builder.getActorList();
-
     }
 
     @Test

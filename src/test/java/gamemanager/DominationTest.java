@@ -15,12 +15,7 @@ public class DominationTest {
 
     @BeforeEach
     void setup() {
-        try {
-            game = new GameBuilder(GameMode.DOMINATION, null, null, null,null, 3);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        game = new GameBuilder(GameMode.DOMINATION, null, null, null, null, 3);
     }
 
     @Test

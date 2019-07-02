@@ -7,6 +7,9 @@ import uid.DamageableUID;
 import java.util.Set;
 import java.util.function.Consumer;
 
+/**
+ * Method used to handle the marking of a certain player
+ */
 public class MarkEffect implements Effect {
     private final int amount;
     private final DamageableUID uid;

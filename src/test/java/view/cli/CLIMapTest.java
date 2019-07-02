@@ -24,14 +24,10 @@ class CLIMapTest {
     private ClientController client;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         GameBuilder builder = null;
-        try {
-            builder = new GameBuilder(
-                    null, null, null, null, 5);
-        }
-        catch (FileNotFoundException ignored){
-        }
+        builder = new GameBuilder(
+                null, null, null, null, 5);
         map = builder.getMap();
         actorList = builder.getActorList();
         gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());

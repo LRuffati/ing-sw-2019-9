@@ -12,9 +12,7 @@ import network.socket.client.Client;
 import network.socket.client.ClientNetworkSocket;
 import network.exception.InvalidLoginException;
 
-import javax.swing.text.html.parser.Parser;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This class is an implementation of {@link ControllerMessage ControllerMessage}
+ * and is used when a srting can be chosen
+ */
 public class StringChoiceMessage implements ControllerMessage {
 
     private final String description;

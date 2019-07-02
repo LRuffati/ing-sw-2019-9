@@ -25,8 +25,11 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * This class implements the Teleporter powerUp.
+ */
 public class Teleporter extends PowerUp {
-    public Teleporter(AmmoColor color) {
+    Teleporter(AmmoColor color) {
         super(PowerUpType.TELEPORTER, color);
     }
 

@@ -16,7 +16,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
+/**
+ * Method used to handle the Grab of object from the Map
+ */
 public class GrabEffect implements Effect {
     public final EffectType type;
 

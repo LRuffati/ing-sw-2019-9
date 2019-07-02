@@ -8,19 +8,20 @@ import controller.controllerstates.SlaveControllerState;
 
 import java.rmi.server.UID;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * This class is used to hold all the {@link controller.controllermessage.ControllerMessage messages} that have been sent to every client and that can be reused.
+ * Every player have a dedicated list that holds all the messages that can be chosen.
+ * The list is cleared when needed, so only available actions can be made
+ */
 public class ObjectMap {
-
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private static ObjectMap ourInstance = new ObjectMap();
     public static ObjectMap get() {
         return ourInstance;
     }
-
 
     /**
      * This Map contains the ControllerMessage associated with each String identifier

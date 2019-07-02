@@ -298,9 +298,10 @@ public class CLIDemo implements View {
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 1;
         while(actionIterator.hasNext()){
+            ActionView next = actionIterator.next();
             builder.append(i);
             builder.append(". ");
-            builder.append(actionIterator.next().getName());
+            builder.append(next.getName()).append(" that costs ").append(printCost(next.getCost()));
             builder.append("\n");
             i+=1;
         }
@@ -668,24 +669,24 @@ public class CLIDemo implements View {
         System.out.println(printCost(player.ammo()));
 
         int i = 0;
-        if(!player.getLoadedWeapon().isEmpty()) {
+        if(!player.loadedWeapon().isEmpty()) {
             System.out.println("\n>> He's got the following loaded weapons: ");
-            for (WeaponView w : player.getLoadedWeapon()) {
+            for (WeaponView w : player.loadedWeapon()) {
                 System.out.println(i + ". " + w.name());
                 i++;
             }
         }
-        if(!player.getUnloadedWeapon().isEmpty()) {
+        if(!player.unloadedWeapon().isEmpty()) {
             System.out.println("\n>> He's got the following unloaded weapons: ");
-            for (WeaponView w : player.getUnloadedWeapon()) {
+            for (WeaponView w : player.unloadedWeapon()) {
                 System.out.println(i + ". " + w.name());
                 i++;
             }
         }
         i=0;
-        if(!player.getPowerUp().isEmpty()) {
+        if(!player.powerUp().isEmpty()) {
             System.out.println("\n>> He's got the following powerUps: ");
-            for (PowerUpView w : player.getPowerUp()) {
+            for (PowerUpView w : player.powerUp()) {
                 System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());
                 i++;
             }

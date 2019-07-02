@@ -10,7 +10,12 @@ import genericitems.Tuple;
 
 import java.util.*;
 
+/**
+ * This class contains all the actions that can be performed by an actor during his turn.
+ * It covers all the possible cases, Normal game, FF and intermediate damage phases
+ */
 class ActionTemplateOptions {
+    ActionTemplateOptions(){}
 
     private static final ActionTemplate muovi3 = new ActionTemplate(
             new ActionInfo(
@@ -299,7 +304,12 @@ class ActionTemplateOptions {
             )
     );
 
-    public static List<List<ActionTemplate>> getActionsStandard(int n){
+    /**
+     * It builds the list of action available during the first phase of the game (non-frenzy)
+     * @param n damage received by the player
+     * @return A List containing a List of all the available {@link actions.ActionTemplate actions}
+     */
+    static List<List<ActionTemplate>> getActionsStandard(int n){
         List<ActionTemplate> ret = new ArrayList<>(List.of(muovi3, grab, shoot));
         if (n>2) {
             ret.add(ret.indexOf(grab), muovi2grab);
@@ -312,7 +322,12 @@ class ActionTemplateOptions {
         return List.of(ret, ret);
     }
 
-    public static List<List<ActionTemplate>> getFrenzyActions(boolean beforeFirst) {
+    /**
+     * It builds the list of action available during the second phase of the game (FinalFrenzy)
+     * @param beforeFirst true if the actor will play before the player that started FF
+     * @return A List containing a List of all the available {@link actions.ActionTemplate actions}
+     */
+    static List<List<ActionTemplate>> getFrenzyActions(boolean beforeFirst) {
         List<ActionTemplate> ret = new ArrayList<>();
 
         if(beforeFirst) {

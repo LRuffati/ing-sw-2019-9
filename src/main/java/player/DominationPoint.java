@@ -10,12 +10,20 @@ import uid.TileUID;
 
 import java.awt.*;
 
+/**
+ * This class is an extension of the {@link Pawn pawn} class, and is used to contain a DominationPoint
+ */
 public class DominationPoint extends Pawn {
     private final DominationPointTile tile;
     private final DamageableUID uid;
 
-    //TODO: what to do for the actor field
 
+    /**
+     * Default constructor
+     * @param uid the identifier of the pawn
+     * @param tile the Tile where the pawn is
+     * @param map the GameMap
+     */
     public DominationPoint(DamageableUID uid, Tile tile, GameMap map){
         super(uid, tile.tileID, map);
         this.uid = uid;
@@ -42,6 +50,9 @@ public class DominationPoint extends Pawn {
         return uid;
     }
 
+    /**
+     * DominationPoint cannot move, so this method does nothing
+     */
     @Override
     public void move(TileUID tile) {
         //does nothing

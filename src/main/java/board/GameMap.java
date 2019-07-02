@@ -11,7 +11,6 @@ import genericitems.Tuple3;
 import genericitems.Tuple4;
 import grabbables.*;
 import player.Actor;
-import player.ControlPointActor;
 import player.Pawn;
 import uid.DamageableUID;
 import uid.TileUID;
@@ -71,7 +70,6 @@ public class GameMap {
      * Private constructor, to build a map gameMapFactory must be used
      */
     private GameMap (
-            GameMode gameMode,
             Map<RoomUID, Room> roomUIDMap,
             Map<TileUID, Tile> tileUIDMap,
             List<TileUID> position,
@@ -91,7 +89,6 @@ public class GameMap {
         this.damageableUIDMap = buildPawnForPlayers(this, numOfPlayer);
         tileUIDMap.values().forEach(x -> x.setMap(this, damageableUIDMap));
 
-        //TODO: create weapon cards
         refill();
     }
 
@@ -115,7 +112,7 @@ public class GameMap {
                 Coord
                 > res = ParserMap.parseMap(gameMode.equals(GameMode.NORMAL), path);
 
-        return new GameMap(gameMode, res.x, res.y, res.z, res.t, numOfPlayer, cards);
+        return new GameMap(res.x, res.y, res.z, res.t, numOfPlayer, cards);
     }
 
     /*
@@ -196,7 +193,6 @@ public class GameMap {
      *
      * @return A Set containing all the Tiles in the map
      */
-    // TODO: Test this doesn't include the null tile
     public Set<TileUID> allTiles(){
         HashSet<TileUID> ret = new HashSet<>();
         for(Map.Entry t : tileUIDMap.entrySet()){
@@ -211,8 +207,6 @@ public class GameMap {
      * @return returns the Coord of a given TileUID
      */
     public Coord getCoord(TileUID tile){
-        //if(!allTiles().contains(tile))
-        //    throw new InvalidParameterException("This tile does not exists");
         return new Coord(position.indexOf(tile) / maxPos.getX() , position.indexOf(tile) % maxPos.getX());
     }
 
@@ -257,12 +251,7 @@ public class GameMap {
      * @return the room containing the pawn
      */
     public TileUID tile(DamageableUID pawn) {
-        for (TileUID t : tileUIDMap.keySet()) {
-            if (containedPawns(t).contains(pawn))
-                return t;
-        }
-        return emptyTile; //FIXME
-        //throw new NoSuchElementException("The pawn is not in the map");
+        return damageableUIDMap.get(pawn).getTile();
     }
 
     /**
@@ -271,7 +260,7 @@ public class GameMap {
      * @param room The room
      * @return All the tiles in the room
      */
-    public Collection<TileUID> tilesInRoom(RoomUID room) {
+    Collection<TileUID> tilesInRoom(RoomUID room) {
         return getRoom(room).getTiles();
     }
 
@@ -291,7 +280,7 @@ public class GameMap {
      * @param tile  Tile identifier
      * @return The return value is a set instead of a Collection since it is not supposed to be ordered nor to have duplicates in it
      */
-    public Set<TileUID> getSurroundings(Boolean physical, Integer range, TileUID tile) {
+    Set<TileUID> getSurroundings(Boolean physical, Integer range, TileUID tile) {
         Set<TileUID> ret = new HashSet<>();
         Set<TileUID> border = new HashSet<>();
         Set<TileUID> newBorder = new HashSet<>();
@@ -315,7 +304,7 @@ public class GameMap {
      * @param tile Tile identifier
      * @return A Collection containing all the visible Tiles
      */
-    public Collection<TileUID> getVisible(TileUID tile) {
+    Collection<TileUID> getVisible(TileUID tile) {
         Set<TileUID> ret = new HashSet<>();
         Set<TileUID> surr = getSurroundings(false, 1, tile);
         for (TileUID t : surr) {
@@ -329,7 +318,6 @@ public class GameMap {
      * Spawn point will receive up to 3 Weapon, non-Spawn point will receive an Ammo Card
      */
     public void refill(){
-        //TODO: test this method, needs also weapon management
         if(deckOfWeapon == null || deckOfAmmoCard == null)
             return;
         for(TileUID tile : allTiles()){

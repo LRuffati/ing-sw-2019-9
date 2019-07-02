@@ -18,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * This effect is to beused when you want to fire a weapon during the turn.
+ * This effect is to be used when you want to fire a weapon during the turn.
  * It makes you choose the weapon you want to use, changes the sandbox to make it unavailable and
  * then hands the process over to the WeaponUse
  */

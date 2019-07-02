@@ -9,6 +9,9 @@ import viewclasses.GameMapView;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * This class contains an implementation of {@link ControllerMessage ControllerMessage} that can be sent through the network layer
+ */
 public class ControllerMessageClient implements ControllerMessage, Serializable {
 
     public final String id;
@@ -18,7 +21,9 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
     private List<String> changes;
     private GameMapView sandbox;
 
-
+    /**
+     * Basic contructor, it generates a new ControllerMessageClient given the original ControllerMessage and an identifier
+     */
     public ControllerMessageClient(ControllerMessage controllerMessage, String id) {
         this.id = id;
 
@@ -32,6 +37,9 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
             this.changes = controllerMessage.getMessage().getChanges();
     }
 
+    /**
+     * This constructor generates an empty ControllerMessage of type WAIT
+     */
     public ControllerMessageClient() {
         this.id = null;
 
@@ -41,6 +49,9 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
         this.sandbox = null;
     }
 
+    /**
+     * This contructor generates a new ControllerMessage of a custom type
+     */
     public ControllerMessageClient(ControllerMessage controllerMessage, String id, SlaveControllerState state) {
         this.id = id;
 
@@ -78,7 +89,6 @@ public class ControllerMessageClient implements ControllerMessage, Serializable 
 
     @Override
     public ControllerMessage pick(List<Integer> choices) {
-        //FIXME: call the network method, example: return network.pick(id, choices)
         return null;
     }
 

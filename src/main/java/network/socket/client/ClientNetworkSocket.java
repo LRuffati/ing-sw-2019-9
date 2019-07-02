@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * This class handles all the methods called by the client (implemented in ClientInterface)
- * and the Requests called by the server (implemented in ResponseHandler)
+ * This class handles all the methods called by the client (implemented in {@link ClientInterface ClientInterface})
+ * and the Requests called by the server (implemented in {@link ResponseHandler Responsehandler})
  */
 public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private final Client client;
@@ -32,7 +32,6 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
     private void sync(){
         synchronized (client) {
             try {
-                //TODO: add while loop
                 client.wait();
             }
             catch (InterruptedException e) {
@@ -53,6 +52,9 @@ public class ClientNetworkSocket implements ResponseHandler, ClientInterface {
         System.out.println("Ready to receive");
     }
 
+    /**
+     * This method continuously wait until a message is read, then it handle it
+     */
     public void startReceiver() {
         // start a receiver thread
         receiver = new Thread(

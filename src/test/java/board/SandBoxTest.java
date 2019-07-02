@@ -18,13 +18,9 @@ public class SandBoxTest {
 
 
     @BeforeEach
-    void setup(){
+    void setup() {
         GameBuilder builder = null;
-        try {
-            builder = new GameBuilder(null, null, null, null, 2);
-        }
-        catch (FileNotFoundException e){
-        }
+        builder = new GameBuilder(null, null, null, null, 2);
         map = builder.getMap();
         sandbox = map.createSandbox(map.getDamageable().iterator().next());
     }

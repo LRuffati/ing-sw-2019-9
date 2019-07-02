@@ -56,11 +56,11 @@ public class WeaponCards extends JPanel {
 
     private void setYourShowedWeaponCards(){
         int i = 0;
-        for(WeaponView weapon : gmv.you().getUnloadedWeapon()){
+        for(WeaponView weapon : gmv.you().unloadedWeapon()){
             showedWeaponCards[i] = linkWeaponToCard(weapon);
             i++;
         }
-        for(WeaponView weapon : gmv.you().getLoadedWeapon()){
+        for(WeaponView weapon : gmv.you().loadedWeapon()){
             showedWeaponCards[i] = linkWeaponToCard(weapon);
             i++;
         }
@@ -80,11 +80,11 @@ public class WeaponCards extends JPanel {
         for(ActorView player : gmv.players()) {
             BufferedImage[] playerCards = new BufferedImage[3];
             int i = 0;
-            for (WeaponView weapon : player.getUnloadedWeapon()) {
+            for (WeaponView weapon : player.unloadedWeapon()) {
                 playerCards[i] = linkWeaponToCard(weapon);
                 i++;
             }
-            for(WeaponView weapon : player.getLoadedWeapon()){
+            for(WeaponView weapon : player.loadedWeapon()){
                 playerCards[i] = linkWeaponToCard(weapon);
                 i++;
             }
@@ -211,12 +211,8 @@ public class WeaponCards extends JPanel {
     private static void createAndShowGui() {
 
         GameBuilder builder = null;
-        try {
-            builder = new GameBuilder(
+        builder = new GameBuilder(
                     null, null, null, null, 5);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
         GameMap map = builder.getMap();
         List<Actor> actorList = builder.getActorList();

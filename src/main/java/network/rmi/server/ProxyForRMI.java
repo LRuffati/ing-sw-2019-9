@@ -11,6 +11,11 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Proxy class that handles all the rmi messages that are directed to the client.
+ * It implements {@link ServerInterface ServerInterface} methods.
+ * It basically creates a new thread for each call, allowing the server to send multiple message and to handle disconnections
+ */
 public class ProxyForRMI extends UnicastRemoteObject implements ServerInterface {
 
     private transient ServerInterface remoteObject;

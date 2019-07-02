@@ -11,15 +11,13 @@ import network.TimerForDisconnection;
 import network.exception.InvalidLoginException;
 import controller.controllermessage.ControllerMessage;
 
-import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
- * Contains all the method defined in ServerRMIInterfaces.
+ * Contains all the method defined in {@link ServerRMIInterface ServerRMIInterface}.
  * This class only handle messages received from the Client.
  */
 public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIInterface{

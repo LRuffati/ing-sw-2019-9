@@ -22,30 +22,53 @@ public class DominationMode extends Scoreboard{
             .map(Integer::parseInt).collect(Collectors.toCollection(ArrayList::new));
 
 
-
-    public DominationMode(){
+    /**
+     * Basic constructor
+     */
+    DominationMode(){
         this(ParserConfiguration.parseInt("numOfDeaths"));
     }
 
-    public DominationMode(int numOfdeaths) {
+    /**
+     * Constructor that allows to choose the number of death needed to complete the game
+     */
+    DominationMode(int numOfdeaths) {
         super(numOfdeaths);
         this.spawnTracker = new HashMap<>();
     }
 
+    /**
+     *
+     * @return A Map containing all the spawnTrackers
+     */
     public Map<Color, List<Actor>> getSpawnTracker() {
         return spawnTracker;
     }
 
+    /**
+     *
+     * @return true iif FinalFrenzy phase has started
+     */
+    @Override
     public boolean finalFrenzy() {
-        return numOfDeaths >= maxDeaths || spawnTracker.values().stream().filter(x -> x.size() == 8).count() >= 2;
+        return numOfDeaths >= maxDeaths
+                || spawnTracker.values().stream()
+                .filter(x -> x.size() == 8).count() >= 2;
     }
 
-
+    /**
+     * Adds a point to the correct ColorTrack
+     * @param color the ColorTrack that will receive the point
+     * @param actor the actor that scores the point
+     */
     public void addSpawnTrackerPoint(Color color, Actor actor) {
         spawnTracker.get(color).add(actor);
     }
 
-    public void addPointsAtEndGame() {
+    /**
+     * Used at the end of the game, it counts the points on the colorTracks and assign the bonus to the players that awarded more points
+     */
+    private void addPointsAtEndGame() {
         TreeSet<Actor> scoreSet;
         for(List<Actor> list : spawnTracker.values()) {
             scoreSet = new TreeSet<>
@@ -56,7 +79,7 @@ public class DominationMode extends Scoreboard{
             int i = 0;
             //FIXME: possible bug in this, seems to take only one
             //todo: should be solved, da testare per sicurezza
-            for(Actor actor : scoreSet.descendingSet()){
+            for(Actor actor : scoreSet.descendingSet()) {
                 actor.addPoints(pointForSpawnTracker.get(i));
                 i++;
             }
@@ -69,6 +92,7 @@ public class DominationMode extends Scoreboard{
      */
     @Override
     public Actor claimWinner() {
+        addPointsAtEndGame();
         Actor maxA = null;
         for (Actor a : actorsList) {
             if (maxA == null || a.getPoints() > maxA.getPoints()) maxA = a;

@@ -4,7 +4,6 @@ import exception.AmmoException;
 import gamemanager.ParserConfiguration;
 
 import java.awt.*;
-import java.util.EnumMap;
 import java.util.Map;
 
 /**

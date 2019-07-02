@@ -5,6 +5,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumMap;
 import java.util.Map;
 
+/**
+ * This class represents an ammunition amount, differently from {@link AmmoAmount AmmoAmount} this is not capped to 3 ammo per color
+ */
 public class AmmoAmountUncapped{
 
     public static AmmoAmountUncapped zeroAmmo = new AmmoAmountUncapped();
@@ -39,10 +42,20 @@ public class AmmoAmountUncapped{
     }
 
 
+    /**
+     * Checks if this ammoAmount is greater than cost
+     * @param cost the cost of the object
+     * @return true iif this > cost
+     */
     public boolean canBuy(@NotNull AmmoAmountUncapped cost){
         return cost.canBeBought(this);
     }
 
+    /**
+     * Checks if this ammoAmount is lower than funds
+     * @param funds the ammo available
+     * @return true iif this < funds
+     */
     protected boolean canBeBought(@NotNull AmmoAmountUncapped funds){
         for (AmmoColor i: AmmoColor.values()){
             if (getAmounts().get(i)>funds.getAmounts().get(i)){

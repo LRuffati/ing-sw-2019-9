@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class contains the Actor that is used by the view and transmitted from the server to the client
+ * This class contains all the information of {@link player.Actor actor} needed by the client.
+ * It only contains getters and setters
  */
 public class ActorView implements Serializable {
     private String colorString;
@@ -36,18 +37,6 @@ public class ActorView implements Serializable {
 
     public int getHP(){
         return hp;
-    }
-
-    public List<WeaponView> getLoadedWeapon() {
-        return loadedWeapon;
-    }
-
-    public List<WeaponView> getUnloadedWeapon() {
-        return unloadedWeapon;
-    }
-
-    public List<PowerUpView> getPowerUp() {
-        return powerUp;
     }
 
 

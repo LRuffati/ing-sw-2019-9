@@ -27,6 +27,10 @@ public class ClientHandler implements Runnable{
 
     private final ServerNetworkSocket controller;
 
+    /**
+     * Constructor of the class.
+     * It creates the Input and Output streams and the socket. Finally if binds the clientHandler to the controller
+     */
     public ClientHandler(Socket socket) throws IOException {
         logger = Logger.getLogger(ClientHandler.class.getName());
         this.socket = socket;
@@ -38,6 +42,10 @@ public class ClientHandler implements Runnable{
         stop = false;
     }
 
+    /**
+     * Method that sends the response through the socket
+     * @param response the response that has to be send
+     */
     synchronized void respond(Response response){
         try{
             out.writeObject(response);

@@ -7,6 +7,9 @@ import viewclasses.WeaponView;
 
 import java.util.*;
 
+/**
+ * This class contains all the information needed for a weapon.
+ */
 public class Weapon extends Grabbable{
     private AmmoAmount buyCost;
     private AmmoAmount reloadCost;
@@ -17,11 +20,18 @@ public class Weapon extends Grabbable{
     private Map<String, ActionTemplate> actions;
 
     /**
-     * Constructor used only for tests
+     * Empty constructor, should not be used
      */
     public Weapon(){}
 
-
+    /**
+     * Default constructor
+     * @param name name of the weapon
+     * @param buyCost {@link actions.utils.AmmoAmount Cost} that must be paid to pick up the weapon
+     * @param reloadCost {@link actions.utils.AmmoAmount Cost} that must be paid to reload the weapon
+     * @param actions A collection that contains all the {@link actions.ActionTemplate actions} that can be performed with the weapon
+     * @param description a description of the weapon
+     */
     public Weapon(String name,
                   AmmoAmount buyCost,
                   AmmoAmount reloadCost,
@@ -39,6 +49,7 @@ public class Weapon extends Grabbable{
         this.description = description;
     }
 
+    @Override
     public Set<Weapon> getWeapon(){
         return Set.of(this);
     }
@@ -102,6 +113,9 @@ public class Weapon extends Grabbable{
     }
 
 
+    /**
+     * This generates a {@link viewclasses.WeaponView weaponView} that contains all the information needed by the client
+     */
     public WeaponView generateView() {
         WeaponView weaponView = new WeaponView();
 

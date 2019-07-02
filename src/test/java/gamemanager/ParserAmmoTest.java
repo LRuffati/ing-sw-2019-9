@@ -20,25 +20,16 @@ class ParserAmmoTest {
     private Collection<AmmoCard> ammoCardCollection;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         String tilePath = ParserConfiguration.parsePath("ammoTilePath");
-        try {
-            ammoCardCollection = ParserAmmoTile.parse(tilePath);
-            ammoCardDeck = new GameBuilder(null, null, null, null, 1).getDeckOfAmmoCard();
-        }
-        catch (FileNotFoundException e){
-        }
+        ammoCardCollection = ParserAmmoTile.parse(tilePath);
+        ammoCardDeck = new GameBuilder(null, null, null, null, 1).getDeckOfAmmoCard();
     }
 
-    private void setup2(){
+    private void setup2() {
         String path = "test/TileTest.txt";
-        try {
-            ammoCardCollection = ParserAmmoTile.parse(path);
-            ammoCardDeck = new GameBuilder(null, null, null, path, 1).getDeckOfAmmoCard();
-        }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
+        ammoCardCollection = ParserAmmoTile.parse(path);
+        ammoCardDeck = new GameBuilder(null, null, null, path, 1).getDeckOfAmmoCard();
     }
 
     @Test

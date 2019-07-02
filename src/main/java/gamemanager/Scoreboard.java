@@ -6,10 +6,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This class implements the Scoreboard for the Deathmatch games. It checks if the Final Frenzy is starting and add
+ * This class implements the Scoreboard for Normal mode. It checks if the Final Frenzy is starting and add
  * every kills to the Scoreboard with the player who committed the frag and how many tokens he got from it.
  */
-
 public class Scoreboard {
     List<Actor> actorsList;
     int numOfDeaths;
@@ -49,6 +48,10 @@ public class Scoreboard {
         this.skullBox = new ArrayList<>();
     }
 
+    /**
+     * Method that binds the scoreboard to the actors
+     * @param actorList a List containing all the actors
+     */
     void setActor(List<Actor> actorList) {
         this.actorsList = actorList;
     }
@@ -70,36 +73,34 @@ public class Scoreboard {
     }
 
     /**
-     * Add to the @points attribute of every player (in the class actor) the points gain from a kill.
+     * Add to the points attribute of every player (in the class actor) the points gain from a kill.
      */
-    public void score(Actor dead){
+    public void score(Actor dead) {
         TreeSet<Actor> scoreSet = new TreeSet<>
                 (Comparator.comparing(
                         x -> Collections.frequency(dead.getDamageTaken(), x)
                 ));
 
-        if(dead.isDead()){
-            if (dead.getDamageTaken().get(0)!=dead)
-                dead.getDamageTaken().get(0).addPoints(1);
-            List<Actor> damages = dead.getDamageTaken().stream()
-                                    .filter(a -> a != dead).collect(Collectors.toList());
-            
-            scoreSet.addAll(dead.getDamageTaken());
+        if (!dead.getDamageTaken().get(0).equals(dead))
+            dead.getDamageTaken().get(0).addPoints(1);
 
-            int num = dead.getNumOfDeaths();
-            for(Actor actor : scoreSet.descendingSet()){
-                // TODO: OK O <= O ALTRO?
-                if(!finalFrenzy()) {
-                    if (num < pointForDeath.size()) {
-                        actor.addPoints(pointForDeath.get(num));
-                        num++;
-                    }
+        List<Actor> damages = dead.getDamageTaken().stream()
+                .filter(a -> a != dead).collect(Collectors.toList());
+
+        scoreSet.addAll(damages);
+
+        int num = dead.getNumOfDeaths();
+        for (Actor actor : scoreSet.descendingSet()) {
+            // TODO: OK O <= O ALTRO?
+            if (!finalFrenzy()) {
+                if (num < pointForDeath.size()) {
+                    actor.addPoints(pointForDeath.get(num));
+                    num++;
                 }
-                else {
-                    if (num < pointForDeathFinal.size()) {
-                        actor.addPoints(pointForDeathFinal.get(num));
-                        num++;
-                    }
+            } else {
+                if (num < pointForDeathFinal.size()) {
+                    actor.addPoints(pointForDeathFinal.get(num));
+                    num++;
                 }
             }
         }
@@ -109,10 +110,8 @@ public class Scoreboard {
      * Remove a skull and add the killer marker(s).
      * @param killer is the player who got the kill.
      */
-    public void addKill(Actor killer, Actor victim){
-        int numPoints = 1;
+    public void addKill(Actor killer, Actor victim) {
         if(victim.getDamageTaken().size()>10 && victim.getDamageTaken().get(11)!= null) {
-            numPoints = 2;
             //TODO: probably should't be done here
             victim.addMark(killer, 1);
             skullBox.add(Map.of(killer, 1));
@@ -135,7 +134,6 @@ public class Scoreboard {
     }
 
     /**
-     * Needed for tests.
      * @return list of actors.
      */
     public List<Actor> getActorsList() {
@@ -143,7 +141,6 @@ public class Scoreboard {
     }
 
     /**
-     * Needed for tests.
      * @return the object skullbox.
      */
     public List<Map<Actor, Integer>> getSkullBox() {
@@ -151,7 +148,6 @@ public class Scoreboard {
     }
 
     /**
-     * Needed for tests.
      * @return the number of current deaths in the game.
      */
     public int getNumOfDeaths() {

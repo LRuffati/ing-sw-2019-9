@@ -30,6 +30,9 @@ public class Client {
         this.port = port;
     }
 
+    /**
+     * This class initializes the socket and the streams.
+     */
     public void init() throws IOException {
         this.socket = new Socket(host, port);
         out = new ObjectOutputStream(socket.getOutputStream());
@@ -43,6 +46,10 @@ public class Client {
         socket.close();
     }
 
+    /**
+     * This method is used to read any request from the network.
+     * Each request is then passed to the correct handler
+     */
     public Response nextResponse() {
         try {
             return ((Response) in.readObject());

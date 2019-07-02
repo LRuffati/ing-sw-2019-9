@@ -8,8 +8,12 @@ import controller.controllermessage.ControllerMessage;
 import controller.controllermessage.WaitMessage;
 
 import java.util.List;
+
+/**
+ * This class implements the TagBack powerUp.
+ */
 public class TagBack extends PowerUp {
-    public TagBack(AmmoColor color) {
+    TagBack(AmmoColor color) {
         super(PowerUpType.TAGBACKGRANADE, color);
     }
 

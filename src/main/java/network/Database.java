@@ -2,18 +2,21 @@ package network;
 
 import controller.MainController;
 import controller.SlaveController;
-import gamemanager.GameBuilder;
 import network.exception.InvalidLoginException;
 import network.rmi.server.ProxyForRMI;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UID;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class holds all the necessary information to link Players, colors, tokens and Networks.
  */
 public class Database {
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
+
     private static Database ourInstance = new Database();
     public static Database get() {
         return ourInstance;
@@ -114,7 +117,7 @@ public class Database {
             proxy = isrmi ? new ProxyForRMI(network) : network;
         }
         catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "login", e);
         }
         Player user = usersByUsername.get(username);
         if(user == null) {
@@ -127,7 +130,7 @@ public class Database {
                 network.setToken(token);
             }
             catch (RemoteException e) {
-                e.printStackTrace();
+                logger.log(Level.INFO, "login-SetToken", e);
                 logout(token);
             }
         }
@@ -166,19 +169,19 @@ public class Database {
         if(!present)
             throw new InvalidLoginException("Reconnection exception", true, false);
 
-        ServerInterface proxy = null;
+        ServerInterface proxy = network;
         try {
             proxy = isrmi ? new ProxyForRMI(network) : network;
         }
         catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "login, reconnect", e);
         }
         getUserByToken(token).setServerInterface(proxy);
         try {
             proxy.setToken(token);
         }
         catch (RemoteException e) {
-            e.printStackTrace();
+            logger.log(Level.INFO, "login, reconnect-setServerInterface", e);
             logout(token);
         }
 
@@ -231,6 +234,10 @@ public class Database {
         return gameMaster;
     }
 
+    /**
+     *
+     * @return a Set containing all the tokens connected to the game
+     */
     public Set<String> getConnectedTokens(){
         Set<String> ret;
         synchronized (wait) {
@@ -239,14 +246,26 @@ public class Database {
         return ret;
     }
 
+    /**
+     *
+     * @return a set containing alle the token currently disconnected
+     */
     public Set<String> getDisconnectedToken() {
         return disconnectedToken;
     }
 
+    /**
+     *
+     * @return a Collection containing all the Player that logged in
+     */
     public Collection<Player> getPlayers() {
         return usersByToken.values();
     }
 
+    /**
+     *
+     * @return a Collection containing all the SlaveControllers
+     */
     public Collection<SlaveController> getSlaveControllers() {
         return controllerByToken.values();
     }

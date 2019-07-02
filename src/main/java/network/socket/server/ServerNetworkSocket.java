@@ -12,8 +12,8 @@ import controller.controllermessage.ControllerMessage;
 import viewclasses.GameMapView;
 
 /**
- * This class handles all the methods called by the Server(implemented in ServerInterface)
- * and the Requests called by the clients (implemented in RequestHandler)
+ * This class handles all the methods called by the Server(implemented in {@link ServerInterface Serverinterface})
+ * and the Requests called by the clients (implemented in {@link RequestHandler RequestHandler})
  */
 public class ServerNetworkSocket implements RequestHandler, ServerInterface {
 
@@ -133,7 +133,6 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
         System.out.println("Richiesta di uscita\t" + Database.get().getUserByToken(request.token).getUsername());
         if(!checkConnection(request.token))
             return new ExceptionResponse(new InvalidTokenException());
-        //TODO: notify controller
         Database.get().logout(request.token);
 
 

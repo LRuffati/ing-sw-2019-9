@@ -39,6 +39,8 @@ import static java.lang.System.exit;
  *
  * This class is used to store the data needed to the client and to send him notification.
  * This is the only access used by the View to receive messages and to query the Server.
+ * @see ClientControllerClientInterface
+ * @see ClientControllerNetworkInterface
  */
 public class ClientController implements ClientControllerClientInterface, ClientControllerNetworkInterface {
     private Logger logger;
@@ -421,6 +423,9 @@ public class ClientController implements ClientControllerClientInterface, Client
     private int signals = 0;
     private boolean stopped = false;
 
+    /**
+     * Method used to create a new Timer that checks if there are problems in the network
+     */
     public void add() {
 
         timer = new Timer("TimerForDisconnection");
@@ -441,21 +446,21 @@ public class ClientController implements ClientControllerClientInterface, Client
         //timer.schedule(timerTask, 200,500);
     }
 
+    /**
+     * This method reset the counting of the Timer, is called when a ping request is sent.
+     */
     public void reset() {
-
         if(!stopped) {
             signals = 0;
         }
-
-
     }
 
+    /**
+     * This method is used to stop the Timer that checks for disconnections
+     */
     public void stop() {
-
         stopped = true;
         timer.cancel();
-
-
     }
 
 

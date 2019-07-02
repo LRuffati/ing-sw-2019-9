@@ -17,6 +17,10 @@ public class TimerForDisconnection {
 
     private TimerForDisconnection(){}
 
+    /**
+     * This method adds a new Timer for the player linked with the Token.
+     * If the timer fails to receive news from the client for a certain amount of time the player is logged out
+         */
     public static void add(String token) {
 
         TimerTask repeatedTask = new TimerTask() {
@@ -51,6 +55,9 @@ public class TimerForDisconnection {
         //timer.schedule(repeatedTask, 300,500);
     }
 
+    /**
+     * Reset the counter of the timer. Called when a ping response is received
+     */
     public static void reset(String token) {
         for(Map.Entry entry : timerMap.entrySet()) {
             if(entry.getValue().equals(token)) {
@@ -79,6 +86,9 @@ public class TimerForDisconnection {
         */
     }
 
+    /**
+     * When the client logs out his timer is stopped
+     */
     public static void stop(String token) {
         if(tokenToTimerMap.containsKey(token)) {
             logger.log(Level.INFO, "Stopping the timer");

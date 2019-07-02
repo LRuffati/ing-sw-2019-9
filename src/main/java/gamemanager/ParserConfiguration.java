@@ -1,15 +1,9 @@
 package gamemanager;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Class used to read data from configuration File.
@@ -56,6 +50,11 @@ public class ParserConfiguration {
                 ));
     }
 
+    /**
+     * Method used to read an integer
+     * @param configuration The identifier of the configuration item. It's case-insensitive
+     * @return The integer read
+     */
     public static int parseInt(String configuration) {
         return Integer.parseInt(ParserConfiguration.parse(configuration));
     }

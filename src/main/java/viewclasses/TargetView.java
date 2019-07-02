@@ -8,7 +8,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This class contains all the information of {@link actions.targeters.targets.Targetable Targets} needed by the client.
+ * It only contains getters and setters
+ */
 public class TargetView implements Serializable {
     private String gameMapViewId;
     private List<DamageableUID> damageableUIDList;

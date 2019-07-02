@@ -13,11 +13,17 @@ import java.util.List;
 
 /**
  * Methods called by ClientNetworkRMI
+ * Basically implements all the methods of {@link network.ClientInterface clientInterface}, with only small modifies
+ * @see network.ClientInterface
  */
 public interface ServerRMIInterface extends Remote {
+
     int mirror(String token, int n) throws RemoteException;
+
     int close(String token) throws RemoteException;
+
     String register(ServerInterface user, String username, String password, String color) throws RemoteException, InvalidLoginException;
+
     Tuple3<String, Boolean, Tuple<String, GameMode>> reconnect(ServerInterface user, String username, String password) throws RemoteException, InvalidLoginException;
 
     ControllerMessage pick(String token, String choiceId, List<Integer> choices) throws RemoteException;

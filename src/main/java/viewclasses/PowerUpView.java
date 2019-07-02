@@ -9,7 +9,8 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * This class contains the PowerUp card that is used by the view and transmitted from the server to the client
+ * This class contains all the information of {@link grabbables.PowerUp powerUps} needed by the client.
+ * It only contains getters and setters
  */
 public class PowerUpView implements Serializable {
     private AmmoColor ammo;

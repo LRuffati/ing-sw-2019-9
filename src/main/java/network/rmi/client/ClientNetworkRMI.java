@@ -1,10 +1,8 @@
 package network.rmi.client;
 
 import controller.GameMode;
-import gamemanager.GameBuilder;
 import genericitems.Tuple;
 import genericitems.Tuple3;
-import network.Database;
 import network.Player;
 import controller.controllerclient.ClientControllerNetworkInterface;
 import network.rmi.server.ServerRMIInterface;
@@ -17,7 +15,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 /**
- *  Contains all the method defined in ServerInterface and ClientInterface.
+ *  Contains all the method defined in {@link network.ServerInterface ServerInterface} and {@link network.ClientInterface ClientInterface}.
  */
 public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetworkRMIInterface {
 

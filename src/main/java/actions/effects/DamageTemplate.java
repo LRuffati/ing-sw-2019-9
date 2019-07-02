@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Gives a certain amound of damage to all BasicTargets targeted by a Target
+ * Gives a certain amount of damage to all BasicTargets targeted by a Target
  */
 public class DamageTemplate implements EffectTemplate {
 

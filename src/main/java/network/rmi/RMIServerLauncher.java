@@ -1,8 +1,6 @@
 package network.rmi;
 
-//import controller.InitGame;
 import gamemanager.ParserConfiguration;
-import network.Database;
 import network.rmi.server.ServerNetworkRMI;
 
 import java.rmi.AlreadyBoundException;
@@ -10,8 +8,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Demo class that starts a Server RMI

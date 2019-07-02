@@ -14,10 +14,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Abstract class that contain a powerUp.
+ * This is implemented by {@link TargScope TargetingScope}, {@link Newton Newton}, {@link TagBack TagBackGrenade}, {@link Teleporter Teleporter}
+ */
 public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
     private final AmmoColor color;
 
+    /**
+     * Default constructor, it only sets the type of powerUp and its color
+     * @param type {@link actions.utils.PowerUpType type} of the powerUp
+     * @param color {@link actions.utils.AmmoColor color} of the powerUp
+     */
     public PowerUp(PowerUpType type, AmmoColor color ){
         this.type = type;
         this.color = color;
@@ -72,6 +81,10 @@ public abstract class PowerUp extends Grabbable {
     }
 
 
+    /**
+     * Generates a new {@link viewclasses.PowerUpView powerUpView} of this card
+     * @return a PowerUpView containing all the information needed by the client
+     */
     public PowerUpView generateView() {
         PowerUpView powerUpView = new PowerUpView();
         powerUpView.setAmmo(getAmmo());
@@ -93,6 +106,12 @@ public abstract class PowerUp extends Grabbable {
         return null;
     }
 
+    /**
+     * Factory method that builds a new PowerUp
+     * @param type {@link actions.utils.PowerUpType type} of the powerUp
+     * @param color {@link actions.utils.AmmoColor color} of the powerUp
+     * @return a new PowerUp
+     */
     public static PowerUp powerUpFactory(PowerUpType type, AmmoColor color){
         PowerUp ret=null;
         switch (type){

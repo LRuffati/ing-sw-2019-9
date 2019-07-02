@@ -20,14 +20,10 @@ public class ScoreboardTest {
     private List<Actor> actorList;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         GameBuilder builder = null;
-        try {
-            builder = new GameBuilder(
-                    null, null, null, null, 3);
-        }
-        catch (FileNotFoundException e){
-        }
+        builder = new GameBuilder(
+                null, null, null, null, 3);
         map = builder.getMap();
         actorList = builder.getActorList();
     }
@@ -58,7 +54,7 @@ public class ScoreboardTest {
     @Test
     void dumbConstructor(){
         Scoreboard sb = new Scoreboard();
-        assertEquals(0,sb.getMaxDeaths());
+        assertEquals(8,sb.getMaxDeaths());
     }
 
     @Test

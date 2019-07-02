@@ -44,6 +44,10 @@ public class Tile{
 
     }
 
+    /**
+     * At the end of the turn a Tile does nothing
+     * @param actor the Actor that ended the turn
+     */
     public void endTurn(Actor actor){
         // For normal tiles it's nothing
         return;
@@ -82,6 +86,9 @@ public class Tile{
     transient GameMap map;
 
 
+    /**
+     * It sets the binding with the {@link GameMap gamemap}
+     */
     protected void setMap(GameMap map, Map<DamageableUID, Pawn> damageableUIDPawnMap){
         if (this.map==null)
             this.map = map;
@@ -188,6 +195,7 @@ public class Tile{
         return this.spawnPoint;
     }
 
+
     TileView generateView(GameMapView gameMapView) {
         TileView tileView = new TileView();
         Optional<TileUID> opt;
@@ -237,6 +245,10 @@ public class Tile{
         return tileView;
     }
 
+    /**
+     *
+     * @return the identifier ot the Tile
+     */
     public TileUID getTileID() {
         return tileID;
     }

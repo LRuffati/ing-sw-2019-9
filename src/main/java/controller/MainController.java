@@ -15,7 +15,6 @@ import uid.DamageableUID;
 import uid.TileUID;
 
 import java.awt.*;
-import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.List;
 import java.util.function.Consumer;
@@ -205,7 +204,7 @@ public class MainController {
                 actor.pawn().setColor((Color) Color.class.getField(player.getColor()).get(null));
             }
         }
-        catch (FileNotFoundException | NoSuchFieldException | IllegalAccessException e){
+        catch (NoSuchFieldException | IllegalAccessException e){
             logger.log(Level.SEVERE, e.getMessage());
         }
     }

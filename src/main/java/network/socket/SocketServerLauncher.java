@@ -10,7 +10,12 @@ import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.Scanner;
-
+/**
+ * Demo class that starts a Socket Server
+ * The connection made with localhost (127.0.0.1) host and a custom port
+ *
+ * The Server waits until an integer is read, then reply to the request.
+ */
 public class SocketServerLauncher {
     private static ServerSocket serverSocket;
     private static ExecutorService pool;

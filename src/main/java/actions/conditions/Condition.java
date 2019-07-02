@@ -3,6 +3,9 @@ package actions.conditions;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
 
+/**
+ * Interface that checks if a Target validate certain conditions
+ */
 public interface Condition {
     /**
      * @param sandbox the sandbox in which to test the condition

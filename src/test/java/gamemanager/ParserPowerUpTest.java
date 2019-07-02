@@ -19,25 +19,16 @@ class ParserPowerUpTest {
     private Collection<PowerUp> powerUpCollection;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         String powerUpPath = ParserConfiguration.parsePath("powerUpPath");
-        try {
-            powerUpCollection = ParserPowerUp.parse(powerUpPath);
-            powerUpDeck = new GameBuilder(null, null, powerUpPath, null, 1).getDeckOfPowerUp();
-        }
-        catch (FileNotFoundException e){
-        }
+        powerUpCollection = ParserPowerUp.parse(powerUpPath);
+        powerUpDeck = new GameBuilder(null, null, powerUpPath, null, 1).getDeckOfPowerUp();
     }
 
-    private void setup2(){
+    private void setup2() {
         String path = "test/PowerUpTestFile";
-        try {
-            powerUpCollection = ParserPowerUp.parse(path);
-            powerUpDeck = new GameBuilder(null, null, path, null, 1).getDeckOfPowerUp();
-        }
-        catch (FileNotFoundException e){
-            System.out.println(e.getStackTrace());
-        }
+        powerUpCollection = ParserPowerUp.parse(path);
+        powerUpDeck = new GameBuilder(null, null, path, null, 1).getDeckOfPowerUp();
     }
 
     @Test

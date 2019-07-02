@@ -37,7 +37,7 @@ public class GameBuilder {
     private String mapName = "map1";
 
     private Map<Coord, Actor> dominationPointActor = new HashMap<>();
-    private GameMode gameMode = GameMode.NORMAL;
+    private GameMode gameMode;
 
     /**
      * Constructor of the class. It builds all the modules needed for the game to start.
@@ -46,12 +46,12 @@ public class GameBuilder {
      *
      * If parameters are null it recovers files from resources repository.
      *
+     * @param gameMode the {@link controller.GameMode type} of game
      * @param mapPath Path of the map file.
      * @param weaponPath Path of the Weapons file.
      * @param powerUpPath Path of the PowerUps file
      * @param ammoCardPath Path of the AmmoCard file.
      * @param numOfPlayer Number of players that will join the game.
-     * @throws FileNotFoundException If any file isn't found, this exception will be called.
      */
     public GameBuilder( GameMode gameMode,
                         String mapPath,
@@ -59,7 +59,7 @@ public class GameBuilder {
                         String powerUpPath,
                         String ammoCardPath,
                         int numOfPlayer)
-            throws FileNotFoundException{
+    {
 
         this.gameMode = gameMode;
 
@@ -79,24 +79,36 @@ public class GameBuilder {
         instance = this;
     }
 
-    public GameBuilder(GameMode gameMode, int numOfPlayer) throws FileNotFoundException {
+    /**
+     * Constructor that only takes as parameters the gameMode and the number of players.
+     * Every other parameter are taken as default
+     */
+    public GameBuilder(GameMode gameMode, int numOfPlayer) {
         this(gameMode, null, null, null, null, numOfPlayer);
     }
 
-    public GameBuilder(int numOfPlayer) throws FileNotFoundException {
+    /**
+     * Constructor that only takes as parameters the number of players.
+     * Every other parameter are taken as default (default gameMode is Normal mode)
+     */
+    public GameBuilder(int numOfPlayer) {
         this(GameMode.NORMAL, numOfPlayer);
     }
+
+    /**
+     * Constructor that takes every aspect of the game as parameter
+     */
     public GameBuilder( String mapPath,
                         String weaponPath,
                         String powerUpPath,
                         String ammoCardPath,
                         int numOfPlayer)
-            throws FileNotFoundException{
+    {
         this(GameMode.NORMAL, mapPath, weaponPath, powerUpPath, ammoCardPath, numOfPlayer);
     }
 
 
-    private GameMap parserMap(GameMode gameMode, String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) throws FileNotFoundException {
+    private GameMap parserMap(GameMode gameMode, String mapPath, int numOfPlayer, Tuple3<Deck<Weapon>, Deck<AmmoCard>, Deck<PowerUp>> decks) {
         mapName = null;
         if (mapPath != null) {
             mapName = mapPath;
@@ -117,19 +129,19 @@ public class GameBuilder {
         return GameMap.gameMapFactory(gameMode, ParserConfiguration.parsePath(mapName + "Path"), numOfPlayer, decks);
     }
 
-    private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) throws FileNotFoundException {
+    private Deck<AmmoCard> parserAmmoTile(String ammoCardPath) {
         return ammoCardPath==null
                 ? new Deck<>(ParserAmmoTile.parse(ParserConfiguration.parsePath("ammoTilePath")))
                 : new Deck<>(ParserAmmoTile.parse(ammoCardPath));
     }
 
-    private Deck<PowerUp> parserPowerUp(String powerUpPath) throws FileNotFoundException {
+    private Deck<PowerUp> parserPowerUp(String powerUpPath) {
         return powerUpPath==null
                 ? new Deck<>(ParserPowerUp.parse(ParserConfiguration.parsePath("powerUpPath")))
                 : new Deck<>(ParserPowerUp.parse(powerUpPath));
     }
 
-    private Deck<Weapon> parserWeapon(String weaponPath) throws FileNotFoundException {
+    private Deck<Weapon> parserWeapon(String weaponPath) {
         return weaponPath==null
                 ? new Deck<>(ParserWeapon.parseWeapons(ParserConfiguration.parsePath("weaponPath")))
                 : new Deck<>(ParserWeapon.parseWeapons(weaponPath));

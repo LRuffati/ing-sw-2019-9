@@ -25,18 +25,13 @@ class newGameMapTest {
     private Deck<PowerUp> powerUpDeck;
 
     @BeforeEach
-    void setup(){
+    void setup() {
         GameBuilder builder = null;
         String mapPath = ParserConfiguration.parsePath("map1Path");
         String ammoPath = ParserConfiguration.parsePath("ammoTilePath");
-        String powerPath= ParserConfiguration.parsePath("powerUpPath");
-        try {
-            builder = new GameBuilder(
-                    mapPath, null, powerPath, ammoPath, 3);
-        }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
+        String powerPath = ParserConfiguration.parsePath("powerUpPath");
+        builder = new GameBuilder(
+                mapPath, null, powerPath, ammoPath, 3);
         map = builder.getMap();
         ammoCardDeck = builder.getDeckOfAmmoCard();
         powerUpDeck = builder.getDeckOfPowerUp();
@@ -74,7 +69,7 @@ class newGameMapTest {
 
     @Test
     void pawnTest(){
-        assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
+        assertThrows(NullPointerException.class , () -> map.tile(new DamageableUID()));
 
         DamageableUID[] listD = new DamageableUID[map.getDamageable().size()];
         map.getDamageable().toArray(listD);
@@ -89,7 +84,7 @@ class newGameMapTest {
         assertEquals(new ArrayList<>(Set.of(listD[0])) ,  map.containedPawns(map.getPosition(new Coord(0,0))));
 
         pawn.move(map.getPosition(new Coord(1,1)));
-        assertThrows(NoSuchElementException.class , () -> map.tile(new DamageableUID()));
+        assertThrows(NullPointerException.class , () -> map.tile(new DamageableUID()));
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,0))).isEmpty());
         assertTrue(map.containedPawns(map.getPosition(new Coord(0,2))).isEmpty());
 

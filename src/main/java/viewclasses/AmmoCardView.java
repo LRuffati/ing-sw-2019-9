@@ -5,7 +5,8 @@ import uid.GrabbableUID;
 import java.io.Serializable;
 
 /**
- * This class contains the AmmoTile card that is used by the view and transmitted from the server to the client
+ * This class contains all the information of {@link grabbables.AmmoCard ammoCards} needed by the client.
+ * It only contains getters and setters
  */
 public class AmmoCardView implements Serializable {
     private int numOfRed;

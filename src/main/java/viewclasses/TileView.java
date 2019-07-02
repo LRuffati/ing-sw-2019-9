@@ -9,7 +9,8 @@ import java.util.*;
 import java.util.List;
 
 /**
- * This class contains the Tile that is used by the view and transmitted from the server to the client
+ * This class contains all the information of {@link board.Tile tile} needed by the client.
+ * It only contains getters and setters
  */
 public class TileView implements Serializable {
 

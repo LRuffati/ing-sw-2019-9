@@ -7,6 +7,10 @@ import viewclasses.GameMapView;
 
 import java.util.List;
 
+/**
+ * This class is an implementation of {@link ControllerMessage ControllerMessage}
+ * and is used when a rollback must be done (no actions are available)
+ */
 public class RollbackMessage implements ControllerMessage {
     private final List<String> message;
 

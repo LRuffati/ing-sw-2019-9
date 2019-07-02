@@ -12,10 +12,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * This class contains the GameMap that is used by the view and transmitted from the server to the client
+ * This class contains all the information of {@link board.GameMap gameMap} needed by the client.
+ * It only contains getters and setters
  */
 public class GameMapView implements Serializable{
-    private Map<Coord, TileView> tiles = new HashMap<>();;
+    private Map<Coord, TileView> tiles = new HashMap<>();
     private Coord maxPos;
     private ActorView you;
     private List<ActorView> players;
@@ -119,7 +120,6 @@ public class GameMapView implements Serializable{
 
     public void setDominationPointActor(Map<Coord, Actor> dominationPointActor) {
         for(Map.Entry<Coord, Actor> entry : dominationPointActor.entrySet()) {
-            //todo: check pov null
             ActorView actorView = entry.getValue().pawn().generateView(this, entry.getValue().pawnID(), null);
             this.dominationPointActor.put(entry.getKey(), actorView);
         }
