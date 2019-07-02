@@ -13,8 +13,8 @@ public class OutputBox extends JPanel {
         this.screenPane.setSize(new Dimension(300,400));
         this.screenPane.setPreferredSize(new Dimension(300,400));
         add(this.screenPane, BorderLayout.CENTER);
-        setSize(new Dimension(760,400));
-        setPreferredSize(new Dimension(760,400));
+        setSize(new Dimension(760,200));
+        setPreferredSize(new Dimension(760,200));
         setLayout(new BorderLayout());
     }
 
@@ -27,10 +27,14 @@ public class OutputBox extends JPanel {
     }
 
     public void writeOnOutput(String str){
-        if(this.screenPane.getText()!=null) {
-            this.screenPane.setText(this.screenPane.getText() + "\n" + str);
+        if(str.equalsIgnoreCase("clear")){
+            this.screenPane.setText(" ");
         } else {
-            this.screenPane.setText(str);
+            if (this.screenPane.getText() != null) {
+                this.screenPane.setText(this.screenPane.getText() + "\n" + str);
+            } else {
+                this.screenPane.setText(str);
+            }
         }
     }
 

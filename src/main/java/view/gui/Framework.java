@@ -129,7 +129,7 @@ public class Framework implements View {
                 JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
                 input  = JOptionPane.showInputDialog("Scegli un'azione.");
             }
-                choice = Integer.parseInt(input);
+            choice = Integer.parseInt(input);
 
             if(choice.equals(i-2)){
                 if(res.isEmpty()&&optional){
@@ -144,6 +144,7 @@ public class Framework implements View {
             } else {
                 if(!res.contains(choice)) {
                     res.add(choice);
+                    if(single) flag = false;
                 } else {
                     JOptionPane.showMessageDialog(null,"You must choose a different Action", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
@@ -157,22 +158,26 @@ public class Framework implements View {
         game.getOutputBox().writeOnOutput(description);
         int i = 0;
         List<Integer> res = new ArrayList<>();
+        String[] names = new String[100];
         JFrame puPopUp = new JFrame();
         puPopUp.setUndecorated(true);
         puPopUp.setLayout(new GridLayout(1,0));
-        final boolean[] flag = {true};
         for(PowerUpView pu : powerUp){
 
             BufferedImage puCard = new PUCard(pu).getCard();
             ImageIcon puCardImage = new ImageIcon(puCard);
-            JButton puBtn = new JButton(puCardImage);
+            JLabel cardLabel = new JLabel(puCardImage);
+            //JButton puBtn = new JButton(puCardImage);
             int finalI = i;
-            puPopUp.getContentPane().add(puBtn);
+            puPopUp.getContentPane().add(cardLabel);
 
             puPopUp.setSize(puCardImage.getIconWidth(), puCardImage.getIconHeight());
 
             puPopUp.setLocation(i * 170, 0);
             puPopUp.setVisible(true);
+            names[i] = pu.type().toString();
+            game.getOutputBox().writeOnOutput(i+1 + ". " + pu.type().toString() + "\n");
+            /*
             puBtn.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -183,6 +188,8 @@ public class Framework implements View {
                     clientController.pick(choiceId, res);
                 }
             });
+
+             */
 
             i++;
         }
@@ -195,8 +202,43 @@ public class Framework implements View {
                 e.printStackTrace();
             }
         }*/
+        Integer choice;
+        boolean flag = true;
+        while(flag){
 
-        //clientController.pick(choiceId, res);
+            String input  = JOptionPane.showInputDialog("Scegli un power up.");
+
+            while(!input.matches(" ?\\d+")){
+                JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                input  = JOptionPane.showInputDialog("Riprova e scegli un power up.");
+            }
+            choice = Integer.parseInt(input);
+
+            if(choice.equals(i-2)){
+                if(res.isEmpty()&&optional){
+                    flag = false;
+                } else if(res.isEmpty()){
+                    JOptionPane.showMessageDialog(null,"You must choose at least one!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            } else if(choice.equals(200)&&!res.isEmpty()){
+                res.remove(res.size()-1);
+            } else if(choice.equals(i)){
+                res.clear();
+            } else {
+                if(!res.contains(choice)) {
+                    res.add(choice);
+                    if(single) flag = false;
+                } else {
+                    JOptionPane.showMessageDialog(null,"You must choose a different Powerup!", "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+        puPopUp.dispose();
+
+
+
+        clientController.pick(choiceId, res);
+        game.getOutputBox().writeOnOutput("clear");
     }
 
     @Override
@@ -219,8 +261,13 @@ public class Framework implements View {
         boolean flag = true;
         while(flag){
 
-            choice = JOptionPane.showOptionDialog(null, "Choose your next -!", "ACTION", JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.INFORMATION_MESSAGE,null, names,names[0]);
+            String input  = JOptionPane.showInputDialog("Scegli.");
+
+            while(!input.matches(" ?\\d+")){
+                JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                input  = JOptionPane.showInputDialog("Riprova e scegli.");
+            }
+            choice = Integer.parseInt(input);
 
             if(choice.equals(i-2)){
                 if(res.isEmpty()&&optional){
@@ -263,8 +310,13 @@ public class Framework implements View {
         boolean flag = true;
         while(flag){
 
-            choice = JOptionPane.showOptionDialog(null, "Choose your next Weapon!", "ACTION", JOptionPane.DEFAULT_OPTION,
-                    JOptionPane.INFORMATION_MESSAGE,null, names,names[0]);
+            String input  = JOptionPane.showInputDialog("Scegli un'arma.");
+
+            while(!input.matches(" ?\\d+")){
+                JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                input  = JOptionPane.showInputDialog("Riprova e scegli un'arma.");
+            }
+            choice = Integer.parseInt(input);
 
             if(choice.equals(i-2)){
                 if(res.isEmpty()&&optional){

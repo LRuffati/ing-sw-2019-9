@@ -192,12 +192,8 @@ public class GUIMap4 extends GUIMap{
                                     }
                                 }
                             } else {
-                                int choice;
-                                choice = JOptionPane.showConfirmDialog(null,"Are you sure?","CONFIRM", JOptionPane.OK_CANCEL_OPTION);
-                                if(choice==1){
-                                    indexList.add(i);
-                                    j[0]++;
-                                }
+                                indexList.add(i);
+                                j[0]++;
                                 break;
                             }
                         }
