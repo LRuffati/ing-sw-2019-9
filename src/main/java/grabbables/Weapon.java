@@ -6,7 +6,6 @@ import actions.utils.AmmoAmountUncapped;
 import viewclasses.WeaponView;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Weapon extends Grabbable{
     private AmmoAmount buyCost;
@@ -118,8 +117,8 @@ public class Weapon extends Grabbable{
     public WeaponView generateView2() {
         WeaponView toRet = generateView();
         Map<String, String> map = new HashMap<>();
-        for(Map.Entry<String, ActionTemplate> entry : actions.entrySet()) {
-            map.put(entry.getKey(), entry.getValue().getInfo().getDescription());
+        for(ActionTemplate actionTemplate : actions.values()) {
+            map.put(actionTemplate.getInfo().getName(), actionTemplate.getInfo().getDescription());
         }
         toRet.setActionDescriptions(map);
         return toRet;

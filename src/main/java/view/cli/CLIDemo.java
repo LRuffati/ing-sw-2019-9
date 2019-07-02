@@ -49,7 +49,8 @@ public class CLIDemo implements View {
         this.commandParser = new CommandParser(this);
         this.scanThread = new Thread(()->{
             while (inputTake) {
-                String string = in.next();
+                //todo: verify
+                String string = in.nextLine();
                 commandParser.parseCommand(string);
             }
         });
@@ -186,7 +187,6 @@ public class CLIDemo implements View {
                 if(n<0 || n>=max){
                     System.out.println("You must choose a number lower than " + max+1 + "\n");
                 } else {
-                    System.out.println("Adding " + n);
                     chosenList.add(n);
                     if (single) {
                         pick(choiceId);
@@ -508,7 +508,7 @@ public class CLIDemo implements View {
     @Override
     public void onStarting(String map, GameMode gameMode) {
         StringBuilder builder = new StringBuilder();
-        builder.append("The game is goin' to start in a moment...");
+        builder.append("The game is goin' to start in a moment...\t");
         switch (gameMode) {
             case NORMAL:
                 builder.append("Normal mode");
@@ -771,7 +771,7 @@ public class CLIDemo implements View {
     }
 
     void chooseWeapon(String weaponName) {
-        List<WeaponView> weapons = listOfWeapon.stream().filter(x -> x.name().equals(weaponName)).collect(Collectors.toList());
+        List<WeaponView> weapons = listOfWeapon.stream().filter(x -> x.name().equalsIgnoreCase(weaponName)).collect(Collectors.toList());
         if(weapons.size() != 1) return;
         WeaponView weapon = weapons.get(0);
         StringBuilder builder = new StringBuilder();
