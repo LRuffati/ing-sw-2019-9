@@ -17,17 +17,16 @@ import java.util.Map;
 
 public abstract class GUIMap extends JPanel {
 
-    private GameMapView gmv;
-    private Framework framework;
-    private Map<JButton, Coord> buttonCoord;
 
+
+    public GUIMap(){}
 
     /**
      * Return a list of possible coordinates to choice as target for any kind of action.
      * @param targets is the list of the possible targets.
      * @return a list of selectable coordinates.
      */
-    private List<Coord> getTargetCoordinates(List<TargetView> targets){
+    public List<Coord> getTargetCoordinates(List<TargetView> targets, GameMapView gmv){
         List<TileUID> tiles;
         List<DamageableUID> actors;
         List<Coord> coords = new ArrayList<>();
@@ -54,83 +53,9 @@ public abstract class GUIMap extends JPanel {
      * Simple method to set a button based on the action to be applied.
      * @param question based on the kind of action to be executed.
      */
-    public void clickableButton(List<TargetView> targets, String question, boolean single, boolean optional){
-        List<Coord> coords = getTargetCoordinates(targets);
-        List<Integer> indexList = new ArrayList<>();
-        final int[] j = {0};
-        for(Coord coord : coords){
-            for(Map.Entry<JButton,Coord> entry : buttonCoord.entrySet()){
-                if(entry.getValue().equals(coord)) entry.getKey().addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
-                        String[] names = new String[100];
-                        int i = 0;
-                        for(TargetView target : targets){
-                            if(!target.getDamageableUIDList().isEmpty()){
-                                for(ActorView player : gmv.players()){
-                                    if(target.getDamageableUIDList().contains(player.uid())&&gmv.getCoord(player.position()).equals(coord)){
-                                        System.out.println(player.name());
-                                        names[i] = player.name();
-                                        i++;
-                                    }
-                                }
-                                if(i!=0) {
-                                    names[i] = "Stop";
-                                    i++;
-                                    names[i] = "Rollback";
-                                    i++;
-                                    names[i] = "Reset";
+    public abstract void clickableButton(List<TargetView> targets, String question, boolean single, boolean optional);
 
-                                    String[] namesBeta = new String[i];
-
-                                    System.arraycopy(names, 0, namesBeta, 0, i);
-
-
-                                    Integer choice;
-                                    boolean flag = true;
-                                    while (flag) {
-
-                                        choice = JOptionPane.showOptionDialog(null, "Choose your next Target!", "TARGET", JOptionPane.DEFAULT_OPTION,
-                                                JOptionPane.INFORMATION_MESSAGE, null, namesBeta, namesBeta[0]);
-
-                                        if (choice.equals(i - 2)) {
-                                            if (indexList.isEmpty() && optional) {
-                                                flag = false;
-                                            } else if (indexList.isEmpty()) {
-                                                JOptionPane.showMessageDialog(null, "You must choose at least one Target!", "ERROR", JOptionPane.ERROR_MESSAGE);
-                                            }
-                                        } else if (choice.equals(i - 1) && !indexList.isEmpty()) {
-                                            indexList.remove(indexList.size() - 1);
-                                        } else if (choice.equals(i)) {
-                                            indexList.clear();
-                                        } else {
-                                            if (!indexList.contains(choice)) {
-                                                indexList.add(choice);
-                                            } else {
-                                                JOptionPane.showMessageDialog(null, "You must choose a different Target", "ERROR", JOptionPane.ERROR_MESSAGE);
-                                            }
-                                        }
-                                    }
-                                }
-                            } else {
-                                int choice;
-                                choice = JOptionPane.showConfirmDialog(null,"Are you sure?","CONFIRM", JOptionPane.OK_CANCEL_OPTION);
-                                if(choice==1){
-                                    indexList.add(i);
-                                    j[0]++;
-                                }
-                                break;
-                            }
-                        }
-                        framework.pick(indexList);
-                    }
-                });
-            }
-        }
-    }
-
-    private static boolean isNotNumeric(String str) {
+    public static boolean isNotNumeric(String str) {
         try {
             Integer.parseInt(str);
             return false;
