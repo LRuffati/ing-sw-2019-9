@@ -111,4 +111,12 @@ public class PlayerCardsPanel extends JPanel {
         frame.setVisible(true);
 
     }
+
+    public WeaponCards getWeaponCards() {
+        return weaponCards;
+    }
+
+    public PlayerBoard getPlayerBoard() {
+        return playerBoard;
+    }
 }

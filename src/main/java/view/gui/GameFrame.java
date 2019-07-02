@@ -19,6 +19,7 @@ public class GameFrame extends JFrame {
     private OutputBox outputBox;
     private BufferedImage background;
     private Framework framework;
+    private PlayerCardsPanel playerCardsPanel;
 
     public GameFrame(GameMapView gmv, Framework framework, int mapNum){
         this.framework = framework;
@@ -39,15 +40,27 @@ public class GameFrame extends JFrame {
             System.out.println("Problemi nella Scoreboard");
         }
 
+        this.playerCardsPanel = new PlayerCardsPanel(gmv);
+
         this.outputBox = new OutputBox();
+
+
+        JPanel scorePlusBox = new JPanel();
+        scorePlusBox.setLayout(new GridLayout(0,1));
+        scorePlusBox.add(scoreBoard);
+        scorePlusBox.add(outputBox);
 
         getContentPane().setLayout(new GridLayout(1,0));
         getContentPane().add(map);
         JPanel sndPanel = new JPanel();
         sndPanel.setLayout(new GridLayout(0,1));
-        sndPanel.add(scoreBoard);
-        sndPanel.add(new PlayerCardsPanel(gmv));
-        sndPanel.add(outputBox);
+        //sndPanel.add(scoreBoard);
+        //sndPanel.add(new PlayerCardsPanel(gmv));
+        //sndPanel.add(outputBox);
+        sndPanel.add(scorePlusBox);
+        sndPanel.add(playerCardsPanel.getPlayerBoard());
+        sndPanel.add(playerCardsPanel.getWeaponCards());
+
 
         add(sndPanel);
         if(Toolkit.getDefaultToolkit().getScreenSize().getHeight()==1080){
