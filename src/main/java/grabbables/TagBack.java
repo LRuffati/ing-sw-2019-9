@@ -3,6 +3,7 @@ package grabbables;
 import actions.effects.Effect;
 import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
+import controller.SetMessageProxy;
 import controller.SlaveController;
 import controller.controllermessage.ControllerMessage;
 import controller.controllermessage.WaitMessage;
@@ -33,7 +34,8 @@ public class TagBack extends PowerUp {
      * Should never be called on a TagBack
      */
     @Override
-    public ControllerMessage usePowup(SlaveController pov, List<Effect> lastEffects, Runnable onPowerupFinalized) {
+    public ControllerMessage usePowup(SetMessageProxy pov, List<Effect> lastEffects,
+                                      Runnable onPowerupFinalized) {
         // This powerup is handled by the main controller. TagBack.usePowup(..) is a mistake
         return new WaitMessage(List.of());
     }
