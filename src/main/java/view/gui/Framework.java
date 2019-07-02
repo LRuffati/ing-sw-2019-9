@@ -88,7 +88,8 @@ public class Framework implements View {
     @Override
     public void updateMap(GameMapView gameMapView, boolean forced) {
         this.gmv = gameMapView;
-        if(game == null) game = new GameFrame(gmv, this, 2);
+        if(game == null) game = new GameFrame(gmv, this, 1);
+        game.getMap().drawPlayers(gameMapView);
     }
 
     public void pick(List<Integer> picked) {
@@ -100,7 +101,7 @@ public class Framework implements View {
         game.getOutputBox().writeOnOutput(description);
 
         toPick = choiceId;
-        game.getMap().clickableButton(target,"Choose your target.", single, optional);
+        game.getMap().clickableButton(target,description, single, optional);
     }
 
     @Override
@@ -123,7 +124,7 @@ public class Framework implements View {
         Integer choice;
         boolean flag = true;
         while(flag){
-            String input  = JOptionPane.showInputDialog("Scegli un'azione.");
+            String input  = JOptionPane.showInputDialog(description);
 
             while(!input.matches(" ?\\d+")){
                 JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -131,19 +132,19 @@ public class Framework implements View {
             }
             choice = Integer.parseInt(input);
 
-            if(choice.equals(i-2)){
+            if(choice.equals(0)){
                 if(res.isEmpty()&&optional){
                     flag = false;
                 } else if(res.isEmpty()){
                     JOptionPane.showMessageDialog(null,"You must choose at least one Action!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else if(choice.equals(i-1)&&!res.isEmpty()){
+            } else if(choice.equals(200)&&!res.isEmpty()){
               res.remove(res.size()-1);
-            } else if(choice.equals(i)){
+            } else if(choice.equals(100)){
                 res.clear();
             } else {
                 if(!res.contains(choice)) {
-                    res.add(choice);
+                    res.add(choice-1);
                     if(single) flag = false;
                 } else {
                     JOptionPane.showMessageDialog(null,"You must choose a different Action", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -207,7 +208,7 @@ public class Framework implements View {
         boolean flag = true;
         while(flag){
 
-            String input  = JOptionPane.showInputDialog("Scegli un power up.");
+            String input  = JOptionPane.showInputDialog(description);
 
             while(!input.matches(" ?\\d+")){
                 JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -227,7 +228,7 @@ public class Framework implements View {
                 res.clear();
             } else {
                 if(!res.contains(choice)) {
-                    res.add(choice);
+                    res.add(choice-1);
                     if(single) flag = false;
                 } else {
                     JOptionPane.showMessageDialog(null,"You must choose a different Powerup!", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -251,6 +252,7 @@ public class Framework implements View {
         for(String str : string){
             names[i] = str;
             i++;
+            game.getOutputBox().writeOnOutput(i + ". " + str + "\n");
         }
         names[i] = "Stop";
         i++;
@@ -262,7 +264,7 @@ public class Framework implements View {
         boolean flag = true;
         while(flag){
 
-            String input  = JOptionPane.showInputDialog("Scegli.");
+            String input  = JOptionPane.showInputDialog(description);
 
             while(!input.matches(" ?\\d+")){
                 JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -270,19 +272,20 @@ public class Framework implements View {
             }
             choice = Integer.parseInt(input);
 
-            if(choice.equals(i-2)){
+            if(choice.equals(0)){
                 if(res.isEmpty()&&optional){
                     flag = false;
                 } else if(res.isEmpty()){
                     JOptionPane.showMessageDialog(null,"You must choose at least one!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else if(choice.equals(i-1)&&!res.isEmpty()){
+            } else if(choice.equals(100)&&!res.isEmpty()){
                 res.remove(res.size()-1);
-            } else if(choice.equals(i)){
+            } else if(choice.equals(200)){
                 res.clear();
             } else {
                 if(!res.contains(choice)) {
-                    res.add(choice);
+                    res.add(choice-1);
+                    if(single) flag = false;
                 } else {
                     JOptionPane.showMessageDialog(null,"You must choose a different -", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
@@ -300,6 +303,7 @@ public class Framework implements View {
         for(WeaponView we : weapon){
             names[i] = we.name();
             i++;
+            game.getOutputBox().writeOnOutput(i + ". " + we.name() + "\n");
         }
         names[i] = "Stop";
         i++;
@@ -311,7 +315,7 @@ public class Framework implements View {
         boolean flag = true;
         while(flag){
 
-            String input  = JOptionPane.showInputDialog("Scegli un'arma.");
+            String input  = JOptionPane.showInputDialog(description);
 
             while(!input.matches(" ?\\d+")){
                 JOptionPane.showMessageDialog(null, "You must choose one number from the ones showed.", "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -319,19 +323,19 @@ public class Framework implements View {
             }
             choice = Integer.parseInt(input);
 
-            if(choice.equals(i-2)){
+            if(choice.equals(0)){
                 if(res.isEmpty()&&optional){
                     flag = false;
                 } else if(res.isEmpty()){
                     JOptionPane.showMessageDialog(null,"You must choose at least one Weapon!", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
-            } else if(choice.equals(i-1)&&!res.isEmpty()){
+            } else if(choice.equals(200)&&!res.isEmpty()){
                 res.remove(res.size()-1);
-            } else if(choice.equals(i)){
+            } else if(choice.equals(100)){
                 res.clear();
             } else {
                 if(!res.contains(choice)) {
-                    res.add(choice);
+                    res.add(choice-1);
                 } else {
                     JOptionPane.showMessageDialog(null,"You must choose a different Weapon", "ERROR", JOptionPane.ERROR_MESSAGE);
                 }

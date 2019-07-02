@@ -9,11 +9,8 @@ import viewclasses.TargetView;
 import viewclasses.TileView;
 
 import javax.swing.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public abstract class GUIMap extends JPanel {
 
@@ -63,4 +60,6 @@ public abstract class GUIMap extends JPanel {
             return true;
         }
     }
+
+    public abstract void drawPlayers(GameMapView gmv);
 }

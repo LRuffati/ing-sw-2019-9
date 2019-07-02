@@ -18,6 +18,7 @@ import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class GUIMap2 extends GUIMap {
     private BufferedImage pg;
     private GameMapView gmv;
     private Framework framework;
+    private ActorView[] playersToPaint = new ActorView[5];
 
     public GUIMap2(GameMapView gmv, Framework framework){
         this.framework = framework;
@@ -204,5 +206,25 @@ public class GUIMap2 extends GUIMap {
                 });
             }
         }
+    }
+    public void drawPlayers(GameMapView gmv){
+        this.gmv = gmv;
+        int i = 0;
+        for(ActorView player: gmv.players()){
+            playersToPaint[i] = player;
+            i++;
+        }
+        repaint();
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        for(int i = 0; playersToPaint[i] != null; i++){
+            try {
+                g.fillOval(gmv.getCoord(playersToPaint[i].position()).getX() * 452 + 90 * i, gmv.getCoord(playersToPaint[i].position()).getY() * 441, 90, 90);
+
+            } catch (InvalidParameterException ignored){ }        }
     }
 }
