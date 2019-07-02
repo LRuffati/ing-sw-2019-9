@@ -88,7 +88,7 @@ public class Framework implements View {
     @Override
     public void updateMap(GameMapView gameMapView, boolean forced) {
         this.gmv = gameMapView;
-        if(game == null) game = new GameFrame(gmv, this);
+        if(game == null) game = new GameFrame(gmv, this, 2);
     }
 
     public void pick(List<Integer> picked) {
