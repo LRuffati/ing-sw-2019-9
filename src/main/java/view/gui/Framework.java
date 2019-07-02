@@ -176,7 +176,7 @@ public class Framework implements View {
             puPopUp.setLocation(i * 170, 0);
             puPopUp.setVisible(true);
             names[i] = pu.type().toString();
-            game.getOutputBox().writeOnOutput(i+1 + ". " + pu.type().toString() + "\n");
+
             /*
             puBtn.addMouseListener(new MouseAdapter() {
                 @Override
@@ -192,6 +192,7 @@ public class Framework implements View {
              */
 
             i++;
+            game.getOutputBox().writeOnOutput(i + ". " + pu.type().toString() + "\n");
         }
 
         puPopUp.setSize(170*i,264);
@@ -214,7 +215,7 @@ public class Framework implements View {
             }
             choice = Integer.parseInt(input);
 
-            if(choice.equals(i-2)){
+            if(choice.equals(0)){
                 if(res.isEmpty()&&optional){
                     flag = false;
                 } else if(res.isEmpty()){
@@ -222,7 +223,7 @@ public class Framework implements View {
                 }
             } else if(choice.equals(200)&&!res.isEmpty()){
                 res.remove(res.size()-1);
-            } else if(choice.equals(i)){
+            } else if(choice.equals(100)){
                 res.clear();
             } else {
                 if(!res.contains(choice)) {
