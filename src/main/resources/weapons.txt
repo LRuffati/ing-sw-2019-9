@@ -124,7 +124,7 @@ descrizioneWeapon: descrizione mancante
 action main:
 nomeAction: Effetto base
 descrizioneAction: scegli un quadrato visibile e un giocatore distante al massimo 1 movimento. Sposta il giocatore nella cella e dagli 1 danno
-target buco tile (SEEN self)
+target buco tile (SEEN self & not DISTANT (0,0) self)
 target targ1 pawn (EXISTS & REACHES (0,1) buco) new
 effect move targ1 to buco
 effect damage 2 targ1
@@ -188,7 +188,7 @@ nomeAction: Modalità base
 descrizioneAction: Scegli
 target tile1 tile (DISTANT (1,1) self)
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN dir & DISTANT (2,2) self) optional automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic
 target targ1 pawn (IN tile1) optional
 target targ2 pawn (IN tile2) optional
 effect damage 1 targ1

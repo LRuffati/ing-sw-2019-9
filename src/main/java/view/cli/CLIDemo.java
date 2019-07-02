@@ -5,6 +5,9 @@ import board.Coord;
 import controller.GameMode;
 import controller.Message;
 import controller.controllerclient.ClientControllerClientInterface;
+import gamemanager.ParserConfiguration;
+import gamemanager.ParserWeapon;
+import grabbables.Weapon;
 import view.View;
 import network.Player;
 import uid.DamageableUID;
@@ -29,14 +32,19 @@ public class CLIDemo implements View {
 
     String pickStringMessage;
     private List<Integer> chosenList = new ArrayList<>();
-    private List<Integer> toReturn;
     private String yourPlayerChar;
+
+    private List<WeaponView> listOfWeapon;
 
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
 
-    public CLIDemo(ClientControllerClientInterface client){
+    public CLIDemo(ClientControllerClientInterface client) {
+
+        listOfWeapon = ParserWeapon.parseWeapons(ParserConfiguration.parsePath("weaponPath"))
+                .stream().map(Weapon::generateView2).collect(Collectors.toList());
+
         this.client = client;
         this.commandParser = new CommandParser(this);
         this.scanThread = new Thread(()->{
@@ -176,10 +184,9 @@ public class CLIDemo implements View {
                 if(n<0 || n>=max){
                     System.out.println("You must choose one valid option.\n");
                 } else {
-                    System.out.println("adding" + n);
+                    System.out.println("adding " + n);
                     chosenList.add(n);
                     if (single) {
-                        System.out.println("Added to chosen list: " + n);
                         pick(choiceId);
                     }
                 }
@@ -230,7 +237,9 @@ public class CLIDemo implements View {
                                 builder.append(a.name());
                                 builder.append(AnsiColor.getDefault());
                                 builder.append(" whom character on the map is '");
-                                builder.append(climap.getPlayers().get(a));
+                                builder.append(climap.getPlayers().entrySet()
+                                        .stream().filter(x -> x.getKey().name().equals(a.name()))
+                                        .map(Map.Entry::getValue).collect(Collectors.toList()).get(0));
                                 builder.append("'.\n");
                                 i += 1;
                                 break;
@@ -564,9 +573,6 @@ public class CLIDemo implements View {
             if(t.ammoCard() != null) {
                 System.out.print(">> There is a spawn point for the following ammunition in the tile:  ");
                 System.out.println(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue(), false));
-                System.out.println("+ Number of Red: " + t.ammoCard().numOfRed());
-                System.out.println("+ Number of Blue: " + t.ammoCard().numOfBlue());
-                System.out.println("+ Number of Yellow: " + t.ammoCard().numOfYellow());
             }
         }
         int i = 0;
@@ -687,6 +693,7 @@ public class CLIDemo implements View {
         System.out.println(">> 0. Exit");
         System.out.println(">> 1. Players");
         System.out.println(">> 2. Tiles");
+        System.out.println(">> 3. Weapons");
     }
 
     private void printScoreboard() {
@@ -696,11 +703,12 @@ public class CLIDemo implements View {
         System.out.println(builder.toString());
         builder = new StringBuilder();
         if(climap.getMp().gameMode().equals(GameMode.DOMINATION)) {
-            builder.append("Colortrack :");
+            builder.append("Colortrack");
             for(Map.Entry<Color, List<ActorView>> entry : climap.getMp().spawnTracker().entrySet()) {
                 builder.append("\n\t");
                 builder.append(AnsiColor.getColorName(entry.getKey()));
-                builder.append(" :\t");
+                if(entry.getKey().equals(Color.red))    builder.append("\t");
+                builder.append("\t :\t");
                 builder.append(printListOfColor(entry.getValue()));
             }
             builder.append("\n");
@@ -749,6 +757,27 @@ public class CLIDemo implements View {
             }
             i++;
         }
+    }
+
+    void askWeapon() {
+        System.out.println("Insert the name of the weapon");
+    }
+
+    void chooseWeapon(String weaponName) {
+        List<WeaponView> weapons = listOfWeapon.stream().filter(x -> x.name().equals(weaponName)).collect(Collectors.toList());
+        if(weapons.size() != 1) return;
+        WeaponView weapon = weapons.get(0);
+        StringBuilder builder = new StringBuilder();
+        builder.append(weapon.name()).append("\n");
+        builder.append("Buy cost:\t").append(printCost(weapon.buyCost())).append("\n");
+        builder.append("Reload cost:\t").append(printCost(weapon.reloadCost())).append("\n");
+        builder.append("Effects:\n");
+        for(Map.Entry entry : weapon.actionDescription().entrySet()) {
+            builder.append("\t- ").append(entry.getKey()).append("\n");
+            builder.append(entry.getValue()).append("\n\n");
+        }
+        builder.append("\n");
+        System.out.println(builder.toString());
     }
 
     void quitGame(){

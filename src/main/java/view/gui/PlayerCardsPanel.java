@@ -40,7 +40,7 @@ public class PlayerCardsPanel extends JPanel {
         weaponCards.showCard(currActor);
 
         changeWeaponsWithPlayer();
-        setLayout(new GridLayout(1,0));
+        setLayout(new GridLayout(2,0));
         add(playerBoard);
         add(weaponCards);
     }
@@ -110,5 +110,13 @@ public class PlayerCardsPanel extends JPanel {
         //DO NOT USE pack() !!!
         frame.setVisible(true);
 
+    }
+
+    public WeaponCards getWeaponCards() {
+        return weaponCards;
+    }
+
+    public PlayerBoard getPlayerBoard() {
+        return playerBoard;
     }
 }

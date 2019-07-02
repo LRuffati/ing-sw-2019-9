@@ -30,7 +30,7 @@ public class ParserWeapon {
      * @param path the Path of the file that has to be parsed
      * @return A set containing all the weapons parsed
      */
-    public static Set<Weapon> parseWeapons(String path) {
+    public static List<Weapon> parseWeapons(String path) {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream stream = classLoader.getResourceAsStream(path);
@@ -48,7 +48,7 @@ public class ParserWeapon {
                     AmmoAmount reloadCost = parseAmmo(m.group(2));
                     AmmoAmount buyCost = parseAmmo(m.group(3));
                     return parseSingleWeapon(weaponId, reloadCost, buyCost, m.group(4));
-                }).collect(Collectors.toSet());
+                }).collect(Collectors.toList());
 
         // regex:= "weapon +(\w+) +([RBY]([RYB]*)) *:([\w\W]+?)\nstop"
         // Per ogni match:
@@ -108,8 +108,9 @@ public class ParserWeapon {
 
         Matcher actionsBody = Pattern.compile(regexAction).matcher(body);
 
-        List<ActionTemplate> actions = actionsBody.results()
-                .map(match -> {
+        Map<String, ActionTemplate> actions = new HashMap<>();
+        actionsBody.results()
+                .forEach(match -> {
                     String id = match.group(1);
 
                     String costString = match.group(2);
@@ -129,9 +130,7 @@ public class ParserWeapon {
                         xor="";
 
                     //TODO probably to change
-                    String contemp = match.group(6);
-                    if (contemp==null)
-                        contemp="";
+                    String  contemp = match.group(6);
 
                     String bodyAction = match.group(7);
 
@@ -151,16 +150,22 @@ public class ParserWeapon {
                     }).collect(Collectors.toList());
 
                     Matcher xorMatcher = Pattern.compile("(\\w+)").matcher(xor);
-                    List<String> xorList = xorMatcher.results().map(m ->
-                    {
-                        return m.group();
-                    }).collect(Collectors.toList());
 
-                    return parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
-                })
-                .collect(Collectors.toList());
+                    List<String> xorList = xorMatcher.results().map(m -> m.group()).collect(Collectors.toList());
 
-        return new Weapon(nome,buyCost,reloadCost,actions);
+                    for (String i: xorList){
+                        actions.get(i).getInfo().getActionRequirements().add(new Tuple<>(false, id));
+                    }
+
+                    ActionTemplate template = parseAction(id,cost,followsList,existsList,xorList,contemp,bodyAction);
+                    Optional<String> masterAction = template.getInfo().getMasterAction();
+                    if(masterAction.isPresent()){
+                        actions.get(masterAction.get()).getInfo().getContempList().add(template);
+
+                    } else actions.put(id, template);
+                });
+
+        return new Weapon(nome,buyCost,reloadCost,actions.values(), descrizione);
     }
 
 
@@ -441,7 +446,7 @@ public class ParserWeapon {
         }
         //TODO Contemp
 
-        return new ActionInfo(nome, nomeId,cost,actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
+        return new ActionInfo(nome, nomeId,descrizione, cost , actionRequirements,targetRequirements,Optional.ofNullable(contemp),true);
     }
 
 }

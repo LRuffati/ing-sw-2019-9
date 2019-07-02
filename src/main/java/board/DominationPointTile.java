@@ -47,7 +47,7 @@ public class DominationPointTile extends Tile {
     @Override
     public void endTurn(Actor actor) {
         if(map.tile(actor.pawnID()).equals(this.tileID)) {
-            actor.damageRaw(actor, 1);
+            actor.damageRaw(controlPointActor, 1);
             controlPointActor.steppedOn(actor);
         }
 

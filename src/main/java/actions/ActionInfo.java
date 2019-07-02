@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,12 +18,15 @@ import java.util.Optional;
  * view
  */
 public class ActionInfo {
+
+    private List<ActionTemplate> contempList;
     /**
      * The name to display, this and {@link #show} might be substituted by an ad-hoc
      * object depending on the view being used
      */
     private final String name;
 
+    private final String description;
     /**
      * Whether the action should be displayed or not.
      * Use case: when an action described as an unitary entity in natural language actually
@@ -73,13 +77,15 @@ public class ActionInfo {
      */
     private final Optional<String> masterAction;
 
-    public ActionInfo (String name, String actionId, @NotNull AmmoAmount cost,
+    public ActionInfo (String name, String actionId, String actionDescription, @NotNull AmmoAmount cost,
                 Collection<Tuple<Boolean, String>> actionRequirements,
                 Collection<Tuple<Boolean, String>> targetRequirements,
                 Optional<String> masterAction, boolean show){
 
+        this.contempList = new ArrayList<>();
         this.name = name;
         this.actionId = actionId;
+        this.description = actionDescription;
         this.cost = cost;
         this.actionRequirements = actionRequirements;
         this.targetRequirements = targetRequirements;
@@ -90,6 +96,10 @@ public class ActionInfo {
     public String getName() {
         //Strings are immutable so it's safe to provide the reference
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public boolean isShow() {
@@ -108,7 +118,7 @@ public class ActionInfo {
 
     public Collection<Tuple<Boolean, String>> getActionRequirements() {
         // Tuple is immutable, so I can not worry about doing a deep copy
-        return new ArrayList<>(actionRequirements);
+        return actionRequirements;
     }
 
     public Collection<Tuple<Boolean, String>> getTargetRequirements() {
@@ -119,5 +129,9 @@ public class ActionInfo {
     public Optional<String> getMasterAction() {
         // Tuple is immutable, so I can not worry about doing a deep copy
         return masterAction;
+    }
+
+    public List<ActionTemplate> getContempList() {
+        return contempList;
     }
 }

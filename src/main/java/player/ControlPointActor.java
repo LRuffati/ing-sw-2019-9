@@ -1,7 +1,5 @@
 package player;
 
-import actions.utils.AmmoAmount;
-import actions.utils.AmmoColor;
 import board.GameMap;
 import gamemanager.DominationMode;
 import gamemanager.Scoreboard;

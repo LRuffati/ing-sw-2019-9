@@ -3,6 +3,7 @@ package view.gui;
 import board.Coord;
 import gamemanager.GameBuilder;
 import gamemanager.ParserConfiguration;
+import player.Actor;
 import uid.DamageableUID;
 import uid.TileUID;
 import viewclasses.ActorView;
@@ -24,7 +25,7 @@ import java.util.List;
 
 import static java.awt.Image.SCALE_SMOOTH;
 
-public class GUIMap1 extends GUIMap {
+public class GUIMap4 extends GUIMap{
 
     private static final String SRC = ParserConfiguration.parsePath("GuiDirectoryPath") + "/";
 
@@ -34,12 +35,10 @@ public class GUIMap1 extends GUIMap {
     private BufferedImage scoreBoard;
     private BufferedImage pg;
     private GameMapView gmv;
-    private Framework framework;
-    private Color[] colorsToPaint = new Color[5];
     private ActorView[] playersToPaint = new ActorView[5];
-    private Coord[] actorPos = new Coord[5];
+    private Framework framework;
 
-    public GUIMap1(GameMapView gmv, Framework framework){
+    public GUIMap4(GameMapView gmv, Framework framework){
         this.framework = framework;
 
         this.gmv = gmv;
@@ -48,18 +47,18 @@ public class GUIMap1 extends GUIMap {
 
         this.buttonCoord = new HashMap<>();
 
-        setTile(label,"gui/GUImap1/GUImap1_1.png", Color.GREEN,new Coord(0,0));
-        setTile(label,"gui/GUImap1/GUImap1_2.png", Color.YELLOW,new Coord(1,0));
-        setTile(label,"gui/GUImap1/GUImap1_3.png", Color.YELLOW,new Coord(2,0));
-        setTile(label,"gui/GUImap1/GUImap1_4.png", Color.BLUE,new Coord(0,1));
-        setTile(label,"gui/GUImap1/GUImap1_5.png", Color.YELLOW,new Coord(1,1));
-        setTile(label,"gui/GUImap1/GUImap1_6.png", Color.YELLOW,new Coord(2,1));
-        setTile(label,"gui/GUImap1/GUImap1_7.png", Color.BLUE,new Coord(0,2));
-        setTile(label,"gui/GUImap1/GUImap1_8.png", Color.RED,new Coord(1,2));
-        setTile(label,"gui/GUImap1/GUImap1_9.png", Color.WHITE,new Coord(2,2));
-        setTile(label,"gui/GUImap1/GUImap1_10.png", Color.BLUE,new Coord(0,3));
-        setTile(label,"gui/GUImap1/GUImap1_11.png", Color.RED,new Coord(1,3));
-        setTile(label,"gui/GUImap1/GUImap1_12.png", null,new Coord(2,3));
+        setTile(label,"gui/GUImap4/GUImap4_1.png", Color.GREEN,new Coord(0,0));
+        setTile(label,"gui/GUImap4/GUImap4_2.png", Color.YELLOW,new Coord(1,0));
+        setTile(label,"gui/GUImap4/GUImap4_3.png", Color.YELLOW,new Coord(2,0));
+        setTile(label,"gui/GUImap4/GUImap4_4.png", Color.BLUE,new Coord(0,1));
+        setTile(label,"gui/GUImap4/GUImap4_5.png", Color.YELLOW,new Coord(1,1));
+        setTile(label,"gui/GUImap4/GUImap4_6.png", Color.YELLOW,new Coord(2,1));
+        setTile(label,"gui/GUImap4/GUImap4_7.png", Color.BLUE,new Coord(0,2));
+        setTile(label,"gui/GUImap4/GUImap4_8.png", Color.PINK,new Coord(1,2));
+        setTile(label,"gui/GUImap4/GUImap4_9.png", Color.WHITE,new Coord(2,2));
+        setTile(label,"gui/GUImap4/GUImap4_10.png", Color.RED,new Coord(0,3));
+        setTile(label,"gui/GUImap4/GUImap4_11.png", Color.RED,new Coord(1,3));
+        setTile(label,"gui/GUImap4/GUImap4_12.png", Color.WHITE,new Coord(2,3));
 
         System.out.println(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 
@@ -92,14 +91,14 @@ public class GUIMap1 extends GUIMap {
 
         frame.setResizable(true);
 
-        GUIMap1 guiMap1 = new GUIMap1(mv, null);
+        GUIMap4 guiMap2 = new GUIMap4(mv, null);
 
-        frame.add(guiMap1);
+        frame.add(guiMap2);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         //DO NOT USE pack() !!!
         frame.setVisible(true);
 
-        guiMap1.clickableButton(targetViewList,"come stai?",true,false);
+        guiMap2.clickableButton(targetViewList,"come stai?",true,false);
     }
 
 
@@ -134,7 +133,6 @@ public class GUIMap1 extends GUIMap {
         label.add(ammoButton);
         buttonCoord.put(ammoButton,coord);
     }
-
 
     @Override
     public void clickableButton(List<TargetView> targets, String question, boolean single, boolean optional) {
@@ -197,7 +195,6 @@ public class GUIMap1 extends GUIMap {
                                     }
                                 }
                             } else {
-
                                 indexList.add(i);
                                 j[0]++;
                                 break;
@@ -234,6 +231,4 @@ public class GUIMap1 extends GUIMap {
         }
         repaint();
     }
-
 }
-
