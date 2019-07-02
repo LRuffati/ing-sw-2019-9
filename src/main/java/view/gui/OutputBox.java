@@ -13,8 +13,8 @@ public class OutputBox extends JPanel {
         this.screenPane.setSize(new Dimension(300,400));
         this.screenPane.setPreferredSize(new Dimension(300,400));
         add(this.screenPane, BorderLayout.CENTER);
-        setSize(new Dimension(300,400));
-        setPreferredSize(new Dimension(300,400));
+        setSize(new Dimension(760,400));
+        setPreferredSize(new Dimension(760,400));
         setLayout(new BorderLayout());
     }
 
