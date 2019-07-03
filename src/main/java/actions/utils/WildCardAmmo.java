@@ -2,13 +2,19 @@ package actions.utils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class WildCardAmmo extends AmmoAmountUncapped{
-    public WildCardAmmo(){
-    }
+
 
     @Override
     public boolean canBuy(@NotNull AmmoAmountUncapped cost) {
-        return false;
+        Map<AmmoColor, Integer> ams = cost.getAmounts();
+        Integer amsT = ams.values().stream().reduce(0, Integer::sum);
+        if (amsT>1){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -17,5 +23,12 @@ public class WildCardAmmo extends AmmoAmountUncapped{
             return false;
         else
             return true;
+    }
+
+    @Override
+    public AmmoAmountUncapped subtract(AmmoAmountUncapped c) {
+        if (c.canBeBought(AmmoAmountUncapped.zeroAmmo))
+            return this;
+        else return AmmoAmountUncapped.zeroAmmo;
     }
 }

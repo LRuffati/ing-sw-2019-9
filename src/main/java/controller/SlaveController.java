@@ -356,14 +356,14 @@ public class SlaveController {
      */
     public synchronized ControllerMessage getInstruction(){
         ControllerMessage mess = getCurrentMessage();
-        if (mess.type().equals(SlaveControllerState.WAIT)) {
+        /*if (mess.type().equals(SlaveControllerState.WAIT)) {
             List<String> old = new ArrayList<>(mess.getMessage().getChanges());
             old.addAll(getNotifications());
             setCurrentMessage(new WaitMessage(List.of()));
             return new WaitMessage(old);
-        }
+        }*/
 
-        else return mess;
+        return mess;
     }
 
     /**
@@ -470,6 +470,7 @@ public class SlaveController {
             };
             Timer timer = new Timer("Timer");
             timer.schedule(task, timeoutWindow*1000);
+            System.out.println("Started timer for "+player.getUsername());
         } else { //TODO merge old and new wait messages
             if (this.currentMessage.type().equals(SlaveControllerState.WAIT)){
                 List<String> old = new ArrayList<>(this.currentMessage.getMessage().getChanges());

@@ -20,7 +20,7 @@ public class PayTemplate implements EffectTemplate{
     private final AmmoAmountUncapped amount;
 
     public PayTemplate(AmmoAmountUncapped amount){
-        this.amount = amount.copy();
+        this.amount = amount;
     }
 
     /**
@@ -52,7 +52,7 @@ public class PayTemplate implements EffectTemplate{
 
         Function<List<PowerUp>, ControllerMessage> onChoice =
                 list -> {
-                    AmmoAmountUncapped tempSum = new AmmoAmountUncapped();
+                    AmmoAmountUncapped tempSum = AmmoAmountUncapped.zeroAmmo;
                     List<PowerUp> powUpsUsed= new ArrayList<>();
                     for (PowerUp p: list){
                         AmmoAmountUncapped intermediate =

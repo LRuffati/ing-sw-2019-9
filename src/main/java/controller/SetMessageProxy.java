@@ -34,13 +34,13 @@ public class SetMessageProxy {
      */
     public synchronized boolean setControllerMessage(ControllerMessage toSet){
         if (slave.lockMessageSet.tryLock()) {
-            if (!flag)
+            if (flag)
                 return false;
             if (slave.getCurrentMessage() != originalMessage) { // I'm interested in the reference
-                flag = false;
+                flag = true;
                 return false;
             }
-            flag = false;
+            flag = true;
             slave.setCurrentMessage(toSet);
             slave.lockMessageSet.unlock();
             return true;

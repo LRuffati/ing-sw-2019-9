@@ -7,9 +7,14 @@ import java.util.Map;
 
 /**
  * This class represents an ammunition amount, differently from {@link AmmoAmount AmmoAmount} this is not capped to 3 ammo per color
+ * All methods in this class are pure and return value should always replace the variable if an
+ * update is intended
  */
 public class AmmoAmountUncapped{
 
+    /**
+     * An ammoamount which can pay nothing except itself but can be paid by everything
+     */
     public static AmmoAmountUncapped zeroAmmo = new AmmoAmountUncapped();
 
     private final Map<AmmoColor, Integer> amounts;
@@ -33,19 +38,14 @@ public class AmmoAmountUncapped{
         amounts = temp;
     }
 
-    public AmmoAmountUncapped copy(){
-        return new AmmoAmountUncapped(this.amounts);
-    }
-
     public Map<AmmoColor, Integer> getAmounts(){
         return new EnumMap<>(amounts);
     }
 
-
     /**
      * Checks if this ammoAmount is greater than cost
      * @param cost the cost of the object
-     * @return true iif this > cost
+     * @return true iif this >= cost
      */
     public boolean canBuy(@NotNull AmmoAmountUncapped cost){
         return cost.canBeBought(this);

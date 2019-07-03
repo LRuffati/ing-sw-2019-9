@@ -378,7 +378,7 @@ public class Sandbox {
      */
     public AmmoAmountUncapped getUpdatedTotalAmmoAvailable() {
         AmmoAmountUncapped cubes = new AmmoAmountUncapped(updatedAmmoAvailable.getAmounts());
-        AmmoAmountUncapped pows = new AmmoAmountUncapped();
+        AmmoAmountUncapped pows = AmmoAmountUncapped.zeroAmmo;
         for (PowerUp p: powerUpsAvailable()){
             pows = pows.add(new AmmoAmountUncapped(p.getAmmo().getAmounts()));
         }
