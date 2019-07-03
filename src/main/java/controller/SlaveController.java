@@ -73,7 +73,7 @@ public class SlaveController {
         this.network = network;
         currentMessage = new WaitMessage(List.of());
         this.main = main;
-        this.timeoutWindow = MainController.timeoutTime;
+        this.timeoutWindow = MainController.TIMEOUT_TIME;
         notificationList = new ArrayList<>();
         lockMessageSet = new ReentrantLock();
     }

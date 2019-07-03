@@ -84,7 +84,7 @@ public class CLIDemo implements View {
                 "| $$  | $$| $$$$$$$/| $$  | $$| $$$$$$$$| $$ \\  $$| $$  | $$| $$$$$$$$ /$$$$$$| $$ \\  $$| $$$$$$$$\n" +
                 "|__/  |__/|_______/ |__/  |__/|________/|__/  \\__/|__/  |__/|________/|______/|__/  \\__/|________/");
 
-        System.out.println("Welcome to ADRENALINE!\n");
+        System.out.println("Benvenuto su ADRENALINA!\n");
 
     }
 
@@ -99,26 +99,42 @@ public class CLIDemo implements View {
         String color = "";
 
         while(username.isEmpty()){
-            System.out.println(">>> Enter your username!");
+            System.out.println(">>> Inserisci il nome utenet!");
             username = in.nextLine();
         }
         while(password.isEmpty()){
-            System.out.println(">>> Enter your password!");
+            System.out.println(">>> Inserisci la password!");
             password = in.nextLine();
         }
         while(color.isEmpty()){
-            System.out.println(">>> Choose your color:\n -> Gray\n -> Pink\n -> Yellow\n -> Green\n -> Blue\n -> Type 'y' " +
-                    "if you've already picked a color in a previous login");
+            System.out.println(">>> Scegli il tuo colore:\n -> Grigio\n -> Rosa\n -> Giallo\n -> Verde\n -> Blu\n -> Inserisci 'y' " +
+                    "se hai già un account valido.");
             color = in.nextLine();
             if(color.equalsIgnoreCase("y")) {
                 client.login(username,password);
                 return;
             }
-            if(!color.equalsIgnoreCase("gray")&&!color.equalsIgnoreCase("pink")&&!color.
-                    equalsIgnoreCase("yellow")&&!color.equalsIgnoreCase("green")&&!color.
-                    equalsIgnoreCase("blue")){
-                System.out.println("Invalid color. Pick a color among the followings:");
-                color = "";
+            switch (color.toLowerCase()) {
+                case "grigio":
+                    color = "gray";
+                    break;
+                case "rosa":
+                    color = "pink";
+                    break;
+                case "giallo":
+                    color = "yellow";
+                    break;
+                case "verde":
+                    color = "green";
+                    break;
+                case "blu":
+                    color = "blue";
+                    break;
+
+                    default:
+                        System.out.println("Colore non valido. Scegline uno tra i seguenti");
+                        color = "";
+                        break;
             }
         }
         client.login(username,password,color);
@@ -128,10 +144,9 @@ public class CLIDemo implements View {
     /**
      * After the player joined the game, he await for the game to start. This can happen only when there are three or
      * more players in the same game and the firstPlayer decides do start or the timer elapses.
-     * @param timeLeft is the timer (in seconds) that starts when there are three players that joined the game.
      */
-    private void waitForStart(int timeLeft){
-        System.out.println("Wait for other players to join the game.");
+    private void waitForStart(){
+        System.out.println("Aspettiamo per un po' qualche altro giocatore");
     }
 
 
@@ -142,7 +157,7 @@ public class CLIDemo implements View {
         chosenList.clear();
 
         StringBuilder builder = new StringBuilder();
-        builder.append("Chosen option(s):\t[ ");
+        builder.append("Scelte fatte:\t[ ");
         for(Integer i : toReturn) builder.append(i).append(" ");
         builder.append("]");
         System.out.println(builder.toString());
@@ -161,7 +176,7 @@ public class CLIDemo implements View {
         switch (n) {
             case 0:
                 if(chosenList.isEmpty() && !optional) {
-                    System.out.println("You must choose at least one " + type + ".");
+                    System.out.println("Devi selezionare almeno un elemento " + type + ".");
                     break;
                 }
                 pick(choiceId);
@@ -184,7 +199,7 @@ public class CLIDemo implements View {
 
             default:
                 if(n<0 || n>=max){
-                    System.out.println("You must choose a number lower than " + max+1 + "\n");
+                    System.out.println("L'indice massimo consentito è " + max+1 + "\n");
                 } else {
                     chosenList.add(n);
                     if (single) {
@@ -207,7 +222,7 @@ public class CLIDemo implements View {
         List<Color> colorsOfTargets = List.of(Color.green, Color.yellow, Color.pink, Color.red, Color.blue);
         CLIMap map = new CLIMap(gameMap);
         map.applyTarget(target, colorsOfTargets);
-        builder.append("Choose your target(s):\n0. Exit Selection\n");
+        builder.append("Scegli il bersaglio:\n0. Conferma selezione\n");
 
         Iterator<TargetView> targetIterator = target.iterator();
         int i = 1;
@@ -220,7 +235,7 @@ public class CLIDemo implements View {
                 builder.append(i);
                 builder.append(". ");
                 Color col = colorsOfTargets.get(i - 1);
-                builder.append("Option ");
+                builder.append("Opzione ");
                 builder.append(AnsiColor.getAnsi(col));
                 builder.append(AnsiColor.getColorName(col));
                 builder.append(AnsiColor.getDefault());
@@ -237,7 +252,7 @@ public class CLIDemo implements View {
                                 builder.append(AnsiColor.getAnsi(a.color()));
                                 builder.append(a.name());
                                 builder.append(AnsiColor.getDefault());
-                                builder.append(" whom character on the map is '");
+                                builder.append(" il cui carattere nella mappa è '");
                                 builder.append(climap.getPlayers().entrySet()
                                         .stream().filter(x -> x.getKey().name().equals(a.name()))
                                         .map(Map.Entry::getValue).collect(Collectors.toList()).get(0));
@@ -250,7 +265,7 @@ public class CLIDemo implements View {
                             if (entry.getValue().uid().equals(next)) {
                                 builder.append(i).append(". ");
                                 builder.append(AnsiColor.getAnsi(entry.getValue().color())).append(entry.getValue().name()).append(AnsiColor.getDefault());
-                                builder.append(" located in ").append(entry.getKey().toString());
+                                builder.append(" posizionato in ").append(entry.getKey().toString());
                                 builder.append(".\n");
                                 i++;
                                 break;
@@ -274,7 +289,7 @@ public class CLIDemo implements View {
             }
         }
 
-        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        builder.append("99. Rimuovi ultima scelta\n100. Ricomincia l'azione\n200. Rollback\n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
@@ -293,7 +308,7 @@ public class CLIDemo implements View {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
         System.out.println(description);
-        builder.append("Choose your action(s):\n0. Exit selection\n");
+        builder.append("Scegli il bersaglio:\n0. Conferma selezione\n");
         Iterator<ActionView> actionIterator = action.iterator();
         int i = 1;
         while(actionIterator.hasNext()){
@@ -302,12 +317,12 @@ public class CLIDemo implements View {
             builder.append(". ");
             builder.append(next.getName());
             if(next.getCost().values().stream().filter(x -> x>0).count() > 0)
-                builder.append(" that costs ").append(printCost(next.getCost()));
+                builder.append(" che costa ").append(printCost(next.getCost()));
             builder.append("\n");
             i+=1;
         }
-        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
-        builder.append("\n>> You've got the following ammo:\t");
+        builder.append("99. Rimuovi ultima scelta\n100. Ricomincia l'azione\n200. Rollback\n");
+        builder.append("\n>> Possiedi queste munizioni:\t");
         builder.append(printCost(gameMapView.you().ammo())).append(" \n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
@@ -315,7 +330,7 @@ public class CLIDemo implements View {
 
         int finalI = i;
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "action", string, finalI);
+                string -> choicer(optional, single, choiceId, "azione", string, finalI);
 
         commandParser.bind(consumer);
     }
@@ -328,7 +343,7 @@ public class CLIDemo implements View {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
         System.out.println(description);
-        builder.append("Choose your weapons:\n0. Exit selection\n");
+        builder.append("Scegli l'arma:\n0. Conferma selezione\n");
 
         Iterator<WeaponView> weaponIterator = weapon.iterator();
         int i = 1;
@@ -337,16 +352,16 @@ public class CLIDemo implements View {
             builder.append(i);
             builder.append(". ");
             builder.append(wv.name());
-            builder.append("\n\tBuy cost: ");
+            builder.append("\n\tPrezzo di raccolta: ");
             builder.append(printCost(wv.buyCost().get(AmmoColor.RED),wv.buyCost().get(AmmoColor.YELLOW),wv.buyCost().get(AmmoColor.BLUE), false));
-            builder.append("\n\tReload cost: ");
+            builder.append("\n\tPrezzo di ricarica: ");
             builder.append(printCost(wv.reloadCost().get(AmmoColor.RED),wv.reloadCost().get(AmmoColor.YELLOW),wv.reloadCost().get(AmmoColor.BLUE), false));
             builder.append("\n");
             i+=1;
         }
-        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        builder.append("99. Rimuovi ultima scelta\n100. Ricomincia l'azione\n200. Rollback\n");
 
-        builder.append("\n>> You've got the following ammo: \t");
+        builder.append("\n>> Possiedi queste munizioni:\t");
         builder.append(printCost(gameMapView.you().ammo())).append(" \n");
 
         pickStringMessage = builder.toString();
@@ -354,7 +369,7 @@ public class CLIDemo implements View {
 
         int finalI = i;
         Consumer<String> consumer =
-                string -> choicer(optional, single, choiceId, "weapon", string, finalI);
+                string -> choicer(optional, single, choiceId, "arma", string, finalI);
         commandParser.bind(consumer);
     }
 
@@ -363,7 +378,7 @@ public class CLIDemo implements View {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
         System.out.println(description);
-        builder.append("Choose your PowerUp(s):\n0. Exit selection\n");
+        builder.append("Scegli il powerUp:\n0. Conferma selezione\n");
         Iterator<PowerUpView> puIterator = powerUp.iterator();
         int i = 1;
         while(puIterator.hasNext()){
@@ -376,7 +391,7 @@ public class CLIDemo implements View {
             builder.append("\n");
             i+=1;
         }
-        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        builder.append("99. Rimuovi ultima scelta\n100. Ricomincia l'azione\n200. Rollback\n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
@@ -392,7 +407,7 @@ public class CLIDemo implements View {
         chosenList.clear();
         StringBuilder builder = new StringBuilder();
         System.out.println(description);
-        builder.append("Choose an option:\n0. Exit selection\n");
+        builder.append("Scegli un'opzione:\n0. Conferma selezione\n");
         Iterator<String> strIterator = string.iterator();
         int i = 1;
         while(strIterator.hasNext()){
@@ -403,13 +418,13 @@ public class CLIDemo implements View {
             builder.append("\n");
             i+=1;
         }
-        builder.append("99. Cancel last selection\n100. Restart Selection\n200. Rollback\n");
+        builder.append("99. Rimuovi ultima scelta\n100. Ricomincia l'azione\n200. Rollback\n");
         pickStringMessage = builder.toString();
         System.out.println(pickStringMessage);
 
         int finalI = i;
         Consumer<String> consumer =
-                stringa -> choicer(optional, single, choiceId, "string", stringa, finalI);
+                stringa -> choicer(optional, single, choiceId, "stringa", stringa, finalI);
 
         commandParser.bind(consumer);
     }
@@ -431,7 +446,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onLostTurn(Player player) {
-        System.out.println(player.getUsername() + "lost his turn!");
+        System.out.println(player.getUsername() + " ha perso il turno!");
     }
 
     /**
@@ -439,7 +454,7 @@ public class CLIDemo implements View {
      */
     @Override
     public void terminated() {
-        System.out.println("Action finally executed.");
+        System.out.println("Azione eseguita.");
     }
 
     /**
@@ -449,12 +464,14 @@ public class CLIDemo implements View {
     public void updateMap(GameMapView gameMapView, boolean forced) {
         climap = new CLIMap(gameMapView);
         if(yourPlayerChar == null) {
-            yourPlayerChar = "You're the player " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
+            yourPlayerChar = "Sei il giocatore " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
             System.out.println(yourPlayerChar);
             System.out.println(AnsiColor.getDefault());
         }
-        if(forced || (!forced && !areEquals(this.gameMapView, gameMapView)))
+        if(forced || (!forced && !areEquals(this.gameMapView, gameMapView))) {
+            System.out.println(yourPlayerChar + AnsiColor.getDefault());
             climap.printMap();
+        }
         this.gameMapView = gameMapView;
     }
 
@@ -480,14 +497,14 @@ public class CLIDemo implements View {
     @Override
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
         if(result){
-            System.out.println("Login completed correctly.");
+            System.out.println("Login completato correttamente.");
         } else {
             if(invalidColor) {
-                System.out.println("Sorry! This color has already been picked from another player. If" +
-                        "you're that player, try login with your old credentials.");
+                System.out.println("Questo colore non è valido, prova a sceglierne un altro\n" +
+                        "se lo avevi tu, effettua una riconnessione");
             } else {
                 if(invalidUsername){
-                    System.out.println("Please, try another username and/or password.");
+                    System.out.println("Username/password non validi");
                 }
             }
             joinGame();
@@ -502,32 +519,32 @@ public class CLIDemo implements View {
     @Override
     public void onConnection(Player player, boolean connected, int numOfPlayer) {
         StringBuilder builder = new StringBuilder();
-        builder.append("Player ").append(player.getUsername()).append(" just logged ");
+        builder.append("Il giocatore ").append(player.getUsername()).append(" è appena ");
         if(connected){
-            builder.append("in");
+            builder.append("entrato");
         } else {
-            builder.append("out");
+            builder.append("uscito");
         }
-        builder.append("! There are now ").append(numOfPlayer).append(" in the game");
+        builder.append("! Al momento ci sono ").append(numOfPlayer).append(" giocatori");
         System.out.println(builder.toString());
     }
 
     @Override
     public void onStarting(String map, GameMode gameMode) {
         StringBuilder builder = new StringBuilder();
-        builder.append("The game is goin' to start in a moment...\t");
+        builder.append("La partita sta per iniziare...\t");
         switch (gameMode) {
             case NORMAL:
-                builder.append("Normal mode");
+                builder.append("modalità Deathmach");
                 break;
             case DOMINATION:
-                builder.append("Domination mode");
+                builder.append("modalità Dominazione");
                 break;
             case TERMINATOR:
-                builder.append("Terminator mode");
+                builder.append("modalità Terminator");
                 break;
             case TURRET:
-                builder.append("Turret mode");
+                builder.append("modalità Torrette");
         }
         System.out.println(builder.toString());
         if(!scanThread.isAlive())
@@ -536,33 +553,33 @@ public class CLIDemo implements View {
 
     @Override
     public void onTimer(int timeToCount) {
-        System.out.println("Game will start in " + timeToCount/1000 + " seconds");
-        waitForStart(timeToCount);
+        System.out.println("La partita comincerà tra " + timeToCount/1000 + " secondi!");
+        waitForStart();
     }
 
     @Override
     public void onRespawn() {
-        System.out.println("You're respawing now...");
+        System.out.println("Stai respawnando...");
     }
 
     @Override
     public void onTakeback() {
-        System.out.println("You can use a Takeback Granade now!");
+        System.out.println("Puoi usare una granata!");
     }
 
     @Override
     public void onTerminator() {
-        System.out.println("You can move the Terminator now!");
+        System.out.println("Puoi muovere il Terminator!");
     }
 
     @Override
     public void onWinner(String winner, int winnerPoints, int yourPoints) {
-        System.out.println(String.format("Game is over!%nThe winner is...%n%s%nHe won with %d points, you had %d points", winner, winnerPoints, yourPoints));
+        System.out.println(String.format("La partita è finita!%nIl vincitore è...%n%s%n Ha vinto totalizzando %d punti, tu hai ottenuto %d punti", winner, winnerPoints, yourPoints));
     }
 
     @Override
     public void onCredits() {
-        System.out.println("\n\nAdrenaline™ is a game by Group9\nLorenzo Ruffati\nCarmelo Sarta\nPietro Tenani");
+        System.out.println("\n\nAdrenaline™ is a game by Group9\nLorenzo Ruffati\nCarmelo Sarta\nPietro Tenani\n\n\n");
         endGame();
     }
 
@@ -573,27 +590,27 @@ public class CLIDemo implements View {
      */
     private void tileInfo(TileView t){
         StringBuilder builder = new StringBuilder();
-        builder.append("\n>> The tile belongs to the ");
-        builder.append(AnsiColor.getAnsi(t.color())).append(AnsiColor.getColorName(t.color())).append(AnsiColor.getDefault()).append(" room\n");
+        builder.append("\n>> La cella appartiene alla stanza color ");
+        builder.append(AnsiColor.getAnsi(t.color())).append(AnsiColor.getColorName(t.color())).append(AnsiColor.getDefault()).append(" \n");
         if(t.spawnPoint()){
-            builder.append(">> There is a spawn point for weapons in the tile.\n\n");
+            builder.append(">> In questa cella c'è uno spawn point\n\n");
             if(t.weapons() != null) {
-                builder.append(">> You can pick up:\n");
+                builder.append(">> Puoi racogliere:\n");
                 for (WeaponView w : t.weapons()) {
-                    builder.append("+ ").append(w.name()).append(" that costs ").append(printCost(w.buyCost())).append("\n");
+                    builder.append("+ ").append(w.name()).append(" che costa ").append(printCost(w.buyCost())).append("\n");
                 }
             }
         } else {
             if(t.ammoCard() != null) {
-                builder.append(">> There is a spawn point for the following ammunition in the tile:\t");
+                builder.append(">> In questa cella ci sono queste munizioni:\t");
                 builder.append(printCost(t.ammoCard().numOfRed(),t.ammoCard().numOfYellow(),t.ammoCard().numOfBlue(), false)).append("\n");
             }
         }
         int i = 0;
         if(t.players().isEmpty()){
-            builder.append(">> There are no players in the tile.\n");
+            builder.append(">> In questa cella non ci sono giocatori\n");
         } else {
-            builder.append(">> The following players are in the tile: \n");
+            builder.append(">> Questi giocatori sono nella cella: \n");
             for(ActorView a: t.players()){
                 builder.append(i).append(". ").append(AnsiColor.getAnsi(a.color())).append(a.name()).append("\u001B[0m \n");
                 i++;
@@ -638,11 +655,11 @@ public class CLIDemo implements View {
     private String printListOfColor(List<ActorView> actorViews) {
         StringBuilder builder = new StringBuilder();
         for(ActorView actorView : actorViews) {
-            //todo: should be changed
             if(actorView == null && climap.getMp().gameMode().equals(GameMode.DOMINATION))
                 builder.append(AnsiColor.getAnsi(climap.getMp().dominationPointActor().values().iterator().next().color()));
             else
-                builder.append( AnsiColor.getAnsi(actorView.color()) );
+                if(actorView != null)
+                    builder.append( AnsiColor.getAnsi(actorView.color()) );
             builder.append("█ ");
             builder.append(AnsiColor.getDefault());
         }
@@ -650,14 +667,14 @@ public class CLIDemo implements View {
     }
 
     private void playerInfo(ActorView player) {
-        System.out.println("\n>> The player " + AnsiColor.getAnsi(player.color()) + player.name() + "\u001B[0m" + " still got " +
-                (player.getHP()-player.damageTaken().size()) + "HP left.");
+        System.out.println("\n>> Il giocatore " + AnsiColor.getAnsi(player.color()) + player.name() + "\u001B[0m" + " ha ancora " +
+                (player.getHP()-player.damageTaken().size()) + "punti vita.");
         if(player.getHP()-player.damageTaken().size() < 10 ) {
-            System.out.print("\n>> Damage taken :\t");
+            System.out.print("\n>> Danni subiti :\t");
             System.out.println(printListOfColor(player.damageTaken()));
         }
         if(player.marks().size() != 0) {
-            System.out.print("\n>> Marks taken:\t");
+            System.out.print("\n>> Marchi subiti:\t");
             List<ActorView> marks = new ArrayList<>();
             for(Map.Entry entry : player.marks().entrySet())
                 for(int i = 0; i<(Integer)entry.getValue(); i++)
@@ -666,24 +683,24 @@ public class CLIDemo implements View {
         }
 
         try {
-            System.out.println("\n>> He's located in the " + climap.getMp().getCoord(player.position()).toString() + " position.");
+            System.out.println("\n>> È posizionato nella cella " + climap.getMp().getCoord(player.position()).toString());
         }
         catch (InvalidParameterException e) {
             //skip
         }
-        System.out.print("\n>> He's got the following ammo:\t");
+        System.out.print("\n>> Ha le seguenti munizioni:\t");
         System.out.println(printCost(player.ammo()));
 
         int i = 0;
         if(!player.loadedWeapon().isEmpty()) {
-            System.out.println("\n>> He's got the following loaded weapons: ");
+            System.out.println("\n>> Ha queste armi cariche: ");
             for (WeaponView w : player.loadedWeapon()) {
                 System.out.println(i + ". " + w.name());
                 i++;
             }
         }
         if(!player.unloadedWeapon().isEmpty()) {
-            System.out.println("\n>> He's got the following unloaded weapons: ");
+            System.out.println("\n>> Ha queste armi scariche: ");
             for (WeaponView w : player.unloadedWeapon()) {
                 System.out.println(i + ". " + w.name());
                 i++;
@@ -691,7 +708,7 @@ public class CLIDemo implements View {
         }
         i=0;
         if(!player.powerUp().isEmpty()) {
-            System.out.println("\n>> He's got the following powerUps: ");
+            System.out.println("\n>> Ha questi powerUp: ");
             for (PowerUpView w : player.powerUp()) {
                 System.out.println(i + ". " + AnsiColor.getAnsi(w.ammo().toColor()) + w.type() + AnsiColor.getDefault());
                 i++;
@@ -706,7 +723,7 @@ public class CLIDemo implements View {
         getPrintedMap();
         printScoreboard();
         String out;
-        out = (">> 0. Exit\n") + (">> 1. Players\n") + (">> 2. Tiles\n") + (">> 3. Weapons\n");
+        out = (">> 0. Annulla\n") + (">> 1. Giocatori\n") + (">> 2. Celle\n") + (">> 3. Armi\n");
         System.out.println(out);
     }
 
@@ -774,7 +791,7 @@ public class CLIDemo implements View {
     }
 
     void askWeapon() {
-        System.out.println("Insert the name of the weapon");
+        System.out.println("Inserisci il nome dell'arma");
     }
 
     void chooseWeapon(String weaponName) {
@@ -783,9 +800,9 @@ public class CLIDemo implements View {
         WeaponView weapon = weapons.get(0);
         StringBuilder builder = new StringBuilder();
         builder.append(weapon.name()).append("\n");
-        builder.append("Buy cost:\t").append(printCost(weapon.buyCost())).append("\n");
-        builder.append("Reload cost:\t").append(printCost(weapon.reloadCost())).append("\n");
-        builder.append("Effects:\n");
+        builder.append("Costo di raccolta:\t").append(printCost(weapon.buyCost())).append("\n");
+        builder.append("Costo di ricarica:\t").append(printCost(weapon.reloadCost())).append("\n");
+        builder.append("Effetti:\n");
         for(Map.Entry entry : weapon.actionDescription().entrySet()) {
             builder.append("\t- ").append(entry.getKey()).append("\n");
             builder.append(entry.getValue()).append("\n\n");
@@ -795,8 +812,7 @@ public class CLIDemo implements View {
     }
 
     void quitGame(){
-        System.out.println("Are you sure you want to quit the game? Press 'y' if you want to proceed, 'n' if you" +
-                "want to go back.");
+        System.out.println("Sei sicuro di voler abbandonare la partita? (y/n)");
     }
 
     void confirmqQuit() {

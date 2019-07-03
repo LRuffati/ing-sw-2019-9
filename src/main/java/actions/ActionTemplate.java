@@ -92,8 +92,8 @@ public class ActionTemplate {
      */
     public boolean actionAvailable(Map<String, Targetable> existingTargets,
                                    List<String> previousActions, AmmoAmount ammoAvailable){
-        return verifyCost(ammoAvailable) &
-                verifyActions(previousActions) &
+        return verifyCost(ammoAvailable) &&
+                verifyActions(previousActions) &&
                 verifyTargets(existingTargets.keySet());
     }
 

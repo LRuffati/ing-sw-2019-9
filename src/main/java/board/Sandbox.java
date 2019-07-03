@@ -362,11 +362,11 @@ public class Sandbox {
         gameMapView.you().setAmmo(new AmmoAmount(updatedAmmoAvailable.getAmounts()));
 
         gameMapView.you().setLoadedWeapon(getArsenal().stream()
-                .filter(i -> i.x == Boolean.TRUE)
+                .filter(i -> i.x.equals(Boolean.TRUE))
                 .map(i -> i.y.generateView())
                 .collect(Collectors.toList()));
         gameMapView.you().setUnloadedWeapon(getArsenal().stream()
-                .filter(i -> i.x == Boolean.FALSE)
+                .filter(i -> i.x.equals(Boolean.FALSE))
                 .map(i -> i.y.generateView())
                 .collect(Collectors.toList()));
 

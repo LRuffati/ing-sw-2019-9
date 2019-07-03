@@ -27,7 +27,7 @@ class CLIMapTest {
     void setup() {
         GameBuilder builder = null;
         builder = new GameBuilder(
-                null, null, null, null, 5);
+                null, null, null, null, 3);
         map = builder.getMap();
         actorList = builder.getActorList();
         gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
@@ -74,8 +74,6 @@ class CLIMapTest {
         map.moveActor(iterator.next(), new Coord(0,0));
         map.moveActor(iterator.next(), new Coord(0,0));
         map.moveActor(iterator.next(), new Coord(1,0));
-        map.moveActor(iterator.next(), new Coord(0,2));
-
-        map.printMap();
+        //map.printMap();
     }
 }

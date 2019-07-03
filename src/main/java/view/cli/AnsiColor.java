@@ -24,13 +24,13 @@ class AnsiColor {
     }
 
     static String getColorName(Color color) {
-        if(color.equals(Color.pink)) return "pink";
-        if(color.equals(Color.white)) return "white";
-        if(color.equals(Color.black)) return "black";
-        if(color.equals(Color.red)) return "red";
-        if(color.equals(Color.green)) return "green";
-        if(color.equals(Color.yellow)) return "yellow";
-        if(color.equals(Color.blue)) return "blue";
+        if(color.equals(Color.pink)) return "rosa";
+        if(color.equals(Color.white)) return "bianco";
+        if(color.equals(Color.black)) return "nero";
+        if(color.equals(Color.red)) return "rosso";
+        if(color.equals(Color.green)) return "verde";
+        if(color.equals(Color.yellow)) return "giallo";
+        if(color.equals(Color.blue)) return "blu";
         if(color.equals(Color.magenta)) return "magenta";
 
         return "gray";

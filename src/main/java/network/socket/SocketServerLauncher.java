@@ -17,9 +17,9 @@ import java.util.Scanner;
  * The Server waits until an integer is read, then reply to the request.
  */
 public class SocketServerLauncher {
-    private static ServerSocket serverSocket;
-    private static ExecutorService pool;
-    private static Thread conn;
+    private ServerSocket serverSocket;
+    private ExecutorService pool;
+    private Thread conn;
 
     public SocketServerLauncher(int port) throws IOException {
         serverSocket = new ServerSocket(port);

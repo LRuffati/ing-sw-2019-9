@@ -5,37 +5,28 @@ import actions.ActionInfo;
 import actions.ActionTemplate;
 import actions.conditions.HasCondition;
 import actions.effects.Effect;
-import actions.effects.MoveEffect;
 import actions.effects.MoveTemplate;
 import actions.selectors.ExistSelector;
 import actions.selectors.HasSelector;
 import actions.selectors.ReachableSelector;
-import actions.selectors.Selector;
-import actions.targeters.Targeter;
 import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.BasicTarget;
-import actions.targeters.targets.Targetable;
-import actions.utils.*;
+import actions.utils.AmmoAmount;
+import actions.utils.AmmoAmountUncapped;
+import actions.utils.AmmoColor;
+import actions.utils.PowerUpType;
 import board.Sandbox;
 import controller.SetMessageProxy;
 import controller.SlaveController;
 import controller.controllermessage.ControllerMessage;
-import controller.controllermessage.PickTargetMessage;
-import controller.controllermessage.RollbackMessage;
 import controller.controllermessage.WaitMessage;
 import genericitems.Tuple;
 import player.Actor;
 import uid.DamageableUID;
-import uid.TileUID;
-import viewclasses.TargetView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This class implements the Newton powerUp.
