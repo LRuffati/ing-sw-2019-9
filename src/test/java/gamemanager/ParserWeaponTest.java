@@ -7,7 +7,6 @@ import grabbables.Weapon;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -22,7 +21,7 @@ class ParserWeaponTest {
 
     @Test
     void voidTest() {
-        String path = "test/weaponToTest";
+        String path = "weapons.txt";
         weaponCollection = ParserWeapon.parseWeapons(path);
         System.out.println(weaponCollection.size());
     }

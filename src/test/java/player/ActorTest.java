@@ -1,22 +1,25 @@
-/*
+
 package player;
 
 
+import actions.effects.Effect;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
+import actions.utils.PowerUpType;
 import board.Coord;
 import board.GameMap;
+import controller.SetMessageProxy;
+import controller.controllermessage.ControllerMessage;
 import gamemanager.GameBuilder;
-import grabbables.AmmoCard;
+import grabbables.PowerUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
-import java.lang.invoke.WrongMethodTypeException;
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Map;
 
-import static actions.utils.AmmoColor.YELLOW;
+import static actions.utils.AmmoColor.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ActorTest {
@@ -27,14 +30,9 @@ class ActorTest {
     @BeforeEach
     void setup(){
         GameBuilder builder = null;
-        String tilePath = "src/resources/ammoTile.txt";
-        String mapPath = "src/resources/map1.txt";
-        try {
-            builder = new GameBuilder(
-                    mapPath, null, null, tilePath, 3);
-        }
-        catch (FileNotFoundException e){
-        }
+        String tilePath = "ammoTile.txt";
+        String mapPath = "map1.txt";
+        builder = new GameBuilder(mapPath, null, null, tilePath, 3);
         map = builder.getMap();
         actorList = builder.getActorList();
     }
@@ -67,7 +65,6 @@ class ActorTest {
         Actor Pietro = actorList.get(0);
         Pietro.move(map.getPosition(new Coord(1,2)));
         assertEquals(map.getPosition(new Coord(1,2)), Pietro.pawn().getTile());
-        Pietro.setFrenzy();
         Coord c = new Coord(2,3);
         Pietro.move(map.getPosition(c));
         assertEquals(map.getPosition(c), Pietro.pawn().getTile());
@@ -87,23 +84,27 @@ class ActorTest {
         Actor Lorenzo = actorList.get(2);
 
         //melo gives 3 marks to pietro
-        assertEquals(3, Pietro.addMark(melo.pawnID(),4));
+        assertEquals(3, Pietro.addMark(melo,4));
         assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
 
         //melo gives 2 marks to pietro
-        assertEquals(0, Pietro.addMark(melo.pawnID(), 2));
+        assertEquals(0, Pietro.addMark(melo, 2));
         assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
 
         //melo gives 1 mark to lorenzo
-        assertEquals(0, Lorenzo.addMark(melo.pawnID(), 1));
+        assertEquals(1, Lorenzo.addMark(melo, 1));
+
+        //melo gives 1 mark to Pietro
+        assertEquals(0, Pietro.addMark(melo,1));
+        assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
 
         //lorenzo gives 2 marks to pietro
-        assertEquals(1, Pietro.addMark(Lorenzo.pawnID(), 1));
-        assertEquals(1, Pietro.addMark(Lorenzo.pawnID(), 1));
+        assertEquals(1, Pietro.addMark(Lorenzo, 1));
+        assertEquals(1, Pietro.addMark(Lorenzo, 1));
         assertEquals(2, Pietro.getMarks().get(Lorenzo.pawnID()));
         assertEquals(3, Pietro.getMarks().get(melo.pawnID()));
 
-        assertEquals(3, melo.numOfMarksApplied());
+        assertEquals(4, melo.numOfMarksApplied());
         assertEquals(2, Lorenzo.numOfMarksApplied());
         assertEquals(0, Pietro.numOfMarksApplied());
     }
@@ -120,21 +121,21 @@ class ActorTest {
         assertEquals(2, Pietro.getDamageTaken().size());
         assertFalse(Pietro.isDead());
 
-        Pietro.addMark(melo.pawnID(), 1);
+        Pietro.addMark(melo, 1);
         assertEquals(1, Pietro.getMarks().get(melo.pawnID()));
 
         Pietro.damage(melo, 3);
-        assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
+        assertNull(Pietro.getMarks().get(melo.pawnID()));
         assertEquals(6, Pietro.getDamageTaken().size());
 
         assertFalse(Pietro.isDead());
         assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
 
 
-        Pietro.addMark(melo.pawnID(), 3);
+        Pietro.addMark(melo, 3);
         Pietro.damage(melo, 5);
-        assertEquals(0, Pietro.getMarks().get(melo.pawnID()));
-        assertEquals(Pietro.hp()+1, Pietro.getDamageTaken().size());
+        assertNull(Pietro.getMarks().get(melo.pawnID()));
+        assertEquals(Pietro.getDamageTaken().size(), Pietro.getDamageTaken().size());
         assertTrue(Pietro.isDead());
 
         Pietro.respawn(YELLOW);
@@ -145,10 +146,10 @@ class ActorTest {
     void testAddDamage0(){
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
-        Pietro.addMark(melo.pawnID(), 2);
+        Pietro.addMark(melo, 2);
         Pietro.damage(melo, 0);
-        assertEquals(2, Pietro.getMarks().get(melo.pawnID()));
-        assertEquals(0, Pietro.getDamageTaken().size());
+        assertNull(Pietro.getMarks().get(melo.pawnID()));
+        assertEquals(2, Pietro.getDamageTaken().size());
     }
 
     @Test
@@ -160,30 +161,30 @@ class ActorTest {
         a1.damage(a2,1);
         a1.damage(a3,2);
         assertEquals(3, a1.getDamageTaken().size());
-        a1.addMark(a2.pawnID(), 2);
-        a1.addMark(a3.pawnID(), 3);
-        a3.addMark(a2.pawnID(), 1);
+        a1.addMark(a2, 2);
+        a1.addMark(a3, 3);
+        a3.addMark(a2, 1);
         assertEquals(2, a1.getMarks().get(a2.pawnID()));
         assertEquals(3, a1.getMarks().get(a3.pawnID()));
 
         a1.damage(a3, 1);
         assertEquals(2, a1.getMarks().get(a2.pawnID()));
-        assertEquals(0, a1.getMarks().get(a3.pawnID()));
+        assertNull(a1.getMarks().get(a3.pawnID()));
         assertEquals(7, a1.getDamageTaken().size());
 
         a1.damage(a2, 1);
-        assertEquals(0, a1.getMarks().get(a2.pawnID()));
-        assertEquals(0, a1.getMarks().get(a3.pawnID()));
+        assertNull(a1.getMarks().get(a2.pawnID()));
+        assertNull(a1.getMarks().get(a3.pawnID()));
         assertEquals(10, a1.getDamageTaken().size());
 
         assertTrue(a1.isDead());
 
         a1.damage(a2, 1);
-        assertEquals(a1.hp()+1, a1.getDamageTaken().size());
+        assertEquals(a1.getDamageTaken().size(), a1.getDamageTaken().size());
         assertTrue(a1.isDead());
 
         a1.damage(a2, 3);
-        assertEquals(a1.hp()+1, a1.getDamageTaken().size());
+        assertEquals(a1.getDamageTaken().size(), a1.getDamageTaken().size());
     }
 
     @Test
@@ -209,11 +210,62 @@ class ActorTest {
 
     @Test
     void ammoPickUpTest(){
-        AmmoCard am = new AmmoCard(new AmmoAmount(),0);
         Actor Pietro = actorList.get(0);
-        //TODO put the ammocard in a tile and check if the player grabs it.
+        Pietro.pay(new AmmoAmount(Map.of(YELLOW,1, RED,1)));
+        assertEquals(new AmmoAmount(Map.of(BLUE,1)).toString(), Pietro.getAmmo().toString());
+
+        PowerUp p = new PowerUp(PowerUpType.TELEPORTER, BLUE) {
+            @Override
+            public boolean canUse(List<Effect> lastEffects) {
+                return false;
+            }
+
+            @Override
+            public ControllerMessage usePowup(SetMessageProxy pov, List<Effect> lastEffects, Runnable onPowerupFinalized) {
+                return null;
+            }
+        };
+        Pietro.pay(p);
+        assertFalse(Pietro.getPowerUp().contains(p));
+
+        assertFalse(Pietro.endTurn(Pietro, null));
+
+
+
+    }
+
+    @Test
+    void actionTest() {
+        Actor Pietro = actorList.get(0);
+
+        assertEquals(2, Pietro.getActions().size());
+        assertEquals(3, Pietro.getActions().get(0).size());
+
+        Pietro.beginFF(true);
+        assertTrue(Pietro.getFrenzy());
+        assertEquals(1, Pietro.getActions().size());
+        assertEquals(2, Pietro.getActions().get(0).size());
+
+        Pietro.beginFF(false);
+        assertEquals(2, Pietro.getActions().size());
+        assertEquals(3, Pietro.getActions().get(0).size());
+    }
+
+    @Test
+    void testPowerUp() {
+        Actor Pietro = actorList.get(0);
+        assertEquals(0, Pietro.getPowerUp().size());
+        Pietro.drawPowerUpRaw(3);
+        assertEquals(3, Pietro.getPowerUp().size());
+        Pietro.discardPowerUp(Pietro.getPowerUp().iterator().next());
+        assertEquals(2, Pietro.getPowerUp().size());
+    }
+
+    @Test
+    void testDamagedBy() {
+        Actor a = actorList.get(0);
+        Actor b = actorList.get(1);
+        a.damage(b, 1);
+        assertTrue(a.getDamagedBy().contains(b));
     }
 }
-
-
- */
