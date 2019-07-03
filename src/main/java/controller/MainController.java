@@ -29,12 +29,11 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 1_000;//ParserConfiguration.parseInt
-    // ("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
-    private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 1_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 2;//ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
-    public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
+    public static final int TIMEOUT_TIME = 1000;//ParserConfiguration.parseInt("TimeForAction");
 
     private boolean closeGameAtEndTurn = false;
 
@@ -213,6 +212,8 @@ public class MainController {
         catch (NoSuchFieldException | IllegalAccessException e){
             logger.log(Level.SEVERE, e.getMessage());
         }
+
+        game.getActorList().get(0).damageRaw(game.getActorList().get(1), 9);
     }
 
 
@@ -327,7 +328,7 @@ public class MainController {
      *
      * @param lastPlayed the player whose turn just ended
      */
-    public void endTurn(Actor lastPlayed){
+    public void endTurn(Actor lastPlayed) {
         boolean frenzyBefore = scoreboard.finalFrenzy();
         SlaveController current = slaveMap.get(lastPlayed.pawnID());
         SlaveController next;
