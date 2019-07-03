@@ -733,7 +733,7 @@ public class CLIDemo implements View {
     private void printScoreboard() {
         StringBuilder builder = new StringBuilder();
         builder.append("Killtrack : ");
-        printListOfColor(climap.getMp().skullBox().stream().map(x -> x.keySet().iterator().next()).collect(Collectors.toList()));
+        builder.append(printListOfColor(climap.getMp().skullBox().stream().map(x -> x.keySet().iterator().next()).collect(Collectors.toList())));
         System.out.println(builder.toString());
         builder = new StringBuilder();
         if(climap.getMp().gameMode().equals(GameMode.DOMINATION)) {

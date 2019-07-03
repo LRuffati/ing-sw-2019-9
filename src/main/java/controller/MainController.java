@@ -212,8 +212,6 @@ public class MainController {
         catch (NoSuchFieldException | IllegalAccessException e){
             logger.log(Level.SEVERE, e.getMessage());
         }
-
-        game.getActorList().get(0).damageRaw(game.getActorList().get(1), 9);
     }
 
 
