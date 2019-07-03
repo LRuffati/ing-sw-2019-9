@@ -248,7 +248,7 @@ public class GameMap {
      * Returns the tile where the pawn is
      *
      * @param pawn pawn whose tile is requested
-     * @return the room containing the pawn
+     * @return the tile containing the pawn
      */
     public TileUID tile(DamageableUID pawn) {
         return damageableUIDMap.get(pawn).getTile();

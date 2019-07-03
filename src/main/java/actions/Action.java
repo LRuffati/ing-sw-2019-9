@@ -1,6 +1,8 @@
 package actions;
 
 import actions.effects.EffectTemplate;
+import actions.utils.ActionPicker;
+import actions.utils.AmmoAmount;
 import actions.utils.ChoiceMaker;
 import actions.targeters.Targeter;
 import actions.targeters.TargeterTemplate;
@@ -161,6 +163,11 @@ public class Action {
         };
     }
 
+
+    public ControllerMessage iterate(){
+        return iterate(false);
+    }
+
     /*
     Se ha ancora targeter: crea choicemaker, passa la lambda, restituisce il risultato di
     choicemaker
@@ -169,7 +176,14 @@ public class Action {
 
     Se non ho più niente: return la finalLambda.apply(sandbox)
      */
-     public ControllerMessage iterate(){
+     public ControllerMessage iterate(boolean contempDone){
+         List<ActionTemplate> availableContemp = info.getContempList().stream()
+                 .filter(i -> i.actionAvailable(
+                         previousTargets,
+                         List.of(info.getActionId()),
+                         new AmmoAmount(sandbox.getUpdatedTotalAmmoAvailable())
+                 )).collect(Collectors.toList());
+
         if (!targeterTemplates.isEmpty()){
 
             Iterator<Tuple<String, TargeterTemplate>> targetersIter= targeterTemplates.iterator();
@@ -189,7 +203,7 @@ public class Action {
 
                 Action newAction = Action.spawn(this,targetsUpdated, remainingTargets);
 
-                return newAction.iterate();
+                return newAction.iterate(contempDone);
             };
 
             // Choicemaker creation
@@ -218,7 +232,8 @@ public class Action {
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
                 return new PickTargetMessage(choiceMaker, sandbox);
-        } else if (false){
+        } else if (false /*!contempDone && !availableContemp.isEmpty()*/){
+            //new ActionPicker()
             /*
             TODO: implement contemporaneous effects
             Save contemporary effects in info and a flag.
@@ -237,7 +252,7 @@ public class Action {
                 unresolvedIter.forEachRemaining(unresolvedList::add); // Add all effects except
                 // the first one to the list
                 Action newAction = Action.spawn(this, sandbox1, unresolvedList);
-                return newAction.iterate();
+                return newAction.iterate(contempDone);
             };
 
             return nextEffect.spawn(previousTargets, sandbox, fun);

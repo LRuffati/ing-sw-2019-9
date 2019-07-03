@@ -31,7 +31,7 @@ public class MainController {
 
     private static final int TIME_BEFORE_STARTING = 1_000;//ParserConfiguration.parseInt
     // ("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int MIN_PLAYER = 2;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
@@ -349,7 +349,7 @@ public class MainController {
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){
-            firstRoundOver = pre>currIndex ||currIndex==slaveControllerList.size()-1;
+            firstRoundOver = pre>currIndex || currIndex==slaveControllerList.size()-1;
             nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
         /*
@@ -454,6 +454,7 @@ public class MainController {
                     TileUID destination = powerUp.spawnLocation(spawns);
                     respawnedActor.discardPowerUp(powerUp);
                     respawnedActor.pawn().move(destination);
+                    respawnedActor.respawn();
                     startRespawn(tail, cards, onAllRespawned);
                 };
         slaveMap.get(head).startRespawn(onRespawned);
