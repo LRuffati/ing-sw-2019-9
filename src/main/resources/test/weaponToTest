@@ -188,7 +188,7 @@ nomeAction: Modalità base
 descrizioneAction: Scegli
 target tile1 tile (DISTANT (1,1) self)
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN dir & DISTANT (2,2) self) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic optional
 target targ1 pawn (IN tile1) optional
 target targ2 pawn (IN tile2) optional
 effect damage 1 targ1
@@ -327,10 +327,9 @@ effect mark 2 targ1
 action cento B xor [main]:
 nomeAction: Modalità cento pugni
 descrizioneAction: d
-target dirsel tile (DISTANT (1,1) self)
-target dir direction (HAS self & HAS dirsel) automatic
-target tile1 tile (DISTANT (1,1) self & IN dir) automatic
-target tile2 tile (DISTANT (2,2) self & IN dir) automatic
+target tile1 tile (DISTANT (1,1) self)
+target dir direction (HAS self & HAS tile1) automatic
+target tile2 tile (DISTANT (2,2) self & IN dir) automatic optional
 target targ1 pawn (IN tile1) optional
 target targ2 pawn (IN tile2) optional
 effect move self to tile1
