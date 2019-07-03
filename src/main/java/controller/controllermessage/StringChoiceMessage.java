@@ -84,7 +84,7 @@ public class StringChoiceMessage implements ControllerMessage {
         choices =
                 choices.stream()
                         .distinct()
-                        .filter(i -> i>=0 & i<options.size()).collect(Collectors.toList());
+                        .filter(i -> i>=0 && i<options.size()).collect(Collectors.toList());
         if (choices.isEmpty()) {
             return this;
         } else {

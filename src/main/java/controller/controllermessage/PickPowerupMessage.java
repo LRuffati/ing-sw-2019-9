@@ -127,10 +127,10 @@ public class PickPowerupMessage implements ControllerMessage {
         int lenOpts = choiceBoard.getNumOfElems();
         List<PowerUp> powChoices = choices.stream()
                         .distinct()
-                        .filter(i-> i>=0 & i<lenOpts)
+                        .filter(i-> i>=0 && i<lenOpts)
                                     .map(originalPowup::get)
                                     .collect(Collectors.toList());
-        if (!optional & choices.isEmpty()){
+        if (!optional && choices.isEmpty()){
             return this;
         } else {
             return choicesAction.apply(powChoices);

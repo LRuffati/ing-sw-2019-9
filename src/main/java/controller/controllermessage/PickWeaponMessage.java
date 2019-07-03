@@ -80,7 +80,7 @@ public class PickWeaponMessage implements ControllerMessage{
         choices =
                 choices.stream()
                         .distinct()
-                        .filter(i -> i>=0 & i< options.getNumOfElems()).collect(Collectors.toList());
+                        .filter(i -> i>=0 && i< options.getNumOfElems()).collect(Collectors.toList());
         return fun.apply(choices);
     }
 }

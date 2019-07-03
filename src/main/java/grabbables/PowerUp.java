@@ -6,7 +6,6 @@ import actions.utils.AmmoColor;
 import actions.utils.PowerUpType;
 import board.Tile;
 import controller.SetMessageProxy;
-import controller.SlaveController;
 import controller.controllermessage.ControllerMessage;
 import uid.TileUID;
 import viewclasses.PowerUpView;

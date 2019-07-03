@@ -638,11 +638,11 @@ public class CLIDemo implements View {
     private String printListOfColor(List<ActorView> actorViews) {
         StringBuilder builder = new StringBuilder();
         for(ActorView actorView : actorViews) {
-            //todo: should be changed
             if(actorView == null && climap.getMp().gameMode().equals(GameMode.DOMINATION))
                 builder.append(AnsiColor.getAnsi(climap.getMp().dominationPointActor().values().iterator().next().color()));
             else
-                builder.append( AnsiColor.getAnsi(actorView.color()) );
+                if(actorView != null)
+                    builder.append( AnsiColor.getAnsi(actorView.color()) );
             builder.append("█ ");
             builder.append(AnsiColor.getDefault());
         }

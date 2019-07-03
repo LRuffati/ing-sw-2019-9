@@ -34,7 +34,7 @@ public class MainController {
     private static final int MIN_PLAYER = 1;// ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = 5;// ParserConfiguration.parseInt("maxNumOfPlayers");
 
-    public static final int timeoutTime = ParserConfiguration.parseInt("TimeForAction");
+    public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
 
     private boolean closeGameAtEndTurn = false;
 
@@ -180,7 +180,6 @@ public class MainController {
             slaveMap.put(i.getSelf().pawnID(), i);
         }
         notifyStarting(game.getMapName());
-        //todo notify inizio gioco
 
         slaveControllerList = new ArrayList<>(slaveMap.values());
         Collections.shuffle(slaveControllerList);
@@ -227,7 +226,6 @@ public class MainController {
             @Override
             public void run() {
                 logger.log(Level.INFO, "si parte");
-                //todo: change
                 startGame();
                 timerClose();
             }
@@ -250,7 +248,7 @@ public class MainController {
 
     public static void main(String[] str) {
         MainController initGame = new MainController();
-        NetworkBuilder network = new NetworkBuilder(initGame);
+        NetworkBuilder.NetworkStarter(initGame);
     }
 
     /**
@@ -379,20 +377,20 @@ public class MainController {
             }
         }
 
-        if (scoreboard.finalFrenzy() & current.getSelf().isLastInFrenzy()){
+        if (scoreboard.finalFrenzy() && current.getSelf().isLastInFrenzy()){
             // It's not necessary to respawn if the game ends anyway
             this.endGame();
             return;
         }
 
-        if (!frenzyBefore & scoreboard.finalFrenzy()){ // If something triggered the FF
+        if (!frenzyBefore && scoreboard.finalFrenzy()){ // If something triggered the FF
             //1. Start finalFrenzy for each pawn
             boolean afterLast = false;
             for (SlaveController i: slaveControllerList){
                 // after last is false for all players between the first one and the one who just
                 // ended the turn and true for all others
                 i.getSelf().beginFF(!afterLast);
-                afterLast = afterLast | i.equals(current);
+                afterLast = afterLast || i.equals(current);
             }
             //2. For current
             current.getSelf().setLastInFrenzy();
