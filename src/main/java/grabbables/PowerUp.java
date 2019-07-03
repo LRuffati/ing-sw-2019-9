@@ -117,6 +117,7 @@ public abstract class PowerUp extends Grabbable {
         PowerUp ret=null;
         switch (type){
             case NEWTON:
+                ret = new Newton(color);
                 break;
             case TELEPORTER:
                 ret = new Teleporter(color);
