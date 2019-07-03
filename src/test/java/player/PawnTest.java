@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import uid.DamageableUID;
 import uid.TileUID;
+import viewclasses.ActorView;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -74,5 +75,11 @@ class PawnTest {
             if(!t.equals(tile))
                 assertFalse(map.containedPawns(t).contains(pietro.getDamageableUID()));
         assertTrue(map.containedPawns(tile).contains(pietro.getDamageableUID()));
+    }
+
+    @Test
+    void viewTest() {
+        ActorView actorView = actorList.get(0).pawn().generateView(map.generateView(actorList.get(0).pawnID()), actorList.get(0).pawnID(), actorList.get(0).pawnID());
+        assertEquals(actorList.get(0).getPoints(), actorView.score());
     }
 }

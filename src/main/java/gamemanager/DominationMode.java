@@ -69,17 +69,25 @@ public class DominationMode extends Scoreboard{
      * Used at the end of the game, it counts the points on the colorTracks and assign the bonus to the players that awarded more points
      */
     private void addPointsAtEndGame() {
-        TreeSet<Actor> scoreSet;
         for(List<Actor> list : spawnTracker.values()) {
-            scoreSet = new TreeSet<>
-                    (Comparator.comparing(
-                            x -> Collections.frequency(list, x)
-                    ));
-            scoreSet.addAll(list);
+
+            Map<Actor, Integer> map = new HashMap<>();
+            for(Actor actor : list) {
+                if(map.containsKey(actor))
+                    map.put(actor, map.get(actor)+1);
+                else
+                    map.put(actor, 0);
+            }
+
+            List<Actor> sortedStats = map.entrySet().stream()
+                    .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
             int i = 0;
             //FIXME: possible bug in this, seems to take only one
             //todo: should be solved, da testare per sicurezza
-            for(Actor actor : scoreSet.descendingSet()) {
+            for(Actor actor : sortedStats) {
                 actor.addPoints(pointForSpawnTracker.get(i));
                 i++;
             }
