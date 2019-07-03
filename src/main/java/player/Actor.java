@@ -245,6 +245,7 @@ public class Actor {
      * @param numOfDmg number of damage points
      */
     public void damageRaw(Actor shooter, int numOfDmg) {
+        System.out.println("damage added to "+this.pawn().getUsername());
         for(int i=0; i<numOfDmg; i++){
             if(damageTaken.size() <= HP){
                 damageTaken.add(shooter);
@@ -482,11 +483,11 @@ public class Actor {
      * @return True iif the player needs to respawn
      */
     public boolean endTurn(Actor player, Scoreboard scoreboard) {
-        if (!player.isDead())
+        if (!isDead())
             return false;
 
         scoreboard.addKill(player, this);
-        scoreboard.score(player);
+        scoreboard.score(this);
         damageTaken.clear();
 
         if (frenzy)
