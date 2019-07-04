@@ -274,8 +274,8 @@ public class Database {
 
     public void clearAll() {
         for(Player player : usersByToken.values()) {
+            logout(player.getToken());
             colors.add(player.getColor());
-            TimerForDisconnection.stop(player.getToken());
             ObjectMap.get().clearCache(player.getToken());
         }
         usersByToken.clear();

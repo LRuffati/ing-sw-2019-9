@@ -198,7 +198,7 @@ nomeAction: Modalita' barbecue
 descrizioneAction: Dai 2 danni a tutti i giocatori nel primo quadrato e 1 danno a tutti i giocatori nel secondo
 target tile1 tile (DISTANT (1,1) self)
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN dir & DISTANT (2,2) self) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic optional
 effect damage 2 tile1
 effect damage 1 tile2
 stop
