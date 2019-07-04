@@ -20,7 +20,7 @@ import java.util.Set;
  */
 public abstract class PowerUp extends Grabbable {
     private final PowerUpType type;
-    private final AmmoColor color;
+    public final AmmoColor color;
 
     /**
      * Default constructor, it only sets the type of powerUp and its color

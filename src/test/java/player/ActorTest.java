@@ -11,6 +11,7 @@ import board.GameMap;
 import controller.SetMessageProxy;
 import controller.controllermessage.ControllerMessage;
 import gamemanager.GameBuilder;
+import gamemanager.ParserConfiguration;
 import grabbables.PowerUp;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ class ActorTest {
         GameBuilder builder = null;
         String tilePath = "ammoTile.txt";
         String mapPath = "map1.txt";
-        builder = new GameBuilder(mapPath, null, null, tilePath, 3);
+        builder = new GameBuilder(mapPath, null, ParserConfiguration.parsePath("powerUpPath"), tilePath, 3);
         map = builder.getMap();
         actorList = builder.getActorList();
     }
@@ -114,6 +115,8 @@ class ActorTest {
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
 
+        PowerUp picked = map.pickUpPowerUp();
+
         Pietro.move(map.getPosition(new Coord(0,0)));
 
         Pietro.damage(melo,2);
@@ -129,7 +132,8 @@ class ActorTest {
         assertEquals(6, Pietro.getDamageTaken().size());
 
         assertFalse(Pietro.isDead());
-        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
+        assertThrows(InvalidParameterException.class,
+                ()-> Pietro.respawn(picked));
 
 
         Pietro.addMark(melo, 3);
@@ -138,7 +142,7 @@ class ActorTest {
         assertEquals(Pietro.getDamageTaken().size(), Pietro.getDamageTaken().size());
         assertTrue(Pietro.isDead());
 
-        Pietro.respawn(YELLOW);
+        Pietro.respawn(picked);
     }
 
     //TODO: valid behaviour?
@@ -191,20 +195,28 @@ class ActorTest {
     void respawnTest(){
         Actor Pietro = actorList.get(0);
         Actor melo = actorList.get(1);
-        Pietro.respawn(AmmoColor.YELLOW);
-        melo.respawn(AmmoColor.BLUE);
+        PowerUp powerUp = map.pickUpPowerUp();
+        AmmoColor colorP = powerUp.color;
+        Pietro.respawn(powerUp);
+        powerUp = map.pickUpPowerUp();
+        AmmoColor colorC = powerUp.color;
+        melo.respawn(powerUp);
 
         assertTrue(map.getTile(map.getPosition(new Coord(2,3))).spawnPoint());
         assertTrue(map.getTile(Pietro.pawn().getTile()).spawnPoint());
 
-        assertEquals(map.getPosition(new Coord(2,3)), Pietro.pawn().getTile());
-        assertEquals(map.getPosition(new Coord(0,2)), melo.pawn().getTile());
+        assertEquals(colorP.toColor(), map.getTile(map.tile(Pietro.pawnID())).getColor());
 
-        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(YELLOW));
+        assertEquals(colorC.toColor(), map.getTile(map.tile(melo.pawnID())).getColor());
+
+        PowerUp powRes = map.pickUpPowerUp();
+
+        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(powRes));
         Pietro.damage(actorList.get(1), 10);
         assertFalse(Pietro.getDamageTaken().isEmpty());
 
-        Pietro.respawn(YELLOW);
+        powerUp = map.pickUpPowerUp();
+        Pietro.respawn(powerUp);
         assertTrue(Pietro.getDamageTaken().isEmpty());
     }
 

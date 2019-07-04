@@ -4,6 +4,7 @@ import actions.ActionTemplate;
 import actions.utils.AmmoAmount;
 import actions.utils.AmmoColor;
 import board.GameMap;
+import board.Tile;
 import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
 import genericitems.Tuple3;
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * The class Actor implements the status of the player in the game.
@@ -383,12 +385,19 @@ public class Actor {
      * This function resets the player after a death, the spawn location has been already
      * determined and is handled by the calling process
      */
-    public void respawn(){
+    public void respawn(PowerUp powerUp){
+       if(pawn().getTile() != gm.getEmptyTile() && !isDead())
+            throw new InvalidParameterException("The player is not dead");
+
+       Set<Tile> spawns = getGm().allTiles().stream()
+                                    .map(getGm()::getTile)
+                                    .filter(Tile::spawnPoint)
+                                    .collect(Collectors.toSet());
+        TileUID destination = powerUp.spawnLocation(spawns);
+        discardPowerUp(powerUp);
+        pawn().move(destination);
         if (frenzy)
             flipBoard=true;
-
-        if(pawn().getTile() != gm.getEmptyTile() && !isDead())
-            throw new InvalidParameterException("The player is not dead");
 
         this.damageTaken.clear();
     }
