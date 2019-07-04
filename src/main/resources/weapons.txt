@@ -64,7 +64,7 @@ descrizioneWeapon: Se ci si muove prima di sparare i bersagli visibili devono es
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 di danno ad un bersaglio visibile
-target targ1 pawn (seen SELF) new
+target targ1 pawn (seen self) new
 effect damage 2 targ1
 action slitta:
 nomeAction: Slittamento di fase
