@@ -127,7 +127,7 @@ public class Database {
             usersByToken.put(token, user);
 
             try {
-                network.setToken(token);
+                proxy.setToken(token);
             }
             catch (RemoteException e) {
                 logger.log(Level.INFO, "login-SetToken", e);
@@ -185,6 +185,7 @@ public class Database {
             logout(token);
         }
 
+        controllerByToken.put(token, mainController.bind(getUserByToken(token), proxy));
         networkByToken.put(token, proxy);
         disconnectedToken.remove(token);
 
