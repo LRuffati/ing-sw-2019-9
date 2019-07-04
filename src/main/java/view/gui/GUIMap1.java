@@ -219,7 +219,7 @@ public class GUIMap1 extends GUIMap {
 
             for (Map.Entry<TileButton, Coord> entry : buttonCoord.entrySet()) {
                 try {
-                    if (Objects.equals(gmv.getCoord(player.position()), entry.getValue())) {
+                    if (Objects.equals(gmv.getCoord(player.position()).getX(), entry.getValue().getY())&&Objects.equals(gmv.getCoord(player.position()).getY(), entry.getValue().getX())) {
                         entry.getKey().paintPlayers(gmv);
                         entry.getKey().getGraphics().setColor(playersToPaint[i].color());
                         entry.getKey().getGraphics().fillOval(90*i,0,90,90);
