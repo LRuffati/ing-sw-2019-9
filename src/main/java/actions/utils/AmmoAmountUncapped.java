@@ -45,7 +45,7 @@ public class AmmoAmountUncapped{
     /**
      * Checks if this ammoAmount is greater than cost
      * @param cost the cost of the object
-     * @return true iif this >= cost
+     * @return true iif this &gt;= cost
      */
     public boolean canBuy(@NotNull AmmoAmountUncapped cost){
         return cost.canBeBought(this);
@@ -54,7 +54,7 @@ public class AmmoAmountUncapped{
     /**
      * Checks if this ammoAmount is lower than funds
      * @param funds the ammo available
-     * @return true iif this < funds
+     * @return true iif this &lt; funds
      */
     protected boolean canBeBought(@NotNull AmmoAmountUncapped funds){
         for (AmmoColor i: AmmoColor.values()){

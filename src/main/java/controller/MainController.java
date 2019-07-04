@@ -28,8 +28,8 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 3;//ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
@@ -464,6 +464,7 @@ public class MainController {
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
         gameOver = false;
         gameStarted = false;
+        slaveControllerList.clear();
         //Database.get().clearAll();
     }
 

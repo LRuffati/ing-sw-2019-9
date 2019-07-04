@@ -73,7 +73,7 @@ public class CLIMap {
             tiles[x+3][y+4] = '═';
             tiles[x+4][y+4] = '╝';
             if(t.spawnPoint())
-                tiles[x+1][y+1] = 's';
+                tiles[x+1][y+1] = '»';
             else
                 setAmmoCard(t,x,y);
 
