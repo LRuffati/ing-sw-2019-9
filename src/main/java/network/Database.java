@@ -215,6 +215,9 @@ public class Database {
             connectedToken.remove(token);
 
         mainController.logout(getUserByToken(token));
+
+        if(connectedToken.isEmpty())
+            clearAll();
     }
 
     /**

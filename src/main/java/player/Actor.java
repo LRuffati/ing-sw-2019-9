@@ -7,14 +7,12 @@ import board.GameMap;
 import board.Tile;
 import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
-import genericitems.Tuple3;
 import grabbables.AmmoCard;
 import grabbables.PowerUp;
 import grabbables.Weapon;
 import uid.DamageableUID;
 import uid.TileUID;
 
-import java.awt.*;
 import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.List;
@@ -386,9 +384,6 @@ public class Actor {
      * determined and is handled by the calling process
      */
     public void respawn(PowerUp powerUp){
-       if(pawn().getTile() != gm.getEmptyTile() && !isDead())
-            throw new InvalidParameterException("The player is not dead");
-
        Set<Tile> spawns = getGm().allTiles().stream()
                                     .map(getGm()::getTile)
                                     .filter(Tile::spawnPoint)

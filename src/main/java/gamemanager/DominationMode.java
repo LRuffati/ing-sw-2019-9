@@ -53,7 +53,7 @@ public class DominationMode extends Scoreboard{
     public boolean finalFrenzy() {
         return numOfDeaths >= maxDeaths
                 || spawnTracker.values().stream()
-                .filter(x -> x.size() == 8).count() >= 2;
+                .filter(x -> x.size() >= 8).count() >= 2;
     }
 
     /**
@@ -62,7 +62,8 @@ public class DominationMode extends Scoreboard{
      * @param actor the actor that scores the point
      */
     public void addSpawnTrackerPoint(Color color, Actor actor) {
-        spawnTracker.get(color).add(actor);
+        if(spawnTracker.get(color).size() < 8)
+            spawnTracker.get(color).add(actor);
     }
 
     /**

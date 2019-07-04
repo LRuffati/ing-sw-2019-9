@@ -485,6 +485,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     private void quitForDisconnection() {
         System.out.println("quit for disconnection");
+        stop();
         //exit(0);
     }
 }
