@@ -188,7 +188,7 @@ nomeAction: Modalita' base
 descrizioneAction: Scegli 1 quadrato distante 1 movimento e un altro quadrato distante 2 movimenti nella stessa direzione. Dai 1 danno ad un bersaglio per ogni quadrato
 target tile1 tile (DISTANT (1,1) self)
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN dir & DISTANT (2,2) self) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic optional
 target targ1 pawn (IN tile1) optional
 target targ2 pawn (IN tile2) optional
 effect damage 1 targ1
@@ -277,84 +277,6 @@ nomeAction: Modalita' sminuzzare
 descrizioneAction: Dai 2 danni ad un secondo giocatore nella tua cella
 target targ2 pawn (DISTANT (0,0) self) new: Scegli il secondo giocatore cui fare danno
 effect damage 2 targ2
-stop
-weapon zx YR:
-nomeWeapon: ZX-2
-descrizioneWeapon: descrizione mancante
-action main:
-nomeAction: Modalita' base
-descrizioneAction: Dai 1 danno e 2 marchi a un giocatore che puoi vedere
-target targ1 pawn (SEEN self)
-effect damage 1 targ1
-effect mark 2 targ1
-action scan xor [main]:
-nomeAction: Modalita' scanner
-descrizioneAction: Scegli fino a 3 giocatori che puoi vedere. Dai 1 marchio a ciascuno
-target targ2 pawn (SEEN self) new
-target targ3 pawn (SEEN self) new
-target targ4 pawn (SEEN self) new
-effect mark 1 targ2
-effect mark 1 targ3
-effect mark 1 targ4
-stop
-weapon pompa YY:
-nomeWeapon: Fucile a pompa
-descrizioneWeapon: descrizione mancante
-action main:
-nomeAction: Modalita' base
-descrizioneAction: Dai 3 danni a un bersaglio nel quadrato in cui ti trovi. Poi puoi muovere il bersaglio di 1 quadrato
-target targ1 pawn (DISTANT (0,0) self)
-target tile1 tile (REACHED (0,1) targ1)
-effect damage 3 targ1
-effect move targ1 to tile1
-action lunga xor [main]:
-nomeAction: Modalita' canna lunga
-descrizioneAction: Dai 2 danni a 1 bersaglio distante 1 movimento
-target targ2 pawn (DISTANT (1,1) self)
-effect damage 2 targ2
-stop
-weapon guanto YB:
-nomeWeapon: Cyberguanto
-descrizioneWeapon: f
-action main:
-nomeAction: Modalita' base
-descrizioneAction: Scegli un bersaglio distante 1 movimento. Muovi in quel quadrato e dagli 1 danno e 2 marchi.
-target targ1 pawn (DISTANT (1,1) self)
-target tile1 tile (HAS targ1) automatic
-effect move self to tile1
-effect damage 1 targ1
-effect mark 2 targ1
-action cento B xor [main]:
-nomeAction: Modalita' cento pugni
-descrizioneAction: Scegli 1 quadrato distante 1 movimento. Muovi in quel quadrato e puoi dare 2 danno ad 1 giocatore ivi situato. Se vuoi puoi muovere in un altro quadrato distante 1 e puoi dare 2 danni ad un bersaglio in questo quadrato
-target dirsel tile (DISTANT (1,1) self)
-target dir direction (HAS self & HAS dirsel) automatic
-target tile1 tile (DISTANT (1,1) self & IN dir) automatic
-target tile2 tile (DISTANT (2,2) self & IN dir) automatic
-target targ1 pawn (IN tile1) optional
-target targ2 pawn (IN tile2) optional
-effect move self to tile1
-effect damage 2 targ1
-effect move self to tile2
-effect damage 2 targ2
-stop
-weapon onda Y:
-nomeWeapon: Onda d'urto
-descrizioneWeapon: s
-action main:
-nomeAction: Modalita' base
-descrizioneAction: Scegli fino a 3 bersagli su quadrati differenti, distanti da te 1 movimento. Dai 1 danno a ognuno
-target targ1 pawn (DISTANT (1,1) self)
-target targ2 pawn (DISTANT (1,1) self & not DISTANT (0,0) targ1)
-target targ3 pawn (DISTANT (1,1) self & not DISTANT (0,0) targ1 & not DISTANT (0,0) targ2)
-effect damage 1 targ1
-effect damage 1 targ2
-effect damage 1 targ3
-action tsunami Y xor [main]:
-nomeAction: Modalita' tsunami
-descrizioneAction: Dai 1 danno a tutti i bersagli distanti esattamente 1 movimento
-target grp group (DISTANT (1,1) self) automatic
-effect damage 1 grp
 stop
 weapon martello Y:
 nomeWeapon: Martello ionico

@@ -76,6 +76,7 @@ public class Scoreboard {
      * Add to the points attribute of every player (in the class actor) the points gain from a kill.
      */
     public void score(Actor dead) {
+
         TreeSet<Actor> scoreSet = new TreeSet<>
                 (Comparator.comparing(
                         x -> Collections.frequency(dead.getDamageTaken(), x)

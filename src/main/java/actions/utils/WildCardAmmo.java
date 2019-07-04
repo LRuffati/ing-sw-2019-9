@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class WildCardAmmo extends AmmoAmountUncapped{
 
-
     @Override
     public boolean canBuy(@NotNull AmmoAmountUncapped cost) {
         Map<AmmoColor, Integer> ams = cost.getAmounts();

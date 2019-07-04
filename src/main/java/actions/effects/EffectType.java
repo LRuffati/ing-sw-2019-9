@@ -10,7 +10,7 @@ public enum EffectType {
     DAMAGERAW,
     FIRE, // Makes weapon unavailable
     RELOAD, // Makes weapon available
-
+    DISCARD,
     PAY,
     GRAB
 }
