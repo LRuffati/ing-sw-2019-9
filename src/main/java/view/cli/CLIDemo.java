@@ -668,7 +668,7 @@ public class CLIDemo implements View {
 
     private void playerInfo(ActorView player) {
         System.out.println("\n>> Il giocatore " + AnsiColor.getAnsi(player.color()) + player.name() + "\u001B[0m" + " ha ancora " +
-                (player.getHP()-player.damageTaken().size()) + "punti vita.");
+                (player.getHP()-player.damageTaken().size()) + " punti vita.");
 
         if(player.score() >= 0) {
             System.out.println("\n>> Punteggio :\t" + player.score());
