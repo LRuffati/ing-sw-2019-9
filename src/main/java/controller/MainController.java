@@ -445,15 +445,8 @@ public class MainController {
                 powerUp -> {
                     SlaveController slave = slaveMap.get(head);
                     Actor respawnedActor = slave.getSelf();
-                    Set<Tile> spawns =
-                            getGameMap().allTiles().stream()
-                                    .map(getGameMap()::getTile)
-                                    .filter(Tile::spawnPoint)
-                                    .collect(Collectors.toSet());
-                    TileUID destination = powerUp.spawnLocation(spawns);
-                    respawnedActor.discardPowerUp(powerUp);
-                    respawnedActor.pawn().move(destination);
-                    //respawnedActor.respawn();
+
+                    respawnedActor.respawn(powerUp);
                     startRespawn(tail, cards, onAllRespawned);
                 };
         slaveMap.get(head).startRespawn(onRespawned);

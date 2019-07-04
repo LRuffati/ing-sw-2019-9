@@ -47,7 +47,7 @@ public class PayTemplate implements EffectTemplate{
         // with just cubes
 
         ChoiceBoard options = ChoiceBoard.powupChoiceFactory(useful,
-                "Pick powerups to pay your debt", //TODO: add the amount to pay and the cubes
+                "Pick powerups to pay your debt of: "+amount.toString(),
                 false, optional);
 
         Function<List<PowerUp>, ControllerMessage> onChoice =
