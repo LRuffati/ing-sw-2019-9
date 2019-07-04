@@ -41,6 +41,7 @@ public class ParserPowerUp {
                 col = getCol(sLine.next());
                 if(type != null && col != null){
                     powerUpCollection.add(PowerUp.powerUpFactory(type, col));
+                    powerUpCollection.add(PowerUp.powerUpFactory(type, col));
                 }
 
             }

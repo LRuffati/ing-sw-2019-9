@@ -169,9 +169,9 @@ public class ClientController implements ClientControllerClientInterface, Client
         try {
             System.out.println("QUIT");
             network.close();
-            exit(0);
+            //exit(0);
         }
-        catch (RemoteException e) {
+        catch (Exception e) {
             logger.log(Level.SEVERE, "Exception in quit", e);
             quitForDisconnection();
         }
@@ -485,6 +485,6 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     private void quitForDisconnection() {
         System.out.println("quit for disconnection");
-        exit(0);
+        //exit(0);
     }
 }

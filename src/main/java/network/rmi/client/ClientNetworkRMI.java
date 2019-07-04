@@ -109,7 +109,6 @@ public class ClientNetworkRMI extends UnicastRemoteObject implements ClientNetwo
     @Override
     public int close() throws RemoteException {
         controller.close(token);
-        System.out.println("Permesso di uscita");
         return 0;
     }
 
