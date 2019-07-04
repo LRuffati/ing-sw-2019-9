@@ -487,8 +487,8 @@ public class SlaveController {
                 }
             };
             Timer timer = new Timer("Timer");
-            timer.schedule(task, timeoutWindow*1000);
-            System.out.println("Started timer for "+player.getUsername());
+            timer.schedule(task, timeoutWindow * 1_000L);
+            logger.log(Level.INFO, "Started timer for "+player.getUsername());
         } else { //TODO merge old and new wait messages
             if (this.currentMessage.type().equals(SlaveControllerState.WAIT)){
                 List<String> old = new ArrayList<>(this.currentMessage.getMessage().getChanges());
