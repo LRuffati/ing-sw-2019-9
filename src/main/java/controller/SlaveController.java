@@ -30,6 +30,8 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -59,6 +61,7 @@ import java.util.stream.Collectors;
  * each possible interaction line
  */
 public class SlaveController {
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
     private Player player;
     private ServerInterface network;
     private ControllerMessage currentMessage;
@@ -374,6 +377,7 @@ public class SlaveController {
             network.onConnection(player, numOfPlayer);
         }
         catch (RemoteException e) {
+            logger.log(Level.INFO, "logout in onConnction");
             Database.get().logout(this.player.getToken());
         }
     }
@@ -386,6 +390,7 @@ public class SlaveController {
             network.onDisconnection(player, numOfPlayer, lostTurn);
         }
         catch (RemoteException e) {
+            logger.log(Level.INFO, "logout in onDisconnction");
             Database.get().logout(this.player.getToken());
         }
     }
@@ -398,6 +403,7 @@ public class SlaveController {
                 network.onStarting(map, gameMode);
             }
             catch (RemoteException e) {
+                logger.log(Level.INFO, "logout in onStarting");
                 Database.get().logout(this.player.getToken());
             }
     }
@@ -410,6 +416,7 @@ public class SlaveController {
                 network.onTimer(ms);
             }
             catch (RemoteException e) {
+                logger.log(Level.INFO, "logout in onTimer");
                 Database.get().logout(this.player.getToken());
         }
     }
@@ -422,6 +429,7 @@ public class SlaveController {
             network.onWinner(winner, winnerPoints, player.getActor().getPoints());
         }
         catch (RemoteException e) {
+            logger.log(Level.INFO, "logout in onWinner");
             Database.get().logout(this.player.getToken());
         }
     }

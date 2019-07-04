@@ -224,6 +224,7 @@ public class Database {
     public synchronized void logout(ServerInterface serverInterface){
         for(Map.Entry entry : networkByToken.entrySet()){
             if(serverInterface.equals(entry.getValue())) {
+                logger.log(Level.INFO, "logout, serverInterface");
                 logout((String) entry.getKey());
                 break;
             }
