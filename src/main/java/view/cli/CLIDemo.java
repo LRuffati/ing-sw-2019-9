@@ -58,6 +58,8 @@ public class CLIDemo implements View {
                 string -> {};
         commandParser.bind(consumer);
 
+        pickStringMessage = "";
+
         greetings();
     }
 

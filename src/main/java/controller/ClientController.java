@@ -462,7 +462,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 }
             }
         };
-        //timer.schedule(timerTask, 200,500);
+        timer.schedule(timerTask, 200,500);
     }
 
     /**

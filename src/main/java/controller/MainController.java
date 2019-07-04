@@ -29,11 +29,11 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 1_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 2;//ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
-    public static final int TIMEOUT_TIME = 1000;//ParserConfiguration.parseInt("TimeForAction");
+    public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
 
     private boolean closeGameAtEndTurn = false;
 
@@ -453,7 +453,7 @@ public class MainController {
                     TileUID destination = powerUp.spawnLocation(spawns);
                     respawnedActor.discardPowerUp(powerUp);
                     respawnedActor.pawn().move(destination);
-                    respawnedActor.respawn();
+                    //respawnedActor.respawn();
                     startRespawn(tail, cards, onAllRespawned);
                 };
         slaveMap.get(head).startRespawn(onRespawned);
@@ -466,6 +466,9 @@ public class MainController {
         gameOver = true;
         Actor winner = scoreboard.claimWinner();
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
+        gameOver = false;
+        gameStarted = false;
+        Database.get().clearAll();
     }
 
     public GameMap getGameMap() {

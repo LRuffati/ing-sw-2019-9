@@ -269,4 +269,17 @@ public class Database {
     public Collection<SlaveController> getSlaveControllers() {
         return controllerByToken.values();
     }
+
+
+    public void clearAll() {
+        for(Player player : usersByToken.values()) {
+            colors.add(player.getColor());
+            TimerForDisconnection.stop(player.getToken());
+            ObjectMap.get().clearCache(player.getToken());
+        }
+        usersByToken.clear();
+        usersByUsername.clear();
+        connectedToken.clear();
+        disconnectedToken.clear();
+    }
 }

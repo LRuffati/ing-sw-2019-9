@@ -76,22 +76,27 @@ public class Scoreboard {
      * Add to the points attribute of every player (in the class actor) the points gain from a kill.
      */
     public void score(Actor dead) {
-
-        TreeSet<Actor> scoreSet = new TreeSet<>
-                (Comparator.comparing(
-                        x -> Collections.frequency(dead.getDamageTaken(), x)
-                ));
-
         if (!dead.getDamageTaken().get(0).equals(dead))
             dead.getDamageTaken().get(0).addPoints(1);
 
         List<Actor> damages = dead.getDamageTaken().stream()
                 .filter(a -> a != dead).collect(Collectors.toList());
 
-        scoreSet.addAll(damages);
+        Map<Actor, Integer> map = new HashMap<>();
+        for(Actor actor : damages) {
+            if(map.containsKey(actor))
+                map.put(actor, map.get(actor)+1);
+            else
+                map.put(actor, 0);
+        }
+
+        List<Actor> sortedStats = map.entrySet().stream()
+                .sorted(Comparator.comparing(Map.Entry::getValue, Comparator.reverseOrder()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
 
         int num = dead.getNumOfDeaths();
-        for (Actor actor : scoreSet.descendingSet()) {
+        for (Actor actor : sortedStats) {
             // TODO: OK O <= O ALTRO?
             if (!finalFrenzy()) {
                 if (num < pointForDeath.size()) {
