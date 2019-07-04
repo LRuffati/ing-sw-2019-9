@@ -4,13 +4,13 @@ descrizioneWeapon: d
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 danni e 1 marchio a un bersaglio che puoi vedere
-target targ1 pawn (SEEN self) new
+target targ1 pawn (SEEN self) new : Scegli il bersaglio cui dare 2 danni e 1 marchio
 effect DAMAGE 2 targ1
 effect MARK 1 targ1
 action secondo R follows [main]:
 nomeAction: Secondo aggancio
 descrizioneAction: Dai 1 marchio a un altro bersaglio
-target targ2 pawn (SEEN self) new
+target targ2 pawn (SEEN self) new : Scegli il bersaglio cui dare 1 marchio
 effect MARK 1 targ2
 stop
 weapon mitragliatrice BR:
@@ -64,7 +64,7 @@ descrizioneWeapon: Se ci si muove prima di sparare i bersagli visibili devono es
 action main:
 nomeAction: Effetto base
 descrizioneAction: Dai 2 di danno ad un bersaglio visibile
-target targ1 pawn (seen SELF) new
+target targ1 pawn (seen self) new
 effect damage 2 targ1
 action slitta:
 nomeAction: Slittamento di fase
