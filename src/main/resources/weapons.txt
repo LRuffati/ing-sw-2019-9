@@ -1,0 +1,297 @@
+weapon distruttore BB:
+nomeWeapon: Distruttore
+descrizioneWeapon: d
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni e 1 marchio a un bersaglio che puoi vedere
+target targ1 pawn (SEEN self) new
+effect DAMAGE 2 targ1
+effect MARK 1 targ1
+action secondo R follows [main]:
+nomeAction: Secondo aggancio
+descrizioneAction: Dai 1 marchio a un altro bersaglio
+target targ2 pawn (SEEN self) new
+effect MARK 1 targ2
+stop
+weapon mitragliatrice BR:
+nomeWeapon: Mitragliatrice
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto base
+descrizioneAction: Scegli uno o due bersagli che puoi vedere e dai un danno a entrambi
+target targ1 pawn (SEEN self) new
+target targ2 pawn (SEEN self) new optional
+effect DAMAGE 1 targ1
+effect DAMAGE 1 targ2
+action focalizzato Y follows [main]:
+nomeAction: Colpo focalizzato
+descrizioneAction: Dai un danno aggiuntivo al primo dei due bersagli
+effect DAMAGE 1 targ1
+action tripode1 B follows [main] exist [targ2]:
+nomeAction: Tripode di supporto
+descrizioneAction: Dai 1 danno aggiuntivo all'altro bersaglio e/o un
+target targ3 pawn (IS targ2) optional
+target targ4 pawn (SEEN self) new optional
+effect DAMAGE 1 targ3
+effect DAMAGE 1 targ4
+action tripode2 B follows [main] exist [!targ2] xor [focalizzato tripode1]:
+nomeAction: Tripode di supporto
+descrizioneAction: Dai un danno aggiuntivo al target 1 pagando blu
+effect DAMAGE 1 targ1
+stop
+weapon torpedine BR:
+nomeWeapon: Torpedine
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni ad un bersaglio che puoi vedere
+target targ1 pawn (SEEN self) new
+effect DAMAGE 2 targ1
+action reazione B follows [main]:
+nomeAction: Reazione a catena
+descrizioneAction: Dai 1 danno ad un bersaglio che il primo bersaglio puo' vedere
+target targ2 pawn (SEEN targ1) new
+effect DAMAGE 1 targ2
+action tensione B follows [reazione]:
+nomeAction: Alta tensione
+descrizioneAction: Dai 2 danni ad un bersaglio che il secondo bersaglio puo' vedere
+target targ3 pawn (SEEN targ2) new
+effect damage 2 targ3
+stop
+weapon plasma BY:
+nomeWeapon: Fucile al plasma
+descrizioneWeapon: Se ci si muove prima di sparare i bersagli visibili devono esserlo dalla cella di destinazione
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 di danno ad un bersaglio visibile
+target targ1 pawn (seen SELF) new
+effect damage 2 targ1
+action slitta:
+nomeAction: Slittamento di fase
+descrizioneAction: Muoviti di uno o due quadrati prima o dopo l'effetto base
+target tile1 tile (distant (1,2) self)
+effect move self to tile1
+action sovracc B follows [main]:
+nomeAction: Colpo sovraccarico
+descrizioneAction: Dai un danno aggiuntivo al bersaglio dell'effetto base
+effect damage 1 targ1
+stop
+weapon precisione BBY:
+nomeWeapon: Fucile di precisione
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto
+descrizioneAction: Dai 3 danni e 1 marchio a un bersaglio distante 2 o piu' movimenti e che puoi vedere
+target targ1 pawn (SEEN self & not DISTANT (0,1) self)
+effect damage 3 targ1
+effect mark 1 targ1
+stop
+weapon falce B:
+nomeWeapon: Falce protonica
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Dai 1 danno a ogni altro giocatore nel tuo quadrato
+target tile1 tile (HAS self) automatic
+effect damage 1 tile1
+action reaper BR xor [main]:
+nomeAction: Modalita' mietitore
+descrizioneAction: Dai 2 danni ad ogni altro giocatore nel tuo quadrato
+target tile1 tile (HAS self) automatic
+effect damage 2 tile1
+stop
+weapon raggio B:
+nomeWeapon: Raggio traente
+descrizioneWeapon: Puoi muovere il bersaglio anche se non lo vedi, basta che il quadrato di destinazione sia visibile
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Muovi un bersaglio in un quadrato visibile e dagli un danno
+target targ1 pawn (EXISTS) new
+target tiled tile (REACHED (0,2) targ1 & SEEN self)
+effect move targ1 to tiled
+effect damage  1 targ1
+action punisher BR xor [main]:
+nomeAction: Modalita' punitore
+descrizioneAction: Scegli un giocatore distante al massimo due movimenti, spostalo nel tuo quadrato e dagli 3 di danno
+target tiles tile (HAS self) automatic
+target targ1 pawn (EXISTS & REACHES (0,2) tiles) new
+effect move targ1 to tiles
+effect damage 3 targ1
+stop
+weapon vortex RB:
+nomeWeapon: Cannone vortex
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto base
+descrizioneAction: scegli un quadrato visibile e un giocatore distante al massimo 1 movimento. Sposta il giocatore nella cella e dagli 1 danno
+target buco tile (SEEN self & not DISTANT (0,0) self)
+target targ1 pawn (EXISTS & REACHES (0,1) buco) new
+effect move targ1 to buco
+effect damage 2 targ1
+action nero R follows [main]:
+nomeAction: Buco nero
+descrizioneAction: Scegli due altri bersagli distanti 0 o 1 dalla cella di prima, dai 1 danno ciascuno
+target targ2 pawn (EXISTS & REACHES (0,1) buco) new optional
+target targ3 pawn (EXISTS & REACHES (0,1) buco) new optional
+effect move targ2 to buco
+effect move targ3 to buco
+effect damage 1 targ2
+effect damage 1 targ3
+stop
+weapon vulcan RB:
+nomeWeapon: Vulcanizzatore
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Scegli una stanza diversa dalla tua che puoi vedere, dai 1 danno a tutti i giocatori nella stanza
+target room1 room (SEEN self & not HAS self)
+effect damage 1 room1
+action fuoco xor [main]:
+nomeAction: Modalita' fuoco confortevole
+descrizioneAction: Scegli un quadrato distante 1, dai 1 danno e 1 marchio a tutti i giocatori nel quadrato
+target tile1 tile (DISTANT (1,1) self)
+effect damage 1 tile1
+effect mark 1 tile1
+stop
+weapon razzo RRY:
+nomeWeapon: Razzo Termico
+descrizioneWeapon: Puo' colpire solo bersagli NON visibili
+action main:
+nomeAction: Effetto
+descrizioneAction: Scegli un bersaglio non visibile e dagli 3 danni
+target targ1 pawn (EXISTS & not SEEN self)
+effect damage 3 targ1
+stop
+weapon solare RY:
+nomeWeapon: Raggio Solare
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Dai un danno ad un bersaglio visibile e non sulla stessa cella, poi marchia tutti i bersagli nella stessa cella
+target targ1 pawn (SEEN self & not DISTANT (0,0) self)
+target tile1 tile (HAS targ1) automatic
+effect damage 1 targ1
+effect mark 1 tile1
+action nano R xor [main]:
+nomeAction: Modalita' nano traccianti
+descrizioneAction: Dai un 1 danno a un giocatore visibile non sulla stessa cella, dai 2 marchi a chiunque su quella cella
+target targ2 pawn (SEEN self & not DISTANT (0,0) self)
+target tile2 tile (HAS targ1) automatic
+effect damage 1 targ2
+effect mark 2 tile2
+stop
+weapon fiamme R:
+nomeWeapon: Lanciafiamme
+descrizioneWeapon: Quest'arma non puo' colpire attraverso muri o nel tuo quadrato ma puo' attraversare le porte tra stanze
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Scegli 1 quadrato distante 1 movimento e un altro quadrato distante 2 movimenti nella stessa direzione. Dai 1 danno ad un bersaglio per ogni quadrato
+target tile1 tile (DISTANT (1,1) self)
+target dir direction (HAS self & HAS tile1) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic optional
+target targ1 pawn (IN tile1) optional
+target targ2 pawn (IN tile2) optional
+effect damage 1 targ1
+effect damage 1 targ2
+action barbecue YY xor [main]:
+nomeAction: Modalita' barbecue
+descrizioneAction: Dai 2 danni a tutti i giocatori nel primo quadrato e 1 danno a tutti i giocatori nel secondo
+target tile1 tile (DISTANT (1,1) self)
+target dir direction (HAS self & HAS tile1) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic
+effect damage 2 tile1
+effect damage 1 tile2
+stop
+weapon granate R:
+nomeWeapon: Lanciagranate
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 1 danno a 1 bersaglio che puoi vedere. Poi puoi muovere il bersaglio di 1 quadrato
+target targ0 pawn (SEEN self)
+target tild tile (REACHED (0,1) targ0)
+effect damage 1 targ0
+effect move targ0 to tild
+action extra R:
+nomeAction: Granata extra
+descrizioneAction: Dai 1 danno a ogni giocatore in un quadrato che puoi vedere. Puoi usarlo prima o dopo l'effetto base
+target tile1 tile (SEEN self)
+effect damage 1 tile1
+stop
+weapon razzi RR:
+nomeWeapon: Lanciarazzi
+descrizioneWeapon: descrizione mancante
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni a 1 bersaglio che puoi vedere, non nel tuo quadrato. Poi puoi muovere il bersaglio di 1 quadrato
+target targ0 pawn (SEEN self)
+target tile1 tile (REACHED (0,1) targ0)
+effect damage 2 targ0
+effect move targ0 to tile1
+action porta B:
+nomeAction: Razzi portatili
+descrizioneAction: Muovi di 1 o 2 quadrati prima o dopo l'effetto base
+target tile0 tile (DISTANT (1,2) self)
+effect move self to tile0
+action testata Y contemp main:
+nomeAction: Testata a frammentazione
+descrizioneAction: Durante l'effetto base, dai 1 danno a ogni giocatore nella cella in cui si trovava il bersaglio, compreso il bersaglio
+target tile2 tile (HAS targ0) automatic
+effect damage 1 tile2
+stop
+weapon laser YYB:
+nomeWeapon: Fucile laser
+descrizioneWeapon: d
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Scegli una direzione e colpisci un bersaglio in quella direzione
+target dirsel tile (DISTANTPH (1,1) self): Scegli la cella corrispondente alla direzione
+target direz directionph (HAS dirsel & HAS self) automatic
+target targ1 pawn (IN direz): Scegli il bersaglio a cui dare 3 danni
+effect damage 3 targ1
+action perf:
+nomeAction: Modalita' perforazione
+descrizioneAction: Scegli una direzione e dai due danni a bersagli in quella direzione
+target dirsel tile (DISTANTPH (1,1) self): Scegli la cella corrispondente alla direzione
+target direz directionph (HAS dirsel & HAS self) automatic
+target targ1 pawn (IN direz) new: Scegli il primo bersaglio
+target targ2 pawn (IN direz) new: Scegli il secondo bersaglio
+effect damage 2 targ1
+effect damage 2 targ2
+stop
+weapon spadafot YR:
+nomeWeapon: Spada fotonica
+descrizioneWeapon: d
+action main:
+nomeAction: Effetto base
+descrizioneAction: Dai 2 danni a un bersaglio nel tuo quadrato
+target targ1 pawn (DISTANT (0,0) self) new: Scegli un giocatore a cui dare 2 danni
+effect damage 2 targ1
+action passo:
+nomeAction: Passo d'ombra
+descrizioneAction: Spostati di un movimento
+target tile1 tile (DISTANT (1,1) self): Scegli dove spostarti
+effect move self to tile1
+action sminuzza Y follows [main] exists [targ1]:
+nomeAction: Modalita' sminuzzare
+descrizioneAction: Dai 2 danni ad un secondo giocatore nella tua cella
+target targ2 pawn (DISTANT (0,0) self) new: Scegli il secondo giocatore cui fare danno
+effect damage 2 targ2
+stop
+weapon martello Y:
+nomeWeapon: Martello ionico
+descrizioneWeapon: d
+action main:
+nomeAction: Modalita' base
+descrizioneAction: Dai 2 danni ad un bersaglio nel quadrato in cui ti trovi
+target targ1 pawn (DISTANT (0,0) self)
+effect damage 2 targ1
+action polverizza R xor [main]:
+nomeAction: Modalita' polverizzare
+descrizioneAction: Dai 3 danni ad 1 bersaglio nel quadrato in cui ti trovi. Poi puoi muovere il bersaglio fino a 2 quadrati di distanza.
+target targ1 pawn (DISTANT (0,0) self)
+target tile1 tile (REACHED (0,2) targ1)
+target dircheck direction (HAS self & HAS tile1) automatic
+effect damage 3 targ1
+effect move targ1 to tile1
+stop
