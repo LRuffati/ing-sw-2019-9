@@ -15,7 +15,7 @@ class AnsiColor {
         if(color.equals(Color.red))         return "\u001B[31m";
         if(color.equals(Color.green))       return "\u001B[32m";
         if(color.equals(Color.yellow))      return "\u001B[33m";
-        if(color.equals(Color.blue))        return "\u001B[36m";
+        if(color.equals(Color.blue))        return "\u001B[94m";
         if(color.equals(Color.magenta))     return "\u001B[35m";
         if(color.equals(Color.darkGray))    return "\u001B[90m";
 

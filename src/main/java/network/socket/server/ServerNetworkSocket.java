@@ -121,7 +121,10 @@ public class ServerNetworkSocket implements RequestHandler, ServerInterface {
             String tokenFromDb = Database.get().login(this, false, request.username, request.password);
             player = Database.get().getUserByToken(tokenFromDb);
             boolean isStarted = Database.get().getMainController().isGameStarted();
-            return new ReconnectResponse(tokenFromDb, isStarted, new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode()));
+            Tuple<String, GameMode> ret = new Tuple<>("", GameMode.NORMAL);
+            if(isStarted)
+                ret =  new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode());
+            return new ReconnectResponse(tokenFromDb, isStarted, ret);
         }
         catch (InvalidLoginException e) {
             return new RegisterResponse(e.wrongUsername, false);

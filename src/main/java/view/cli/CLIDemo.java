@@ -58,6 +58,8 @@ public class CLIDemo implements View {
                 string -> {};
         commandParser.bind(consumer);
 
+        pickStringMessage = "";
+
         greetings();
     }
 
@@ -99,7 +101,7 @@ public class CLIDemo implements View {
         String color = "";
 
         while(username.isEmpty()){
-            System.out.println(">>> Inserisci il nome utenet!");
+            System.out.println(">>> Inserisci il nome utente!");
             username = in.nextLine();
         }
         while(password.isEmpty()){
@@ -145,8 +147,8 @@ public class CLIDemo implements View {
      * After the player joined the game, he await for the game to start. This can happen only when there are three or
      * more players in the same game and the firstPlayer decides do start or the timer elapses.
      */
-    private void waitForStart(){
-        System.out.println("Aspettiamo per un po' qualche altro giocatore");
+    private void waitForStart() {
+        //notihng
     }
 
 
@@ -446,6 +448,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onLostTurn(Player player) {
+        pickStringMessage = "";
         System.out.println(player.getUsername() + " ha perso il turno!");
     }
 
@@ -453,23 +456,19 @@ public class CLIDemo implements View {
      * See documentation in the View interface.
      */
     @Override
-    public void terminated() {
-        System.out.println("Azione eseguita.");
-    }
+    public void terminated() { }
 
     /**
      * See documentation in the View interface.
      */
     @Override
-    public void updateMap(GameMapView gameMapView, boolean forced) {
+    public synchronized void updateMap(GameMapView gameMapView, boolean forced) {
         climap = new CLIMap(gameMapView);
         if(yourPlayerChar == null) {
-            yourPlayerChar = "Sei il giocatore " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you());
-            System.out.println(yourPlayerChar);
-            System.out.println(AnsiColor.getDefault());
+            yourPlayerChar = "Sei il giocatore " + AnsiColor.getAnsi(climap.getMp().you().color()) + climap.getPlayers().get(climap.getMp().you()) + " " + AnsiColor.getDefault();
         }
         if(forced || (!forced && !areEquals(this.gameMapView, gameMapView))) {
-            System.out.println(yourPlayerChar + AnsiColor.getDefault());
+            System.out.println(yourPlayerChar);
             climap.printMap();
         }
         this.gameMapView = gameMapView;
@@ -553,6 +552,7 @@ public class CLIDemo implements View {
 
     @Override
     public void onTimer(int timeToCount) {
+        System.out.println("Aspettiamo per un po' qualche altro giocatore");
         System.out.println("La partita comincerà tra " + timeToCount/1000 + " secondi!");
         waitForStart();
     }
@@ -669,6 +669,10 @@ public class CLIDemo implements View {
     private void playerInfo(ActorView player) {
         System.out.println("\n>> Il giocatore " + AnsiColor.getAnsi(player.color()) + player.name() + "\u001B[0m" + " ha ancora " +
                 (player.getHP()-player.damageTaken().size()) + "punti vita.");
+
+        if(player.score() >= 0) {
+            System.out.println("\n>> Punteggio :\t" + player.score());
+        }
         if(player.getHP()-player.damageTaken().size() < 10 ) {
             System.out.print("\n>> Danni subiti :\t");
             System.out.println(printListOfColor(player.damageTaken()));
@@ -720,6 +724,7 @@ public class CLIDemo implements View {
 
     void askInfo() {
         clearScreen();
+        System.out.println(yourPlayerChar);
         getPrintedMap();
         printScoreboard();
         String out;
@@ -730,7 +735,7 @@ public class CLIDemo implements View {
     private void printScoreboard() {
         StringBuilder builder = new StringBuilder();
         builder.append("Killtrack : ");
-        printListOfColor(climap.getMp().skullBox().stream().map(x -> (ActorView)x.keySet()).collect(Collectors.toList()));
+        builder.append(printListOfColor(climap.getMp().skullBox().stream().map(x -> x.keySet().iterator().next()).collect(Collectors.toList())));
         System.out.println(builder.toString());
         builder = new StringBuilder();
         if(climap.getMp().gameMode().equals(GameMode.DOMINATION)) {
@@ -750,7 +755,7 @@ public class CLIDemo implements View {
     void askPlayer() {
         int i = 0;
         for(ActorView actor : gameMapView.players()) {
-            System.out.println(i + ". " + actor.name());
+            System.out.println(i + "." + AnsiColor.getAnsi(actor.color()) + " "+actor.name() +" "+ AnsiColor.getDefault());
             i++;
         }
     }

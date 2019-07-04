@@ -50,10 +50,14 @@ public class ServerNetworkRMI extends UnicastRemoteObject implements ServerRMIIn
     public Tuple3<String, Boolean, Tuple<String, GameMode>> reconnect(ServerInterface client, String username, String password) throws RemoteException, InvalidLoginException{
         if(username == null || password == null)
             return new Tuple3<>("", false, null);
+        String token = Database.get().login(client, true, username,password);
+        Tuple<String, GameMode> ret = new Tuple<>("", GameMode.NORMAL);
+        if(Database.get().getMainController().isGameStarted())
+            ret = new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode());
         return new Tuple3<>(
-                Database.get().login(client, true, username, password),
+                token,
                 Database.get().getMainController().isGameStarted(),
-                new Tuple<>(GameBuilder.get().getMapName(), GameBuilder.get().getGameMode())
+                ret
         );
     }
 

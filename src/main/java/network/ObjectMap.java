@@ -37,7 +37,7 @@ public class ObjectMap {
     private ObjectMap() {}
 
 
-    private void clearChache(String token){
+    private void clearChachePr(String token){
         if(choicesForPlayer.get(token) == null)
             return;
         for(String controllerMessageID : choicesForPlayer.get(token))
@@ -83,7 +83,7 @@ public class ObjectMap {
 
         String id = put(token, controllerMessage);
         if(controllerMessage.type().equals(SlaveControllerState.WAIT))
-            clearChache(token);
+            clearChachePr(token);
 
         return new ControllerMessageClient(controllerMessage, id);
     }
@@ -142,6 +142,6 @@ public class ObjectMap {
      * @param token the token of the player
      */
     public void clearCache(String token) {
-        clearChache(token);
+        clearChachePr(token);
     }
 }

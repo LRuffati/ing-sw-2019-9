@@ -61,6 +61,8 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     private boolean firstMap = true;
 
+    private String username;
+
     /**
      * Builder of the class. This generates the View (view.cli or GUI) and the Network (Socket or RMI), depending by the choices of the user.
      * @param socket true if a socket connection is required. False if a RMI connection is required
@@ -111,14 +113,15 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void login(String username, String password, String color) {
+    public void login(String username1, String password, String color) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
                 try {
-                    network.register(username, password, color.toLowerCase());
+                    network.register(username1, password, color.toLowerCase());
                     view.loginResponse(true, false, false);
+                    username = username1;
                     network.modeRequest(normalMode);
                     add();
                 } catch (
@@ -134,14 +137,15 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     @Override
-    public void login(String username, String password) {
+    public void login(String username1, String password) {
         Thread thread = new Thread() {
             @Override
             public void run() {
                 super.run();
                 try {
-                    Tuple3<Boolean, Boolean, Tuple<String, GameMode>> res = network.reconnect(username, password);
+                    Tuple3<Boolean, Boolean, Tuple<String, GameMode>> res = network.reconnect(username1, password);
                     view.loginResponse(true, false, false);
+                    username = username1;
 
                     if(res.y) {
                         setPolling(true);
@@ -223,6 +227,7 @@ public class ClientController implements ClientControllerClientInterface, Client
     }
 
     private void elaborate(ControllerMessage controllerMessage) {
+        //System.out.println(controllerMessage.type());
         if(controllerMessage.getMessage() != null) {
             view.onMessage(controllerMessage.getMessage());
         }
@@ -409,14 +414,25 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void onConnection(Player player, boolean connection, int numOfPlayer, boolean lostTurn) {
-        if(lostTurn)
+        if(lostTurn) {
+            if(player.getUsername().equalsIgnoreCase(username))
+                setPolling(true);
             view.onLostTurn(player);
+        }
         else
             view.onConnection(player, connection, numOfPlayer);
     }
 
     @Override
     public void onWinner(String winner, int winnerPoints, int yourPoints) {
+        stop();
+        setPolling(false);
+        try {
+            network.close();
+        }
+        catch (RemoteException e) {
+            //
+        }
         view.onWinner(winner, winnerPoints, yourPoints);
         view.onCredits();
     }
@@ -446,7 +462,7 @@ public class ClientController implements ClientControllerClientInterface, Client
                 }
             }
         };
-        //timer.schedule(timerTask, 200,500);
+        timer.schedule(timerTask, 200,500);
     }
 
     /**
