@@ -461,6 +461,12 @@ public class SlaveController {
 
     public synchronized void setCurrentMessage(ControllerMessage nextMessage) {
         if (!nextMessage.type().equals(SlaveControllerState.WAIT)){
+
+            if (!player.isOnLine()){
+                onTimeout.run();
+                return;
+            }
+
             this.currentMessage = nextMessage;
             TimerTask task = new TimerTask() {
                 public void run() {
@@ -477,7 +483,7 @@ public class SlaveController {
                 }
             };
             Timer timer = new Timer("Timer");
-            timer.schedule(task, timeoutWindow*1000);
+            //timer.schedule(task, timeoutWindow*1000);
             System.out.println("Started timer for "+player.getUsername());
         } else { //TODO merge old and new wait messages
             if (this.currentMessage.type().equals(SlaveControllerState.WAIT)){

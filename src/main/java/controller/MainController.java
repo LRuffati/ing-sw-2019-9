@@ -334,16 +334,8 @@ public class MainController {
         int size = slaveControllerList.size();
         int pre = currIndex;
         currIndex++;
-        while(!slaveControllerList.get(currIndex%size).isOnline()) currIndex = (currIndex+1)%size;
-        //if(!firstRoundOver && pre >= currIndex)  firstRoundOver = true;
-        currIndex--;
-        next = slaveControllerList.get((currIndex+1)%size);
-        /*
-        if (currIndex<(size-1)){
-            next = slaveControllerList.get(currIndex+1);
-        } else {
-            next = slaveControllerList.get(0);
-        }*/
+
+        next = slaveControllerList.get(currIndex%size);
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){

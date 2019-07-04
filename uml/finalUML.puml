@@ -1,0 +1,1359 @@
+@startuml
+
+title Classes - Class Diagram
+
+package "gamemanager" {
+
+    class Scoreboard {
+
+    }
+    class GameBuilder {
+
+    }
+    class Parser {
+    }
+    class DominationMode {
+    }
+
+
+    DominationMode --|> Scoreboard
+    GameBuilder *--> Scoreboard
+    GameBuilder ..> Parser
+
+}
+
+package "network" {
+
+    interface ClientInterface {
+    	 mirror()
+    	 close()
+    	 register()
+    	 reconnect()
+    	 pick()
+    	 getMap()
+    	 poll()
+    	 modeRequest()
+    }
+
+    class ObjectMap {
+    	- logger
+    	{static} - ourInstance
+    	- choiceMap
+    	- choicesForPlayer
+    	- canNotSend
+    	{static} + get()
+    	- clearChache()
+    	- put()
+    	- checkPick()
+    	- newID()
+    	- handlePick()
+    	+ pick()
+    	+ poll()
+    	+ clearCache()
+    }
+
+    interface ServerInterface {
+    	 setToken()
+    	 sendUpdate()
+    	 sendException()
+    	 ping()
+    	 nofifyMap()
+    	 onConnection()
+    	 onDisconnection()
+    	 onStarting()
+    	 onTimer()
+    	 onWinner()
+    }
+
+    class Player {
+    	- actor
+    	- username
+    	- password
+    	- color
+    	- gameMaster
+    	- uid
+    	- token
+    	- serverInterface
+    	- onLine
+    	+ setActor()
+    	+ getActor()
+    	+ setUid()
+    	+ getUid()
+    	+ getUsername()
+    	+ getColor()
+    	+ isGameMaster()
+    	+ getToken()
+    	+ getPassword()
+    	+ setServerInterface()
+    	+ getServerInterface()
+    	+ setOnLine()
+    	+ isOnLine()
+    	+ toString()
+    }
+
+    class Database {
+    	- logger
+    	{static} - ourInstance
+    	- mainController
+    	- controllerByToken
+    	- usersByToken
+    	- usersByUsername
+    	- networkByToken
+    	- gameMaster
+    	- colors
+    	- disconnectedToken
+    	- connectedToken
+    	- wait
+    	{static} + get()
+    	+ setMainController()
+    	+ getMainController()
+    	+ getUserByToken()
+    	+ getNetworkByToken()
+    	+ getControllerByToken()
+    	+ login()
+    	+ login()
+    	+ logout()
+    	+ logout()
+    	+ gameMaster()
+    	+ getConnectedTokens()
+    	+ getDisconnectedToken()
+    	+ getPlayers()
+    	+ getSlaveControllers()
+    }
+
+    Database *--> Player
+    Database *--> ServerInterface
+
+
+
+}
+
+package "controller" {
+
+    class ClientController {
+    	- logger
+    	- view
+    	- network
+    	- stack
+    	- gameMap
+    	- repeatedTask
+    	- timerForPolling
+    	- polling
+    	- normalMode
+    	- firstMap
+    	- filterWait
+    	- timer
+    	- signals
+    	- stopped
+    	+ attachView()
+    	+ login()
+    	+ login()
+    	+ quit()
+    	+ pick()
+    	+ restartSelection()
+    	- rollbackFromServer()
+    	+ rollback()
+    	+ onControllerMessage()
+    	- elaborate()
+    	- emptyPick()
+    	- handlePrintMap()
+    	- poll()
+    	- initPolling()
+    	- setPolling()
+    	+ getMap()
+    	+ updateMap()
+    	+ onStarting()
+    	+ onTimer()
+    	+ onConnection()
+    	+ onWinner()
+    	+ add()
+    	+ reset()
+    	+ stop()
+    	- quitForDisconnection()
+    }
+
+    package "controllerclient" {
+
+        class ControllerMessageClient {
+        	+ id
+        	- type
+        	- choiceBoard
+        	- changes
+        	- sandbox
+        	+ type()
+        	+ genView()
+        	+ getMessage()
+        	+ sandboxView()
+        	+ pick()
+        }
+        class ClientControllerClientInterface {
+        	 pick()
+        	 restartSelection()
+        	 rollback()
+        	 login()
+        	 login()
+        	 quit()
+        	 getMap()
+        	 attachView()
+        }
+        class ClientControllerNetworkInterface {
+        	 updateMap()
+        	 onControllerMessage()
+        	 onConnection()
+        	 onStarting()
+        	 onTimer()
+        	 onWinner()
+        	 reset()
+        }
+
+    }
+
+    class MainController {
+    	- logger
+    	{static} - TIME_BEFORE_STARTING
+    	{static} - MIN_PLAYER
+    	{static} - MAX_PLAYER
+    	{static} + TIMEOUT_TIME
+    	- closeGameAtEndTurn
+    	- numOfPlayer
+    	- timerForStarting
+    	- timerRunning
+    	- gameStarted
+    	- scoreboard
+    	- gameMap
+    	- game
+    	- gameMode
+    	- slaveControllerList
+    	- slaveMap
+    	- firstRoundOver
+    	- gameOver
+    	- normalMode
+    	+ getSlaveByUID()
+    	- checkGameStart()
+    	+ connect()
+    	+ reconnect()
+    	+ canConnect()
+    	+ isGameStarted()
+    	+ logout()
+    	- notifyConnection()
+    	 notifyDisconnection()
+    	- notifyStarting()
+    	- notifyTimer()
+    	- notifyWinner()
+    	- startGame()
+    	- createGame()
+    	- timerClose()
+    	- timerStart()
+    	+ bind()
+    	{static} + main()
+    	- firstRound()
+    	+ resolveEffect()
+    	- broadcastEffectMessage()
+    	+ endTurn()
+    	- startRespawn()
+    	 endGame()
+    	+ getGameMap()
+    	- setGameMap()
+    	+ modeRequest()
+    }
+
+    class SlaveController {
+    	- player
+    	- network
+    	- currentMessage
+    	+ main
+    	- notificationList
+    	- onTimeout
+    	- timeoutWindow
+    	+ lockMessageSet
+    	+ startMainAction()
+    	- setPowUps()
+    	- getNotifications()
+    	+ startRespawn()
+    	+ startTagback()
+    	+ getInstruction()
+    	 onConnection()
+    	 onDisconnection()
+    	 onStarting()
+    	 onTimer()
+    	 onWinner()
+    	+ isOnline()
+    	+ getSelf()
+    	+ addNotification()
+    	+ sendMap()
+    	+ getCurrentMessage()
+    	+ setCurrentMessage()
+    	+ makeGrabChoice()
+    }
+
+    ClientController ..> ControllerMessageClient
+
+    SlaveController *--> Player
+    SlaveController *--> Database
+    SlaveController *--> MainController
+    ClientController *--> ClientInterface
+    ClientController --|> ClientControllerClientInterface
+    ClientController --|> ClientControllerNetworkInterface
+
+}
+
+package "actions" {
+
+    package "conditions" {
+        class HasCondition {
+        	- negated
+        	+ checkTarget()
+        }
+        class InCondition {
+        	- negated
+        	+ checkTarget()
+        }
+        class ReachesCondition {
+        	- min
+        	- max
+        	- negate
+        	+ checkTarget()
+        }
+        class Condition {
+        	+ checkTarget()
+        }
+        class SeenCondition {
+        	- negate
+        	+ checkTarget()
+        }
+        class DistantCondition {
+        	- min
+        	- max
+        	- negated
+        	- logical
+        	+ checkTarget()
+        }
+        HasCondition --|> Condition
+        InCondition --|> Condition
+        ReachesCondition --|> Condition
+        SeenCondition --|> Condition
+        DistantCondition --|> Condition
+    }
+
+    package "effects" {
+        enum EffectType {
+        }
+
+        class MarkTemplate {
+        	- targetId
+        	- amount
+        	+ spawn()
+        }
+        class ReloadTemplate {
+        	+ spawn()
+        }
+        class MarkEffect {
+        	- amount
+        	- uid
+        	+ type()
+        	+ mergeInGameMap()
+        	 effectString()
+        	+ targetedPlayers()
+        }
+        class PayWithAmmoEffect {
+        	- amountToPay
+        	+ type()
+        	+ mergeInGameMap()
+        	+ newAmmoAvailable()
+        	 effectString()
+        }
+        interface Effect {
+        	 type()
+        	 newWeapons()
+        	 newLocations()
+        	 newAmmoAvailable()
+        	 mergeInGameMap()
+        	 newUsedPowUp()
+        	 targetedPlayers()
+        }
+        class GrabEffect {
+        	+ type
+        	+ type()
+        	+ mergeInGameMap()
+        }
+        class GrabTemplate {
+        	+ spawn()
+        }
+        interface EffectTemplate {
+        	 spawn()
+        }
+        class PayWithPowUpEffect {
+        	- powerup
+        	+ type()
+        	+ mergeInGameMap()
+        	+ newUsedPowUp()
+        	 effectString()
+        }
+        class Fire {
+        	+ spawn()
+        }
+        class MoveTemplate {
+        	- target
+        	- destination
+        	+ spawn()
+        }
+        class ReloadEffect {
+        	- weapon
+        	+ type()
+        	+ newWeapons()
+        	+ mergeInGameMap()
+        	 effectString()
+        }
+        class DamageEffect {
+        	- uid
+        	- amount
+        	- raw
+        	+ type()
+        	+ mergeInGameMap()
+        	 effectString()
+        	+ targetedPlayers()
+        }
+        class PayTemplate {
+        	- amount
+        	+ spawn()
+        }
+        class DamageTemplate {
+        	- targetId
+        	- amount
+        	+ spawn()
+        }
+        class MoveEffect {
+        	- pawn
+        	- dest
+        	+ type()
+        	+ newLocations()
+        	+ mergeInGameMap()
+        	 effectString()
+        	+ targetedPlayers()
+        }
+
+        Effect <|-- GrabEffect
+        Effect <|-- PayWithAmmoEffect
+        Effect <|-- PayWithPowUpEffect
+        Effect <|-- DamageEffect
+        Effect <|-- MoveEffect
+        Effect <|-- MarkEffect
+        Effect <|-- ReloadEffect
+        EffectTemplate <|-- GrabTemplate
+        EffectTemplate <|-- PayTemplate
+        EffectTemplate <|-- DamageTemplate
+        EffectTemplate <|-- MoveTemplate
+        EffectTemplate <|-- ReloadTemplate
+        EffectTemplate <|-- Fire
+        EffectTemplate <|-- MarkTemplate
+        EffectType <--* GrabEffect
+        EffectType <.. PayWithAmmoEffect
+        EffectType <.. PayWithPowUpEffect
+        EffectType <.. DamageEffect
+        EffectType <.. MoveEffect
+        EffectType <.. Effect
+        EffectType <.. MarkEffect
+        EffectType <.. Fire
+        EffectType <.. ReloadEffect
+
+    }
+
+    package "selectors" {
+
+        class ReachableSelector {
+        	- min
+        	- max
+        	+ select()
+        }
+        class VisibleSelector {
+        	+ select()
+        }
+        class HasSelector {
+        	+ select()
+        }
+        class DistanceSelector {
+        	- min
+        	- max
+        	- logical
+        	+ select()
+        }
+        class IsSelector {
+        	+ select()
+        }
+        class ContainedSelector {
+        	+ select()
+        }
+        interface Selector {
+        	 select()
+        }
+        class ExistSelector {
+        	+ select()
+        }
+
+        Selector <|-- ReachableSelector
+        Selector <|-- VisibleSelector
+        Selector <|-- HasSelector
+        Selector <|-- DistanceSelector
+        Selector <|-- IsSelector
+        Selector <|-- ContainedSelector
+        Selector <|-- ExistSelector
+
+    }
+
+    package "targeters" {
+
+        package "interfaces" {
+            class Visible {
+            	 seen()
+            }
+            class HavingPointLike {
+            	 filteringHas()
+            }
+            class PointLike {
+            	 location()
+            	 tilesSeen()
+            	 reachableSelector()
+            	 reachableSelector()
+            	 distanceSelector()
+            	 distanceSelector()
+            }
+            class SuperTile {
+            	 containedTiles()
+            }
+            class TargetedSelector {
+            	 reachedCondition()
+            	 distanceCondition()
+            	 containedSelector()
+            }
+
+            SuperTile <|-- TargetedSelector
+            PointLike <|-- TargetedSelector
+            PointLike <|-- Visible
+            PointLike <|-- HavingPointLike
+        }
+
+        package "targets" {
+
+            class GroupTarget {
+            	- targets
+            	+ getSelectedPawns()
+            	+ getSelectedTiles()
+            	+ generateView()
+            }
+            class RoomTarget {
+            	- roomid
+            	+ getSelectedPawns()
+            	+ getSelectedTiles()
+            	+ filteringHas()
+            	+ containedTiles()
+            	+ seen()
+            	+ generateView()
+            }
+            class DominationPointTarget {
+            	+ tilesSeen()
+            	+ reachableSelector()
+            }
+            class DirectionTarget {
+            	- tiles
+            	+ getSelectedPawns()
+            	+ getSelectedTiles()
+            	+ containedTiles()
+            	+ filteringHas()
+            	+ generateView()
+            }
+            class TileTarget {
+            	- tileUID
+            	+ getSelectedPawns()
+            	+ getSelectedTiles()
+            	+ filteringHas()
+            	+ location()
+            	+ tilesSeen()
+            	+ distanceSelector()
+            	+ containedTiles()
+            	+ reachedCondition()
+            	+ distanceCondition()
+            	+ containedSelector()
+            	+ seen()
+            	+ generateView()
+            }
+            class BasicTarget {
+            	- selfUID
+            	{static} + basicFactory()
+            	+ getSelectedPawns()
+            	+ getSelectedTiles()
+            	+ isSelf()
+            	+ location()
+            	+ tilesSeen()
+            	+ distanceSelector()
+            	+ reachedCondition()
+            	+ distanceCondition()
+            	+ containedSelector()
+            	+ seen()
+            	+ coexistingTiles()
+            	+ generateView()
+            }
+            class Targetable {
+            	 getSelectedPawns()
+            	 getSelectedTiles()
+            	 equals()
+            	 isSelf()
+            	 generateView()
+            }
+
+            Targetable <|-- BasicTarget
+            Targetable <|-- GroupTarget
+            Targetable <|-- TileTarget
+            Targetable <|-- DirectionTarget
+            Targetable <|-- RoomTarget
+            BasicTarget <|-- DominationPointTarget
+
+        }
+
+        class Targeter {
+        	{static} - targetBuilders
+        	{static} - groupString
+        	- sandbox
+        	- selector
+        	- filters
+        	- master
+        	- previousTargets
+        	- newTarg
+        	- targetID
+        	- type
+        	- optional
+        	- isNew
+        	- description
+        	+ giveChoices()
+        }
+        class TargeterTemplate {
+        	 selector
+        	 filters
+        	 type
+        	+ optional
+        	+ newTarg
+        	+ automatic
+        	+ description
+        }
+
+    }
+
+    package "utils" {
+        class AmmoAmount {
+        	{static} - maximumAmmo
+        	{static} - limit()
+        	+ getOnlyColor()
+        }
+        interface WeaponChooser {
+        	 params()
+        	+ showOptions()
+        	+ pick()
+        }
+        interface ChoiceMaker {
+        	 giveTargets()
+        	 giveTargetsWithDescr()
+        	 getDescription()
+        	 showOptions()
+        	 pick()
+        }
+        enum AmmoColor {
+        	+ toRGB()
+        	+ toColor()
+        }
+        class AmmoAmountUncapped {
+        	{static} + zeroAmmo
+        	- amounts
+        	+ getAmounts()
+        	+ canBuy()
+        	# canBeBought()
+        	+ subtract()
+        	+ add()
+        	+ toString()
+        }
+        class WildCardAmmo {
+        	+ canBuy()
+        	# canBeBought()
+        	+ subtract()
+        }
+        enum PowerUpType {
+        }
+        interface ActionPicker {
+        	 showActionsAvailable()
+        	 pickAction()
+        }
+
+        AmmoAmountUncapped <|-- WildCardAmmo
+        AmmoAmountUncapped <|-- AmmoAmount
+        AmmoColor <--* AmmoAmountUncapped
+    }
+
+
+    class ActionInfo {
+    	- contempList
+    	- name
+    	- description
+    	- show
+    	- actionId
+    	- cost
+    	- actionRequirements
+    	- targetRequirements
+    	- masterAction
+    	+ getName()
+    	+ getDescription()
+    	+ isShow()
+    	+ getActionId()
+    	+ getCost()
+    	+ getActionRequirements()
+    	+ getTargetRequirements()
+    	+ getMasterAction()
+    	+ getContempList()
+    }
+    class WeaponUse {
+    	- weapon
+    	- sandbox
+    	- finalizer
+    	 existingTargets
+    	 previousActions
+    	 availableActions
+    	- canStop
+    	+ showActionsAvailable()
+    	+ pickAction()
+    }
+    class ActionBundle {
+    	- finalized
+    	- actionsPossible
+    	- sandboxFromMap
+    	- finalizer
+    	+ showActionsAvailable()
+    	+ pickAction()
+    	+ isFinalized()
+    }
+    class ActionTemplate {
+    	- info
+    	- targeters
+    	- effects
+    	+ getInfo()
+    	- verifyActions()
+    	- verifyTargets()
+    	- verifyCost()
+    	+ actionAvailable()
+    	+ getTargeters()
+    	+ getEffects()
+    	+ generate()
+    	+ generateView()
+    }
+    class Action {
+    	- sandbox
+    	- info
+    	- targeterTemplates
+    	- previousTargets
+    	- unresolvedEffects
+    	- finalizer
+    	{static} - spawn()
+    	{static} - spawn()
+    	- giveChoiceMaker()
+    	+ iterate()
+    	+ iterate()
+    }
+
+}
+
+package "board" {
+
+    class Room {
+    	- roomID
+    	- color
+    	- tiles
+    	+ getRoomID()
+    	+ getColor()
+    	+ getTiles()
+    }
+    class GameMap {
+    	- maxPos
+    	- roomUIDMap
+    	- tileUIDMap
+    	- position
+    	- damageableUIDMap
+    	- emptyTile
+    	- deckOfWeapon
+    	- deckOfAmmoCard
+    	- deckOfPowerUp
+    	{static} + gameMapFactory()
+    	+ createSandbox()
+    	+ getTile()
+    	+ getRoom()
+    	+ getPawn()
+    	+ getPosition()
+    	+ allTiles()
+    	+ getCoord()
+    	+ neighbors()
+    	+ containedPawns()
+    	+ room()
+    	+ tile()
+    	 tilesInRoom()
+    	 getSurroundings()
+    	 getVisible()
+    	+ refill()
+    	+ getGrabbable()
+    	+ addGrabbable()
+    	+ pickUpGrabbable()
+    	+ pickUpPowerUp()
+    	+ discardPowerUp()
+    	+ discardAmmoCard()
+    	+ discardWeapon()
+    	+ getDamageable()
+    	+ getDamageable()
+    	+ getEmptyTile()
+    	+ emptyWeaponDeck()
+    	- buildPawnForPlayers()
+    	+ generateView()
+    }
+    class NeighTile {
+    	- tile
+    	- reachable
+    	 logical()
+    	 physical()
+    }
+    class Tile {
+    	- spawnPoint
+    	- roomID
+    	- neighbors
+    	+ tileID
+    	- grabbableSet
+    	 map
+    	+ endTurn()
+    	# setMap()
+    	# getNeighbor()
+    	# getDirection()
+    	+ getGrabbable()
+    	# addGrabbable()
+    	# pickUpGrabbable()
+    	+ getColor()
+    	+ getRoom()
+    	# getMapOfNeighbor()
+    	+ spawnPoint()
+    	 generateView()
+    	+ getTileID()
+    }
+    enum Direction {
+    }
+    class Sandbox {
+    	- father
+    	- roomsTargeted
+    	- tilesTargeted
+    	- pawnsTargeted
+    	- effectsHistory
+    	- updatedLocations
+    	- updatedWeapons
+    	- usedPowerups
+    	- updatedAmmoAvailable
+    	+ pov
+    	- map
+    	+ uid
+    	+ getUpdatedAmmoAvailable()
+    	+ getEffectsHistory()
+    	+ neighbors()
+    	+ circle()
+    	+ containedPawns()
+    	+ room()
+    	+ room()
+    	+ tile()
+    	+ tilesInRoom()
+    	+ tilesSeen()
+    	+ allTiles()
+    	+ getRoom()
+    	+ getTile()
+    	+ getBasic()
+    	+ getArsenal()
+    	+ powerUpsAvailable()
+    	+ generateTargetView()
+    	+ generateTargetView()
+    	+ generateTargetView()
+    	+ generateTargetView()
+    	+ generateView()
+    	+ getUpdatedTotalAmmoAvailable()
+    	+ canGrab()
+    }
+    class DominationPointTile {
+    	- controlPointActor
+    	- pawnID
+    	+ addTrack()
+    	+ getControlPointActor()
+    	+ endTurn()
+    	# setMap()
+    }
+    class Coord {
+    	- pos
+    	+ getX()
+    	+ getY()
+    	+ toString()
+    	+ equals()
+    	+ hashCode()
+    }
+
+    ParserMap *--> NeighTile
+    ParserMap *--> Room
+    ParserMap *--> Direction
+    DominationPointTile --|> Tile
+    Tile *--> NeighTile
+    Tile *--> Direction
+    GameMap *--> Coord
+    GameMap *--> Room
+    GameMap *--> Tile
+    SandBox *--> GameMap
+
+}
+
+package "grabbables" {
+
+    class TagBack {
+    	+ canUse()
+    	+ usePowup()
+    }
+    class Teleporter {
+    	+ canUse()
+    	+ usePowup()
+    }
+    class Weapon {
+    	- buyCost
+    	- reloadCost
+    	- name
+    	- weaponID
+    	- description
+    	- actions
+    	+ getWeapon()
+    	+ getName()
+    	+ getBuyCost()
+    	+ getReloadCost()
+    	+ getActions()
+    	+ canReload()
+    	+ canPickUp()
+    	+ equals()
+    	+ hashCode()
+    	+ generateView()
+    	+ generateView2()
+    }
+    class Newton {
+    	+ canUse()
+    	+ usePowup()
+    }
+    class AmmoCard {
+    	- ammoAmount
+    	- numOfPowerUp
+    	+ getAmmoAmount()
+    	+ getNumOfPowerUp()
+    	+ generateView()
+    	+ toString()
+    	+ equals()
+    	+ hashCode()
+    	+ getCard()
+    }
+    class Deck {
+    	- deckIterator
+    	- stash
+    	- pickedCard
+    	+ next()
+    	+ take()
+    	+ hasNext()
+    	+ discard()
+    	+ isPicked()
+    	+ getDeckState()
+    }
+    class TargScope {
+    	+ canUse()
+    	+ usePowup()
+    }
+    class Grabbable {
+    	- uid
+    	+ getId()
+    	+ equals()
+    	+ hashCode()
+    	+ getNumOfPowerUp()
+    	+ getAmmoAmount()
+    	+ getWeapon()
+    	+ getCard()
+    }
+    class PowerUp {
+    	- type
+    	- color
+    	+ canUse()
+    	+ usePowup()
+    	+ getType()
+    	+ getAmmo()
+    	+ toString()
+    	+ equals()
+    	+ hashCode()
+    	+ generateView()
+    	+ spawnLocation()
+    	{static} + powerUpFactory()
+    }
+
+    Grabbable <|-- PowerUp
+    Grabbable <|-- Weapon
+    Grabbable <|-- AmmoCard
+    PowerUp <|-- TagBack
+    PowerUp <|-- Newton
+    PowerUp <|-- Teleporter
+    PowerUp <|-- TargScope
+
+
+}
+
+package "player"  {
+
+    class DominationPoint {
+        - tile
+        - uid
+        + getDominationPointTile()
+        + targetFactory()
+        + getDamageableUID()
+        + move()
+        }
+
+
+    class ControlPointActor {
+        - damaged
+        - spawnColor
+        - stepped
+        + damage()
+        + damageRaw()
+        + steppedOn()
+        + addMark()
+        + endTurn()
+    }
+
+    class Pawn {
+      - tile
+      # actor
+      + damageableUID
+      - map
+      - color
+      - colorString
+      - username
+      setBinding()
+      + move()
+      + getTile()
+      + getActor()
+      + getDamageableUID()
+      + getMap()
+      + setColor()
+      + setColorString()
+      + setUsername()
+      + getUsername()
+      + generateView()
+      - getActorView()
+      - getActorView()
+      + targetFactory()
+    }
+
+    class ActionTemplateOptions {
+      {static} - muovi3
+      {static} - muovi4
+      {static} - grab
+      {static} - shoot
+      {static} - muovi2grab
+      {static} - muovi1spara
+      {static} - muoviricspara
+      {static} - muovi2ricspara
+      {static} - muovi3grab
+      {static}  getActionsStandard()
+      {static}  getFrenzyActions()
+      }
+
+    class Actor {
+    	- logger
+    	{static} - HP
+    	{static} - MAX_WEAPON
+    	{static} - MAX_PUP
+    	- lastInFrenzy
+    	- points
+    	- numOfDeaths
+    	- damageTaken
+    	- marks
+    	- unloadedWeapon
+    	- loadedWeapon
+    	- powerUps
+    	- ammoAvailable
+    	- startingPlayerMarker
+    	- gm
+    	- pawnID
+    	- damagedBy
+    	- frenzy
+    	- flipBoard
+    	- afterFirst
+    	+ getDamagedBy()
+    	+ removeDamager()
+    	+ setBinding()
+    	+ pawn()
+    	+ move()
+    	+ discardPowerUp()
+    	+ drawPowerUpRaw()
+    	+ pickUp()
+    	+ pickUp()
+    	+ reloadWeapon()
+    	+ useWeapon()
+    	+ pay()
+    	+ pay()
+    	+ getPoints()
+    	+ damageRaw()
+    	+ damage()
+    	+ getDamageTaken()
+    	+ addPoints()
+    	+ getAmmo()
+    	+ getNumOfDeaths()
+    	+ getFrenzy()
+    	+ getMarks()
+    	+ getGm()
+    	+ getFirstPlayer()
+    	+ isDead()
+    	+ addMark()
+    	+ numOfMarksApplied()
+    	+ respawn()
+    	+ pawnID()
+    	+ getLoadedWeapon()
+    	+ getUnloadedWeapon()
+    	+ getPowerUp()
+    	+ getActions()
+    	+ setLastInFrenzy()
+    	+ isLastInFrenzy()
+    	+ beginFF()
+    	+ endTurn()
+    }
+
+
+  Actor ..> ActionTemplateOptions
+  ControlPointActor --|> Actor
+  Pawn *--> Actor
+  DominationPoint --|> Pawn
+}
+
+package "uid"   {
+
+    class GrabbableUID {
+    }
+    class RoomUID {
+    }
+    class DamageableUID {
+    }
+    class ObjectUID {
+    	- uid
+    	+ equals()
+    	+ hashCode()
+    	- getUID()
+    }
+    class TileUID {
+    }
+       GrabbableUID --|> ObjectUID
+       RoomUID --|> ObjectUID
+       TileUID --|> ObjectUID
+       DamageableUID --|> ObjectUID
+       DamageableUID <--* Pawn
+    TileUID <--* Pawn
+}
+
+package "viewClasses"   {
+
+    class ActionView {
+    	- name
+    	- actionId
+    	- cost
+    	+ getName()
+    	+ getActionId()
+    	+ getCost()
+    }
+    class ActorView {
+    	- colorString
+    	- color
+    	- username
+    	- uid
+    	- position
+    	- numOfDeaths
+    	- score
+    	- firstPlayer
+    	- ammo
+    	- damageTaken
+    	- marks
+    	- loadedWeapon
+    	- unloadedWeapon
+    	- powerUp
+    	- hp
+    	+ getHP()
+    	+ setColor()
+    	+ setUsername()
+    	+ setPosition()
+    	+ setDamageTaken()
+    	+ setMarks()
+    	+ setLoadedWeapon()
+    	+ setUnloadedWeapon()
+    	+ setPowerUp()
+    	+ setScore()
+    	+ setNumOfDeaths()
+    	+ setFirstPlayer()
+    	+ setAmmo()
+    	+ setHp()
+    	+ color()
+    	+ name()
+    	+ position()
+    	+ damageTaken()
+    	+ marks()
+    	+ numOfDeaths()
+    	+ firstPlayer()
+    	+ score()
+    	+ uid()
+    	+ ammo()
+    	+ loadedWeapon()
+    	+ unloadedWeapon()
+    	+ powerUp()
+    	+ setColorString()
+    	+ colorString()
+    	+ equals()
+    	+ hashCode()
+    }
+    class AmmoCardView {
+    	- numOfRed
+    	- numOfBlue
+    	- numOfYellow
+    	- numOfPowerUp
+    	- uid
+    	+ setAll()
+    	+ setUid()
+    	+ numOfBlue()
+    	+ numOfPowerUp()
+    	+ numOfRed()
+    	+ numOfYellow()
+    	+ uid()
+    }
+    class ActorListView {
+    	- actorView
+    	+ getActorList()
+    }
+    class WeaponView {
+    	- name
+    	- reloadCost
+    	- buyCost
+    	- uid
+    	- actionDescriptions
+    	+ name()
+    	+ buyCost()
+    	+ reloadCost()
+    	+ uid()
+    	+ setName()
+    	+ setBuyCost()
+    	+ setReloadCost()
+    	+ setUid()
+    	+ setActionDescriptions()
+    	+ actionDescription()
+    }
+    class TargetView {
+    	- gameMapViewId
+    	- damageableUIDList
+    	- tileUIDList
+    	- dedicatedColor
+    	+ getGameMapViewId()
+    	+ getDamageableUIDList()
+    	+ getTileUIDList()
+    	+ isDedicatedColor()
+    }
+
+    class TileListView {
+    	- tileList
+    	+ getTileList()
+    }
+
+    class TileView {
+    	- uid
+    	- color
+    	- spawnPoint
+    	- nearTiles
+    	- players
+    	- weapons
+    	- ammoCard
+    	+ setColor()
+    	+ setSpawnPoint()
+    	+ setNearTiles()
+    	+ setPlayers()
+    	+ setUid()
+    	+ setAmmoCard()
+    	+ setWeapons()
+    	+ color()
+    	+ spawnPoint()
+    	+ nearTiles()
+    	+ players()
+    	+ uid()
+    	+ ammoCard()
+    	+ weapons()
+    }
+
+    class GameMapView {
+    	- tiles
+    	- maxPos
+    	- you
+    	- players
+    	- skullBox
+    	- spawnTracker
+    	- dominationPointActor
+    	- gameMode
+    	+ maxPos()
+    	+ allTiles()
+    	+ getTiles()
+    	+ allCoord()
+    	+ getCoord()
+    	+ getPosition()
+    	+ players()
+    	+ you()
+    	+ skullBox()
+    	+ spawnTracker()
+    	+ gameMode()
+    	+ dominationPointActor()
+    	+ setTiles()
+    	+ setTile()
+    	+ setMax()
+    	+ setYou()
+    	+ setPlayers()
+    	+ setGameMode()
+    	+ setDominationPointActor()
+    	+ setSpawnTracker()
+    	+ setSkullBox()
+    }
+    class PowerUpView {
+    	- ammo
+    	- type
+    	- uid
+    	+ setAmmo()
+    	+ setType()
+    	+ setUid()
+    	+ type()
+    	+ ammo()
+    	+ uid()
+    }
+
+    TileListView *--> TileView
+    TileView *--> WeaponView
+    TileView *--> AmmoCardView
+    GameMapView *--> TileView
+    ActorListView *--> ActorView
+    GameMapView *--> ActorView
+    ActorView *--> PowerUpView
+    ActorView *--> WeaponView
+    Pawn ..> ActorView
+    Pawn ..> GameMapView
+}
+
+ObjectMap ..> ControllerMessageClient
+Targeter ..> TargeterTemplate
+Targeter ..> TargetView
+ActionBundle ..> ActionView
+ActionBundle ..> Action
+WeaponUse ..> Action
+Action *--> ActionInfo
+ActionInfo *--> ActionTemplate
+
+GameBuilder *--> Deck
+PowerUp *--> PowerUpType
+Action ..> ChoiceMaker
+SlaveController ..> WeaponChooser
+ActionBundle --|> ActionPicker
+ObjectMap ..> Database
+Database ..> MainController
+
+
+@enduml
