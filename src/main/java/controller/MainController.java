@@ -28,8 +28,8 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 30_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 1;//ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 15_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 2;//ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = 3;//ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public static final int TIMEOUT_TIME = 300;//ParserConfiguration.parseInt("TimeForAction");
@@ -65,8 +65,21 @@ public class MainController {
         slaveMap = new HashMap<>(MAX_PLAYER);
     }
 
-    private void checkGameStart() {
-        if(numOfPlayer < MIN_PLAYER || gameStarted)
+    private void checkGameState() {
+        if(gameStarted) {
+            if(numOfPlayer < MIN_PLAYER) {
+                if(timerRunning)
+                    timerClose();
+                if(gameStarted)
+                    closeGameAtEndTurn = true;
+            }
+            else {
+                closeGameAtEndTurn = false;
+            }
+            return;
+        }
+
+        if(numOfPlayer < MIN_PLAYER)
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
@@ -84,7 +97,7 @@ public class MainController {
         numOfPlayer++;
         logger.log(Level.INFO, "Connection");
         notifyConnection(numOfPlayer, player);
-        checkGameStart();
+        checkGameState();
     }
 
     /**
@@ -98,7 +111,7 @@ public class MainController {
         player.setOnLine(true);
         logger.log(Level.INFO, "Reconnection");
         notifyConnection(numOfPlayer, player);
-        checkGameStart();
+        checkGameState();
     }
 
 
@@ -124,12 +137,8 @@ public class MainController {
         numOfPlayer--;
         slaveMap.get(player.getUid()).setOnline(false);
         notifyDisconnection(numOfPlayer, player, false);
-        if(numOfPlayer < MIN_PLAYER) {
-            if(timerRunning)
-                timerClose();
-            if(gameStarted)
-                closeGameAtEndTurn = true;
-        }
+        checkGameState();
+
         clear();
     }
 
@@ -137,6 +146,7 @@ public class MainController {
         if(numOfPlayer == 0) {
             gameOver = false;
             gameStarted = false;
+            closeGameAtEndTurn = false;
             slaveControllerList.clear();
             slaveMap.clear();
         }
