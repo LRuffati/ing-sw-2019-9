@@ -38,6 +38,7 @@ public class TimerForDisconnection {
 
                     if (numOfErrors.get(this) == 10) {
                         Database.get().logout(timerMap.get(this));
+                        logger.log(Level.INFO, "logout in TimerForDisconnection");
                         //stop(timerMap.get(this));
                     }
                 }

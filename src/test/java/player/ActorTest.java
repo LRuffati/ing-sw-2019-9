@@ -132,9 +132,6 @@ class ActorTest {
         assertEquals(6, Pietro.getDamageTaken().size());
 
         assertFalse(Pietro.isDead());
-        assertThrows(InvalidParameterException.class,
-                ()-> Pietro.respawn(picked));
-
 
         Pietro.addMark(melo, 3);
         Pietro.damage(melo, 5);
@@ -211,7 +208,6 @@ class ActorTest {
 
         PowerUp powRes = map.pickUpPowerUp();
 
-        assertThrows(InvalidParameterException.class, ()-> Pietro.respawn(powRes));
         Pietro.damage(actorList.get(1), 10);
         assertFalse(Pietro.getDamageTaken().isEmpty());
 

@@ -1,4 +1,4 @@
-﻿weapon distruttore BB:
+weapon distruttore BB:
 nomeWeapon: Distruttore
 descrizioneWeapon: d
 action main:

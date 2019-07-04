@@ -33,7 +33,7 @@ class ParserPowerUpTest {
 
     @Test
     void test(){
-        assertEquals(12, powerUpCollection.size());
+        assertEquals(24, powerUpCollection.size());
 
         PowerUp card = powerUpDeck.next();
         assertTrue(powerUpDeck.isPicked(card));
@@ -53,15 +53,15 @@ class ParserPowerUpTest {
     @Test
     void testGetter(){
         setup2();
-        assertEquals(2, powerUpCollection.size());
+        assertEquals(4, powerUpCollection.size());
 
         PowerUp c1 = powerUpDeck.next();
         PowerUp c2 = powerUpDeck.next();
+        PowerUp c3 = powerUpDeck.next();
         assertEquals(PowerUpType.NEWTON, c1.getType());
         assertEquals(PowerUpType.NEWTON, c2.getType());
         assertEquals(c1.getType() , c2.getType());
 
-        assertFalse(c1.getAmmo().canBuy(c2.getAmmo()));
         assertNotEquals(c1,c2);
     }
 

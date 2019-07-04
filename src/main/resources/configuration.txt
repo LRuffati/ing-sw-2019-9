@@ -63,10 +63,10 @@ ADRENALINE_GROUP_9
 8000
 
 -TimeBeforeStarting
-20000
+30000
 
 -TimeForAction
-30
+60
 
 -minNumOfPlayers
 3

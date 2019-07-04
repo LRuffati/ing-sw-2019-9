@@ -215,6 +215,9 @@ public class Database {
             connectedToken.remove(token);
 
         mainController.logout(getUserByToken(token));
+
+        if(connectedToken.isEmpty())
+            clearAll();
     }
 
     /**
@@ -224,6 +227,7 @@ public class Database {
     public synchronized void logout(ServerInterface serverInterface){
         for(Map.Entry entry : networkByToken.entrySet()){
             if(serverInterface.equals(entry.getValue())) {
+                logger.log(Level.INFO, "logout, serverInterface");
                 logout((String) entry.getKey());
                 break;
             }
@@ -274,8 +278,8 @@ public class Database {
 
     public void clearAll() {
         for(Player player : usersByToken.values()) {
+            logout(player.getToken());
             colors.add(player.getColor());
-            TimerForDisconnection.stop(player.getToken());
             ObjectMap.get().clearCache(player.getToken());
         }
         usersByToken.clear();

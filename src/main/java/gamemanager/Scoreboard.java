@@ -119,7 +119,8 @@ public class Scoreboard {
     public void addKill(Actor killer, Actor victim) {
         if(victim.getDamageTaken().size()>10) {
             //TODO: probably should't be done here
-            victim.addMark(killer, 1);
+            if(!killer.pawnID().equals(victim.pawnID()))
+                victim.addMark(killer, 1);
             skullBox.add(Map.of(killer, 1));
         }
         skullBox.add(Map.of(killer, 1));

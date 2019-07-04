@@ -2,8 +2,6 @@ package controller;
 
 import actions.effects.Effect;
 import board.GameMap;
-import board.Tile;
-import controller.controllermessage.WaitMessage;
 import gamemanager.GameBuilder;
 import gamemanager.ParserConfiguration;
 import gamemanager.Scoreboard;
@@ -30,8 +28,8 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 3;//ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
@@ -144,7 +142,7 @@ public class MainController {
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onDisconnection(player, numOfPlayer, lostTurn);
         if(lostTurn)
-            logger.log(Level.INFO, player.getUsername() + "lost his turn");
+            logger.log(Level.INFO, player.getUsername() + " lost his turn");
         else {
             logger.log(Level.INFO, "Disconnection");
             logger.log(Level.INFO, player.toString());
@@ -369,6 +367,10 @@ public class MainController {
             }
         }
 
+        if(scoreboard.finalFrenzy()) {
+            logger.log(Level.INFO, "Final frenzy");
+        }
+
         if (scoreboard.finalFrenzy() && current.getSelf().isLastInFrenzy()){
             // It's not necessary to respawn if the game ends anyway
             this.endGame();
@@ -454,7 +456,7 @@ public class MainController {
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
         gameOver = false;
         gameStarted = false;
-        Database.get().clearAll();
+        //Database.get().clearAll();
     }
 
     public GameMap getGameMap() {
