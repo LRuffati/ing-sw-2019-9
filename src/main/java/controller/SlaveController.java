@@ -438,6 +438,10 @@ public class SlaveController {
         return player.isOnLine();
     }
 
+    public void setOnline(boolean isOnline) {
+        player.setOnLine(isOnline);
+    }
+
     public Actor getSelf() {
         return player.getActor();
     }
@@ -483,7 +487,7 @@ public class SlaveController {
                 }
             };
             Timer timer = new Timer("Timer");
-            //timer.schedule(task, timeoutWindow*1000);
+            timer.schedule(task, timeoutWindow*1000);
             System.out.println("Started timer for "+player.getUsername());
         } else { //TODO merge old and new wait messages
             if (this.currentMessage.type().equals(SlaveControllerState.WAIT)){

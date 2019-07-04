@@ -176,7 +176,7 @@ public class Database {
         catch (RemoteException e) {
             logger.log(Level.INFO, "login, reconnect", e);
         }
-        getUserByToken(token).setServerInterface(proxy);
+        usersByToken.get(token).setServerInterface(proxy);
         try {
             proxy.setToken(token);
         }
@@ -185,7 +185,6 @@ public class Database {
             logout(token);
         }
 
-        controllerByToken.put(token, mainController.bind(getUserByToken(token), proxy));
         networkByToken.put(token, proxy);
         disconnectedToken.remove(token);
 
@@ -212,12 +211,9 @@ public class Database {
         disconnectedToken.add(token);
 
         TimerForDisconnection.stop(token);
-            connectedToken.remove(token);
+        connectedToken.remove(token);
 
         mainController.logout(getUserByToken(token));
-
-        if(connectedToken.isEmpty())
-            clearAll();
     }
 
     /**
@@ -276,11 +272,17 @@ public class Database {
     }
 
 
-    public void clearAll() {
-        for(Player player : usersByToken.values()) {
-            logout(player.getToken());
+    /**
+     * Method used at the end of the game.
+     * It clears the memory and prepare the server to start a new Game.
+     */
+    public synchronized void clearAll() {
+        Iterator<Player> iterator = usersByToken.values().iterator();
+        while(iterator.hasNext()) {
+            Player player = iterator.next();
             colors.add(player.getColor());
             ObjectMap.get().clearCache(player.getToken());
+            logout(player.getToken());
         }
         usersByToken.clear();
         usersByUsername.clear();

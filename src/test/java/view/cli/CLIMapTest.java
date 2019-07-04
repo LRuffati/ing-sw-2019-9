@@ -49,8 +49,8 @@ class CLIMapTest {
     void searchTest(){
         gmv = map.generateView(actorList.get(0).pawn().getDamageableUID());
         CLIMap map = new CLIMap(gmv);
-        assert(map.searchCharacter('s').getX()==11);
-        assert(map.searchCharacter('s').getY()==1);
+        assert(map.searchCharacter('»').getX()==11);
+        assert(map.searchCharacter('»').getY()==1);
     }
 
     void greetingsTest(){

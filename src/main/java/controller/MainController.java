@@ -28,11 +28,11 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
-    private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = 30_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = 1;//ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int MAX_PLAYER = 3;//ParserConfiguration.parseInt("maxNumOfPlayers");
 
-    public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
+    public static final int TIMEOUT_TIME = 300;//ParserConfiguration.parseInt("TimeForAction");
 
     private boolean closeGameAtEndTurn = false;
 
@@ -122,7 +122,7 @@ public class MainController {
      */
     public void logout(Player player) {
         numOfPlayer--;
-        player.setOnLine(false);
+        slaveMap.get(player.getUid()).setOnline(false);
         notifyDisconnection(numOfPlayer, player, false);
         if(numOfPlayer < MIN_PLAYER) {
             if(timerRunning)
@@ -130,9 +130,14 @@ public class MainController {
             if(gameStarted)
                 closeGameAtEndTurn = true;
         }
+        if(numOfPlayer == 0) {
+            slaveControllerList.clear();
+            slaveMap.clear();
+            Database.get().clearAll();
+        }
     }
 
-    private void notifyConnection(int num, Player player){
+    private void notifyConnection(int num, Player player) {
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onConnection(player, num);
         logger.log(Level.INFO, player.toString());
@@ -180,7 +185,7 @@ public class MainController {
         notifyStarting(game.getMapName());
 
         slaveControllerList = new ArrayList<>(slaveMap.values());
-        Collections.shuffle(slaveControllerList);
+        //Collections.shuffle(slaveControllerList);
         slaveControllerList.sort((a,b)-> {
             if (a.getSelf().getFirstPlayer())
                 return 1;
@@ -333,12 +338,11 @@ public class MainController {
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
         int pre = currIndex;
-        currIndex++;
 
-        next = slaveControllerList.get(currIndex%size);
+        next = slaveControllerList.get((currIndex+1)%size);
 
         List<SlaveController> nextnext=List.of();
-        if (!firstRoundOver){
+        if (!firstRoundOver) {
             firstRoundOver = pre>currIndex || currIndex==slaveControllerList.size()-1;
             nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
@@ -457,7 +461,8 @@ public class MainController {
         gameOver = false;
         gameStarted = false;
         slaveControllerList.clear();
-        //Database.get().clearAll();
+        slaveMap.clear();
+        Database.get().clearAll();
     }
 
     public GameMap getGameMap() {
