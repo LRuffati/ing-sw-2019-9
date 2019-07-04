@@ -214,6 +214,9 @@ public class Database {
         connectedToken.remove(token);
 
         mainController.logout(getUserByToken(token));
+
+        if(connectedToken.isEmpty())
+            clearAll();
     }
 
     /**
@@ -276,7 +279,7 @@ public class Database {
      * Method used at the end of the game.
      * It clears the memory and prepare the server to start a new Game.
      */
-    public synchronized void clearAll() {
+    private void clearAll() {
         Iterator<Player> iterator = usersByToken.values().iterator();
         while(iterator.hasNext()) {
             Player player = iterator.next();

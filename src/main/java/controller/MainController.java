@@ -130,10 +130,15 @@ public class MainController {
             if(gameStarted)
                 closeGameAtEndTurn = true;
         }
+        clear();
+    }
+
+    private synchronized void clear() {
         if(numOfPlayer == 0) {
+            gameOver = false;
+            gameStarted = false;
             slaveControllerList.clear();
             slaveMap.clear();
-            Database.get().clearAll();
         }
     }
 
@@ -458,11 +463,6 @@ public class MainController {
         gameOver = true;
         Actor winner = scoreboard.claimWinner();
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
-        gameOver = false;
-        gameStarted = false;
-        slaveControllerList.clear();
-        slaveMap.clear();
-        Database.get().clearAll();
     }
 
     public GameMap getGameMap() {
