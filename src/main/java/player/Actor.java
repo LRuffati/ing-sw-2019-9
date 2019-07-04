@@ -380,29 +380,16 @@ public class Actor {
     }
 
     /**
-     * This method initialize the Actor when there is need to respawn.
-     * It sets the new Tile and resets the damageTaken field.
-     * @param color Where the player wants to respawn. It is the color of the discarded PowerUp
-     * @throws InvalidParameterException if the actor is not dead.
+     * This function resets the player after a death, the spawn location has been already
+     * determined and is handled by the calling process
      */
-    public void respawn(AmmoColor color){
+    public void respawn(){
         if (frenzy)
             flipBoard=true;
 
         if(pawn().getTile() != gm.getEmptyTile() && !isDead())
             throw new InvalidParameterException("The player is not dead");
 
-        for (TileUID t : gm.allTiles()){
-            Color colTile = gm.getTile(t).getColor();
-            Tuple3<Integer, Integer, Integer> colAmmo = color.toRGB();
-
-            if(gm.getTile(t).spawnPoint() &&
-                    colTile.getRed() == colAmmo.x
-                    && colTile.getGreen() == colAmmo.y
-                    && colTile.getBlue() == colAmmo.z){
-                move(t);
-            }
-        }
         this.damageTaken.clear();
     }
 

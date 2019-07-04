@@ -17,6 +17,10 @@ public class AmmoAmount extends AmmoAmountUncapped{
      */
     private static Integer maximumAmmo = ParserConfiguration.parseInt("maximumAmmoPerCard");
 
+    public static AmmoAmount redSingleton = new AmmoAmount(Map.of(AmmoColor.RED, 1));
+    public static AmmoAmount blueSingleton = new AmmoAmount(Map.of(AmmoColor.BLUE, 1));
+    public static AmmoAmount yellowSingleton = new AmmoAmount(Map.of(AmmoColor.YELLOW, 1));
+
     private static Map<AmmoColor, Integer> limit(AmmoAmountUncapped a){
         Map<AmmoColor, Integer> amounts = a.getAmounts();
         for (AmmoColor c: amounts.keySet()){

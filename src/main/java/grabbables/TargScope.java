@@ -83,20 +83,22 @@ public class TargScope extends PowerUp {
                 } else {
                     DamageableUID target = possibleTargets.get(choice);
                     Effect addDamage = new DamageEffect(target,1,true);
-                    EffectTemplate payEffect = new PayTemplate(new WildCardAmmo());
-                    return payEffect.spawn(
+                    Effect discard = new DiscardEffect(TargScope.this);
+                    return new PayWildCardTemp().spawn(
                             Map.of(),
-                            new Sandbox(sandbox,List.of(addDamage)),
+                            new Sandbox(sandbox, List.of(addDamage, discard)),
                             sandbox1 -> {
-                                //Apply effects to gamemap and run onPowerupFinalized
                                 if (proxy.setControllerMessage(new WaitMessage(List.of()))){
-                                    pov.getSelf().discardPowerUp(TargScope.this);
-                                    new Thread(()->pov.main.resolveEffect(pov,
-                                        sandbox1.getEffectsHistory(), onPowerupFinalized)).start();
+                                    proxy.slave.getSelf().discardPowerUp(TargScope.this);
+                                    new Thread( () -> proxy.slave.main.resolveEffect(
+                                            proxy.slave,
+                                            sandbox1.getEffectsHistory(),
+                                            onPowerupFinalized
+                                    ) ).start();
                                 }
-
                                 return new WaitMessage(List.of());
-                            });
+                            }
+                            );
                 }
             }
         };
