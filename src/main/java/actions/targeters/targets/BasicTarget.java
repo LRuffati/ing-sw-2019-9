@@ -192,4 +192,14 @@ public class BasicTarget implements Targetable, PointLike, Visible, TargetedSele
     public TargetView generateView(Sandbox sandbox) {
         return sandbox.generateTargetView(selfUID,false);
     }
+
+    @Override
+    public boolean equalsVisitor(Targetable other) {
+        return other.matchesBasic(this);
+    }
+
+    @Override
+    public boolean matchesBasic(BasicTarget other) {
+        return other.selfUID.equals(selfUID);
+    }
 }

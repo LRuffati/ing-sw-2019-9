@@ -114,7 +114,7 @@ public class Targeter {
         this.type = template.type;
         this.description = template.description;
         this.isNew =
-                target -> previousTargets.values().stream().noneMatch(o-> target.equals(o,sandbox));
+                target -> previousTargets.values().stream().noneMatch(target::equalsVisitor);
 
     }
 

@@ -157,4 +157,14 @@ public class TileTarget implements Targetable, PointLike, SuperTile, TargetedSel
     public TargetView generateView(Sandbox sandbox) {
         return sandbox.generateTargetView(tileUID,false);
     }
+
+    @Override
+    public boolean equalsVisitor(Targetable other) {
+        return other.matchesTile(this);
+    }
+
+    @Override
+    public boolean matchesTile(TileTarget other) {
+        return other.tileUID.equals(tileUID);
+    }
 }

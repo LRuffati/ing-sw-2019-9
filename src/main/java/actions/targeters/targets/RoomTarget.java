@@ -98,4 +98,14 @@ public class RoomTarget implements Targetable, Visible, HavingPointLike, SuperTi
     public TargetView generateView(Sandbox sandbox) {
         return sandbox.generateTargetView(containedTiles(sandbox), true);
     }
+
+    @Override
+    public boolean equalsVisitor(Targetable other) {
+        return other.matchesRoom(this);
+    }
+
+    @Override
+    public boolean matchesRoom(RoomTarget other) {
+        return this.roomid.equals(other.roomid);
+    }
 }

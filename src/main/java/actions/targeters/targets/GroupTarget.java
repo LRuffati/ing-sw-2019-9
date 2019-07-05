@@ -18,7 +18,7 @@ public class GroupTarget implements Targetable {
     /**
      * The UIDs of the targets
      */
-    private HashSet<DamageableUID> targets;
+    private Set<DamageableUID> targets;
 
     public GroupTarget(Collection<DamageableUID> players){
         targets = new HashSet<>(players);
@@ -48,5 +48,15 @@ public class GroupTarget implements Targetable {
     @Override
     public TargetView generateView(Sandbox sandbox) {
         return sandbox.generateTargetView(targets,true);
+    }
+
+    @Override
+    public boolean equalsVisitor(Targetable other) {
+        return other.matchesGroup(this);
+    }
+
+    @Override
+    public boolean matchesGroup(GroupTarget other){
+        return other.targets.equals(targets);
     }
 }

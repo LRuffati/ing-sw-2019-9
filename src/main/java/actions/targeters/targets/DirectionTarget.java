@@ -82,4 +82,14 @@ public class DirectionTarget implements Targetable, SuperTile, HavingPointLike {
     public TargetView generateView(Sandbox sandbox) {
         return sandbox.generateTargetView(tiles, true);
     }
+
+    @Override
+    public boolean equalsVisitor(Targetable other) {
+        return other.matchesDirection(this);
+    }
+
+    @Override
+    public boolean matchesDirection(DirectionTarget other) {
+        return (new HashSet<>(other.tiles).equals(new HashSet<>(tiles)));
+    }
 }

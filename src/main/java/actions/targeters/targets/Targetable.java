@@ -42,4 +42,27 @@ public interface Targetable {
     }
 
     TargetView generateView(Sandbox sandbox);
+
+    boolean equalsVisitor(Targetable other);
+
+    default boolean matchesBasic(BasicTarget other){
+        return false;
+    }
+
+    default boolean matchesDirection(DirectionTarget other){
+        return false;
+    }
+
+    default boolean matchesGroup(GroupTarget other){
+        return false;
+    }
+
+    default boolean matchesTile(TileTarget other){
+        return false;
+    }
+
+    default boolean matchesRoom(RoomTarget other){
+        return false;
+    }
+
 }
