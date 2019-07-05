@@ -112,7 +112,7 @@ public class Database {
             isFirst = true;
         }
 
-        ServerInterface proxy = null;
+        ServerInterface proxy = network;
         try {
             proxy = isrmi ? new ProxyForRMI(network) : network;
         }
@@ -177,6 +177,7 @@ public class Database {
             logger.log(Level.INFO, "login, reconnect", e);
         }
         usersByToken.get(token).setServerInterface(proxy);
+        controllerByToken.get(token).setNetwork(proxy);
         try {
             proxy.setToken(token);
         }
@@ -242,11 +243,9 @@ public class Database {
      *
      * @return a Set containing all the tokens connected to the game
      */
-    public Set<String> getConnectedTokens(){
+    public synchronized Set<String> getConnectedTokens() {
         Set<String> ret;
-        synchronized (wait) {
-            ret = new HashSet<>(connectedToken);
-        }
+        ret = new HashSet<>(connectedToken);
         return ret;
     }
 
@@ -254,7 +253,7 @@ public class Database {
      *
      * @return a set containing alle the token currently disconnected
      */
-    public Set<String> getDisconnectedToken() {
+    public synchronized Set<String> getDisconnectedToken() {
         return disconnectedToken;
     }
 

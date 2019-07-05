@@ -81,6 +81,10 @@ public class SlaveController {
         lockMessageSet = new ReentrantLock();
     }
 
+    public void setNetwork(ServerInterface network) {
+        this.network = network;
+    }
+
     /**
      * This function sets in motion the main turn line
      */

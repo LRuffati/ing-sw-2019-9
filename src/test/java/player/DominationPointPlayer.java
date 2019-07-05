@@ -44,8 +44,10 @@ class DominationPointPlayer {
         dom.damage(actorList.get(0),2);
         dom.steppedOn(actorList.get(0));
         dom.endTurn(actorList.get(0), scoreboard);
+        dom.steppedOn(actorList.get(0));
+        dom.endTurn(actorList.get(0), scoreboard);
         scoreboard.claimWinner();
-        assertEquals(6, actorList.get(0).getPoints());
+        assertEquals(8, actorList.get(0).getPoints());
         assertEquals(14, actorList.get(1).getPoints());
     }
 

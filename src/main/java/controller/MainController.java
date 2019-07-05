@@ -68,10 +68,7 @@ public class MainController {
     private void checkGameState() {
         if(gameStarted) {
             if(numOfPlayer < MIN_PLAYER) {
-                if(timerRunning)
-                    timerClose();
-                if(gameStarted)
-                    closeGameAtEndTurn = true;
+                closeGameAtEndTurn = true;
             }
             else {
                 closeGameAtEndTurn = false;
@@ -79,8 +76,8 @@ public class MainController {
             return;
         }
 
-        if(numOfPlayer < MIN_PLAYER)
-            return;
+        if(numOfPlayer < MIN_PLAYER && timerRunning)
+            timerClose();
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
             timerStart(1000);
@@ -135,9 +132,9 @@ public class MainController {
      */
     public void logout(Player player) {
         numOfPlayer--;
-        slaveMap.get(player.getUid()).setOnline(false);
-        notifyDisconnection(numOfPlayer, player, false);
+        player.setOnLine(false);
         checkGameState();
+        notifyDisconnection(numOfPlayer, player, false);
 
         clear();
     }

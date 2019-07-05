@@ -358,7 +358,8 @@ public class ClientController implements ClientControllerClientInterface, Client
         try {
             network.poll();
         } catch (RemoteException e) {
-            e.printStackTrace();
+            setPolling(false);
+            //e.printStackTrace();
             quitForDisconnection();
         }
     }
@@ -426,16 +427,30 @@ public class ClientController implements ClientControllerClientInterface, Client
 
     @Override
     public void onWinner(String winner, int winnerPoints, int yourPoints) {
+        timerForPolling.cancel();
+        polling = false;
         stop();
-        setPolling(false);
         try {
             network.close();
         }
         catch (RemoteException e) {
             //
         }
+        network = null;
         view.onWinner(winner, winnerPoints, yourPoints);
         view.onCredits();
+        synchronized (this) {
+            int i = 0;
+            while(i<20) {
+                try {
+                    wait(1_000);
+                    i++;
+                } catch (InterruptedException e) {
+                    //
+                }
+            }
+        }
+        exit(0);
     }
 
 
@@ -454,16 +469,15 @@ public class ClientController implements ClientControllerClientInterface, Client
             public void run() {
                 signals++;
                 if(signals >= 3)
-                    System.out.println("error\t" + signals);
+                    System.out.println("server unavailable\t" + signals);
                 if(signals >= 10) {
-                    System.out.println("BEFOREQUIT");
                     stop();
                     quitForDisconnection();
                     Thread.currentThread().interrupt();
                 }
             }
         };
-        //timer.schedule(timerTask, 200,500);
+        timer.schedule(timerTask, 200,500);
     }
 
     /**
@@ -485,7 +499,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
 
     private void quitForDisconnection() {
-        System.out.println("quit for disconnection");
+        //System.out.println("quit for disconnection");
         stop();
         //exit(0);
     }
