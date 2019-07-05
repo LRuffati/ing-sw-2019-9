@@ -7,6 +7,9 @@ import controller.SlaveController;
 
 import java.util.function.Consumer;
 
+/**
+ * Pays a given amount by decreasing the amount of ammo available to the player
+ */
 public class PayWithAmmoEffect implements Effect {
     private final AmmoAmountUncapped amountToPay;
 

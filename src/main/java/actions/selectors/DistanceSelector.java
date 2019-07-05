@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * (distant () pointlike
+ * (distant () pointlike)
  */
 public class DistanceSelector implements  Selector{
     /**

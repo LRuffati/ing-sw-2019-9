@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Pays a single cube by discarding a powerup
+ */
 public class PayWithPowUpEffect implements Effect{
     private final PowerUp powerup;
 

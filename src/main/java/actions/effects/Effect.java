@@ -66,6 +66,10 @@ public interface Effect {
         return old;
     }
 
+    /**
+     *
+     * @return a set, possibly empty of players affected by the effect
+     */
     default Set<DamageableUID> targetedPlayers() {
         return Set.of();
     }

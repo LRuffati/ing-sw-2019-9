@@ -201,7 +201,7 @@ nomeAction: Modalità barbecue
 descrizioneAction: Dai 2 danni nel primo quadrato e 1 nel secondo
 target tile1 tile (DISTANT (1,1) self): Scegli una cella per indicare la direzione in cui sparare, tutti i giocatori nella prima cella riceveranno 2 danni e quelli nella seconda 1
 target dir direction (HAS self & HAS tile1) automatic
-target tile2 tile (IN dir & DISTANT (2,2) self) automatic
+target tile2 tile (IN dir & DISTANT (2,2) self) automatic optional
 effect damage 2 tile1
 effect damage 1 tile2
 stop

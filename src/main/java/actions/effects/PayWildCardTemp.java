@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * This template allows to pay the "cube of any color" required by the targeting scope
+ */
 public class PayWildCardTemp {
     public PayWildCardTemp(){
     }
@@ -34,7 +37,7 @@ public class PayWildCardTemp {
         List<PowerUp> powerUps = sandbox.powerUpsAvailable();
 
         ChoiceBoard options = ChoiceBoard.powupChoiceFactory(powerUps,
-                "Pick powerup to pay", //TODO: add the amount to pay and the cubes
+                "Pick powerup to pay",
                 false, optional);
 
         Function<List<PowerUp>, ControllerMessage> onChoice =

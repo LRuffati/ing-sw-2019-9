@@ -19,8 +19,6 @@ public interface Selector {
      * @param converter the function converting TileUID into the appropriate target
      * @return a collection of the required Targets
      */
-    //TODO: test calling different Selectors from a list, create a list of selectors of different
-    // kinds intermixed and check that it returns the appropriate results
     Collection<Targetable> select(Sandbox sandbox, Targetable sourceTarget,
                                   Function<TileUID, Stream<Targetable>> converter);
 }

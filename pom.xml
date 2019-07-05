@@ -14,7 +14,8 @@
         <sonar.language>java</sonar.language>
         <sonar.host.url> http://localhost:9000/ </sonar.host.url>
         <sonar.token>0a64315209db81a01e6d883cbe5d5c5ed8992e14</sonar.token>
-
+        <maven.compiler.source>1.12</maven.compiler.source>
+        <maven.compiler.target>1.12</maven.compiler.target>
         <junit.jupiter.version>5.4.1</junit.jupiter.version>
     </properties>
 
@@ -54,6 +55,13 @@
 
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.12</source>
+                    <target>1.12</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
