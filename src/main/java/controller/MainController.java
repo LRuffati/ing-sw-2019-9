@@ -28,8 +28,8 @@ public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private static final int TIME_BEFORE_STARTING = 10_000;//ParserConfiguration.parseInt("TimeBeforeStarting");
-    private static final int MIN_PLAYER = 3;//ParserConfiguration.parseInt("minNumOfPlayers");
+    private static final int TIME_BEFORE_STARTING = ParserConfiguration.parseInt("TimeBeforeStarting");
+    private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
     public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
@@ -65,8 +65,21 @@ public class MainController {
         slaveMap = new HashMap<>(MAX_PLAYER);
     }
 
-    private void checkGameStart() {
-        if(numOfPlayer < MIN_PLAYER || gameStarted)
+    private void checkGameState() {
+        if(gameStarted) {
+            if(numOfPlayer < MIN_PLAYER) {
+                if(timerRunning)
+                    timerClose();
+                if(gameStarted)
+                    closeGameAtEndTurn = true;
+            }
+            else {
+                closeGameAtEndTurn = false;
+            }
+            return;
+        }
+
+        if(numOfPlayer < MIN_PLAYER)
             return;
         if(numOfPlayer == MAX_PLAYER) {
             timerClose();
@@ -84,7 +97,7 @@ public class MainController {
         numOfPlayer++;
         logger.log(Level.INFO, "Connection");
         notifyConnection(numOfPlayer, player);
-        checkGameStart();
+        checkGameState();
     }
 
     /**
@@ -98,7 +111,7 @@ public class MainController {
         player.setOnLine(true);
         logger.log(Level.INFO, "Reconnection");
         notifyConnection(numOfPlayer, player);
-        checkGameStart();
+        checkGameState();
     }
 
 
@@ -122,17 +135,24 @@ public class MainController {
      */
     public void logout(Player player) {
         numOfPlayer--;
-        player.setOnLine(false);
+        slaveMap.get(player.getUid()).setOnline(false);
         notifyDisconnection(numOfPlayer, player, false);
-        if(numOfPlayer < MIN_PLAYER) {
-            if(timerRunning)
-                timerClose();
-            if(gameStarted)
-                closeGameAtEndTurn = true;
+        checkGameState();
+
+        clear();
+    }
+
+    private synchronized void clear() {
+        if(numOfPlayer == 0) {
+            gameOver = false;
+            gameStarted = false;
+            closeGameAtEndTurn = false;
+            slaveControllerList.clear();
+            slaveMap.clear();
         }
     }
 
-    private void notifyConnection(int num, Player player){
+    private void notifyConnection(int num, Player player) {
         for(SlaveController slaveController : slaveControllerList)
             slaveController.onConnection(player, num);
         logger.log(Level.INFO, player.toString());
@@ -180,7 +200,7 @@ public class MainController {
         notifyStarting(game.getMapName());
 
         slaveControllerList = new ArrayList<>(slaveMap.values());
-        Collections.shuffle(slaveControllerList);
+        //Collections.shuffle(slaveControllerList);
         slaveControllerList.sort((a,b)-> {
             if (a.getSelf().getFirstPlayer())
                 return 1;
@@ -337,7 +357,7 @@ public class MainController {
         next = slaveControllerList.get((currIndex+1)%size);
 
         List<SlaveController> nextnext=List.of();
-        if (!firstRoundOver){
+        if (!firstRoundOver) {
             firstRoundOver = pre>currIndex || currIndex==slaveControllerList.size()-1;
             nextnext = slaveControllerList.subList(Math.min(currIndex+2, size),size);
         }
@@ -453,9 +473,6 @@ public class MainController {
         gameOver = true;
         Actor winner = scoreboard.claimWinner();
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
-        gameOver = false;
-        gameStarted = false;
-        //Database.get().clearAll();
     }
 
     public GameMap getGameMap() {

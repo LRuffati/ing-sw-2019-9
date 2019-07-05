@@ -1,0 +1,37 @@
+﻿ADRENALINA
+ing-sw-2019-9
+
+Gruppo9
+Lorenzo Ruffati
+Carmelo Sarta
+Pietro Tenani
+
+
+Funzionalità implementate:
+
+- Regole complete
+
+- Modalità dominazione
+
+- Connessione e riconnessione con socket (con possibilità di disconnessione manuale e forzata)
+- Connessione e riconnessione con rmi (con possibilità di disconnessione manuale e forzata)
+
+- Interfaccia testuale (CLI) completa
+- Interfaccia grafica (GUI) incompleta e parzialmente implementata
+
+
+Prima di eseguire i jar è necessario seguire alcuni passaggi.
+Windows:
+- Occorre abilitare i colori ANSI su terminale eseguendo il comando
+REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1
+
+- È inoltre caldamente consigliato fare in modo di non avere installate interfacce di rete aggiuntive rispetto a quelle standard, in quanto RMI potrebbe connettersi usando una di queste e rendendo quindi inutilizzabile la connessione.
+
+Linux
+- Occorre modificare il file
+etc\hosts
+inserendo il proprio indirizzo IP locale. Anche questo si rivela necessario per poter godere di una rete RMI funzionante.
+
+
+Per eseguire il jar da Windows è sufficiente eseguire il file client.bat o server.bat
+Per eseguire il jar da Linux è necessario eseguire il comando java -jar seguito dal nome del file (ing-sw-2019-9-client.jar o ing-sw-2019-9-server.jar)

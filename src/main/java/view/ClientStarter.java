@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.util.Scanner;
 
+/**
+ * Contstructor of the client.
+ * This class is used to create {@link ClientController}, that is the main controller of the client.
+ * It asks whether the game start with cli or gui and rmi or socket. It also asks for the required {@link controller.GameMode gameMode} and for the IP address of the server
+ */
 public class ClientStarter {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

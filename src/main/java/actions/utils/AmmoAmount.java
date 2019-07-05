@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * This class represents a fixed ammunition amount, it can represent a cost or the amount available to the player
- * <br/>It is important that AmmoAmount be immutable
+ * <br>It is important that AmmoAmount be immutable
  */
 public class AmmoAmount extends AmmoAmountUncapped{
 

@@ -149,6 +149,7 @@ public class ClientController implements ClientControllerClientInterface, Client
 
                     if(res.y) {
                         setPolling(true);
+                        poll();
                         view.onStarting(res.z.x, res.z.y);
                     }
                     add();
