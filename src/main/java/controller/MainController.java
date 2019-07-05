@@ -333,9 +333,8 @@ public class MainController {
         int currIndex = slaveControllerList.indexOf(current);
         int size = slaveControllerList.size();
         int pre = currIndex;
-        currIndex++;
 
-        next = slaveControllerList.get(currIndex%size);
+        next = slaveControllerList.get((currIndex+1)%size);
 
         List<SlaveController> nextnext=List.of();
         if (!firstRoundOver){

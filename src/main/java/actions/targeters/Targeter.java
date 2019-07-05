@@ -31,9 +31,10 @@ public class Targeter {
     static {
         targetBuilders.put("pawn",sandbox-> tileUID -> sandbox.containedPawns(tileUID).stream().map(sandbox::getBasic));
         targetBuilders.put("tile",sandbox-> tileUID -> Stream.of(sandbox.getTile(tileUID)));
-        targetBuilders.put("direction",sandbox-> tileUID -> sandbox.neighbors(tileUID, true).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),true)));
+        targetBuilders.put("direction",
+                sandbox-> tileUID -> sandbox.neighbors(tileUID, true).entrySet().stream().map(e -> new DirectionTarget(sandbox, tileUID,e.getKey(),true)));
         targetBuilders.put("directionph",
-                sandbox-> tileUID -> sandbox.neighbors(tileUID, false).entrySet().stream().map(e -> new DirectionTarget(sandbox, e.getValue(),e.getKey(),false)));
+                sandbox-> tileUID -> sandbox.neighbors(tileUID, false).entrySet().stream().map(e -> new DirectionTarget(sandbox, tileUID, e.getKey(),false)));
         targetBuilders.put("room",sandbox-> tileUID -> Stream.of(sandbox.getRoom(sandbox.room(tileUID))));
     }
 
