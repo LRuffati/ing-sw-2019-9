@@ -1,5 +1,6 @@
 package actions;
 
+import actions.effects.Effect;
 import actions.effects.EffectTemplate;
 import actions.utils.ActionPicker;
 import actions.utils.AmmoAmount;
@@ -8,11 +9,9 @@ import actions.targeters.Targeter;
 import actions.targeters.TargeterTemplate;
 import actions.targeters.targets.Targetable;
 import board.Sandbox;
+import controller.controllermessage.*;
 import genericitems.Tuple;
-import controller.controllermessage.ControllerMessage;
-import controller.controllermessage.PickTargetMessage;
-import controller.controllermessage.RollbackMessage;
-import controller.controllermessage.WaitMessage;
+import viewclasses.ActionView;
 import viewclasses.TargetView;
 
 import java.util.*;
@@ -80,8 +79,8 @@ public class Action {
                         Function<Integer, ControllerMessage>
                         >
                 > functionAutomatic =
-                action ->
-                        listTargets ->
+                action -> // Goes from the integer to the target
+                        listTargets -> //
                             integer -> {
                                 if (listTargets.isEmpty() && optionalTarg) {
                                     return fun.apply(action.apply(-1));
@@ -104,8 +103,9 @@ public class Action {
                 action ->
                         listTargets ->
                                 choice -> {
-                                    if (choice>=listTargets.size()) choice = 0;
-                                    if (choice < 0) return fun.apply(null);
+                                    if (choice < 0)
+                                        return fun.apply(null);
+
                                     Targetable target = action.apply(listTargets.get(choice).x);
                                     return fun.apply(target);
                                 };
@@ -158,6 +158,7 @@ public class Action {
 
             @Override
             public ControllerMessage pick(int choice) {
+                // Deve gestire solo -1 o un numero valido
                 return pickFunction.apply(action).apply(listTargets).apply(choice);
             }
         };
@@ -184,25 +185,31 @@ public class Action {
                          new AmmoAmount(sandbox.getUpdatedTotalAmmoAvailable())
                  )).collect(Collectors.toList());
 
+         if (contempDone)
+             availableContemp.clear();
+
         if (!targeterTemplates.isEmpty()){
 
-            Iterator<Tuple<String, TargeterTemplate>> targetersIter= targeterTemplates.iterator();
+            Iterator<Tuple<String, TargeterTemplate>> targetersIter=
+                    new ArrayList<>(targeterTemplates).iterator();
 
             //Questa chiamata mi dice anche che targetersIter ora non ha più il primo elemento
             Tuple<String, TargeterTemplate> thisTargeter = targetersIter.next();
 
+            List<Tuple<String, TargeterTemplate>> remainingTargeters = new ArrayList<>();
+            targetersIter.forEachRemaining(remainingTargeters::add);
             // This is the same for both automatic and manual ChoiceMaker
+            // Will create a new action with the same sandbox but a new target and a reduced
+            // targeter list
             Function<Targetable, ControllerMessage> fun = target -> {
-                // This will create a new Action, same sandbox, same effects, a new target,
-                // less targeters
+                // Deve gestire null (se opzionale) o un target
+                boolean optional = thisTargeter.y.optional;
                 Map<String, Targetable> targetsUpdated = new HashMap<>(previousTargets);
                 if (target!=null) targetsUpdated.put(thisTargeter.x, target);
+                if (target==null && !optional) return new RollbackMessage("Devi selezionare " +
+                        "un bersaglio obbligatoriamente");
 
-                List<Tuple<String, TargeterTemplate>> remainingTargets = new LinkedList<>();
-                targetersIter.forEachRemaining(remainingTargets::add);
-
-                Action newAction = Action.spawn(this,targetsUpdated, remainingTargets);
-
+                Action newAction = Action.spawn(this,targetsUpdated, remainingTargeters);
                 return newAction.iterate(contempDone);
             };
 
@@ -232,14 +239,47 @@ public class Action {
                 return choiceMaker.pick(0); // In automatic targeters 0 picks the first valid
             else
                 return new PickTargetMessage(choiceMaker, sandbox);
-        } else if (false /*!contempDone && !availableContemp.isEmpty()*/){
-            //new ActionPicker()
+        } else if (!availableContemp.isEmpty()){
             /*
-            TODO: implement contemporaneous effects
-            Save contemporary effects in info and a flag.
-            Allow a pickAction with multiple picks
+            1. Chiedi che azione
+            2. Esegui l'azione
+            3. Chiama l'azione corrente ma con iterate(true)
              */
-            return new WaitMessage(List.of());
+            Function<Tuple<Sandbox, Map<String, Targetable>>, ControllerMessage> finalizerContemp =
+                    tupRes -> {
+                        Sandbox sandboxInner = tupRes.x;
+                        Map<String, Targetable> targsInner = tupRes.y;
+                        Action actionAfterCont = Action.spawn(Action.this, targsInner, List.of());
+                        actionAfterCont = Action.spawn(actionAfterCont, sandboxInner,
+                                actionAfterCont.unresolvedEffects);
+
+                        return actionAfterCont.iterate(true);
+                    };
+
+
+
+            ActionPicker pickAction = new ActionPicker() {
+                @Override
+                public Tuple<Boolean, List<ActionView>> showActionsAvailable() {
+                    return new Tuple<>(true,
+                            availableContemp.stream().map(ActionTemplate::generateView).collect(Collectors.toList()));
+                }
+
+                @Override
+                public ControllerMessage pickAction(int choice) {
+                    if (choice<0){
+                        return finalizerContemp.apply(new Tuple<>(sandbox, previousTargets));
+                    } else {
+                        ActionTemplate actionTemplate = availableContemp.get(choice);
+                        return actionTemplate.generate(sandbox, previousTargets,
+                                finalizerContemp).iterate();
+                    }
+                }
+            };
+
+            return new PickActionMessage(pickAction, "Scegli un'azione da effettuare in " +
+                    "contemporanea a quella precedente", sandbox, List.of());
+
         } else if (!unresolvedEffects.isEmpty()){
 
             Iterator<EffectTemplate> unresolvedIter= unresolvedEffects.iterator();
