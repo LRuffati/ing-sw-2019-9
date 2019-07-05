@@ -2,6 +2,9 @@ package board;
 
 import actions.ActionTemplate;
 import actions.targeters.TargeterTemplate;
+import actions.targeters.targets.Targetable;
+import actions.utils.AmmoAmount;
+import actions.utils.AmmoColor;
 import gamemanager.GameBuilder;
 import gamemanager.ParserConfiguration;
 import grabbables.AmmoCard;
@@ -283,5 +286,15 @@ class newGameMapTest {
         pawn.move(map.getPosition(new Coord(0,0)));
 
         List<List<ActionTemplate>> list = pawn.getActor().getActions();
+        Map<String, Targetable> targets = new HashMap<>();
+        targets.put("basic", pawn.targetFactory());
+        List<String> prevAct = new ArrayList<>();
+        prevAct.add("un'azione fa");
+        Map<AmmoColor, Integer> amountGiven = new HashMap<>();
+        amountGiven.put(AmmoColor.YELLOW,5);
+        amountGiven.put(AmmoColor.RED,5);
+        amountGiven.put(AmmoColor.BLUE,5);
+        list.get(0).get(0).actionAvailable(targets, prevAct, new AmmoAmount(amountGiven));
+
     }
 }
