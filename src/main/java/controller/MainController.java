@@ -60,7 +60,7 @@ public class MainController {
         return slaveMap.get(uid);
     }
 
-    MainController(){
+    public MainController(){
         slaveControllerList = new ArrayList<>();
         slaveMap = new HashMap<>(MAX_PLAYER);
     }
