@@ -25,7 +25,7 @@ Per costruire i jar è possibile usare il comando `maven package`.
 
 Prima di eseguire i jar è necessario seguire alcuni passaggi.
 Windows:
-- Occorre abilitare i colori ANSI su terminale eseguendo il comando
+- Occorre abilitare i colori ANSI su terminale eseguendo il comando  
 `REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1`
 
 - È inoltre caldamente consigliato fare in modo di non avere installate interfacce di rete aggiuntive rispetto a quelle standard, in quanto RMI potrebbe connettersi usando una di queste rendendo quindi inutilizzabile la connessione.
