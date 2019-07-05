@@ -20,12 +20,17 @@ public class AmmoCard extends Grabbable {
      */
     private final int numOfPowerUp;
 
+    /**
+     * Constructor of the class.
+     * Given an {@link AmmoAmount} and the number of powerUps it generates the AmmoCard
+     */
     public AmmoCard(AmmoAmount ammoAmount, int numOfPowerUp){
         this.ammoAmount= ammoAmount;
         this.numOfPowerUp = numOfPowerUp;
     }
 
     /**
+     * Return The amount of ammo contained in the Card
      * @return The amount of ammo contained in the Card
      */
     @Override
@@ -34,6 +39,7 @@ public class AmmoCard extends Grabbable {
     }
 
     /**
+     * Return The number of PowerUps available in the card
      * @return The number of PowerUps available in the card
      */
     @Override
@@ -42,6 +48,10 @@ public class AmmoCard extends Grabbable {
     }
 
 
+    /**
+     * Generates a new {@link viewclasses.AmmoCardView ammoCardView} of this ammoCard, containing all the information needed by the client
+     * @return a view of the ammoCard
+     */
     public AmmoCardView generateView(){
         AmmoCardView ammoCardView = new AmmoCardView();
         ammoCardView.setAll(
@@ -70,6 +80,10 @@ public class AmmoCard extends Grabbable {
         return super.hashCode();
     }
 
+    /**
+     * Return a set containing only this card
+     * @return A set containing only this card
+     */
     @Override
     public Set<AmmoCard> getCard() {
         return Set.of(this);

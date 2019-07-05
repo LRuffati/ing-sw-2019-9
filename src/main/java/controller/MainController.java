@@ -23,7 +23,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-
+/**
+ * Main class of the controller.
+ * It handles the turn flow checks the actions available and manage the connection/disconnection/reconnection of players.
+ * It also creates and terminates a game when needed.
+ */
 public class MainController {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -32,6 +36,10 @@ public class MainController {
     private static final int MIN_PLAYER = ParserConfiguration.parseInt("minNumOfPlayers");
     private static final int MAX_PLAYER = ParserConfiguration.parseInt("maxNumOfPlayers");
 
+    /**
+     * Time given to the user to complete the current move.
+     * Loaded from configuration file
+     */
     public static final int TIMEOUT_TIME = ParserConfiguration.parseInt("TimeForAction");
 
     private boolean closeGameAtEndTurn = false;
@@ -56,10 +64,19 @@ public class MainController {
     private boolean firstRoundOver;
     private boolean gameOver = false;
 
+    /**
+     * Returns the {@link SlaveController} linked with the given {@link DamageableUID uid}
+     * @param uid the identifier of the player
+     * @return the Slavecontroller
+     */
     public SlaveController getSlaveByUID(DamageableUID uid){
         return slaveMap.get(uid);
     }
 
+    /**
+     * Simple constructor.
+     * It builds some basics structures
+     */
     public MainController(){
         slaveControllerList = new ArrayList<>();
         slaveMap = new HashMap<>(MAX_PLAYER);
@@ -88,6 +105,12 @@ public class MainController {
         }
     }
 
+    /**
+     Method called by the network layer when a connection is made.
+     * It notifies all the clients that a new player is online,
+     * and then it checks whether the game can start, and in case it creates the new game
+     * @param player The Player that logged in
+     */
     public void connect(Player player) {
         if(!canConnect())   throw new IllegalArgumentException("Invalid connection request");
 
@@ -119,6 +142,10 @@ public class MainController {
         return numOfPlayer<MAX_PLAYER && !gameStarted && !gameOver;
     }
 
+    /**
+     *
+     * @return True iif the game is started
+     */
     public boolean isGameStarted(){
         return gameStarted;
     }
@@ -263,7 +290,7 @@ public class MainController {
 
     public static void main(String[] str) {
         MainController initGame = new MainController();
-        NetworkBuilder.NetworkStarter(initGame);
+        NetworkBuilder.networkStarter(initGame);
     }
 
     /**
@@ -339,7 +366,7 @@ public class MainController {
     }
 
     /**
-     *
+     * This method handles the end of the turn. It calculates the next player and checks what action must be executed
      * @param lastPlayed the player whose turn just ended
      */
     public void endTurn(Actor lastPlayed) {
@@ -424,7 +451,8 @@ public class MainController {
     }
 
     /**
-     *
+     *  This method handles the respawn of all the dead players.
+     *  It communicates to every dead {@Actor} that it must respawn
      * @param dead the players which have to be resurrected
      * @param cards the amount of cards to draw. 1 for respawn 2 for first placement
      * @param onAllRespawned The runnable to call when the function is called with an empty list.
@@ -464,7 +492,7 @@ public class MainController {
     }
 
     /**
-     * Called to count
+     * Called at the end of the game. It calculates the winner and notifies all the player
      */
     void endGame() {
         gameOver = true;
@@ -472,6 +500,10 @@ public class MainController {
         notifyWinner(winner.pawn().getUsername(), winner.getPoints());
     }
 
+    /**
+     * Returns the current gameMap
+     * @return the current gameMap
+     */
     public GameMap getGameMap() {
         return gameMap;
     }
@@ -482,6 +514,10 @@ public class MainController {
 
 
     private int normalMode = 0;
+
+    /**
+     * Returns the gameMode
+     */
     public void modeRequest(boolean normalMode) {
         this.normalMode += normalMode ? 1 : 0;
     }

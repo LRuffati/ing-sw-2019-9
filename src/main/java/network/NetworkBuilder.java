@@ -16,11 +16,11 @@ import java.util.logging.Logger;
  * it creates the rmi and socket classes and then it sets up the timer used for checking if a player logged out
  */
 public class NetworkBuilder {
-    public NetworkBuilder(){}
+    NetworkBuilder(){}
     /**
      * Initialize rmi and socket connections
      */
-    public static void NetworkStarter(MainController controller) {
+    public static void networkStarter(MainController controller) {
         String host;
 
         Database.get().setMainController(controller);

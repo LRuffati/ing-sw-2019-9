@@ -21,7 +21,12 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-
+/**
+ * Main class that implements the CLI.
+ * It handles all the operation except for the print of the map (delegated to {@link CLIMap})
+ * It implements the interface {@link View} so that it can receive updates from the {@link controller.ClientController}.
+ * It can send requests to the ClientController through the {@link ClientControllerClientInterface} interface
+ */
 public class CLIDemo implements View {
     private static CLIMap climap;
     private GameMapView gameMapView;
@@ -40,7 +45,6 @@ public class CLIDemo implements View {
     /**
      * To be called when the server starts the game. It generates the map (with everything included on it).
      */
-
     public CLIDemo(ClientControllerClientInterface client) {
 
         listOfWeapon = ParserWeapon.parseWeapons(ParserConfiguration.parsePath("weaponPath"))
@@ -304,7 +308,7 @@ public class CLIDemo implements View {
     }
 
     /**
-     * See documentation in the View interface.
+     * See documentation in the {@link View} interface.
      */
     @Override
     public void chooseAction(List<ActionView> action, boolean single, boolean optional, String description, String choiceId) {
@@ -339,7 +343,7 @@ public class CLIDemo implements View {
     }
 
     /**
-     * See documentation in the View interface.
+     * See documentation in the {@link View} interface.
      */
     @Override
     public void chooseWeapon(List<WeaponView> weapon, boolean single, boolean optional, String description, String choiceId) {
@@ -376,6 +380,9 @@ public class CLIDemo implements View {
         commandParser.bind(consumer);
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void choosePowerUp(List<PowerUpView> powerUp, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
@@ -405,6 +412,9 @@ public class CLIDemo implements View {
         commandParser.bind(consumer);
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void chooseString(List<String> string, boolean single, boolean optional, String description, String choiceId) {
         chosenList.clear();
@@ -433,13 +443,16 @@ public class CLIDemo implements View {
     }
 
     /**
-     * See documentation in the View interface.
+     * See documentation in the {@link View} interface.
      */
     @Override
     public void onRollback() {
         //does nothing
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onMessage(Message message) {
         for(String str : message.getChanges()){
@@ -447,6 +460,9 @@ public class CLIDemo implements View {
         }
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onLostTurn(Player player) {
         pickStringMessage = "";
@@ -454,13 +470,13 @@ public class CLIDemo implements View {
     }
 
     /**
-     * See documentation in the View interface.
+     * See documentation in the {@link View} interface.
      */
     @Override
     public void terminated() { }
 
     /**
-     * See documentation in the View interface.
+     * See documentation in the {@link View} interface.
      */
     @Override
     public synchronized void updateMap(GameMapView gameMapView, boolean forced) {
@@ -494,6 +510,9 @@ public class CLIDemo implements View {
         return true;
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void loginResponse(boolean result, boolean invalidUsername, boolean invalidColor) {
         if(result){
@@ -511,11 +530,17 @@ public class CLIDemo implements View {
         }
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void loginNotif() {
         joinGame();
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onConnection(Player player, boolean connected, int numOfPlayer) {
         StringBuilder builder = new StringBuilder();
@@ -529,6 +554,9 @@ public class CLIDemo implements View {
         System.out.println(builder.toString());
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onStarting(String map, GameMode gameMode) {
         StringBuilder builder = new StringBuilder();
@@ -551,6 +579,9 @@ public class CLIDemo implements View {
             scanThread.start();
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onTimer(int timeToCount) {
         System.out.println("Aspettiamo per un po' qualche altro giocatore");
@@ -558,26 +589,41 @@ public class CLIDemo implements View {
         waitForStart();
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onRespawn() {
         System.out.println("Stai respawnando...");
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onTakeback() {
         System.out.println("Puoi usare una granata!");
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onTerminator() {
         System.out.println("Puoi muovere il Terminator!");
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onWinner(String winner, int winnerPoints, int yourPoints) {
         System.out.println(String.format("La partita è finita!%nIl vincitore è...%n%s%n Ha vinto totalizzando %d punti, tu hai ottenuto %d punti", winner, winnerPoints, yourPoints));
     }
 
+    /**
+     * See documentation in the {@link View} interface.
+     */
     @Override
     public void onCredits() {
         System.out.println("\n\nAdrenaline™ is a game by Group9\nLorenzo Ruffati\nCarmelo Sarta\nPietro Tenani\n\n\n");
@@ -641,14 +687,7 @@ public class CLIDemo implements View {
         for(int i = 0; i<blue; i++){
             out.append("■ ");
         }
-        //todo: change
-        //fixme: change
-        /*
-        if(parenthesis && out.length() != 0){
-            out.insert(1,'(');
-            out.insert(out.length()-1,')');
-        }
-        */
+
         out.append(" ").append(AnsiColor.getDefault()).append(" ");
         return out.toString();
     }
@@ -825,7 +864,10 @@ public class CLIDemo implements View {
         client.quit();
     }
 
-    public void endGame(){
+    /**
+     * This method prints a message that indicates that the game is over
+     */
+    protected void endGame(){
         System.out.println("$$$$$$$$\\ $$\\                           $$\\             $$\\     $$\\                          $$$$$$\\                           $$$$$$$\\  $$\\                     $$\\                     \n" +
                 "\\__$$  __|$$ |                          $$ |            \\$$\\   $$  |                        $$  __$$\\                          $$  __$$\\ $$ |                    \\__|                    \n" +
                 "   $$ |   $$$$$$$\\   $$$$$$\\  $$$$$$$\\  $$ |  $$\\        \\$$\\ $$  /$$$$$$\\  $$\\   $$\\       $$ /  \\__|$$$$$$\\   $$$$$$\\        $$ |  $$ |$$ | $$$$$$\\  $$\\   $$\\ $$\\ $$$$$$$\\   $$$$$$\\  \n" +
