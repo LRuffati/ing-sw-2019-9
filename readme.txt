@@ -14,8 +14,8 @@ Funzionalità implementate:
 
 - Modalità dominazione
 
-- Connessione e riconnessione con socket (con possibilità di disconnessione manuale e forzata)
-- Connessione e riconnessione con rmi (con possibilità di disconnessione manuale e forzata)
+- Connessione con socket
+- Connessione con rmi
 
 - Interfaccia testuale (CLI) completa
 - Interfaccia grafica (GUI) incompleta e parzialmente implementata
@@ -29,7 +29,7 @@ Windows:
 - Occorre abilitare i colori ANSI su terminale eseguendo il comando
 REG ADD HKCU\CONSOLE /f /v VirtualTerminalLevel /t REG_DWORD /d 1
 
-- È inoltre caldamente consigliato fare in modo di non avere installate interfacce di rete aggiuntive rispetto a quelle standard, in quanto RMI potrebbe connettersi usando una di queste e rendendo quindi inutilizzabile la connessione.
+- È inoltre caldamente consigliato fare in modo di non avere installate interfacce di rete aggiuntive rispetto a quelle standard, in quanto RMI potrebbe connettersi usando una di queste rendendo quindi inutilizzabile la connessione.
 
 Linux
 - Occorre modificare il file
