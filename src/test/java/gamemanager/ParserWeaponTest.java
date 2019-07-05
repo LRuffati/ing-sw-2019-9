@@ -23,6 +23,7 @@ class ParserWeaponTest {
     void voidTest() {
         String path = "weapons.txt";
         weaponCollection = ParserWeapon.parseWeapons(path);
+        System.out.println(weaponCollection.size());
         //System.out.println(weaponCollection.size());
     }
 
@@ -53,6 +54,12 @@ class ParserWeaponTest {
         String path = "weapons.txt";
        // weaponCollection = ParserWeapon.parseWeapons(path);
         //System.out.println("Dimensione del set di armi:\t" + weaponCollection.size());
+    }
+
+    @Test
+    void weaponsTest(){
+
+
     }
 
 }
