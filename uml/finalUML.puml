@@ -526,10 +526,11 @@ package "actions" {
             	 containedSelector()
             }
 
-            SuperTile <|-- TargetedSelector
-            PointLike <|-- TargetedSelector
-            PointLike <|-- Visible
-            PointLike <|-- HavingPointLike
+            HavingPointLike --|> Targetable
+            SuperTile --|> Targetable
+            TargetedSelector --|> Targetable
+            Visible --|> Targetable
+            PointLike --|> Targetable
         }
 
         package "targets" {
@@ -600,11 +601,20 @@ package "actions" {
             	 generateView()
             }
 
-            Targetable <|-- BasicTarget
+            PointLike <|-- BasicTarget
+            Visible <|-- BasicTarget
+            TargetedSelector <|-- BasicTarget
             Targetable <|-- GroupTarget
-            Targetable <|-- TileTarget
-            Targetable <|-- DirectionTarget
-            Targetable <|-- RoomTarget
+            PointLike <|-- TileTarget
+            SuperTile <|-- TileTarget
+            TargetedSelector <|-- TileTarget
+            Visible <|-- TileTarget
+            HavingPointLike <|-- TileTarget
+            HavingPointLike <|-- DirectionTarget
+            SuperTile <|-- DirectionTarget
+            Visible <|-- RoomTarget
+            HavingPointLike <|-- RoomTarget
+            SuperTile <|-- RoomTarget
             BasicTarget <|-- DominationPointTarget
 
         }
@@ -947,7 +957,7 @@ package "grabbables" {
     	+ hashCode()
     	+ getCard()
     }
-    class Deck {
+    class Deck <Generic Class>{
     	- deckIterator
     	- stash
     	- pickedCard
